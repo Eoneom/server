@@ -9,6 +9,10 @@ export interface Cell {
   y: number
 }
 
+export interface ResourcesToBuild {
+  wood?: number
+}
+
 export interface City {
   readonly name: string
   readonly wood: number

@@ -1,11 +1,20 @@
 import { Building, City } from './model'
-import { SIZE_PER_CELL, WOOD_CAMP, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
+import { SIZE_PER_CELL, WOOD_CAMP, wood_camp_costs_by_level, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
 
 import { now } from '../shared/time'
 
 export const getSecondsSinceLastWoodGather = (city: City): number => {
   const now_in_seconds = now()
   return Math.floor((now_in_seconds - city.last_wood_gather) / 1000)
+}
+
+export const getWoodCostsForUpgrade = (building: Building): number => {
+  switch (building.code) {
+    case WOOD_CAMP:
+      return wood_camp_costs_by_level[building.level + 1] ?? 0
+  }
+
+  return 0
 }
 
 export const isBuildingUpgradeDone = (building: Building): boolean => {
@@ -28,6 +37,10 @@ export const getWoodEarningsBySecond = (city: City): number => {
 export const getWoodUpgradeTimeInSeconds = (city: City): number => {
   const wood_camp = city.buildings[WOOD_CAMP]
   return wood_camp_upgrade_time_in_seconds[wood_camp.level + 1]
+}
+
+export const getWoodCostForLevel = (level: number): number => {
+  return wood_camp_costs_by_level[level]
 }
 
 export const isBuildingInProgress = (city: City): boolean => {

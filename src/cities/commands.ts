@@ -1,6 +1,14 @@
 import { Building, City } from './model'
 import { STARTING_WOOD, WOOD_CAMP } from './constants'
-import { getBuildingInProgress, getSecondsSinceLastWoodGather, getWoodEarningsBySecond, getWoodUpgradeTimeInSeconds, hasSizeToBuild, isBuildingInProgress, isBuildingUpgradeDone } from './queries'
+import {
+  getBuildingInProgress,
+  getWoodCostsForUpgrade,
+  getWoodEarningsBySecond,
+  getWoodUpgradeTimeInSeconds,
+  hasSizeToBuild,
+  isBuildingInProgress,
+  isBuildingUpgradeDone
+} from './queries'
 
 import { now } from '../shared/time'
 
@@ -33,10 +41,17 @@ export const launchBuildingUpgrade = (city: City, building_code: string): City =
     return city
   }
 
+  const wood_costs = getWoodCostsForUpgrade(building)
+  if (city.wood < wood_costs) {
+    console.error(`not enough wood to build, required=${wood_costs}, current=${city.wood}`)
+    return city
+  }
+
   const upgrade_time_in_seconds = getWoodUpgradeTimeInSeconds(city)
   console.log(building.code, ' upgrade launched')
   return {
     ...city,
+    wood: city.wood - wood_costs,
     buildings: {
       ...city.buildings,
       [building_code]: {

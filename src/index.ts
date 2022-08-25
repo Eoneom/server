@@ -2,17 +2,19 @@ import { createCity, gatherWood, launchBuildingUpgrade, upgradeBuildings } from 
 
 import { WOOD_CAMP } from './cities/constants'
 import { now } from './shared/time'
+import repl from 'repl'
 
 let city = createCity('Moustachiopolis')
-city = gatherWood(city, now())
-console.log(`wood=${city.wood}, woodcamp_level=${city.buildings[WOOD_CAMP].level}`)
-city = launchBuildingUpgrade(city, WOOD_CAMP)
-
 setInterval(() => {
   city = upgradeBuildings(city)
   city = gatherWood(city, now())
+}, 1000)
+console.log(city)
 
-  console.log(`wood=${city.wood}, woodcamp_level=${city.buildings[WOOD_CAMP].level}`)
-}, 500)
-
+const local = repl.start('> ')
+local.context.g = {
+  city: () => city,
+  now,
+  launchWoodcampUpgrade: () => { city = launchBuildingUpgrade(city, WOOD_CAMP) }
+}
 export { }
