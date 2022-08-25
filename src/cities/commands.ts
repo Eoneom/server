@@ -1,6 +1,6 @@
 import { Building, City } from './model'
 import { STARTING_WOOD, WOOD_CAMP } from './constants'
-import { getBuildingInProgress, getSecondsSinceLastWoodGather, getWoodEarningsBySecond, getWoodUpgradeTimeInSeconds, isBuildingInProgress, isBuildingUpgradeDone } from './queries'
+import { getBuildingInProgress, getSecondsSinceLastWoodGather, getWoodEarningsBySecond, getWoodUpgradeTimeInSeconds, hasSizeToBuild, isBuildingInProgress, isBuildingUpgradeDone } from './queries'
 
 import { now } from '../shared/time'
 
@@ -13,11 +13,18 @@ export const createCity = (name: string): City => ({
     }
   },
   wood: STARTING_WOOD,
-  last_wood_gather: new Date().getTime()
+  last_wood_gather: new Date().getTime(),
+  cells: [{ x: 10, y: 10 }]
 })
 
 export const launchBuildingUpgrade = (city: City, building_code: string): City => {
   if (isBuildingInProgress(city)) {
+    console.error('building already in progress')
+    return city
+  }
+
+  if (!hasSizeToBuild(city)) {
+    console.error('not enough size to build')
     return city
   }
 

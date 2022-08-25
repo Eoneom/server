@@ -1,5 +1,5 @@
 import { Building, City } from './model'
-import { WOOD_CAMP, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
+import { SIZE_PER_CELL, WOOD_CAMP, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
 
 import { now } from '../shared/time'
 
@@ -32,4 +32,16 @@ export const getWoodUpgradeTimeInSeconds = (city: City): number => {
 
 export const isBuildingInProgress = (city: City): boolean => {
   return Object.values(city.buildings).some(building => building.upgrade_time)
+}
+
+export const hasSizeToBuild = (city: City): boolean => {
+  return getTotalBuildingLevels(city) < getMaxSize(city)
+}
+
+export const getTotalBuildingLevels = (city: City): number => {
+  return Object.values(city.buildings).reduce((sum, building) => sum + building.level, 0)
+}
+
+export const getMaxSize = (city: City): number => {
+  return city.cells.length * SIZE_PER_CELL
 }
