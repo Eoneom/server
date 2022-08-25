@@ -1,7 +1,7 @@
+import { Building, City } from './model'
 import { STARTING_WOOD, WOOD_CAMP } from './constants'
-import { getBuildingInProgress, getSecondsSinceLastGather, getWoodEarningsBySecond, getWoodUpgradeTimeInSeconds, isBuildingInProgress, isBuildingUpgradeDone } from './queries'
+import { getBuildingInProgress, getSecondsSinceLastWoodGather, getWoodEarningsBySecond, getWoodUpgradeTimeInSeconds, isBuildingInProgress, isBuildingUpgradeDone } from './queries'
 
-import { City } from './model'
 import { now } from '../shared/time'
 
 export const createCity = (name: string): City => ({
@@ -13,7 +13,7 @@ export const createCity = (name: string): City => ({
     }
   },
   wood: STARTING_WOOD,
-  last_gather: new Date().getTime()
+  last_wood_gather: new Date().getTime()
 })
 
 export const launchBuildingUpgrade = (city: City, building_code: string): City => {
@@ -49,11 +49,39 @@ export const upgradeBuildings = (city: City): City => {
   const upgrade_time = building.upgrade_time!
 
   if (!isBuildingUpgradeDone(building)) {
-    console.log(building.code, 'upgrade in progress', Math.round((upgrade_time - now()) / 1000), 'seconds remaining')
+    const seconds_remaining = Math.round((upgrade_time - now()) / 1000)
+    console.log(`${building.code} upgrade in progress ${seconds_remaining} seconds remaining`)
     return city
   }
 
-  console.log(building.code, ' upgraded ')
+  console.log(`${building.code} upgraded`)
+  let new_city = city
+  if (WOOD_CAMP === building.code) {
+    new_city = gatherWood(city, upgrade_time)
+  }
+
+  return upgradeBuilding(new_city, building)
+}
+
+export const gatherWood = (city: City, gather_at_time: number): City => {
+  if (gather_at_time <= city.last_wood_gather) {
+    return city
+  }
+
+  const seconds_since_last_gather = Math.round(gather_at_time - city.last_wood_gather) / 1000
+  if (seconds_since_last_gather < 1) {
+    return city
+  }
+
+  const wood_earnings = Math.floor(seconds_since_last_gather * getWoodEarningsBySecond(city))
+  return {
+    ...city,
+    last_wood_gather: gather_at_time,
+    wood: city.wood + wood_earnings
+  }
+}
+
+const upgradeBuilding = (city: City, building: Building): City => {
   return {
     ...city,
     buildings: {
@@ -64,19 +92,5 @@ export const upgradeBuildings = (city: City): City => {
         upgrade_time: undefined
       }
     }
-  }
-}
-
-export const gatherResources = (city: City): City => {
-  const seconds_since_last_gather = getSecondsSinceLastGather(city)
-  if (seconds_since_last_gather < 1) {
-    return city
-  }
-
-  const wood_gains = seconds_since_last_gather * getWoodEarningsBySecond(city)
-  return {
-    ...city,
-    last_gather: now(),
-    wood: city.wood + wood_gains
   }
 }

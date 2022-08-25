@@ -3,9 +3,9 @@ import { WOOD_CAMP, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_
 
 import { now } from '../shared/time'
 
-export const getSecondsSinceLastGather = (city: City): number => {
-  const now_in_seconds = new Date().getTime()
-  return Math.floor((now_in_seconds - city.last_gather) / 1000)
+export const getSecondsSinceLastWoodGather = (city: City): number => {
+  const now_in_seconds = now()
+  return Math.floor((now_in_seconds - city.last_wood_gather) / 1000)
 }
 
 export const isBuildingUpgradeDone = (building: Building): boolean => {

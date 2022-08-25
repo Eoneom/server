@@ -8,5 +8,5 @@ export interface City {
   readonly name: string
   readonly wood: number
   readonly buildings: Record<string, Building>
-  readonly last_gather: number
+  readonly last_wood_gather: number
 }
