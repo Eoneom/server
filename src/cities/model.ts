@@ -1,5 +1,7 @@
-interface Building {
+export interface Building {
+  readonly code: string
   readonly level: number
+  readonly upgrade_time?: number
 }
 
 export interface City {

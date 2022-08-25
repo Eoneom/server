@@ -8,3 +8,9 @@ export const wood_camp_gains_by_level_by_seconds: Record<number, number> = {
   3: 45,
   4: 70
 }
+
+export const wood_camp_upgrade_time_in_seconds: Record<number, number> = {
+  2: 10,
+  3: 30,
+  4: 60,
+}
