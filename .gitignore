@@ -5,3 +5,7 @@ node_modules
 # Build files
 
 dist
+
+# Local data files
+
+containers/data
