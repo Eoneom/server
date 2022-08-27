@@ -20,6 +20,10 @@ export class CityQueries {
   public async findById(id: string): Promise<CityEntity | null> {
     return this.repository.findById(id)
   }
+
+  public async hasSizeToBuild(id: string): Promise<boolean> {
+    return true
+  }
 }
 
 export const getSecondsSinceLastWoodGather = (city: CityEntity): number => {
@@ -52,9 +56,8 @@ export const getWoodEarningsBySecond = (level: number): number => {
   return wood_camp_gains_by_level_by_seconds[level]
 }
 
-export const getWoodUpgradeTimeInSeconds = (city: CityEntity): number => {
-  const wood_camp = city.buildings[BuildingCode.WOOD_CAMP]
-  return wood_camp_upgrade_time_in_seconds[wood_camp.level + 1]
+export const getWoodUpgradeTimeInSeconds = (level: number): number => {
+  return wood_camp_upgrade_time_in_seconds[level + 1]
 }
 
 export const getWoodCostForLevel = (level: number): number => {

@@ -3,7 +3,6 @@ import { BuildingCode } from './core/building/constants'
 import { CityApp } from './core/city/app'
 import { CityEntity } from './core/city/entity'
 import { Factory } from './factory'
-import { MongoRepository } from './database'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
@@ -50,7 +49,10 @@ const init = async (
   local.context.g = {
     city: () => city_app.queries.findById(city_id).then(console.log),
     now,
-    // launchWoodcampUpgrade: () => { city = launchBuildingUpgrade(city, BuildingCode.WOOD_CAMP) }
+    launchWoodcampUpgrade: () => {
+      building_app.commands.launchUpgrade({ code: BuildingCode.WOOD_CAMP, city_id })
+    }
   }
 })()
+
 export { }

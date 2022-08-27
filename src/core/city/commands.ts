@@ -95,7 +95,7 @@ export const launchBuildingUpgrade = (city: CityEntity, building_code: string): 
     return city
   }
 
-  const upgrade_time_in_seconds = getWoodUpgradeTimeInSeconds(city)
+  const upgrade_time_in_seconds = getWoodUpgradeTimeInSeconds(building.level)
   console.log(building.code, ' upgrade launched')
   return {
     ...city,
