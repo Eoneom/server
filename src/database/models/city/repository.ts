@@ -1,5 +1,5 @@
 import { CityDocument, CityModel } from './document'
-import { CityRepository, FindParams } from '../../../core/city/repository'
+import { CityRepository, FindParams, UpdateParams } from '../../../core/city/repository'
 
 import { CityEntity } from '../../../core/city/entity'
 
@@ -30,6 +30,10 @@ export class MongoCityRepository implements CityRepository {
   async create(city: CityEntity): Promise<string> {
     const created_city = await CityModel.create(city)
     return created_city._id.toString()
+  }
+
+  async update(city: UpdateParams): Promise<void> {
+    await CityModel.updateOne({ id: city.id }, city)
   }
 }
 

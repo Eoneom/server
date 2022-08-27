@@ -1,1 +1,4 @@
-export const ERR_CITY_ALREADY_EXISTS = 'city-already-exists'
+export enum CityErrors {
+  ALREADY_EXISTS = 'city-already-exists',
+  NOT_FOUND = 'city-not-found'
+}

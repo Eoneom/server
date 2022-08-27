@@ -12,7 +12,8 @@ import {
 import { BuildingCode } from '../building/constants'
 import { BuildingEntity } from "../building/entity"
 import { CityEntity } from './entity'
-import { ERR_CITY_ALREADY_EXISTS } from './errors'
+import { CityErrors } from './errors'
+import { Factory } from '../../factory'
 import { STARTING_WOOD } from './constants'
 import { now } from '../shared/time'
 
@@ -20,17 +21,22 @@ interface CreateCityCommand {
   name: string
 }
 
+interface CityGatherWoodCommand {
+  id: string
+  gather_at_time: number
+}
+
 export class CityCommands {
   private repository: CityRepository
 
-  public constructor(repository: CityRepository) {
+  constructor(repository: CityRepository) {
     this.repository = repository
   }
 
-  public async create({ name }: CreateCityCommand): Promise<string> {
+  async create({ name }: CreateCityCommand): Promise<string> {
     const city_already_exists = await this.repository.exists(name)
     if (city_already_exists) {
-      throw new Error(ERR_CITY_ALREADY_EXISTS)
+      throw new Error(CityErrors.ALREADY_EXISTS)
     }
 
     const city: CreateParams = {
@@ -40,6 +46,30 @@ export class CityCommands {
     }
 
     return this.repository.create(city)
+  }
+
+  async gatherWood({ id, gather_at_time }: CityGatherWoodCommand): Promise<void> {
+    const city = await this.repository.findById(id)
+    if (!city) {
+      throw new Error(CityErrors.NOT_FOUND)
+    }
+
+    if (gather_at_time <= city.last_wood_gather) {
+      return
+    }
+
+    const seconds_since_last_gather = Math.round(gather_at_time - city.last_wood_gather) / 1000
+    if (seconds_since_last_gather < 1) {
+      return
+    }
+
+    const level = await Factory.getBuildingApp().queries.getLevel({ code: BuildingCode.WOOD_CAMP, city_id: city.id })
+    const wood_earnings = Math.floor(seconds_since_last_gather * getWoodEarningsBySecond(level))
+    await this.repository.update({
+      id,
+      wood: city.wood + wood_earnings,
+      last_wood_gather: now()
+    })
   }
 }
 
@@ -96,29 +126,11 @@ export const upgradeBuildings = (city: CityEntity): CityEntity => {
 
   console.log(`${building.code} upgraded`)
   let new_city = city
-  if (BuildingCode.WOOD_CAMP === building.code) {
-    new_city = gatherWood(city, upgrade_time)
-  }
+  // if (BuildingCode.WOOD_CAMP === building.code) {
+  //   new_city = gatherWood(city, upgrade_time)
+  // }
 
   return upgradeBuilding(new_city, building)
-}
-
-export const gatherWood = (city: CityEntity, gather_at_time: number): CityEntity => {
-  if (gather_at_time <= city.last_wood_gather) {
-    return city
-  }
-
-  const seconds_since_last_gather = Math.round(gather_at_time - city.last_wood_gather) / 1000
-  if (seconds_since_last_gather < 1) {
-    return city
-  }
-
-  const wood_earnings = Math.floor(seconds_since_last_gather * getWoodEarningsBySecond(city))
-  return {
-    ...city,
-    last_wood_gather: gather_at_time,
-    wood: city.wood + wood_earnings
-  }
 }
 
 const upgradeBuilding = (city: CityEntity, building: BuildingEntity): CityEntity => {

@@ -9,4 +9,5 @@ export interface BuildingCreateParams {
 export interface BuildingRepository {
   exists(query: { code: BuildingCode, city_id: string }): Promise<boolean>
   create(params: BuildingCreateParams): Promise<string>
+  level(query: { code: BuildingCode, city_id: string }): Promise<number | null>
 }

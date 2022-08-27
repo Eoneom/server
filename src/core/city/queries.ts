@@ -48,9 +48,8 @@ export const getBuildingInProgress = (city: CityEntity): BuildingEntity | undefi
   return Object.values(city.buildings).find(building => building.upgrade_time)
 }
 
-export const getWoodEarningsBySecond = (city: CityEntity): number => {
-  const wood_camp = city.buildings[BuildingCode.WOOD_CAMP]
-  return wood_camp_gains_by_level_by_seconds[wood_camp.level]
+export const getWoodEarningsBySecond = (level: number): number => {
+  return wood_camp_gains_by_level_by_seconds[level]
 }
 
 export const getWoodUpgradeTimeInSeconds = (city: CityEntity): number => {

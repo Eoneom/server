@@ -1,9 +1,8 @@
-import { gatherWood, launchBuildingUpgrade, upgradeBuildings } from './core/city/commands'
-
 import { BuildingApp } from './core/building/app'
 import { BuildingCode } from './core/building/constants'
 import { CityApp } from './core/city/app'
 import { CityEntity } from './core/city/entity'
+import { Factory } from './factory'
 import { MongoRepository } from './database'
 import { now } from './core/shared/time'
 import repl from 'repl'
@@ -35,24 +34,23 @@ const init = async (
 }
 
 (async () => {
-  const repository = new MongoRepository()
+  const repository = Factory.getRepository()
   await repository.connect()
+  const city_app = Factory.getCityApp()
+  const building_app = Factory.getBuildingApp()
 
-  const city_app = new CityApp(repository.city)
-  const building_app = new BuildingApp(repository.building)
-  let city = await init(city_app, building_app)
+  const { id: city_id } = await init(city_app, building_app)
 
-  setInterval(() => {
-    city = upgradeBuildings(city)
-    city = gatherWood(city, now())
+  setInterval(async () => {
+    // city = upgradeBuildings(city)
+    await city_app.commands.gatherWood({ id: city_id, gather_at_time: now() })
   }, 1000)
-  console.log(city)
 
   const local = repl.start('> ')
   local.context.g = {
-    city: () => city,
+    city: () => city_app.queries.findById(city_id).then(console.log),
     now,
-    launchWoodcampUpgrade: () => { city = launchBuildingUpgrade(city, BuildingCode.WOOD_CAMP) }
+    // launchWoodcampUpgrade: () => { city = launchBuildingUpgrade(city, BuildingCode.WOOD_CAMP) }
   }
 })()
 export { }
