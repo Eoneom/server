@@ -3,10 +3,10 @@ import { CityQueries } from './queries'
 import { CityRepository } from './repository'
 
 export class CityApp {
-  public commands: CityCommands
-  public queries: CityQueries
+  commands: CityCommands
+  queries: CityQueries
 
-  public constructor(repository: CityRepository) {
+  constructor(repository: CityRepository) {
     this.commands = new CityCommands(repository)
     this.queries = new CityQueries(repository)
   }

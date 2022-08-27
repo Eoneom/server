@@ -1,7 +1,7 @@
 import { CityDocument, CityModel } from './document'
 import { CityRepository, FindParams } from '../../../core/city/repository'
 
-import { CityEntity } from '../../../core/city/model'
+import { CityEntity } from '../../../core/city/entity'
 
 export class MongoCityRepository implements CityRepository {
   async findById(id: string): Promise<CityEntity | null> {

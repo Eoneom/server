@@ -1,7 +1,9 @@
-import { Building, CityEntity } from './model'
 import { CityRepository, FindParams } from './repository'
-import { SIZE_PER_CELL, WOOD_CAMP, wood_camp_costs_by_level, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
+import { SIZE_PER_CELL, wood_camp_costs_by_level, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
 
+import { BuildingCode } from '../building/constants'
+import { BuildingEntity } from "../building/entity"
+import { CityEntity } from './entity'
 import { now } from '../shared/time'
 
 export class CityQueries {
@@ -25,16 +27,16 @@ export const getSecondsSinceLastWoodGather = (city: CityEntity): number => {
   return Math.floor((now_in_seconds - city.last_wood_gather) / 1000)
 }
 
-export const getWoodCostsForUpgrade = (building: Building): number => {
+export const getWoodCostsForUpgrade = (building: BuildingEntity): number => {
   switch (building.code) {
-    case WOOD_CAMP:
+    case BuildingCode.WOOD_CAMP:
       return wood_camp_costs_by_level[building.level + 1] ?? 0
   }
 
   return 0
 }
 
-export const isBuildingUpgradeDone = (building: Building): boolean => {
+export const isBuildingUpgradeDone = (building: BuildingEntity): boolean => {
   if (!building.upgrade_time) {
     return true
   }
@@ -42,17 +44,17 @@ export const isBuildingUpgradeDone = (building: Building): boolean => {
   return now() - building.upgrade_time > 0
 }
 
-export const getBuildingInProgress = (city: CityEntity): Building | undefined => {
+export const getBuildingInProgress = (city: CityEntity): BuildingEntity | undefined => {
   return Object.values(city.buildings).find(building => building.upgrade_time)
 }
 
 export const getWoodEarningsBySecond = (city: CityEntity): number => {
-  const wood_camp = city.buildings[WOOD_CAMP]
+  const wood_camp = city.buildings[BuildingCode.WOOD_CAMP]
   return wood_camp_gains_by_level_by_seconds[wood_camp.level]
 }
 
 export const getWoodUpgradeTimeInSeconds = (city: CityEntity): number => {
-  const wood_camp = city.buildings[WOOD_CAMP]
+  const wood_camp = city.buildings[BuildingCode.WOOD_CAMP]
   return wood_camp_upgrade_time_in_seconds[wood_camp.level + 1]
 }
 

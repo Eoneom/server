@@ -1,6 +1,4 @@
-import { Building, CityEntity } from './model'
 import { CityRepository, CreateParams } from './repository'
-import { STARTING_WOOD, WOOD_CAMP } from './constants'
 import {
   getBuildingInProgress,
   getWoodCostsForUpgrade,
@@ -11,8 +9,11 @@ import {
   isBuildingUpgradeDone
 } from './queries'
 
+import { BuildingCode } from '../building/constants'
+import { BuildingEntity } from "../building/entity"
+import { CityEntity } from './entity'
 import { ERR_CITY_ALREADY_EXISTS } from './errors'
-import { Repository } from '../shared/repository'
+import { STARTING_WOOD } from './constants'
 import { now } from '../shared/time'
 
 interface CreateCityCommand {
@@ -41,20 +42,6 @@ export class CityCommands {
     return this.repository.create(city)
   }
 }
-
-export const createCity = (name: string): CityEntity => ({
-  id: 'tmp-id',
-  name,
-  buildings: {
-    [WOOD_CAMP]: {
-      code: WOOD_CAMP,
-      level: 1
-    }
-  },
-  wood: STARTING_WOOD,
-  last_wood_gather: new Date().getTime(),
-  cells: [{ x: 10, y: 10 }]
-})
 
 export const launchBuildingUpgrade = (city: CityEntity, building_code: string): CityEntity => {
   if (isBuildingInProgress(city)) {
@@ -109,7 +96,7 @@ export const upgradeBuildings = (city: CityEntity): CityEntity => {
 
   console.log(`${building.code} upgraded`)
   let new_city = city
-  if (WOOD_CAMP === building.code) {
+  if (BuildingCode.WOOD_CAMP === building.code) {
     new_city = gatherWood(city, upgrade_time)
   }
 
@@ -134,7 +121,7 @@ export const gatherWood = (city: CityEntity, gather_at_time: number): CityEntity
   }
 }
 
-const upgradeBuilding = (city: CityEntity, building: Building): CityEntity => {
+const upgradeBuilding = (city: CityEntity, building: BuildingEntity): CityEntity => {
   return {
     ...city,
     buildings: {

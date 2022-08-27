@@ -1,4 +1,4 @@
-import { CityEntity } from './model'
+import { CityEntity } from './entity'
 
 export interface CreateParams {
   name: string
