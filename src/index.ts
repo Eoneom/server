@@ -1,29 +1,35 @@
-import { createCity, gatherWood, launchBuildingUpgrade, upgradeBuildings } from './core/cities/commands'
+import { gatherWood, launchBuildingUpgrade, upgradeBuildings } from './core/city/commands'
 
-import { CityModel } from './database/models/city'
-import { WOOD_CAMP } from './core/cities/constants'
-import { connectToDatabase } from './database'
+import { CityApp } from './core/city/app'
+import { CityEntity } from './core/city/model'
+import { MongoRepository } from './database'
+import { WOOD_CAMP } from './core/city/constants'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
-const city_name = 'Moustachiopolis';
+const city_name = 'Moustachiopolis'
+
+const init = async (city_app: CityApp): Promise<CityEntity> => {
+  const city = await city_app.queries.findOne({ name: city_name })
+  if (city) {
+    return city
+  }
+
+  const city_id = await city_app.commands.create({ name: city_name })
+  const created_city = await city_app.queries.findById(city_id)
+  if (!created_city) {
+    throw new Error('unknown')
+  }
+
+  return created_city
+}
 
 (async () => {
-  await connectToDatabase()
-  console.log('connected to database')
-  let city = createCity('Moustachiopolis')
+  const repository = new MongoRepository()
+  await repository.connect()
 
-  const database_city = await CityModel.findOne({ name: city_name })
-  if (!database_city) {
-    console.log('creating first city')
-    await CityModel.create(createCity(city_name))
-  } else {
-    city = {
-      ...city,
-      wood: database_city.wood ?? 0,
-      last_wood_gather: database_city.last_wood_gather ?? 0
-    }
-  }
+  const city_app = new CityApp(repository.city)
+  let city = await init(city_app)
 
   setInterval(() => {
     city = upgradeBuildings(city)

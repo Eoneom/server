@@ -13,7 +13,8 @@ export interface ResourcesToBuild {
   wood?: number
 }
 
-export interface City {
+export interface CityEntity {
+  readonly id: string
   readonly name: string
   readonly wood: number
   readonly buildings: Record<string, Building>

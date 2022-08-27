@@ -1,4 +1,5 @@
-import { Building, City } from './model'
+import { Building, CityEntity } from './model'
+import { CityRepository, CreateParams } from './repository'
 import { STARTING_WOOD, WOOD_CAMP } from './constants'
 import {
   getBuildingInProgress,
@@ -10,9 +11,39 @@ import {
   isBuildingUpgradeDone
 } from './queries'
 
+import { ERR_CITY_ALREADY_EXISTS } from './errors'
+import { Repository } from '../shared/repository'
 import { now } from '../shared/time'
 
-export const createCity = (name: string): City => ({
+interface CreateCityCommand {
+  name: string
+}
+
+export class CityCommands {
+  private repository: CityRepository
+
+  public constructor(repository: CityRepository) {
+    this.repository = repository
+  }
+
+  public async create({ name }: CreateCityCommand): Promise<string> {
+    const city_already_exists = await this.repository.exists(name)
+    if (city_already_exists) {
+      throw new Error(ERR_CITY_ALREADY_EXISTS)
+    }
+
+    const city: CreateParams = {
+      name,
+      wood: STARTING_WOOD,
+      last_wood_gather: new Date().getTime(),
+    }
+
+    return this.repository.create(city)
+  }
+}
+
+export const createCity = (name: string): CityEntity => ({
+  id: 'tmp-id',
   name,
   buildings: {
     [WOOD_CAMP]: {
@@ -25,7 +56,7 @@ export const createCity = (name: string): City => ({
   cells: [{ x: 10, y: 10 }]
 })
 
-export const launchBuildingUpgrade = (city: City, building_code: string): City => {
+export const launchBuildingUpgrade = (city: CityEntity, building_code: string): CityEntity => {
   if (isBuildingInProgress(city)) {
     console.error('building already in progress')
     return city
@@ -62,7 +93,7 @@ export const launchBuildingUpgrade = (city: City, building_code: string): City =
   }
 }
 
-export const upgradeBuildings = (city: City): City => {
+export const upgradeBuildings = (city: CityEntity): CityEntity => {
   const building = getBuildingInProgress(city)
   if (!building) {
     return city
@@ -85,7 +116,7 @@ export const upgradeBuildings = (city: City): City => {
   return upgradeBuilding(new_city, building)
 }
 
-export const gatherWood = (city: City, gather_at_time: number): City => {
+export const gatherWood = (city: CityEntity, gather_at_time: number): CityEntity => {
   if (gather_at_time <= city.last_wood_gather) {
     return city
   }
@@ -103,7 +134,7 @@ export const gatherWood = (city: City, gather_at_time: number): City => {
   }
 }
 
-const upgradeBuilding = (city: City, building: Building): City => {
+const upgradeBuilding = (city: CityEntity, building: Building): CityEntity => {
   return {
     ...city,
     buildings: {
