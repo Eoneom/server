@@ -1,9 +1,9 @@
-import { createCity, gatherWood, launchBuildingUpgrade, upgradeBuildings } from './internal/cities/commands'
+import { createCity, gatherWood, launchBuildingUpgrade, upgradeBuildings } from './core/cities/commands'
 
-import { CityModel } from './repository/models/city'
-import { WOOD_CAMP } from './internal/cities/constants'
-import { connectToDatabase } from './repository'
-import { now } from './internal/shared/time'
+import { CityModel } from './database/models/city'
+import { WOOD_CAMP } from './core/cities/constants'
+import { connectToDatabase } from './database'
+import { now } from './core/shared/time'
 import repl from 'repl'
 
 const city_name = 'Moustachiopolis';
