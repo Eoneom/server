@@ -1,7 +1,7 @@
-import { getWoodCostsForUpgrade, getWoodUpgradeTimeInSeconds } from '../city/queries'
+import { getWoodCostsForUpgrade, getWoodUpgradeTimeInSeconds } from '../../city/queries'
 
 import { BuildingEntity } from './entity'
-import { CityEntity } from '../city/domain/entity'
+import { CityEntity } from '../../city/domain/entity'
 
 export interface LaunchUpgrade {
   building: BuildingEntity

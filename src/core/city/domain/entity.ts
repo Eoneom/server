@@ -1,4 +1,4 @@
-import { BuildingEntity } from '../../building/entity'
+import { BuildingEntity } from '../../building/domain/entity'
 
 export interface Cell {
   x: number

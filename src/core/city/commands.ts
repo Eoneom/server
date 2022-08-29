@@ -1,7 +1,6 @@
-import { CityRepository, CreateParams } from '../ports/repository/city'
-
-import { BuildingCode } from '../building/constants'
-import { BuildingErrors } from '../building/errors'
+import { BuildingCode } from '../building/domain/constants'
+import { BuildingErrors } from '../building/domain/errors'
+import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
 import { Repository } from '../shared/repository'
 import { STARTING_WOOD } from './domain/constants'
@@ -27,16 +26,17 @@ export class CityCommands {
   }
 
   async create({ name }: CreateCityCommand): Promise<string> {
-    const city_already_exists = await this.repository.city.exists(name)
+    const city_already_exists = await this.repository.city.exists({ name })
     if (city_already_exists) {
       throw new Error(CityErrors.ALREADY_EXISTS)
     }
 
-    const city: CreateParams = {
+    const city = new CityEntity({
+      id: 'fake',
       name,
       wood: STARTING_WOOD,
       last_wood_gather: new Date().getTime(),
-    }
+    })
 
     return this.repository.city.create(city)
   }
@@ -62,11 +62,13 @@ export class CityCommands {
     }
 
     const wood_earnings = Math.floor(seconds_since_last_gather * getWoodEarningsBySecond(building.level))
-    await this.repository.city.update({
-      id,
+    const updated_city = new CityEntity({
+      ...city,
       wood: city.wood + wood_earnings,
       last_wood_gather: now()
     })
+
+    await this.repository.city.updateOne(updated_city)
   }
 }
 

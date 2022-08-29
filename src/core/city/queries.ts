@@ -1,9 +1,9 @@
-import { CityRepository, FindParams } from '../ports/repository/city'
 import { SIZE_PER_CELL, wood_camp_costs_by_level, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './domain/constants'
 
-import { BuildingCode } from '../building/constants'
-import { BuildingEntity } from "../building/entity"
+import { BuildingCode } from '../building/domain/constants'
+import { BuildingEntity } from "../building/domain/entity"
 import { CityEntity } from './domain/entity'
+import { FilterQuery } from '../../types/database'
 import { Repository } from '../shared/repository'
 import { now } from '../shared/time'
 
@@ -14,7 +14,7 @@ export class CityQueries {
     this.repository = repository
   }
 
-  public async findOne(query: FindParams): Promise<CityEntity | null> {
+  public async findOne(query: FilterQuery<CityEntity>): Promise<CityEntity | null> {
     return this.repository.city.findOne(query)
   }
 

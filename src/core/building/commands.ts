@@ -1,7 +1,8 @@
-import { BuildingCode } from './constants'
+import { BuildingCode } from './domain/constants'
 import { BuildingCreateParams } from '../ports/repository/building'
-import { BuildingErrors } from './errors'
-import { BuildingService } from './service'
+import { BuildingEntity } from './domain/entity'
+import { BuildingErrors } from './domain/errors'
+import { BuildingService } from './domain/service'
 import { CityErrors } from '../city/domain/errors'
 import { Repository } from '../shared/repository'
 
@@ -31,11 +32,12 @@ export class BuildingCommands {
       throw new Error(BuildingErrors.ALREADY_EXISTS)
     }
 
-    const building: BuildingCreateParams = {
+    const building = new BuildingEntity({
+      id: 'fake',
       code,
       city_id,
       level
-    }
+    })
 
     console.log('create building', { building })
     return this.repository.building.create(building)
@@ -47,7 +49,12 @@ export class BuildingCommands {
       throw new Error(CityErrors.NOT_FOUND)
     }
 
-    const building_in_progress = await this.repository.building.getInProgress({ city_id })
+    const building_in_progress = await this.repository.building.findOne({
+      city_id,
+      upgrade_time: {
+        $exists: true
+      }
+    })
     if (building_in_progress) {
       throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
     }
@@ -65,7 +72,7 @@ export class BuildingCommands {
     const service = new BuildingService()
     const result = service.launchUpgrade({ building, city })
 
-    await this.repository.building.save(result.building)
+    await this.repository.building.updateOne(result.building)
     console.log(building.code, ' upgrade launched')
   }
 }

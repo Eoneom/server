@@ -28,3 +28,17 @@ npm run build:watch
 ```
 npm run start
 ```
+
+# Architecture
+
+## Core
+
+Contains domain logic with mostly pure functions.
+
+
+
+## Database
+
+MongoDB implementation for repository methods. Simple adapter to call mongoDB, and define collections.
+
+repository: adapter between domain and mongo DB system, no domain logic

@@ -1,4 +1,5 @@
-import { now } from '../shared/time'
+import { BaseEntity } from '../../../types/domain'
+import { now } from '../../shared/time'
 
 interface BuildingEntityProps {
   id: string
@@ -8,8 +9,7 @@ interface BuildingEntityProps {
   upgrade_time?: number
 }
 
-export class BuildingEntity {
-  readonly id: string
+export class BuildingEntity extends BaseEntity {
   readonly city_id: string
   readonly code: string
   readonly level: number
@@ -22,7 +22,8 @@ export class BuildingEntity {
     level,
     upgrade_time
   }: BuildingEntityProps) {
-    this.id = id
+    super({ id })
+
     this.city_id = city_id
     this.code = code
     this.level = level

@@ -1,47 +1,15 @@
 import { CityDocument, CityModel } from './document'
-import { CityRepository, FindParams, UpdateParams } from '../../../core/ports/repository/city'
 
 import { CityEntity } from '../../../core/city/domain/entity'
+import { CityRepository } from '../../../core/ports/repository/city'
+import { MongoGenericRepository } from '../../generic'
 
-export class MongoCityRepository implements CityRepository {
-  async findById(id: string): Promise<CityEntity | null> {
-    const city = await CityModel.findById<CityDocument>(id)
-    if (!city) {
+export class MongoCityRepository extends MongoGenericRepository<typeof CityModel, CityDocument, CityEntity> implements CityRepository {
+  protected buildFromModel(document: CityDocument | null): CityEntity | null {
+    if (!document) {
       return null
     }
 
-    return buildCityFromCityModel(city)
+    return new CityEntity({ ...document, id: document._id })
   }
-
-  async findOne(query: FindParams): Promise<CityEntity | null> {
-    const city = await CityModel.findOne<CityDocument>(query)
-    if (!city) {
-      return null
-    }
-
-    return buildCityFromCityModel(city)
-  }
-
-  async exists(name: string): Promise<boolean> {
-    const existing = await CityModel.exists({ name })
-    return Boolean(existing)
-  }
-
-  async create(city: CityEntity): Promise<string> {
-    const created_city = await CityModel.create(city)
-    return created_city._id.toString()
-  }
-
-  async update(city: UpdateParams): Promise<void> {
-    await CityModel.updateOne({ id: city.id }, city)
-  }
-}
-
-const buildCityFromCityModel = (city: CityDocument): CityEntity => {
-  return new CityEntity({
-    id: city._id.toString(),
-    name: city.name,
-    wood: city.wood,
-    last_wood_gather: city.last_wood_gather,
-  })
 }

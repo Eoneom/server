@@ -1,4 +1,6 @@
+import { BuildingModel } from './models/building/document'
 import { BuildingRepository } from '../core/ports/repository/building'
+import { CityModel } from './models/city/document'
 import { CityRepository } from '../core/ports/repository/city'
 import { MongoBuildingRepository } from './models/building/repository'
 import { MongoCityRepository } from './models/city/repository'
@@ -10,8 +12,8 @@ export class MongoRepository implements Repository {
   building: BuildingRepository
 
   constructor() {
-    this.city = new MongoCityRepository()
-    this.building = new MongoBuildingRepository()
+    this.city = new MongoCityRepository(CityModel)
+    this.building = new MongoBuildingRepository(BuildingModel)
   }
 
   async connect(): Promise<void> {
@@ -22,3 +24,5 @@ export class MongoRepository implements Repository {
     console.log('connected to database')
   }
 }
+
+
