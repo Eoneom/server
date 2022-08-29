@@ -4,7 +4,13 @@ import { BaseEntity } from '../types/domain'
 import { FilterQuery } from '../types/database'
 import { GenericRepository } from '../core/shared/repository'
 
-export abstract class MongoGenericRepository<Model extends AnyParamConstructor<any>, Doc, Entity extends BaseEntity> implements GenericRepository<Entity> {
+export abstract class MongoGenericRepository<
+  Model extends AnyParamConstructor<any>,
+  Doc,
+  Entity extends BaseEntity
+  >
+  implements GenericRepository<Entity> {
+
   private model: ReturnModelType<Model, BeAnObject>
 
   constructor(
@@ -14,7 +20,7 @@ export abstract class MongoGenericRepository<Model extends AnyParamConstructor<a
   }
 
   async exists(query: FilterQuery<Entity>): Promise<boolean> {
-    const existing = this.model.exists(query)
+    const existing = await this.model.exists(query)
     return Boolean(existing)
   }
 

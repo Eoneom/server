@@ -1,8 +1,8 @@
-import { BaseEntity } from '../../../types/domain'
+import { BaseEntity, BaseEntityProps } from '../../../types/domain'
+
 import { now } from '../../shared/time'
 
-interface BuildingEntityProps {
-  id: string
+type BuildingEntityProps = BaseEntityProps & {
   city_id: string
   code: string
   level: number

@@ -1,15 +1,5 @@
 import { BuildingCommands } from './commands'
 import { BuildingQueries } from './queries'
-import { Repository } from '../shared/repository'
+import { Module } from '../shared/module'
 
-export class BuildingModule {
-  commands: BuildingCommands
-  queries: BuildingQueries
-
-  constructor(
-    repository: Repository
-  ) {
-    this.commands = new BuildingCommands(repository)
-    this.queries = new BuildingQueries(repository)
-  }
-}
+export type BuildingModule = Module<BuildingQueries, BuildingCommands>

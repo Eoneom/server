@@ -1,12 +1,8 @@
-import { BuildingCode } from '../building/domain/constants'
-import { BuildingErrors } from '../building/domain/errors'
+import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
-import { Repository } from '../shared/repository'
+import { CityRepository } from './repository'
 import { STARTING_WOOD } from './domain/constants'
-import {
-  getWoodEarningsBySecond,
-} from './queries'
 import { now } from '../shared/time'
 
 interface CreateCityCommand {
@@ -19,14 +15,23 @@ interface CityGatherWoodCommand {
 }
 
 export class CityCommands {
-  private repository: Repository
+  private repository: CityRepository
+  private building_queries: BuildingQueries
 
-  constructor(repository: Repository) {
+  constructor({
+    repository,
+    building_queries
+  }: {
+    repository: CityRepository,
+    building_queries: BuildingQueries
+  }) {
     this.repository = repository
+    this.building_queries = building_queries
   }
 
   async create({ name }: CreateCityCommand): Promise<string> {
-    const city_already_exists = await this.repository.city.exists({ name })
+    console.log('CityCommands.create')
+    const city_already_exists = await this.repository.exists({ name })
     if (city_already_exists) {
       throw new Error(CityErrors.ALREADY_EXISTS)
     }
@@ -38,11 +43,12 @@ export class CityCommands {
       last_wood_gather: new Date().getTime(),
     })
 
-    return this.repository.city.create(city)
+    return this.repository.create(city)
   }
 
   async gatherWood({ id, gather_at_time }: CityGatherWoodCommand): Promise<void> {
-    const city = await this.repository.city.findById(id)
+    console.log('CityCommands.gatherWood')
+    const city = await this.repository.findById(id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)
     }
@@ -56,58 +62,17 @@ export class CityCommands {
       return
     }
 
-    const building = await this.repository.building.findOne({ code: BuildingCode.WOOD_CAMP, city_id: city.id })
-    if (!building) {
-      throw new Error(BuildingErrors.NOT_FOUND)
-    }
-
-    const wood_earnings = Math.floor(seconds_since_last_gather * getWoodEarningsBySecond(building.level))
+    const earnings = await this.building_queries.getCityWoodEarningsBySecond({ city_id: city.id })
+    const wood_earnings = Math.floor(seconds_since_last_gather * earnings)
     const updated_city = new CityEntity({
       ...city,
       wood: city.wood + wood_earnings,
       last_wood_gather: now()
     })
 
-    await this.repository.city.updateOne(updated_city)
+    await this.repository.updateOne(updated_city)
   }
 }
-
-// export const launchBuildingUpgrade = (city: CityEntity, building_code: string): CityEntity => {
-//   if (isBuildingInProgress(city)) {
-//     console.error('building already in progress')
-//     return city
-//   }
-
-//   if (!hasSizeToBuild(city)) {
-//     console.error('not enough size to build')
-//     return city
-//   }
-
-//   const building = city.buildings[building_code]
-//   if (!building) {
-//     return city
-//   }
-
-//   const wood_costs = getWoodCostsForUpgrade(building)
-//   if (city.wood < wood_costs) {
-//     console.error(`not enough wood to build, required=${wood_costs}, current=${city.wood}`)
-//     return city
-//   }
-
-//   const upgrade_time_in_seconds = getWoodUpgradeTimeInSeconds(building.level)
-//   console.log(building.code, ' upgrade launched')
-//   return {
-//     ...city,
-//     wood: city.wood - wood_costs,
-//     buildings: {
-//       ...city.buildings,
-//       [building_code]: {
-//         ...building,
-//         upgrade_time: now() + upgrade_time_in_seconds * 1000
-//       }
-//     }
-//   }
-// }
 
 // export const upgradeBuildings = (city: CityEntity): CityEntity => {
 //   const building = getBuildingInProgress(city)

@@ -1,7 +1,7 @@
 import { App } from './core/app'
 import { BuildingCode } from './core/building/domain/constants'
 import { CityEntity } from './core/city/domain/entity'
-import { MongoRepository } from './database/repository'
+import { Factory } from './core/factory'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
@@ -14,10 +14,7 @@ const init = async (app: App): Promise<CityEntity> => {
   }
 
   const city_id = await app.city.commands.create({ name: city_name })
-  const created_city = await app.city.queries.findById(city_id)
-  if (!created_city) {
-    throw new Error('unknown')
-  }
+  const created_city = await app.city.queries.findByIdOrThrow(city_id)
 
   await app.building.commands.create({
     code: BuildingCode.WOOD_CAMP,
@@ -29,9 +26,10 @@ const init = async (app: App): Promise<CityEntity> => {
 }
 
 (async () => {
-  const repository = new MongoRepository()
+  const repository = Factory.getRepository()
   await repository.connect()
-  const app = new App(repository)
+
+  const app = new App()
 
   const { id: city_id } = await init(app)
 
@@ -42,7 +40,7 @@ const init = async (app: App): Promise<CityEntity> => {
 
   const local = repl.start('> ')
   local.context.g = {
-    city: () => app.city.queries.findById(city_id).then(console.log),
+    city: () => app.city.queries.findByIdOrThrow(city_id).then(console.log),
     now,
     launchWoodcampUpgrade: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.WOOD_CAMP, city_id })

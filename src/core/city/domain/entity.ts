@@ -1,3 +1,5 @@
+import { BaseEntity, BaseEntityProps } from '../../../types/domain'
+
 import { BuildingEntity } from '../../building/domain/entity'
 
 export interface Cell {
@@ -5,12 +7,13 @@ export interface Cell {
   y: number
 }
 
-export interface ResourcesToBuild {
-  wood?: number
+type CityEntityProps = BaseEntityProps & {
+  name: string,
+  wood: number,
+  last_wood_gather: number
 }
 
-export class CityEntity {
-  readonly id: string
+export class CityEntity extends BaseEntity {
   readonly name: string
   readonly wood: number
   readonly buildings: Record<string, BuildingEntity>
@@ -22,13 +25,8 @@ export class CityEntity {
     name,
     wood,
     last_wood_gather
-  }: {
-    id: string,
-    name: string,
-    wood: number,
-    last_wood_gather: number
-  }) {
-    this.id = id
+  }: CityEntityProps) {
+    super({ id })
     this.name = name
     this.wood = wood
     this.last_wood_gather = last_wood_gather

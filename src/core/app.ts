@@ -1,13 +1,16 @@
-import { BuildingModule } from './building/module'
-import { CityModule } from './city/module'
-import { Repository } from './shared/repository'
+import { BuildingCommands } from './building/commands'
+import { BuildingQueries } from './building/queries'
+import { CityCommands } from './city/commands'
+import { CityQueries } from './city/queries'
+import { Factory } from './factory'
+import { Module } from './shared/module'
 
 export class App {
-  city: CityModule
-  building: BuildingModule
+  city: Module<CityQueries, CityCommands>
+  building: Module<BuildingQueries, BuildingCommands>
 
-  constructor(repository: Repository) {
-    this.city = new CityModule(repository)
-    this.building = new BuildingModule(repository)
+  constructor() {
+    this.city = Factory.getCityModule()
+    this.building = Factory.getBuildingModule()
   }
 }

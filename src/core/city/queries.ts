@@ -1,25 +1,41 @@
-import { SIZE_PER_CELL, wood_camp_costs_by_level, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './domain/constants'
-
-import { BuildingCode } from '../building/domain/constants'
 import { BuildingEntity } from "../building/domain/entity"
 import { CityEntity } from './domain/entity'
+import { CityErrors } from './domain/errors'
+import { CityRepository } from './repository'
 import { FilterQuery } from '../../types/database'
-import { Repository } from '../shared/repository'
+import { SIZE_PER_CELL } from './domain/constants'
 import { now } from '../shared/time'
 
 export class CityQueries {
-  private repository: Repository
+  private repository: CityRepository
 
-  public constructor(repository: Repository) {
+  public constructor(repository: CityRepository) {
     this.repository = repository
   }
 
-  public async findOne(query: FilterQuery<CityEntity>): Promise<CityEntity | null> {
-    return this.repository.city.findOne(query)
+  public async hasResources(query: { city_id: string, wood: number }): Promise<boolean> {
+    console.log('CityQueries.hasResources')
+    const city = await this.repository.findById(query.city_id)
+    if (!city) {
+      throw new Error(CityErrors.NOT_FOUND)
+    }
+
+    return city.wood >= query.wood
   }
 
-  public async findById(id: string): Promise<CityEntity | null> {
-    return this.repository.city.findById(id)
+  public async findOne(query: FilterQuery<CityEntity>): Promise<CityEntity | null> {
+    console.log('CityQueries.findOne')
+    return this.repository.findOne(query)
+  }
+
+  public async findByIdOrThrow(id: string): Promise<CityEntity> {
+    console.log('CityQueries.findByIdOrThrow')
+    const city = await this.repository.findById(id)
+    if (!city) {
+      throw new Error(CityErrors.NOT_FOUND)
+    }
+
+    return city
   }
 
   public async hasSizeToBuild(id: string): Promise<boolean> {
@@ -32,15 +48,6 @@ export const getSecondsSinceLastWoodGather = (city: CityEntity): number => {
   return Math.floor((now_in_seconds - city.last_wood_gather) / 1000)
 }
 
-export const getWoodCostsForUpgrade = (building: BuildingEntity): number => {
-  switch (building.code) {
-    case BuildingCode.WOOD_CAMP:
-      return wood_camp_costs_by_level[building.level + 1] ?? 0
-  }
-
-  return 0
-}
-
 export const isBuildingUpgradeDone = (building: BuildingEntity): boolean => {
   if (!building.upgrade_time) {
     return true
@@ -51,26 +58,6 @@ export const isBuildingUpgradeDone = (building: BuildingEntity): boolean => {
 
 export const getBuildingInProgress = (city: CityEntity): BuildingEntity | undefined => {
   return Object.values(city.buildings).find(building => building.upgrade_time)
-}
-
-export const getWoodEarningsBySecond = (level: number): number => {
-  return wood_camp_gains_by_level_by_seconds[level]
-}
-
-export const getWoodUpgradeTimeInSeconds = (level: number): number => {
-  return wood_camp_upgrade_time_in_seconds[level + 1]
-}
-
-export const getWoodCostForLevel = (level: number): number => {
-  return wood_camp_costs_by_level[level]
-}
-
-export const isBuildingInProgress = (city: CityEntity): boolean => {
-  return Object.values(city.buildings).some(building => building.upgrade_time)
-}
-
-export const hasSizeToBuild = (city: CityEntity): boolean => {
-  return getTotalBuildingLevels(city) < getMaxSize(city)
 }
 
 export const getTotalBuildingLevels = (city: CityEntity): number => {

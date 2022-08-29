@@ -10,6 +10,11 @@ export class MongoCityRepository extends MongoGenericRepository<typeof CityModel
       return null
     }
 
-    return new CityEntity({ ...document, id: document._id })
+    return new CityEntity({
+      id: document._id,
+      name: document.name,
+      wood: document.wood,
+      last_wood_gather: document.last_wood_gather,
+    })
   }
 }
