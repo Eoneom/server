@@ -4,6 +4,7 @@ import { BuildingErrors } from './domain/errors'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
 import { CityQueries } from '../city/queries'
+import { now } from '../shared/time'
 
 export interface BuildingCreateCommand {
   code: BuildingCode
@@ -13,6 +14,10 @@ export interface BuildingCreateCommand {
 
 export interface BuildingLaunchUpgradeCommand {
   code: BuildingCode
+  city_id: string
+}
+
+export interface BuildingFinishUpgradesCommand {
   city_id: string
 }
 
@@ -36,7 +41,6 @@ export class BuildingCommands {
   }
 
   async create({ code, city_id, level }: BuildingCreateCommand): Promise<string> {
-    console.log('BuildingCommands.create')
     const building_already_exists = await this.repository.exists({ code, city_id })
     if (building_already_exists) {
       throw new Error(BuildingErrors.ALREADY_EXISTS)
@@ -54,11 +58,11 @@ export class BuildingCommands {
   }
 
   async launchUpgrade({ code, city_id }: BuildingLaunchUpgradeCommand): Promise<void> {
-    console.log('BuildingCommands.launchUpgrade')
     const building_in_progress = await this.repository.findOne({
       city_id,
       upgrade_time: {
-        $exists: true
+        $exists: true,
+        $ne: null
       }
     })
 
@@ -83,5 +87,25 @@ export class BuildingCommands {
 
     await this.repository.updateOne(result.building)
     console.log(building.code, ' upgrade launched')
+  }
+
+  async finishUpgrades({ city_id }: BuildingFinishUpgradesCommand): Promise<boolean> {
+    const building_to_finish = await this.repository.findOne({
+      city_id,
+      upgrade_time: {
+        $lte: now()
+      }
+    })
+
+    if (!building_to_finish) {
+      return false
+    }
+
+    const finished_building = building_to_finish.finishUpgrade()
+
+    await this.repository.updateOne(finished_building)
+    console.log(`${finished_building.code} upgrade done`)
+
+    return true
   }
 }

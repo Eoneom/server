@@ -14,7 +14,6 @@ export class CityQueries {
   }
 
   public async hasResources(query: { city_id: string, wood: number }): Promise<boolean> {
-    console.log('CityQueries.hasResources')
     const city = await this.repository.findById(query.city_id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)
@@ -24,12 +23,10 @@ export class CityQueries {
   }
 
   public async findOne(query: FilterQuery<CityEntity>): Promise<CityEntity | null> {
-    console.log('CityQueries.findOne')
     return this.repository.findOne(query)
   }
 
   public async findByIdOrThrow(id: string): Promise<CityEntity> {
-    console.log('CityQueries.findByIdOrThrow')
     const city = await this.repository.findById(id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)

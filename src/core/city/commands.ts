@@ -30,7 +30,6 @@ export class CityCommands {
   }
 
   async create({ name }: CreateCityCommand): Promise<string> {
-    console.log('CityCommands.create')
     const city_already_exists = await this.repository.exists({ name })
     if (city_already_exists) {
       throw new Error(CityErrors.ALREADY_EXISTS)
@@ -47,7 +46,6 @@ export class CityCommands {
   }
 
   async gatherWood({ id, gather_at_time }: CityGatherWoodCommand): Promise<void> {
-    console.log('CityCommands.gatherWood')
     const city = await this.repository.findById(id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)

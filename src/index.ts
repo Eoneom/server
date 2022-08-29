@@ -34,7 +34,7 @@ const init = async (app: App): Promise<CityEntity> => {
   const { id: city_id } = await init(app)
 
   setInterval(async () => {
-    // city = upgradeBuildings(city)
+    await app.building.commands.finishUpgrades({ city_id })
     await app.city.commands.gatherWood({ id: city_id, gather_at_time: now() })
   }, 1000)
 

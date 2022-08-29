@@ -19,7 +19,6 @@ export class BuildingQueries {
   }
 
   public async getLevel(query: { code: BuildingCode, city_id: string }): Promise<number> {
-    console.log('BuildingQueries.getLevel')
     const building = await this.repository.findOne(query)
     if (!building) {
       throw new Error(BuildingErrors.NOT_FOUND)
@@ -29,7 +28,6 @@ export class BuildingQueries {
   }
 
   public async getCityWoodEarningsBySecond(query: { city_id: string }): Promise<number> {
-    console.log('BuildingQueries.getCityWoodEarningsBySecond')
     const wood_camp = await this.repository.findOne({ code: BuildingCode.WOOD_CAMP, city_id: query.city_id })
     if (!wood_camp) {
       throw new Error(BuildingErrors.NOT_FOUND)

@@ -1,8 +1,12 @@
-import { BuildingCode, wood_camp_costs_by_level, wood_camp_earnings_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
+import {
+  BuildingCode,
+  wood_camp_costs_by_level,
+  wood_camp_earnings_by_level_by_seconds,
+  wood_camp_upgrade_time_in_seconds
+} from './constants'
 
 import { BuildingEntity } from './entity'
 import { BuildingErrors } from './errors'
-import { CityEntity } from '../../city/domain/entity'
 
 export interface LaunchUpgrade {
   building: BuildingEntity
@@ -41,11 +45,11 @@ export class BuildingService {
     throw new Error(BuildingErrors.UNKNOWN_BUILDING)
   }
 
-  public getWoodUpgradeTimeInSeconds(level: number): number {
-    return wood_camp_upgrade_time_in_seconds[level + 1]
-  }
-
   public getWoodEarningsBySecond(woodcamp_level: number): number {
     return wood_camp_earnings_by_level_by_seconds[woodcamp_level]
+  }
+
+  private getWoodUpgradeTimeInSeconds(level: number): number {
+    return wood_camp_upgrade_time_in_seconds[level + 1]
   }
 }
