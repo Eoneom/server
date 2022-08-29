@@ -1,24 +1,25 @@
-import { CityRepository, FindParams } from './repository'
-import { SIZE_PER_CELL, wood_camp_costs_by_level, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './constants'
+import { CityRepository, FindParams } from '../ports/repository/city'
+import { SIZE_PER_CELL, wood_camp_costs_by_level, wood_camp_gains_by_level_by_seconds, wood_camp_upgrade_time_in_seconds } from './domain/constants'
 
 import { BuildingCode } from '../building/constants'
 import { BuildingEntity } from "../building/entity"
-import { CityEntity } from './entity'
+import { CityEntity } from './domain/entity'
+import { Repository } from '../shared/repository'
 import { now } from '../shared/time'
 
 export class CityQueries {
-  private repository: CityRepository
+  private repository: Repository
 
-  public constructor(repository: CityRepository) {
+  public constructor(repository: Repository) {
     this.repository = repository
   }
 
   public async findOne(query: FindParams): Promise<CityEntity | null> {
-    return this.repository.findOne(query)
+    return this.repository.city.findOne(query)
   }
 
   public async findById(id: string): Promise<CityEntity | null> {
-    return this.repository.findById(id)
+    return this.repository.city.findById(id)
   }
 
   public async hasSizeToBuild(id: string): Promise<boolean> {

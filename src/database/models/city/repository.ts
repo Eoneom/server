@@ -1,7 +1,7 @@
 import { CityDocument, CityModel } from './document'
-import { CityRepository, FindParams, UpdateParams } from '../../../core/city/repository'
+import { CityRepository, FindParams, UpdateParams } from '../../../core/ports/repository/city'
 
-import { CityEntity } from '../../../core/city/entity'
+import { CityEntity } from '../../../core/city/domain/entity'
 
 export class MongoCityRepository implements CityRepository {
   async findById(id: string): Promise<CityEntity | null> {
@@ -38,12 +38,10 @@ export class MongoCityRepository implements CityRepository {
 }
 
 const buildCityFromCityModel = (city: CityDocument): CityEntity => {
-  return {
+  return new CityEntity({
     id: city._id.toString(),
     name: city.name,
     wood: city.wood,
     last_wood_gather: city.last_wood_gather,
-    buildings: {},
-    cells: []
-  }
+  })
 }

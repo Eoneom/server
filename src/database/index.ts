@@ -1,5 +1,5 @@
-import { BuildingRepository } from '../core/building/repository'
-import { CityRepository } from '../core/city/repository'
+import { BuildingRepository } from '../core/ports/repository/building'
+import { CityRepository } from '../core/ports/repository/city'
 import { MongoBuildingRepository } from './models/building/repository'
 import { MongoCityRepository } from './models/city/repository'
 import { Repository } from '../core/shared/repository'

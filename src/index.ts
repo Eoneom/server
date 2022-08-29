@@ -1,29 +1,25 @@
-import { BuildingApp } from './core/building/app'
+import { App } from './core/app'
 import { BuildingCode } from './core/building/constants'
-import { CityApp } from './core/city/app'
-import { CityEntity } from './core/city/entity'
-import { Factory } from './factory'
+import { CityEntity } from './core/city/domain/entity'
+import { MongoRepository } from './database'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
 const city_name = 'Moustachiopolis'
 
-const init = async (
-  city_app: CityApp,
-  building_app: BuildingApp
-): Promise<CityEntity> => {
-  const city = await city_app.queries.findOne({ name: city_name })
+const init = async (app: App): Promise<CityEntity> => {
+  const city = await app.city.queries.findOne({ name: city_name })
   if (city) {
     return city
   }
 
-  const city_id = await city_app.commands.create({ name: city_name })
-  const created_city = await city_app.queries.findById(city_id)
+  const city_id = await app.city.commands.create({ name: city_name })
+  const created_city = await app.city.queries.findById(city_id)
   if (!created_city) {
     throw new Error('unknown')
   }
 
-  await building_app.commands.create({
+  await app.building.commands.create({
     code: BuildingCode.WOOD_CAMP,
     city_id,
     level: 1
@@ -33,24 +29,23 @@ const init = async (
 }
 
 (async () => {
-  const repository = Factory.getRepository()
+  const repository = new MongoRepository()
   await repository.connect()
-  const city_app = Factory.getCityApp()
-  const building_app = Factory.getBuildingApp()
+  const app = new App(repository)
 
-  const { id: city_id } = await init(city_app, building_app)
+  const { id: city_id } = await init(app)
 
   setInterval(async () => {
     // city = upgradeBuildings(city)
-    await city_app.commands.gatherWood({ id: city_id, gather_at_time: now() })
+    await app.city.commands.gatherWood({ id: city_id, gather_at_time: now() })
   }, 1000)
 
   const local = repl.start('> ')
   local.context.g = {
-    city: () => city_app.queries.findById(city_id).then(console.log),
+    city: () => app.city.queries.findById(city_id).then(console.log),
     now,
     launchWoodcampUpgrade: () => {
-      building_app.commands.launchUpgrade({ code: BuildingCode.WOOD_CAMP, city_id })
+      app.building.commands.launchUpgrade({ code: BuildingCode.WOOD_CAMP, city_id })
     }
   }
 })()

@@ -1,5 +1,5 @@
-import { BuildingRepository } from '../building/repository'
-import { CityRepository } from '../city/repository'
+import { BuildingRepository } from '../ports/repository/building'
+import { CityRepository } from '../ports/repository/city'
 
 export interface Repository {
   connect(): Promise<void>

@@ -1,4 +1,4 @@
-import { CityEntity } from './entity'
+import { CityEntity } from '../../city/domain/entity'
 
 export interface CreateParams {
   name: string

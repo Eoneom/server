@@ -1,13 +1,13 @@
 import { BuildingCommands } from './commands'
 import { BuildingQueries } from './queries'
-import { BuildingRepository } from './repository'
+import { Repository } from '../shared/repository'
 
-export class BuildingApp {
+export class BuildingModule {
   commands: BuildingCommands
   queries: BuildingQueries
 
   constructor(
-    repository: BuildingRepository
+    repository: Repository
   ) {
     this.commands = new BuildingCommands(repository)
     this.queries = new BuildingQueries(repository)

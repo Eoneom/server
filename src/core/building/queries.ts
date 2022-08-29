@@ -1,16 +1,16 @@
 import { BuildingCode } from './constants'
 import { BuildingErrors } from './errors'
-import { BuildingRepository } from './repository'
+import { Repository } from '../shared/repository'
 
 export class BuildingQueries {
-  private repository: BuildingRepository
+  private repository: Repository
 
-  public constructor(repository: BuildingRepository) {
+  public constructor(repository: Repository) {
     this.repository = repository
   }
 
   public async getLevel(query: { code: BuildingCode, city_id: string }): Promise<number> {
-    const level = await this.repository.level(query)
+    const level = await this.repository.building.level(query)
     if (!level) {
       throw new Error(BuildingErrors.NOT_FOUND)
     }

@@ -1,10 +1,13 @@
-import { BuildingCreateParams, BuildingRepository } from '../../../core/building/repository'
+import { BuildingCreateParams, BuildingFindOneParams, BuildingRepository } from '../../../core/ports/repository/building'
 import { BuildingDocument, BuildingModel, fromBuildingEntity } from './document'
 
 import { BuildingCode } from '../../../core/building/constants'
 import { BuildingEntity } from '../../../core/building/entity'
 
 export class MongoBuildingRepository implements BuildingRepository {
+  findOne(query: BuildingFindOneParams): Promise<BuildingEntity | null> {
+    throw new Error('Method not implemented.')
+  }
   async findByCode(code: string): Promise<BuildingEntity | null> {
     const building = await BuildingModel.findOne({ code })
     if (!building) {
@@ -47,20 +50,12 @@ export class MongoBuildingRepository implements BuildingRepository {
   }
 
   private buildFromModel(building: BuildingDocument): BuildingEntity {
-    const {
-      _id,
-      code,
-      city_id,
-      level,
-      upgrade_time
-    } = building
-
-    return {
-      id: _id.toString(),
-      code,
-      level,
-      city_id: city_id.toString(),
-      upgrade_time
-    }
+    return new BuildingEntity({
+      id: building._id.toString(),
+      code: building.code,
+      level: building.level,
+      city_id: building.city_id.toString(),
+      upgrade_time: building.upgrade_time
+    })
   }
 }
