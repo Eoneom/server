@@ -16,7 +16,6 @@ type CityEntityProps = BaseEntityProps & {
 export class CityEntity extends BaseEntity {
   readonly name: string
   readonly wood: number
-  readonly buildings: Record<string, BuildingEntity>
   readonly last_wood_gather: number
   readonly cells: Array<Cell>
 
@@ -30,7 +29,6 @@ export class CityEntity extends BaseEntity {
     this.name = name
     this.wood = wood
     this.last_wood_gather = last_wood_gather
-    this.buildings = {}
     this.cells = []
   }
 

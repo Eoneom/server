@@ -53,14 +53,6 @@ export const isBuildingUpgradeDone = (building: BuildingEntity): boolean => {
   return now() - building.upgrade_time > 0
 }
 
-export const getBuildingInProgress = (city: CityEntity): BuildingEntity | undefined => {
-  return Object.values(city.buildings).find(building => building.upgrade_time)
-}
-
-export const getTotalBuildingLevels = (city: CityEntity): number => {
-  return Object.values(city.buildings).reduce((sum, building) => sum + building.level, 0)
-}
-
 export const getMaxSize = (city: CityEntity): number => {
   return city.cells.length * SIZE_PER_CELL
 }
