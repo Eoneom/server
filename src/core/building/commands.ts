@@ -1,5 +1,4 @@
 import { BuildingCode } from './domain/constants'
-import { BuildingCreateParams } from '../ports/repository/building'
 import { BuildingEntity } from './domain/entity'
 import { BuildingErrors } from './domain/errors'
 import { BuildingService } from './domain/service'

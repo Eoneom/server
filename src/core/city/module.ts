@@ -1,6 +1,5 @@
 import { CityCommands } from './commands'
 import { CityQueries } from './queries'
-import { CityRepository } from '../ports/repository/city'
 import { Repository } from '../shared/repository'
 
 export class CityModule {

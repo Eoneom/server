@@ -1,7 +1,7 @@
 import { BuildingDocument, BuildingModel } from './document'
 
 import { BuildingEntity } from '../../../core/building/domain/entity'
-import { BuildingRepository } from '../../../core/ports/repository/building'
+import { BuildingRepository } from '../../../core/building/repository'
 import { MongoGenericRepository } from '../../generic'
 
 export class MongoBuildingRepository

@@ -1,7 +1,7 @@
 import { App } from './core/app'
 import { BuildingCode } from './core/building/domain/constants'
 import { CityEntity } from './core/city/domain/entity'
-import { MongoRepository } from './database'
+import { MongoRepository } from './database/repository'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
