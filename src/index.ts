@@ -57,6 +57,7 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
 
   setInterval(async () => {
     await app.building.commands.finishUpgrades({ city_id })
+    await app.technology.commands.finishResearches({ player_id })
     await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
   }, 1000)
 

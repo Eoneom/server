@@ -53,7 +53,7 @@ export const building_costs: Record<BuildingCode, Record<number, { plastic: numb
   }
 }
 
-export const building_upgrade_times_in_second: Record<BuildingCode, Record<number, number>> = {
+export const building_upgrade_durations_in_second: Record<BuildingCode, Record<number, number>> = {
   [BuildingCode.RECYCLING_PLANT]: {
     2: 5,
     3: 10,

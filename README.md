@@ -29,7 +29,7 @@ npm run build:watch
 npm run start
 ```
 
-Once the app is started, a sample city will be created. It will start gathering plastic and mushroom every second, and will finish building upgrades if there is any. You can then interact with the app with the several commands.
+Once the app is started, a sample city will be created. It will start gathering plastic and mushroom every second, finish building upgrades and technology researches, if there is any. You can then interact with the app with the following commands:
 
 ```
 # display the sample city data
@@ -82,8 +82,10 @@ There is a similar architecture for every module:
 
 The current modules are:
 
-- building: build new buildings if the conditions are met
+- building: upgrade buildings
 - city: gather resources
+- player: init account and store player name
+- technology: research technologies
 
 ### Database
 

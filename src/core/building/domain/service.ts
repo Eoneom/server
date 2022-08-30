@@ -2,7 +2,7 @@ import {
   BuildingCode,
   building_costs,
   building_earnings,
-  building_upgrade_times_in_second,
+  building_upgrade_durations_in_second,
 } from './constants'
 
 import { BuildingEntity } from './entity'
@@ -87,17 +87,17 @@ export class BuildingService {
   }
 
   private getUpgradeDurationInSeconds({ code, level }: BuildingEntity): number {
-    const upgrade_times = building_upgrade_times_in_second[code]
-    if (!upgrade_times) {
+    const upgrade_durations = building_upgrade_durations_in_second[code]
+    if (!upgrade_durations) {
       throw new Error(BuildingErrors.UNKNOWN_BUILDING)
     }
 
     const upgraded_level = level + 1
-    const upgrade_time = upgrade_times[upgraded_level]
-    if (!upgrade_time) {
-      throw new Error(BuildingErrors.UNKNOWN_UPGRADE_TIME_LEVEL)
+    const upgrade_duration = upgrade_durations[upgraded_level]
+    if (!upgrade_duration) {
+      throw new Error(BuildingErrors.UNKNOWN_UPGRADE_DURATION_LEVEL)
     }
 
-    return upgrade_time
+    return upgrade_duration
   }
 }

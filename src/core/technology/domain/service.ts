@@ -1,4 +1,4 @@
-import { technology_costs, technology_required_research_levels } from './constants'
+import { technology_costs, technology_required_research_levels, technology_research_durations_in_second } from './constants'
 
 import { TechnologyEntity } from './entity'
 import { TechnologyErrors } from './errors'
@@ -48,7 +48,7 @@ export class TechnologyService {
       throw new Error(TechnologyErrors.NOT_REQUIRED_RESEARCH_LEVEL)
     }
 
-    const research_duration = 30
+    const research_duration = this.getResearchDurationInSeconds(technology)
     return {
       technology: technology.launchResearch(research_duration)
     }
@@ -70,5 +70,20 @@ export class TechnologyService {
 
   private hasRequiredResearchLevel({ research_level, technology }: { research_level: number, technology: TechnologyEntity }): boolean {
     return research_level >= technology_required_research_levels[technology.code]
+  }
+
+  private getResearchDurationInSeconds({ code, level }: TechnologyEntity): number {
+    const research_durations = technology_research_durations_in_second[code]
+    if (!research_durations) {
+      throw new Error(TechnologyErrors.UNKNOWN_TECHNOLOGY)
+    }
+
+    const upgraded_level = level + 1
+    const research_duration = research_durations[upgraded_level]
+    if (!research_duration) {
+      throw new Error(TechnologyErrors.UNKNOWN_RESEARCH_DURATION_LEVEL)
+    }
+
+    return research_duration
   }
 }

@@ -23,6 +23,15 @@ export const technology_costs: Record<TechnologyCode, Record<number, { plastic: 
   },
 }
 
+export const technology_research_durations_in_second: Record<TechnologyCode, Record<number, number>> = {
+  [TechnologyCode.BUILDING]: {
+    1: 30,
+    2: 60,
+    3: 120,
+    4: 180
+  }
+}
+
 export const technology_required_research_levels: Record<TechnologyCode, number> = {
   [TechnologyCode.BUILDING]: 1
 }

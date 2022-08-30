@@ -5,6 +5,7 @@ import { TechnologyCode } from './domain/constants'
 import { TechnologyErrors } from './domain/errors'
 import { TechnologyRepository } from './repository'
 import { TechnologyService } from './domain/service'
+import { now } from '../shared/time'
 
 interface TechnologyLaunchResearchCommand {
   code: TechnologyCode
@@ -13,6 +14,10 @@ interface TechnologyLaunchResearchCommand {
 }
 
 interface TechnologyInitCommand {
+  player_id: string
+}
+
+interface TechnologyFinishResearchesCommand {
   player_id: string
 }
 
@@ -73,6 +78,7 @@ export class TechnologyCommands {
     const costs = this.service.getCostsForResearch(technology)
     const has_enough_resources = await this.city_queries.hasResources({ id: city_id, ...costs })
     const research_level = await this.building_queries.getResearchLevel({ city_id })
+
     const result = this.service.launchResearch({
       is_technology_in_progress,
       has_enough_resources,
@@ -86,5 +92,25 @@ export class TechnologyCommands {
     })
 
     await this.repository.updateOne(result.technology)
+  }
+
+  async finishResearches({ player_id }: TechnologyFinishResearchesCommand): Promise<boolean> {
+    const technology_to_finish = await this.repository.findOne({
+      player_id,
+      research_time: {
+        $lte: now()
+      }
+    })
+
+    if (!technology_to_finish) {
+      return false
+    }
+
+    const finished_technology = technology_to_finish.finishResearch()
+
+    await this.repository.updateOne(finished_technology)
+    console.log(`${finished_technology.code} research done`)
+
+    return true
   }
 }

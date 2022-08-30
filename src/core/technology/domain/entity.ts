@@ -6,7 +6,7 @@ type TechnologyEntityProps = BaseEntity & {
   code: TechnologyCode
   player_id: string
   level: number
-  research_time?: number | null
+  research_time?: number
 }
 
 export class TechnologyEntity extends BaseEntity {
@@ -39,14 +39,21 @@ export class TechnologyEntity extends BaseEntity {
       code: TechnologyCode.BUILDING,
       player_id,
       level: 0,
-      research_time: null
     })
   }
 
   launchResearch(research_duration: number): TechnologyEntity {
     return new TechnologyEntity({
       ...this,
-      research_time: now() + research_duration
+      research_time: now() + research_duration * 1000
+    })
+  }
+
+  finishResearch(): TechnologyEntity {
+    return new TechnologyEntity({
+      ...this,
+      level: this.level + 1,
+      research_time: undefined,
     })
   }
 }
