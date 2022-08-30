@@ -13,7 +13,8 @@ export class MongoCityRepository
     }
 
     return CityEntity.create({
-      id: document._id,
+      id: document._id.toString(),
+      player_id: document.player_id.toString(),
       name: document.name,
       plastic: document.plastic,
       mushroom: document.mushroom,

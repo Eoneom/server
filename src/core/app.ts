@@ -1,16 +1,16 @@
-import { BuildingCommands } from './building/commands'
-import { BuildingQueries } from './building/queries'
-import { CityCommands } from './city/commands'
-import { CityQueries } from './city/queries'
+import { BuildingModule } from './building/module'
+import { CityModule } from './city/module'
 import { Factory } from './factory'
-import { Module } from './shared/module'
+import { PlayerModule } from './player/module'
 
 export class App {
-  city: Module<CityQueries, CityCommands>
-  building: Module<BuildingQueries, BuildingCommands>
+  city: CityModule
+  building: BuildingModule
+  player: PlayerModule
 
   constructor() {
     this.city = Factory.getCityModule()
     this.building = Factory.getBuildingModule()
+    this.player = Factory.getPlayerModule()
   }
 }

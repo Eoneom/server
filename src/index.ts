@@ -1,24 +1,42 @@
 import { App } from './core/app'
 import { BuildingCode } from './core/building/domain/constants'
 import { CityEntity } from './core/city/domain/entity'
+import { CityErrors } from './core/city/domain/errors'
 import { Factory } from './core/factory'
+import { PlayerEntity } from './core/player/domain/entity'
+import { PlayerErrors } from './core/player/domain/errors'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
+const player_name = 'Kroustille'
 const city_name = 'Moustachiopolis'
 
-const init = async (app: App): Promise<CityEntity> => {
-  const city = await app.city.queries.findOne({ name: city_name })
-  if (city) {
-    return city
+const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity }> => {
+  const player = await app.player.queries.findOne({ name: player_name })
+  if (player) {
+    const city = await app.city.queries.findOne({ name: city_name })
+    if (!city) {
+      throw new Error(CityErrors.NOT_FOUND)
+    }
+
+    return { player, city }
   }
 
-  const city_id = await app.city.commands.init({ name: city_name })
-  const created_city = await app.city.queries.findByIdOrThrow(city_id)
+  const player_id = await app.player.commands.init({ name: player_name, first_city_name: city_name })
+  const created_player = await app.player.queries.findById(player_id)
+  if (!created_player) {
+    throw new Error(PlayerErrors.NOT_FOUND)
+  }
 
-  await app.building.commands.initFirstBuildings({ city_id })
+  const created_city = await app.city.queries.findOne({ name: city_name })
+  if (!created_city) {
+    throw new Error(CityErrors.NOT_FOUND)
+  }
 
-  return created_city
+  return {
+    player: created_player,
+    city: created_city
+  }
 }
 
 (async () => {
@@ -27,7 +45,8 @@ const init = async (app: App): Promise<CityEntity> => {
 
   const app = new App()
 
-  const city = await init(app)
+  const { city, player } = await init(app)
+  console.log(player)
   const city_id = city.id
 
   await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })

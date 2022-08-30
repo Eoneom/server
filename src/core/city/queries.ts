@@ -22,6 +22,11 @@ export class CityQueries {
     return city.plastic >= query.plastic
   }
 
+  public async canBuild({ name }: { name: string }): Promise<boolean> {
+    const does_city_with_same_name_exists = await this.repository.exists({ name })
+    return !does_city_with_same_name_exists
+  }
+
   public async findOne(query: FilterQuery<CityEntity>): Promise<CityEntity | null> {
     return this.repository.findOne(query)
   }

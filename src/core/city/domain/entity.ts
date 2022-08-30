@@ -10,6 +10,7 @@ export interface Cell {
 }
 
 type CityEntityProps = BaseEntityProps & {
+  player_id: string
   name: string,
   plastic: number,
   mushroom: number,
@@ -18,6 +19,7 @@ type CityEntityProps = BaseEntityProps & {
 }
 
 export class CityEntity extends BaseEntity {
+  readonly player_id: string
   readonly name: string
   readonly plastic: number
   readonly mushroom: number
@@ -27,6 +29,7 @@ export class CityEntity extends BaseEntity {
 
   private constructor({
     id,
+    player_id,
     name,
     plastic,
     mushroom,
@@ -34,6 +37,8 @@ export class CityEntity extends BaseEntity {
     last_mushroom_gather
   }: CityEntityProps) {
     super({ id })
+
+    this.player_id = player_id
     this.name = name
     this.plastic = plastic
     this.mushroom = mushroom
@@ -46,9 +51,10 @@ export class CityEntity extends BaseEntity {
     return new CityEntity(props)
   }
 
-  static initCity({ name }: { name: string }): CityEntity {
+  static initCity({ name, player_id }: { name: string, player_id: string }): CityEntity {
     return new CityEntity({
       id: 'fake',
+      player_id,
       name,
       plastic: STARTING_PLASTIC,
       mushroom: STARTING_MUSHROOM,

@@ -7,6 +7,9 @@ import { CityModule } from './city/module'
 import { CityQueries } from './city/queries'
 import { Module } from './shared/module'
 import { MongoRepository } from '../database/repository'
+import { PlayerCommands } from './player/commands'
+import { PlayerModule } from './player/module'
+import { PlayerQueries } from './player/queries'
 import { Repository } from './shared/repository'
 
 export class Factory {
@@ -19,6 +22,10 @@ export class Factory {
   private static city_module: CityModule
   private static city_queries: CityQueries
   private static city_commands: CityCommands
+
+  private static player_module: PlayerModule
+  private static player_queries: PlayerQueries
+  private static player_commands: PlayerCommands
 
   static getRepository(): Repository {
     if (!this.repository) {
@@ -48,6 +55,17 @@ export class Factory {
     }
 
     return this.city_module
+  }
+
+  static getPlayerModule(): PlayerModule {
+    if (!this.player_module) {
+      this.player_module = new Module({
+        queries: this.getPlayerQueries(),
+        commands: this.getPlayerCommands()
+      })
+    }
+
+    return this.player_module
   }
 
   private static getBuildingQueries(): BuildingQueries {
@@ -85,10 +103,33 @@ export class Factory {
     if (!this.city_commands) {
       this.city_commands = new CityCommands({
         repository: this.getRepository().city,
-        building_queries: this.getBuildingQueries()
+        building_queries: this.getBuildingQueries(),
       })
     }
 
     return this.city_commands
+  }
+
+  private static getPlayerQueries(): PlayerQueries {
+    if (!this.player_queries) {
+      this.player_queries = new PlayerQueries({
+        repository: this.getRepository().player
+      })
+    }
+
+    return this.player_queries
+  }
+
+  private static getPlayerCommands(): PlayerCommands {
+    if (!this.player_commands) {
+      this.player_commands = new PlayerCommands({
+        repository: this.getRepository().player,
+        city_commands: this.getCityCommands(),
+        city_queries: this.getCityQueries(),
+        building_commands: this.getBuildingCommands()
+      })
+    }
+
+    return this.player_commands
   }
 }

@@ -1,3 +1,4 @@
+import { BuildingCommands } from '../building/commands'
 import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
@@ -5,6 +6,7 @@ import { CityRepository } from './repository'
 
 interface CreateCityCommand {
   name: string
+  player_id: string
 }
 
 interface CityGatherResourcesCommand {
@@ -24,22 +26,23 @@ export class CityCommands {
 
   constructor({
     repository,
-    building_queries
+    building_queries,
   }: {
     repository: CityRepository,
-    building_queries: BuildingQueries
+    building_queries: BuildingQueries,
   }) {
     this.repository = repository
     this.building_queries = building_queries
   }
 
-  async init({ name }: CreateCityCommand): Promise<string> {
+  async init({ name, player_id }: CreateCityCommand): Promise<string> {
     const city_already_exists = await this.repository.exists({ name })
     if (city_already_exists) {
       throw new Error(CityErrors.ALREADY_EXISTS)
     }
 
-    const city = CityEntity.initCity({ name })
+    const city = CityEntity.initCity({ name, player_id })
+
     return this.repository.create(city)
   }
 
