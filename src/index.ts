@@ -41,7 +41,6 @@ const init = async (app: App): Promise<CityEntity> => {
   const local = repl.start('> ')
   local.context.g = {
     city: () => app.city.queries.findByIdOrThrow(city_id).then(console.log),
-    now,
     launchRecyclingPlantUpgrade: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.RECYCLING_PLANT, city_id })
     }
