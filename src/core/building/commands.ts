@@ -76,8 +76,8 @@ export class BuildingCommands {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    const wood_cost = this.service.getWoodCostsForUpgrade(building)
-    const has_enough_resources = await this.city_queries.hasResources({ city_id, wood: wood_cost })
+    const plastic_cost = this.service.getPlasticCostsForUpgrade(building)
+    const has_enough_resources = await this.city_queries.hasResources({ city_id, plastic: plastic_cost })
 
     const result = this.service.launchUpgrade({
       building,

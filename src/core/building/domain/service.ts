@@ -1,8 +1,8 @@
 import {
   BuildingCode,
-  wood_camp_costs_by_level,
-  wood_camp_earnings_by_level_by_seconds,
-  wood_camp_upgrade_time_in_seconds
+  recycling_plant_earnings_by_level_by_seconds,
+  recycling_plant_plastic_costs_by_level,
+  recycling_plant_upgrade_time_in_seconds
 } from './constants'
 
 import { BuildingEntity } from './entity'
@@ -30,26 +30,31 @@ export class BuildingService {
       throw new Error(BuildingErrors.NOT_ENOUGH_RESOURCES)
     }
 
-    const upgrade_time = this.getWoodUpgradeTimeInSeconds(building.level)
+    const upgrade_time = this.getUpgradeTimeInSeconds(building)
     return {
       building: building.launchUpgrade(upgrade_time)
     }
   }
 
-  public getWoodCostsForUpgrade({ code, level }: BuildingEntity): number {
+  public getPlasticCostsForUpgrade({ code, level }: BuildingEntity): number {
     switch (code) {
-      case BuildingCode.WOOD_CAMP:
-        return wood_camp_costs_by_level[level + 1]
+      case BuildingCode.RECYCLING_PLANT:
+        return recycling_plant_plastic_costs_by_level[level + 1]
     }
 
     throw new Error(BuildingErrors.UNKNOWN_BUILDING)
   }
 
-  public getWoodEarningsBySecond(woodcamp_level: number): number {
-    return wood_camp_earnings_by_level_by_seconds[woodcamp_level]
+  public getPlasticEarningsBySecond(recycling_plant_level: number): number {
+    return recycling_plant_earnings_by_level_by_seconds[recycling_plant_level]
   }
 
-  private getWoodUpgradeTimeInSeconds(level: number): number {
-    return wood_camp_upgrade_time_in_seconds[level + 1]
+  private getUpgradeTimeInSeconds({ code, level }: BuildingEntity): number {
+    switch (code) {
+      case BuildingCode.RECYCLING_PLANT:
+        return recycling_plant_upgrade_time_in_seconds[level]
+    }
+
+    throw new Error(BuildingErrors.UNKNOWN_BUILDING)
   }
 }

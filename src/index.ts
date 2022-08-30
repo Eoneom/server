@@ -17,7 +17,7 @@ const init = async (app: App): Promise<CityEntity> => {
   const created_city = await app.city.queries.findByIdOrThrow(city_id)
 
   await app.building.commands.create({
-    code: BuildingCode.WOOD_CAMP,
+    code: BuildingCode.RECYCLING_PLANT,
     city_id,
     level: 1
   })
@@ -35,15 +35,15 @@ const init = async (app: App): Promise<CityEntity> => {
 
   setInterval(async () => {
     await app.building.commands.finishUpgrades({ city_id })
-    await app.city.commands.gatherWood({ id: city_id, gather_at_time: now() })
+    await app.city.commands.gatherPlastic({ id: city_id, gather_at_time: now() })
   }, 1000)
 
   const local = repl.start('> ')
   local.context.g = {
     city: () => app.city.queries.findByIdOrThrow(city_id).then(console.log),
     now,
-    launchWoodcampUpgrade: () => {
-      app.building.commands.launchUpgrade({ code: BuildingCode.WOOD_CAMP, city_id })
+    launchRecyclingPlantUpgrade: () => {
+      app.building.commands.launchUpgrade({ code: BuildingCode.RECYCLING_PLANT, city_id })
     }
   }
 })()

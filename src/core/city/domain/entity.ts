@@ -9,32 +9,32 @@ export interface Cell {
 
 type CityEntityProps = BaseEntityProps & {
   name: string,
-  wood: number,
-  last_wood_gather: number
+  plastic: number,
+  last_plastic_gather: number
 }
 
 export class CityEntity extends BaseEntity {
   readonly name: string
-  readonly wood: number
-  readonly last_wood_gather: number
+  readonly plastic: number
+  readonly last_plastic_gather: number
   readonly cells: Array<Cell>
 
   constructor({
     id,
     name,
-    wood,
-    last_wood_gather
+    plastic,
+    last_plastic_gather
   }: CityEntityProps) {
     super({ id })
     this.name = name
-    this.wood = wood
-    this.last_wood_gather = last_wood_gather
+    this.plastic = plastic
+    this.last_plastic_gather = last_plastic_gather
     this.cells = []
   }
 
   hasResources(
-    wood_cost: number
+    plastic_cost: number
   ): boolean {
-    return this.wood >= wood_cost
+    return this.plastic >= plastic_cost
   }
 }

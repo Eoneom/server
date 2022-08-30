@@ -13,8 +13,8 @@ export class MongoCityRepository extends MongoGenericRepository<typeof CityModel
     return new CityEntity({
       id: document._id,
       name: document.name,
-      wood: document.wood,
-      last_wood_gather: document.last_wood_gather,
+      plastic: document.plastic,
+      last_plastic_gather: document.last_plastic_gather,
     })
   }
 }

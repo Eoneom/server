@@ -13,13 +13,13 @@ export class CityQueries {
     this.repository = repository
   }
 
-  public async hasResources(query: { city_id: string, wood: number }): Promise<boolean> {
+  public async hasResources(query: { city_id: string, plastic: number }): Promise<boolean> {
     const city = await this.repository.findById(query.city_id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)
     }
 
-    return city.wood >= query.wood
+    return city.plastic >= query.plastic
   }
 
   public async findOne(query: FilterQuery<CityEntity>): Promise<CityEntity | null> {
@@ -38,19 +38,6 @@ export class CityQueries {
   public async hasSizeToBuild(id: string): Promise<boolean> {
     return true
   }
-}
-
-export const getSecondsSinceLastWoodGather = (city: CityEntity): number => {
-  const now_in_seconds = now()
-  return Math.floor((now_in_seconds - city.last_wood_gather) / 1000)
-}
-
-export const isBuildingUpgradeDone = (building: BuildingEntity): boolean => {
-  if (!building.upgrade_time) {
-    return true
-  }
-
-  return now() - building.upgrade_time > 0
 }
 
 export const getMaxSize = (city: CityEntity): number => {

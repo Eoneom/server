@@ -7,10 +7,10 @@ class City {
   public name!: string
 
   @prop({ required: true })
-  public wood!: number
+  public plastic!: number
 
   @prop({ required: true })
-  public last_wood_gather!: number
+  public last_plastic_gather!: number
 }
 
 export type CityDocument = Document & City

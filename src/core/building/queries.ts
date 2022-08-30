@@ -27,12 +27,12 @@ export class BuildingQueries {
     return building.level
   }
 
-  public async getCityWoodEarningsBySecond(query: { city_id: string }): Promise<number> {
-    const wood_camp = await this.repository.findOne({ code: BuildingCode.WOOD_CAMP, city_id: query.city_id })
-    if (!wood_camp) {
+  public async getPlasticEarningsBySecond(query: { city_id: string }): Promise<number> {
+    const recycling_plant = await this.repository.findOne({ code: BuildingCode.RECYCLING_PLANT, city_id: query.city_id })
+    if (!recycling_plant) {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    return this.service.getWoodEarningsBySecond(wood_camp.level)
+    return this.service.getPlasticEarningsBySecond(recycling_plant.level)
   }
 }
