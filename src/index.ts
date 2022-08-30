@@ -27,12 +27,16 @@ const init = async (app: App): Promise<CityEntity> => {
 
   const app = new App()
 
-  const { id: city_id } = await init(app)
+  const city = await init(app)
+  const city_id = city.id
+
+  await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
+  const updated_city = await app.city.queries.findByIdOrThrow(city_id)
+  console.log(updated_city)
 
   setInterval(async () => {
     await app.building.commands.finishUpgrades({ city_id })
-    await app.city.commands.gatherPlastic({ id: city_id, gather_at_time: now() })
-    await app.city.commands.gatherMushroom({ id: city_id, gather_at_time: now() })
+    await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
   }, 1000)
 
   const local = repl.start('> ')

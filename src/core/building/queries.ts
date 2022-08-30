@@ -27,21 +27,33 @@ export class BuildingQueries {
     return building.level
   }
 
-  async getPlasticEarningsBySecond(query: { city_id: string }): Promise<number> {
-    const recycling_plant = await this.repository.findOne({ code: BuildingCode.RECYCLING_PLANT, city_id: query.city_id })
-    if (!recycling_plant) {
+  async getEarningsBySecond({ city_id }: { city_id: string }): Promise<{
+    plastic: number,
+    mushroom: number
+  }> {
+    const [
+      recycling_plant,
+      mushroom_farm,
+    ] = await Promise.all([
+      this.repository.findOne({ code: BuildingCode.RECYCLING_PLANT, city_id }),
+      this.repository.findOne({ code: BuildingCode.MUSHROOM_FARM, city_id }),
+    ])
+    if (!mushroom_farm || !recycling_plant) {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    return this.service.getPlasticEarningsBySecond(recycling_plant.level)
-  }
+    const plastic = this.service.getEarningsBySecond({
+      code: BuildingCode.RECYCLING_PLANT,
+      level: recycling_plant.level
+    })
+    const mushroom = this.service.getEarningsBySecond({
+      code: BuildingCode.MUSHROOM_FARM,
+      level: recycling_plant.level
+    })
 
-  async getMushroomEarningsBySecond(query: { city_id: string }): Promise<number> {
-    const mushroom_farm = await this.repository.findOne({ code: BuildingCode.MUSHROOM_FARM, city_id: query.city_id })
-    if (!mushroom_farm) {
-      throw new Error(BuildingErrors.NOT_FOUND)
+    return {
+      plastic,
+      mushroom
     }
-
-    return this.service.getMushroomEarningsBySecond(mushroom_farm.level)
   }
 }

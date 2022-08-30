@@ -42,6 +42,21 @@ export class CityEntity extends BaseEntity {
     this.cells = []
   }
 
+  static create(props: CityEntityProps): CityEntity {
+    return new CityEntity(props)
+  }
+
+  static initCity({ name }: { name: string }): CityEntity {
+    return new CityEntity({
+      id: 'fake',
+      name,
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM,
+      last_plastic_gather: now(),
+      last_mushroom_gather: now()
+    })
+  }
+
   purchase({
     plastic_cost,
     mushroom_cost
@@ -61,107 +76,96 @@ export class CityEntity extends BaseEntity {
     })
   }
 
-  hasResources({ plastic_cost, mushroom_cost }: { mushroom_cost: number, plastic_cost: number }): boolean {
+  gather({
+    earnings_by_second,
+    gather_at_time
+  }: {
+    earnings_by_second: {
+      plastic: number,
+      mushroom: number
+    },
+    gather_at_time: number
+  }): {
+    city: CityEntity,
+    updated: boolean,
+  } {
+    const plastic_earnings = this.getEarnings({
+      earnings_by_second: earnings_by_second.plastic,
+      last_gather_time: this.last_plastic_gather,
+      gather_at_time
+    })
+    const mushroom_earnings = this.getEarnings({
+      earnings_by_second: earnings_by_second.mushroom,
+      last_gather_time: this.last_mushroom_gather,
+      gather_at_time
+    })
+    const updated = Boolean(plastic_earnings) || Boolean(mushroom_earnings)
+    const city: CityEntity = this
+      .gatherPlastic(plastic_earnings)
+      .gatherMushroom(mushroom_earnings)
+
+    return {
+      city,
+      updated
+    }
+  }
+
+  private gatherPlastic(plastic_earnings: number): CityEntity {
+    if (!plastic_earnings) {
+      return this
+    }
+
+    return new CityEntity({
+      ...this,
+      last_plastic_gather: now(),
+      plastic: this.plastic + plastic_earnings
+    })
+  }
+
+  private gatherMushroom(mushroom_earnings: number): CityEntity {
+    if (!mushroom_earnings) {
+      return this
+    }
+
+    return new CityEntity({
+      ...this,
+      last_mushroom_gather: now(),
+      mushroom: this.mushroom + mushroom_earnings
+    })
+  }
+
+  private getEarnings({
+    earnings_by_second,
+    last_gather_time,
+    gather_at_time
+  }: {
+    earnings_by_second: number,
+    last_gather_time: number,
+    gather_at_time: number
+  }): number {
+    const can_gather = this.canGather(last_gather_time, gather_at_time)
+    if (!can_gather) {
+      return 0
+    }
+
+    const seconds_since_last_gather = this.getSecondsSinceLastGather(last_gather_time, gather_at_time)
+    if (seconds_since_last_gather < 1) {
+      return 0
+    }
+
+    return Math.floor(seconds_since_last_gather * earnings_by_second)
+  }
+
+  private canGather(last_gather_time: number, gather_at_time: number): boolean {
+    return gather_at_time >= last_gather_time
+  }
+
+  private getSecondsSinceLastGather(last_gather_time: number, gather_at_time: number): number {
+    return Math.floor((gather_at_time - last_gather_time) / 1000)
+  }
+
+  private hasResources({ plastic_cost, mushroom_cost }: { mushroom_cost: number, plastic_cost: number }): boolean {
     return this.plastic >= plastic_cost &&
       this.mushroom >= mushroom_cost
-  }
-
-  gatherMushroom({
-    earnings_by_second,
-    gather_at_time
-  }: {
-    earnings_by_second: number,
-    gather_at_time: number
-  }): {
-    updated: boolean,
-    city: CityEntity
-  } {
-    if (gather_at_time <= this.last_mushroom_gather) {
-      return {
-        updated: false,
-        city: this
-      }
-    }
-
-    const seconds_since_last_gather = this.getSecondsSinceLastMushromGather(gather_at_time)
-    if (seconds_since_last_gather < 1) {
-      return {
-        updated: false,
-        city: this
-      }
-    }
-
-    const earnings = Math.floor(seconds_since_last_gather * earnings_by_second)
-    const updated_city = new CityEntity({
-      ...this,
-      mushroom: this.mushroom + earnings,
-      last_mushroom_gather: now()
-    })
-
-    return {
-      updated: true,
-      city: updated_city
-    }
-  }
-
-  gatherPlastic({
-    earnings_by_second,
-    gather_at_time
-  }: {
-    earnings_by_second: number,
-    gather_at_time: number
-  }): {
-    updated: boolean,
-    city: CityEntity
-  } {
-    if (gather_at_time <= this.last_plastic_gather) {
-      return {
-        updated: false,
-        city: this
-      }
-    }
-
-    const seconds_since_last_gather = this.getSecondsSinceLastPlasticGather(gather_at_time)
-    if (seconds_since_last_gather < 1) {
-      return {
-        updated: false,
-        city: this
-      }
-    }
-
-    const earnings = Math.floor(seconds_since_last_gather * earnings_by_second)
-    const updated_city = new CityEntity({
-      ...this,
-      plastic: this.plastic + earnings,
-      last_plastic_gather: now()
-    })
-
-    return {
-      updated: true,
-      city: updated_city
-    }
-  }
-
-  private getSecondsSinceLastPlasticGather(gather_at_time: number): number {
-    return Math.floor((gather_at_time - this.last_plastic_gather) / 1000)
-  }
-
-  private getSecondsSinceLastMushromGather(gather_at_time: number): number {
-    return Math.floor((gather_at_time - this.last_mushroom_gather) / 1000)
-  }
-
-  static create(props: CityEntityProps): CityEntity {
-    return new CityEntity(props)
-  }
-
-  static initCity({ name }: { name: string }): CityEntity {
-    return new CityEntity({
-      id: 'fake',
-      name,
-      plastic: STARTING_PLASTIC,
-      mushroom: STARTING_MUSHROOM,
-      last_plastic_gather: now(),
-      last_mushroom_gather: now()
-    })
   }
 }

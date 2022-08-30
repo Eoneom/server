@@ -67,12 +67,18 @@ export class BuildingService {
     throw new Error(BuildingErrors.UNKNOWN_BUILDING)
   }
 
-  getPlasticEarningsBySecond(recycling_plant_level: number): number {
-    return recycling_plant_earnings_by_level_by_seconds[recycling_plant_level]
-  }
+  getEarningsBySecond({
+    code,
+    level
+  }: {
+    code: BuildingCode.MUSHROOM_FARM | BuildingCode.RECYCLING_PLANT,
+    level: number
+  }): number {
+    if (BuildingCode.MUSHROOM_FARM === code) {
+      return mushroom_farm_earnings_by_level_by_seconds[level]
+    }
 
-  getMushroomEarningsBySecond(mushroom_farm_level: number): number {
-    return mushroom_farm_earnings_by_level_by_seconds[mushroom_farm_level]
+    return recycling_plant_earnings_by_level_by_seconds[level]
   }
 
   private getUpgradeTimeInSeconds({ code, level }: BuildingEntity): number {

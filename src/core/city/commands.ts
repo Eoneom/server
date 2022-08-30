@@ -7,12 +7,7 @@ interface CreateCityCommand {
   name: string
 }
 
-interface CityGatherPlasticCommand {
-  id: string
-  gather_at_time: number
-}
-
-interface CityGatherMushroomCommand {
+interface CityGatherResourcesCommand {
   id: string
   gather_at_time: number
 }
@@ -58,28 +53,14 @@ export class CityCommands {
     await this.repository.updateOne(updated_city)
   }
 
-  async gatherPlastic({ id, gather_at_time }: CityGatherPlasticCommand): Promise<void> {
+  async gatherResources({ id, gather_at_time }: CityGatherResourcesCommand): Promise<void> {
     const city = await this.repository.findById(id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)
     }
 
-    const earnings_by_second = await this.building_queries.getPlasticEarningsBySecond({ city_id: city.id })
-    const { city: updated_city, updated } = city.gatherPlastic({ earnings_by_second, gather_at_time })
-
-    if (updated) {
-      await this.repository.updateOne(updated_city)
-    }
-  }
-
-  async gatherMushroom({ id, gather_at_time }: CityGatherMushroomCommand): Promise<void> {
-    const city = await this.repository.findById(id)
-    if (!city) {
-      throw new Error(CityErrors.NOT_FOUND)
-    }
-
-    const earnings_by_second = await this.building_queries.getMushroomEarningsBySecond({ city_id: city.id })
-    const { city: updated_city, updated } = city.gatherMushroom({ earnings_by_second, gather_at_time })
+    const earnings_by_second = await this.building_queries.getEarningsBySecond({ city_id: city.id })
+    const { city: updated_city, updated } = city.gather({ earnings_by_second, gather_at_time })
 
     if (updated) {
       await this.repository.updateOne(updated_city)
