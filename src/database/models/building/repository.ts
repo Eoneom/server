@@ -13,7 +13,7 @@ export class MongoBuildingRepository
       return null
     }
 
-    return new BuildingEntity({
+    return BuildingEntity.create({
       id: document._id.toString(),
       code: document.code,
       level: document.level,

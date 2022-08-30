@@ -21,6 +21,10 @@ export interface BuildingFinishUpgradesCommand {
   city_id: string
 }
 
+export interface BuildingInitCityCommand {
+  city_id: string
+}
+
 export class BuildingCommands {
   private repository: BuildingRepository
   private service: BuildingService
@@ -40,21 +44,16 @@ export class BuildingCommands {
     this.city_queries = city_queries
   }
 
-  async create({ code, city_id, level }: BuildingCreateCommand): Promise<string> {
-    const building_already_exists = await this.repository.exists({ code, city_id })
-    if (building_already_exists) {
-      throw new Error(BuildingErrors.ALREADY_EXISTS)
-    }
-
-    const building = new BuildingEntity({
-      id: 'fake',
-      code,
+  async initFirstBuildings({ city_id }: BuildingInitCityCommand): Promise<void> {
+    const has_building_in_city = await this.repository.exists({ city_id })
+    const { buildings } = this.service.initBuildings({
       city_id,
-      level
+      has_building_in_city
     })
 
-    console.log('create building', { building })
-    return this.repository.create(building)
+    await Promise.all(
+      buildings.map((building) => this.repository.create(building))
+    )
   }
 
   async launchUpgrade({ code, city_id }: BuildingLaunchUpgradeCommand): Promise<void> {

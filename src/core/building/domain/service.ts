@@ -1,5 +1,8 @@
 import {
   BuildingCode,
+  mushroom_farm_earnings_by_level_by_seconds,
+  mushroom_farm_plastic_costs_by_level,
+  mushroom_farm_upgrade_time_in_seconds,
   recycling_plant_earnings_by_level_by_seconds,
   recycling_plant_plastic_costs_by_level,
   recycling_plant_upgrade_time_in_seconds
@@ -8,18 +11,40 @@ import {
 import { BuildingEntity } from './entity'
 import { BuildingErrors } from './errors'
 
-export interface LaunchUpgrade {
-  building: BuildingEntity
-  has_enough_resources: boolean,
-  is_building_in_progress: boolean
-}
-
 export class BuildingService {
+  initBuildings({
+    has_building_in_city,
+    city_id
+  }: {
+    has_building_in_city: boolean,
+    city_id: string
+  }): {
+    buildings: BuildingEntity[]
+  } {
+    if (has_building_in_city) {
+      throw new Error(BuildingErrors.ALREADY_EXISTS)
+    }
+
+    const recycling_plant = BuildingEntity.initRecyclingPlant({ city_id })
+    const mushroom_farm = BuildingEntity.initMushroomFarm({ city_id })
+
+    return {
+      buildings: [
+        recycling_plant,
+        mushroom_farm
+      ]
+    }
+  }
+
   launchUpgrade({
     building,
     has_enough_resources,
     is_building_in_progress,
-  }: LaunchUpgrade): {
+  }: {
+    building: BuildingEntity
+    has_enough_resources: boolean,
+    is_building_in_progress: boolean
+  }): {
     building: BuildingEntity
   } {
     if (is_building_in_progress) {
@@ -36,23 +61,33 @@ export class BuildingService {
     }
   }
 
-  public getPlasticCostsForUpgrade({ code, level }: BuildingEntity): number {
+  getPlasticCostsForUpgrade({ code, level }: BuildingEntity): number {
+    const upgraded_level = level + 1
     switch (code) {
       case BuildingCode.RECYCLING_PLANT:
-        return recycling_plant_plastic_costs_by_level[level + 1]
+        return recycling_plant_plastic_costs_by_level[upgraded_level]
+      case BuildingCode.MUSHROOM_FARM:
+        return mushroom_farm_plastic_costs_by_level[upgraded_level]
     }
 
     throw new Error(BuildingErrors.UNKNOWN_BUILDING)
   }
 
-  public getPlasticEarningsBySecond(recycling_plant_level: number): number {
+  getPlasticEarningsBySecond(recycling_plant_level: number): number {
     return recycling_plant_earnings_by_level_by_seconds[recycling_plant_level]
   }
 
+  getMushroomEarningsBySecond(mushroom_farm_level: number): number {
+    return mushroom_farm_earnings_by_level_by_seconds[mushroom_farm_level]
+  }
+
   private getUpgradeTimeInSeconds({ code, level }: BuildingEntity): number {
+    const upgraded_level = level + 1
     switch (code) {
       case BuildingCode.RECYCLING_PLANT:
-        return recycling_plant_upgrade_time_in_seconds[level]
+        return recycling_plant_upgrade_time_in_seconds[upgraded_level]
+      case BuildingCode.MUSHROOM_FARM:
+        return mushroom_farm_upgrade_time_in_seconds[upgraded_level]
     }
 
     throw new Error(BuildingErrors.UNKNOWN_BUILDING)

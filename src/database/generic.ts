@@ -40,7 +40,7 @@ export abstract class MongoGenericRepository<
   }
 
   async updateOne(entity: Entity): Promise<void> {
-    await this.model.updateOne({ id: entity.id }, entity)
+    await this.model.updateOne({ _id: entity.id }, entity)
   }
 
   protected abstract buildFromModel(document: Doc | null): Entity | null

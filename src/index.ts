@@ -13,14 +13,10 @@ const init = async (app: App): Promise<CityEntity> => {
     return city
   }
 
-  const city_id = await app.city.commands.create({ name: city_name })
+  const city_id = await app.city.commands.init({ name: city_name })
   const created_city = await app.city.queries.findByIdOrThrow(city_id)
 
-  await app.building.commands.create({
-    code: BuildingCode.RECYCLING_PLANT,
-    city_id,
-    level: 1
-  })
+  await app.building.commands.initFirstBuildings({ city_id })
 
   return created_city
 }
@@ -36,6 +32,7 @@ const init = async (app: App): Promise<CityEntity> => {
   setInterval(async () => {
     await app.building.commands.finishUpgrades({ city_id })
     await app.city.commands.gatherPlastic({ id: city_id, gather_at_time: now() })
+    await app.city.commands.gatherMushroom({ id: city_id, gather_at_time: now() })
   }, 1000)
 
   const local = repl.start('> ')
@@ -43,6 +40,9 @@ const init = async (app: App): Promise<CityEntity> => {
     city: () => app.city.queries.findByIdOrThrow(city_id).then(console.log),
     launchRecyclingPlantUpgrade: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.RECYCLING_PLANT, city_id })
+    },
+    launchMushroomFarmUpgrade: () => {
+      app.building.commands.launchUpgrade({ code: BuildingCode.MUSHROOM_FARM, city_id })
     }
   }
 })()
