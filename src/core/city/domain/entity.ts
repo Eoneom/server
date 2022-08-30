@@ -116,6 +116,11 @@ export class CityEntity extends BaseEntity {
     }
   }
 
+  hasResources({ plastic_cost, mushroom_cost }: { mushroom_cost: number, plastic_cost: number }): boolean {
+    return this.plastic >= plastic_cost &&
+      this.mushroom >= mushroom_cost
+  }
+
   private gatherPlastic(plastic_earnings: number): CityEntity {
     if (!plastic_earnings) {
       return this
@@ -168,10 +173,5 @@ export class CityEntity extends BaseEntity {
 
   private getSecondsSinceLastGather(last_gather_time: number, gather_at_time: number): number {
     return Math.floor((gather_at_time - last_gather_time) / 1000)
-  }
-
-  private hasResources({ plastic_cost, mushroom_cost }: { mushroom_cost: number, plastic_cost: number }): boolean {
-    return this.plastic >= plastic_cost &&
-      this.mushroom >= mushroom_cost
   }
 }

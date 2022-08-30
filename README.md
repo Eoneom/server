@@ -40,12 +40,19 @@ g.launchRecyclingPlantUpgrade()
 
 # launch mushroom farm upgrade
 g.launchMushroomFarmUpgrade()
+
+# launch research lab upgrade
+g.launchResearchLabUpgrade()
+
+# launch building research
+g.launchBuildingResearch()
 ```
 
 ## Roadmap
 
+- tech: add costs module to handle building and technology costs
+- feat: add rights on cities and buildings
 - feat: create other buildings
-- feat: research technologies
 - feat: create units
 - tech: add unit tests
 - tech: add web adapter (HTTP for signup/login and WebSocket for the rest)

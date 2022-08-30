@@ -15,9 +15,7 @@ export class BuildingService {
   }: {
     has_building_in_city: boolean,
     city_id: string
-  }): {
-    buildings: BuildingEntity[]
-  } {
+  }): BuildingEntity[] {
     if (has_building_in_city) {
       throw new Error(BuildingErrors.ALREADY_EXISTS)
     }
@@ -26,20 +24,20 @@ export class BuildingService {
     const mushroom_farm = BuildingEntity.initMushroomFarm({ city_id })
     const research_lab = BuildingEntity.initResearchLab({ city_id })
 
-    return {
-      buildings: [
-        recycling_plant,
-        mushroom_farm,
-        research_lab
-      ]
-    }
+    return [
+      recycling_plant,
+      mushroom_farm,
+      research_lab
+    ]
   }
 
   launchUpgrade({
     building,
+    has_enough_resources,
     is_building_in_progress,
   }: {
     building: BuildingEntity
+    has_enough_resources: boolean
     is_building_in_progress: boolean
   }): {
     building: BuildingEntity
@@ -48,9 +46,13 @@ export class BuildingService {
       throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
     }
 
-    const upgrade_time = this.getUpgradeTimeInSeconds(building)
+    if (!has_enough_resources) {
+      throw new Error(BuildingErrors.NOT_ENOUGH_RESOURCES)
+    }
+
+    const upgrade_duration = this.getUpgradeDurationInSeconds(building)
     return {
-      building: building.launchUpgrade(upgrade_time)
+      building: building.launchUpgrade(upgrade_duration)
     }
   }
 
@@ -84,7 +86,7 @@ export class BuildingService {
     }
   }
 
-  private getUpgradeTimeInSeconds({ code, level }: BuildingEntity): number {
+  private getUpgradeDurationInSeconds({ code, level }: BuildingEntity): number {
     const upgrade_times = building_upgrade_times_in_second[code]
     if (!upgrade_times) {
       throw new Error(BuildingErrors.UNKNOWN_BUILDING)

@@ -1,10 +1,8 @@
-import { BuildingEntity } from "../building/domain/entity"
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
 import { CityRepository } from './repository'
 import { FilterQuery } from '../../types/database'
 import { SIZE_PER_CELL } from './domain/constants'
-import { now } from '../shared/time'
 
 export class CityQueries {
   private repository: CityRepository
@@ -13,13 +11,13 @@ export class CityQueries {
     this.repository = repository
   }
 
-  public async hasResources(query: { city_id: string, plastic: number }): Promise<boolean> {
-    const city = await this.repository.findById(query.city_id)
+  public async hasResources(query: { id: string, plastic: number, mushroom: number }): Promise<boolean> {
+    const city = await this.repository.findById(query.id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)
     }
 
-    return city.plastic >= query.plastic
+    return city.hasResources({ plastic_cost: query.plastic, mushroom_cost: query.mushroom })
   }
 
   public async canBuild({ name }: { name: string }): Promise<boolean> {

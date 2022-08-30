@@ -1,5 +1,4 @@
 import { BuildingCode } from './domain/constants'
-import { BuildingEntity } from './domain/entity'
 import { BuildingErrors } from './domain/errors'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
@@ -30,24 +29,28 @@ export class BuildingCommands {
   private repository: BuildingRepository
   private service: BuildingService
   private city_commands: CityCommands
+  private city_queries: CityQueries
 
   constructor({
     repository,
     service,
-    city_commands
+    city_commands,
+    city_queries
   }: {
     repository: BuildingRepository,
     service: BuildingService,
     city_commands: CityCommands
+    city_queries: CityQueries
   }) {
     this.repository = repository
     this.service = service
     this.city_commands = city_commands
+    this.city_queries = city_queries
   }
 
   async initFirstBuildings({ city_id }: BuildingInitCityCommand): Promise<void> {
     const has_building_in_city = await this.repository.exists({ city_id })
-    const { buildings } = this.service.initBuildings({
+    const buildings = this.service.initBuildings({
       city_id,
       has_building_in_city
     })
@@ -76,12 +79,19 @@ export class BuildingCommands {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    const { plastic: plastic_cost, mushroom: mushroom_cost } = this.service.getCostsForUpgrade(building)
-    await this.city_commands.purchase({ id: city_id, plastic_cost, mushroom_cost })
+    const costs = this.service.getCostsForUpgrade(building)
+
+    const has_enough_resources = await this.city_queries.hasResources({ id: city_id, ...costs })
 
     const result = this.service.launchUpgrade({
       building,
+      has_enough_resources,
       is_building_in_progress: Boolean(building_in_progress)
+    })
+
+    await this.city_commands.purchase({
+      id: city_id,
+      costs
     })
 
     await this.repository.updateOne(result.building)

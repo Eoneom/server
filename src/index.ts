@@ -5,6 +5,7 @@ import { CityErrors } from './core/city/domain/errors'
 import { Factory } from './core/factory'
 import { PlayerEntity } from './core/player/domain/entity'
 import { PlayerErrors } from './core/player/domain/errors'
+import { TechnologyCode } from './core/technology/domain/constants'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
@@ -47,6 +48,7 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
 
   const { city, player } = await init(app)
   console.log(player)
+  const player_id = player.id
   const city_id = city.id
 
   await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
@@ -61,6 +63,9 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
   const local = repl.start('> ')
   local.context.g = {
     city: () => app.city.queries.findByIdOrThrow(city_id).then(console.log),
+    launchBuildingResearch: () => {
+      app.technology.commands.launchResearch({ code: TechnologyCode.BUILDING, player_id, city_id })
+    },
     launchRecyclingPlantUpgrade: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.RECYCLING_PLANT, city_id })
     },
