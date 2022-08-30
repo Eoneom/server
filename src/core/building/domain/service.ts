@@ -1,13 +1,8 @@
 import {
   BuildingCode,
-  mushroom_farm_earnings_by_level_by_seconds,
-  mushroom_farm_mushroom_costs_by_level,
-  mushroom_farm_plastic_costs_by_level,
-  mushroom_farm_upgrade_time_in_seconds,
-  recycling_plant_earnings_by_level_by_seconds,
-  recycling_plant_mushroom_costs_by_level,
-  recycling_plant_plastic_costs_by_level,
-  recycling_plant_upgrade_time_in_seconds
+  building_costs,
+  building_earnings,
+  building_upgrade_times_in_second,
 } from './constants'
 
 import { BuildingEntity } from './entity'
@@ -29,11 +24,13 @@ export class BuildingService {
 
     const recycling_plant = BuildingEntity.initRecyclingPlant({ city_id })
     const mushroom_farm = BuildingEntity.initMushroomFarm({ city_id })
+    const research_lab = BuildingEntity.initResearchLab({ city_id })
 
     return {
       buildings: [
         recycling_plant,
-        mushroom_farm
+        mushroom_farm,
+        research_lab
       ]
     }
   }
@@ -58,21 +55,17 @@ export class BuildingService {
   }
 
   getCostsForUpgrade({ code, level }: BuildingEntity): { plastic: number, mushroom: number } {
+    const costs = building_costs[code]
+    if (!costs) {
+      throw new Error(BuildingErrors.UNKNOWN_BUILDING)
+    }
     const upgraded_level = level + 1
-    switch (code) {
-      case BuildingCode.RECYCLING_PLANT:
-        return {
-          plastic: recycling_plant_plastic_costs_by_level[upgraded_level],
-          mushroom: recycling_plant_mushroom_costs_by_level[upgraded_level]
-        }
-      case BuildingCode.MUSHROOM_FARM:
-        return {
-          plastic: mushroom_farm_plastic_costs_by_level[upgraded_level],
-          mushroom: mushroom_farm_mushroom_costs_by_level[upgraded_level]
-        }
+    const level_costs = costs[upgraded_level]
+    if (!level_costs) {
+      throw new Error(BuildingErrors.UNKNOWN_COSTS_LEVEL)
     }
 
-    throw new Error(BuildingErrors.UNKNOWN_BUILDING)
+    return level_costs
   }
 
   getEarningsBySecond({
@@ -86,20 +79,23 @@ export class BuildingService {
     mushroom: number
   } {
     return {
-      plastic: recycling_plant_earnings_by_level_by_seconds[recycling_plant_level],
-      mushroom: mushroom_farm_earnings_by_level_by_seconds[mushroom_farm_level]
+      plastic: building_earnings[BuildingCode.RECYCLING_PLANT][recycling_plant_level],
+      mushroom: building_earnings[BuildingCode.MUSHROOM_FARM][mushroom_farm_level]
     }
   }
 
   private getUpgradeTimeInSeconds({ code, level }: BuildingEntity): number {
-    const upgraded_level = level + 1
-    switch (code) {
-      case BuildingCode.RECYCLING_PLANT:
-        return recycling_plant_upgrade_time_in_seconds[upgraded_level]
-      case BuildingCode.MUSHROOM_FARM:
-        return mushroom_farm_upgrade_time_in_seconds[upgraded_level]
+    const upgrade_times = building_upgrade_times_in_second[code]
+    if (!upgrade_times) {
+      throw new Error(BuildingErrors.UNKNOWN_BUILDING)
     }
 
-    throw new Error(BuildingErrors.UNKNOWN_BUILDING)
+    const upgraded_level = level + 1
+    const upgrade_time = upgrade_times[upgraded_level]
+    if (!upgrade_time) {
+      throw new Error(BuildingErrors.UNKNOWN_UPGRADE_TIME_LEVEL)
+    }
+
+    return upgrade_time
   }
 }

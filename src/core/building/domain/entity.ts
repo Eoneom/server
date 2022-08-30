@@ -5,14 +5,14 @@ import { now } from '../../shared/time'
 
 type BuildingEntityProps = BaseEntityProps & {
   city_id: string
-  code: string
+  code: BuildingCode
   level: number
   upgrade_time?: number
 }
 
 export class BuildingEntity extends BaseEntity {
   readonly city_id: string
-  readonly code: string
+  readonly code: BuildingCode
   readonly level: number
   readonly upgrade_time: number | null
 
@@ -50,6 +50,15 @@ export class BuildingEntity extends BaseEntity {
       city_id,
       code: BuildingCode.MUSHROOM_FARM,
       level: 1
+    })
+  }
+
+  static initResearchLab({ city_id }: { city_id: string }): BuildingEntity {
+    return new BuildingEntity({
+      id: 'fake',
+      city_id,
+      code: BuildingCode.RESEARCH_LAB,
+      level: 0
     })
   }
 

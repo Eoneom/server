@@ -48,6 +48,9 @@ const init = async (app: App): Promise<CityEntity> => {
     launchMushroomFarmUpgrade: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.MUSHROOM_FARM, city_id })
     },
+    launchResearchLabUpgrade: () => {
+      app.building.commands.launchUpgrade({ code: BuildingCode.RESEARCH_LAB, city_id })
+    },
     buildings: () => {
       app.building.queries.getBuildings({ city_id }).then(console.log)
     }

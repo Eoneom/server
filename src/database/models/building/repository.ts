@@ -1,5 +1,6 @@
 import { BuildingDocument, BuildingModel } from './document'
 
+import { BuildingCode } from '../../../core/building/domain/constants'
 import { BuildingEntity } from '../../../core/building/domain/entity'
 import { BuildingRepository } from '../../../core/building/repository'
 import { MongoGenericRepository } from '../../generic'

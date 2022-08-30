@@ -85,7 +85,7 @@ export class BuildingCommands {
     })
 
     await this.repository.updateOne(result.building)
-    console.log(building.code, ' upgrade launched')
+    console.log(`${building.code} upgrade launched`)
   }
 
   async finishUpgrades({ city_id }: BuildingFinishUpgradesCommand): Promise<boolean> {

@@ -1,13 +1,14 @@
 import { getModelForClass, mongoose, prop } from '@typegoose/typegoose'
 
+import { BuildingCode } from '../../../core/building/domain/constants'
 import { Document } from 'mongoose'
 
 class Building {
   @prop({ required: true })
   public city_id!: mongoose.Types.ObjectId
 
-  @prop({ required: true })
-  public code!: string
+  @prop({ required: true, enum: BuildingCode })
+  public code!: BuildingCode
 
   @prop({ required: true })
   public level!: number
