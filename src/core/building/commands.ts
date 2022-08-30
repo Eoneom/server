@@ -3,6 +3,7 @@ import { BuildingEntity } from './domain/entity'
 import { BuildingErrors } from './domain/errors'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
+import { CityCommands } from '../city/commands'
 import { CityQueries } from '../city/queries'
 import { now } from '../shared/time'
 
@@ -28,20 +29,20 @@ export interface BuildingInitCityCommand {
 export class BuildingCommands {
   private repository: BuildingRepository
   private service: BuildingService
-  private city_queries: CityQueries
+  private city_commands: CityCommands
 
   constructor({
     repository,
     service,
-    city_queries
+    city_commands
   }: {
     repository: BuildingRepository,
     service: BuildingService,
-    city_queries: CityQueries
+    city_commands: CityCommands
   }) {
     this.repository = repository
     this.service = service
-    this.city_queries = city_queries
+    this.city_commands = city_commands
   }
 
   async initFirstBuildings({ city_id }: BuildingInitCityCommand): Promise<void> {
@@ -76,11 +77,10 @@ export class BuildingCommands {
     }
 
     const plastic_cost = this.service.getPlasticCostsForUpgrade(building)
-    const has_enough_resources = await this.city_queries.hasResources({ city_id, plastic: plastic_cost })
+    await this.city_commands.purchase({ id: city_id, plastic_cost })
 
     const result = this.service.launchUpgrade({
       building,
-      has_enough_resources,
       is_building_in_progress: Boolean(building_in_progress)
     })
 

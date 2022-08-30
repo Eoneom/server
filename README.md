@@ -29,7 +29,7 @@ npm run build:watch
 npm run start
 ```
 
-Once the app is started, a sample city will be created. It will start gathering plastic every second, and will finish building upgrades if there is any. You can then interact with the app with the several commands.
+Once the app is started, a sample city will be created. It will start gathering plastic and mushroom every second, and will finish building upgrades if there is any. You can then interact with the app with the several commands.
 
 ```
 # display the sample city data
@@ -37,11 +37,13 @@ g.city()
 
 # launch recycling plant upgrade
 g.launchRecyclingPlantUpgrade()
+
+# launch mushroom farm upgrade
+g.launchMushroomFarmUpgrade()
 ```
 
 ## Roadmap
 
-- feat: add mushroom ressource (building & gather)
 - feat: use mushroom for buildings
 - feat: create other buildings
 - feat: research technologies

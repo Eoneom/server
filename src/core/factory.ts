@@ -66,7 +66,7 @@ export class Factory {
       this.building_commands = new BuildingCommands({
         repository: this.getRepository().building,
         service: new BuildingService(),
-        city_queries: this.getCityQueries()
+        city_commands: this.getCityCommands()
       })
     }
 

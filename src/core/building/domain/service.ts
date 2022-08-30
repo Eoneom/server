@@ -38,21 +38,15 @@ export class BuildingService {
 
   launchUpgrade({
     building,
-    has_enough_resources,
     is_building_in_progress,
   }: {
     building: BuildingEntity
-    has_enough_resources: boolean,
     is_building_in_progress: boolean
   }): {
     building: BuildingEntity
   } {
     if (is_building_in_progress) {
       throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
-    }
-
-    if (!has_enough_resources) {
-      throw new Error(BuildingErrors.NOT_ENOUGH_RESOURCES)
     }
 
     const upgrade_time = this.getUpgradeTimeInSeconds(building)

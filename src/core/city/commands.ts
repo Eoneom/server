@@ -17,6 +17,12 @@ interface CityGatherMushroomCommand {
   gather_at_time: number
 }
 
+interface CityPurchaseCommand {
+  id: string
+  plastic_cost?: number
+  mushroom_cost?: number
+}
+
 export class CityCommands {
   private repository: CityRepository
   private building_queries: BuildingQueries
@@ -40,6 +46,16 @@ export class CityCommands {
 
     const city = CityEntity.initCity({ name })
     return this.repository.create(city)
+  }
+
+  async purchase({ id, plastic_cost = 0, mushroom_cost = 0 }: CityPurchaseCommand): Promise<void> {
+    const city = await this.repository.findById(id)
+    if (!city) {
+      throw new Error(CityErrors.NOT_FOUND)
+    }
+
+    const updated_city = city.purchase({ plastic_cost, mushroom_cost })
+    await this.repository.updateOne(updated_city)
   }
 
   async gatherPlastic({ id, gather_at_time }: CityGatherPlasticCommand): Promise<void> {
