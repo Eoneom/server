@@ -18,15 +18,6 @@ export class BuildingQueries {
     this.service = service
   }
 
-  async getLevel(query: { code: BuildingCode, city_id: string }): Promise<number> {
-    const building = await this.repository.findOne(query)
-    if (!building) {
-      throw new Error(BuildingErrors.NOT_FOUND)
-    }
-
-    return building.level
-  }
-
   async getEarningsBySecond({ city_id }: { city_id: string }): Promise<{
     plastic: number,
     mushroom: number
@@ -42,18 +33,9 @@ export class BuildingQueries {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    const plastic = this.service.getEarningsBySecond({
-      code: BuildingCode.RECYCLING_PLANT,
-      level: recycling_plant.level
+    return this.service.getEarningsBySecond({
+      recycling_plant_level: recycling_plant.level,
+      mushroom_farm_level: mushroom_farm.level
     })
-    const mushroom = this.service.getEarningsBySecond({
-      code: BuildingCode.MUSHROOM_FARM,
-      level: recycling_plant.level
-    })
-
-    return {
-      plastic,
-      mushroom
-    }
   }
 }
