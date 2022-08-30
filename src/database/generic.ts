@@ -24,6 +24,11 @@ export abstract class MongoGenericRepository<
     return Boolean(existing)
   }
 
+  async find(query: FilterQuery<Entity>): Promise<Entity[]> {
+    const documents = await this.model.find(query)
+    return documents.map(document => this.buildFromModel(document)!)
+  }
+
   async findById(id: string): Promise<Entity | null> {
     const document = await this.model.findById(id)
     return this.buildFromModel(document)

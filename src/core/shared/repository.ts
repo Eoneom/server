@@ -5,6 +5,7 @@ import { FilterQuery } from '../../types/database'
 
 export interface GenericRepository<Entity extends BaseEntity> {
   exists(query: FilterQuery<Entity>): Promise<boolean>
+  find(query: FilterQuery<Entity>): Promise<Entity[]>
   findById(id: string): Promise<Entity | null>
   findOne(query: FilterQuery<Entity>): Promise<Entity | null>
   create(entity: Omit<Entity, 'id'>): Promise<string>

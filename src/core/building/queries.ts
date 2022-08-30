@@ -3,6 +3,18 @@ import { BuildingErrors } from './domain/errors'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
 
+interface GetBuildingsResponse {
+  buildings: {
+    code: string
+    level: number
+    upgrade_time: number | null
+    upgrade_costs: {
+      plastic: number
+      mushroom: number
+    }
+  }[]
+}
+
 export class BuildingQueries {
   private repository: BuildingRepository
   private service: BuildingService
@@ -16,6 +28,22 @@ export class BuildingQueries {
   }) {
     this.repository = repository
     this.service = service
+  }
+
+  async getBuildings({ city_id }: { city_id: string }): Promise<GetBuildingsResponse> {
+    const buildings = await this.repository.find({ city_id })
+    const response_buildings = buildings.map(building => {
+      return {
+        code: building.code,
+        level: building.level,
+        upgrade_time: building.upgrade_time,
+        upgrade_costs: this.service.getCostsForUpgrade(building)
+      }
+    })
+
+    return {
+      buildings: response_buildings
+    }
   }
 
   async getEarningsBySecond({ city_id }: { city_id: string }): Promise<{
