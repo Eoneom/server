@@ -14,8 +14,8 @@ interface CityGatherResourcesCommand {
 
 interface CityPurchaseCommand {
   id: string
-  plastic_cost?: number
-  mushroom_cost?: number
+  plastic_cost: number
+  mushroom_cost: number
 }
 
 export class CityCommands {
@@ -43,7 +43,7 @@ export class CityCommands {
     return this.repository.create(city)
   }
 
-  async purchase({ id, plastic_cost = 0, mushroom_cost = 0 }: CityPurchaseCommand): Promise<void> {
+  async purchase({ id, plastic_cost, mushroom_cost }: CityPurchaseCommand): Promise<void> {
     const city = await this.repository.findById(id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)

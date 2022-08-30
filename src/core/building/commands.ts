@@ -76,8 +76,8 @@ export class BuildingCommands {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    const plastic_cost = this.service.getPlasticCostsForUpgrade(building)
-    await this.city_commands.purchase({ id: city_id, plastic_cost })
+    const { plastic: plastic_cost, mushroom: mushroom_cost } = this.service.getCostsForUpgrade(building)
+    await this.city_commands.purchase({ id: city_id, plastic_cost, mushroom_cost })
 
     const result = this.service.launchUpgrade({
       building,

@@ -1,9 +1,11 @@
 import {
   BuildingCode,
   mushroom_farm_earnings_by_level_by_seconds,
+  mushroom_farm_mushroom_costs_by_level,
   mushroom_farm_plastic_costs_by_level,
   mushroom_farm_upgrade_time_in_seconds,
   recycling_plant_earnings_by_level_by_seconds,
+  recycling_plant_mushroom_costs_by_level,
   recycling_plant_plastic_costs_by_level,
   recycling_plant_upgrade_time_in_seconds
 } from './constants'
@@ -55,13 +57,19 @@ export class BuildingService {
     }
   }
 
-  getPlasticCostsForUpgrade({ code, level }: BuildingEntity): number {
+  getCostsForUpgrade({ code, level }: BuildingEntity): { plastic: number, mushroom: number } {
     const upgraded_level = level + 1
     switch (code) {
       case BuildingCode.RECYCLING_PLANT:
-        return recycling_plant_plastic_costs_by_level[upgraded_level]
+        return {
+          plastic: recycling_plant_plastic_costs_by_level[upgraded_level],
+          mushroom: recycling_plant_mushroom_costs_by_level[upgraded_level]
+        }
       case BuildingCode.MUSHROOM_FARM:
-        return mushroom_farm_plastic_costs_by_level[upgraded_level]
+        return {
+          plastic: mushroom_farm_plastic_costs_by_level[upgraded_level],
+          mushroom: mushroom_farm_mushroom_costs_by_level[upgraded_level]
+        }
     }
 
     throw new Error(BuildingErrors.UNKNOWN_BUILDING)

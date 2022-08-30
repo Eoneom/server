@@ -44,8 +44,8 @@ g.launchMushroomFarmUpgrade()
 
 ## Roadmap
 
-- feat: use mushroom for buildings
 - feat: create other buildings
+- feat: list all buildings (specific response structure)
 - feat: research technologies
 - feat: create units
 - tech: add unit tests

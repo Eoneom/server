@@ -22,6 +22,12 @@ export const recycling_plant_plastic_costs_by_level: Record<number, number> = {
   4: 1000
 }
 
+export const recycling_plant_mushroom_costs_by_level: Record<number, number> = {
+  2: 100,
+  3: 250,
+  4: 500
+}
+
 export const mushroom_farm_earnings_by_level_by_seconds: Record<number, number> = {
   1: 25,
   2: 35,
@@ -39,4 +45,11 @@ export const mushroom_farm_plastic_costs_by_level: Record<number, number> = {
   2: 100,
   3: 400,
   4: 800
+}
+
+
+export const mushroom_farm_mushroom_costs_by_level: Record<number, number> = {
+  2: 200,
+  3: 800,
+  4: 1600
 }
