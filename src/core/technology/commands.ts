@@ -1,6 +1,7 @@
 import { BuildingQueries } from '../building/queries'
 import { CityCommands } from '../city/commands'
 import { CityQueries } from '../city/queries'
+import { PricingQueries } from '../pricing/queries'
 import { TechnologyCode } from './domain/constants'
 import { TechnologyErrors } from './domain/errors'
 import { TechnologyRepository } from './repository'
@@ -27,25 +28,29 @@ export class TechnologyCommands {
   private city_queries: CityQueries
   private city_commands: CityCommands
   private building_queries: BuildingQueries
+  private pricing_queries: PricingQueries
 
   constructor({
     repository,
     service,
     city_queries,
     city_commands,
-    building_queries
+    building_queries,
+    pricing_queries
   }: {
     repository: TechnologyRepository
     service: TechnologyService
-    city_queries: CityQueries,
-    city_commands: CityCommands,
+    city_queries: CityQueries
+    city_commands: CityCommands
     building_queries: BuildingQueries
+    pricing_queries: PricingQueries
   }) {
     this.repository = repository
     this.service = service
     this.city_queries = city_queries
     this.city_commands = city_commands
     this.building_queries = building_queries
+    this.pricing_queries = pricing_queries
   }
 
   async init({ player_id }: TechnologyInitCommand): Promise<void> {
@@ -75,23 +80,25 @@ export class TechnologyCommands {
       }
     })
 
-    const costs = this.service.getCostsForResearch(technology)
-    const has_enough_resources = await this.city_queries.hasResources({ id: city_id, ...costs })
+    const next_level_costs = await this.pricing_queries.getNextLevelCost(technology)
+    const has_enough_resources = await this.city_queries.hasResources({ id: city_id, ...next_level_costs.resource })
     const research_level = await this.building_queries.getResearchLevel({ city_id })
 
     const result = this.service.launchResearch({
       is_technology_in_progress,
       has_enough_resources,
       research_level,
-      technology
+      technology,
+      duration: next_level_costs.duration
     })
 
     await this.city_commands.purchase({
       id: city_id,
-      costs
+      costs: next_level_costs.resource
     })
 
     await this.repository.updateOne(result.technology)
+    console.log(`${code} research launched`)
   }
 
   async finishResearches({ player_id }: TechnologyFinishResearchesCommand): Promise<boolean> {

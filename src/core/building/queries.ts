@@ -2,6 +2,8 @@ import { BuildingCode } from './domain/constants'
 import { BuildingErrors } from './domain/errors'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
+import { PricingQueries } from '../pricing/queries'
+import { Resource } from '../shared/resource'
 
 interface GetBuildingsResponse {
   buildings: {
@@ -9,8 +11,11 @@ interface GetBuildingsResponse {
     level: number
     upgrade_time: number | null
     upgrade_costs: {
-      plastic: number
-      mushroom: number
+      duration: number
+      resource: {
+        plastic: number
+        mushroom: number
+      }
     }
   }[]
 }
@@ -18,29 +23,26 @@ interface GetBuildingsResponse {
 export class BuildingQueries {
   private repository: BuildingRepository
   private service: BuildingService
+  private pricing_queries: PricingQueries
 
   public constructor({
     repository,
-    service
+    service,
+    pricing_queries
   }: {
-    repository: BuildingRepository,
+    repository: BuildingRepository
     service: BuildingService
+    pricing_queries: PricingQueries
   }) {
     this.repository = repository
     this.service = service
+    this.pricing_queries = pricing_queries
   }
 
   async getBuildings({ city_id }: { city_id: string }): Promise<GetBuildingsResponse> {
     const buildings = await this.repository.find({ city_id })
-    const response_buildings = buildings.map(building => {
-      let upgrade_costs = {
-        plastic: 0,
-        mushroom: 0
-      }
-
-      try {
-        upgrade_costs = this.service.getCostsForUpgrade(building)
-      } catch (err) { }
+    const response_buildings = buildings.map(async building => {
+      const upgrade_costs = await this.pricing_queries.getNextLevelCost(building)
 
       return {
         code: building.code,
@@ -51,14 +53,11 @@ export class BuildingQueries {
     })
 
     return {
-      buildings: response_buildings
+      buildings: await Promise.all(response_buildings)
     }
   }
 
-  async getEarningsBySecond({ city_id }: { city_id: string }): Promise<{
-    plastic: number,
-    mushroom: number
-  }> {
+  async getEarningsBySecond({ city_id }: { city_id: string }): Promise<Resource> {
     const [
       recycling_plant,
       mushroom_farm,

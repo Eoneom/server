@@ -10,6 +10,9 @@ import { MongoRepository } from '../database/repository'
 import { PlayerCommands } from './player/commands'
 import { PlayerModule } from './player/module'
 import { PlayerQueries } from './player/queries'
+import { PricingCommands } from './pricing/commands'
+import { PricingModule } from './pricing/module'
+import { PricingQueries } from './pricing/queries'
 import { Repository } from './shared/repository'
 import { TechnologyCommands } from './technology/commands'
 import { TechnologyModule } from './technology/module'
@@ -34,6 +37,10 @@ export class Factory {
   private static technology_module: TechnologyModule
   private static technology_queries: TechnologyQueries
   private static technology_commands: TechnologyCommands
+
+  private static pricing_module: PricingModule
+  private static pricing_queries: PricingQueries
+  private static pricing_commands: PricingCommands
 
   static getRepository(): Repository {
     if (!this.repository) {
@@ -87,11 +94,23 @@ export class Factory {
     return this.technology_module
   }
 
+  static getPricingModule(): PricingModule {
+    if (!this.pricing_module) {
+      this.pricing_module = new Module({
+        queries: this.getPricingQueries(),
+        commands: this.getPricingCommands(),
+      })
+    }
+
+    return this.pricing_module
+  }
+
   private static getBuildingQueries(): BuildingQueries {
     if (!this.building_queries) {
       this.building_queries = new BuildingQueries({
         repository: this.getRepository().building,
-        service: new BuildingService()
+        service: new BuildingService(),
+        pricing_queries: this.getPricingQueries()
       })
     }
 
@@ -104,7 +123,8 @@ export class Factory {
         repository: this.getRepository().building,
         service: new BuildingService(),
         city_commands: this.getCityCommands(),
-        city_queries: this.getCityQueries()
+        city_queries: this.getCityQueries(),
+        pricing_queries: this.getPricingQueries()
       })
     }
 
@@ -169,10 +189,33 @@ export class Factory {
         service: new TechnologyService(),
         city_queries: this.getCityQueries(),
         city_commands: this.getCityCommands(),
-        building_queries: this.getBuildingQueries()
+        building_queries: this.getBuildingQueries(),
+        pricing_queries: this.getPricingQueries()
       })
     }
 
     return this.technology_commands
+  }
+
+  private static getPricingQueries(): PricingQueries {
+    if (!this.pricing_queries) {
+      this.pricing_queries = new PricingQueries({
+        level_repository: this.getRepository().level_cost,
+        unit_repository: this.getRepository().unit_cost,
+      })
+    }
+
+    return this.pricing_queries
+  }
+
+  private static getPricingCommands(): PricingCommands {
+    if (!this.pricing_commands) {
+      this.pricing_commands = new PricingCommands({
+        level_repository: this.getRepository().level_cost,
+        unit_repository: this.getRepository().unit_cost,
+      })
+    }
+
+    return this.pricing_commands
   }
 }

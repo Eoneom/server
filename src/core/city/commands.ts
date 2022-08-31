@@ -2,6 +2,7 @@ import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
 import { CityRepository } from './repository'
+import { Resource } from '../shared/resource'
 
 interface CreateCityCommand {
   name: string
@@ -15,10 +16,7 @@ interface CityGatherResourcesCommand {
 
 interface CityPurchaseCommand {
   id: string
-  costs: {
-    plastic: number
-    mushroom: number
-  }
+  costs: Resource
 }
 
 export class CityCommands {

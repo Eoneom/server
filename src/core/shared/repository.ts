@@ -1,3 +1,5 @@
+import { LevelCostRepository, UnitCostRepository } from '../pricing/repository'
+
 import { BaseEntity } from '../../types/domain'
 import { BuildingRepository } from '../building/repository'
 import { CityRepository } from '../city/repository'
@@ -20,4 +22,6 @@ export interface Repository {
   building: BuildingRepository
   player: PlayerRepository
   technology: TechnologyRepository
+  level_cost: LevelCostRepository
+  unit_cost: UnitCostRepository
 }

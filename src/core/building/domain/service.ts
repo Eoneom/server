@@ -1,8 +1,6 @@
 import {
   BuildingCode,
-  building_costs,
   building_earnings,
-  building_upgrade_durations_in_second,
 } from './constants'
 
 import { BuildingEntity } from './entity'
@@ -35,10 +33,12 @@ export class BuildingService {
     building,
     has_enough_resources,
     is_building_in_progress,
+    duration
   }: {
     building: BuildingEntity
     has_enough_resources: boolean
     is_building_in_progress: boolean
+    duration: number
   }): {
     building: BuildingEntity
   } {
@@ -50,24 +50,9 @@ export class BuildingService {
       throw new Error(BuildingErrors.NOT_ENOUGH_RESOURCES)
     }
 
-    const upgrade_duration = this.getUpgradeDurationInSeconds(building)
     return {
-      building: building.launchUpgrade(upgrade_duration)
+      building: building.launchUpgrade(duration)
     }
-  }
-
-  getCostsForUpgrade({ code, level }: BuildingEntity): { plastic: number, mushroom: number } {
-    const costs = building_costs[code]
-    if (!costs) {
-      throw new Error(BuildingErrors.UNKNOWN_BUILDING)
-    }
-    const upgraded_level = level + 1
-    const level_costs = costs[upgraded_level]
-    if (!level_costs) {
-      throw new Error(BuildingErrors.UNKNOWN_COSTS_LEVEL)
-    }
-
-    return level_costs
   }
 
   getEarningsBySecond({
@@ -84,20 +69,5 @@ export class BuildingService {
       plastic: building_earnings[BuildingCode.RECYCLING_PLANT][recycling_plant_level],
       mushroom: building_earnings[BuildingCode.MUSHROOM_FARM][mushroom_farm_level]
     }
-  }
-
-  private getUpgradeDurationInSeconds({ code, level }: BuildingEntity): number {
-    const upgrade_durations = building_upgrade_durations_in_second[code]
-    if (!upgrade_durations) {
-      throw new Error(BuildingErrors.UNKNOWN_BUILDING)
-    }
-
-    const upgraded_level = level + 1
-    const upgrade_duration = upgrade_durations[upgraded_level]
-    if (!upgrade_duration) {
-      throw new Error(BuildingErrors.UNKNOWN_UPGRADE_DURATION_LEVEL)
-    }
-
-    return upgrade_duration
   }
 }

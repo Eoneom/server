@@ -50,8 +50,9 @@ g.launchBuildingResearch()
 
 ## Roadmap
 
+- tech: add resources module
+- feat: add technology query
 - tech: event bus system
-- tech: add costs module to handle building and technology costs
 - feat: add rights on cities and buildings
 - feat: create other buildings
 - feat: create units

@@ -6,6 +6,7 @@ import { Factory } from './core/factory'
 import { PlayerEntity } from './core/player/domain/entity'
 import { PlayerErrors } from './core/player/domain/errors'
 import { TechnologyCode } from './core/technology/domain/constants'
+import { init_costs } from './core/migrations/init_costs'
 import { now } from './core/shared/time'
 import repl from 'repl'
 
@@ -45,6 +46,11 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
   await repository.connect()
 
   const app = new App()
+
+  const existing_costs = await app.pricing.queries.doesLevelCostsExists()
+  if (!existing_costs) {
+    await init_costs(app)
+  }
 
   const { city, player } = await init(app)
   console.log(player)

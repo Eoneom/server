@@ -4,6 +4,7 @@ import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
 import { CityCommands } from '../city/commands'
 import { CityQueries } from '../city/queries'
+import { PricingQueries } from '../pricing/queries'
 import { now } from '../shared/time'
 
 export interface BuildingCreateCommand {
@@ -30,22 +31,26 @@ export class BuildingCommands {
   private service: BuildingService
   private city_commands: CityCommands
   private city_queries: CityQueries
+  private pricing_queries: PricingQueries
 
   constructor({
     repository,
     service,
     city_commands,
-    city_queries
+    city_queries,
+    pricing_queries
   }: {
-    repository: BuildingRepository,
-    service: BuildingService,
+    repository: BuildingRepository
+    service: BuildingService
     city_commands: CityCommands
     city_queries: CityQueries
+    pricing_queries: PricingQueries
   }) {
     this.repository = repository
     this.service = service
     this.city_commands = city_commands
     this.city_queries = city_queries
+    this.pricing_queries = pricing_queries
   }
 
   async initFirstBuildings({ city_id }: BuildingInitCityCommand): Promise<void> {
@@ -79,19 +84,19 @@ export class BuildingCommands {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    const costs = this.service.getCostsForUpgrade(building)
-
-    const has_enough_resources = await this.city_queries.hasResources({ id: city_id, ...costs })
+    const level_cost = await this.pricing_queries.getNextLevelCost(building)
+    const has_enough_resources = await this.city_queries.hasResources({ id: city_id, ...level_cost.resource })
 
     const result = this.service.launchUpgrade({
       building,
       has_enough_resources,
-      is_building_in_progress: Boolean(building_in_progress)
+      is_building_in_progress: Boolean(building_in_progress),
+      duration: level_cost.duration
     })
 
     await this.city_commands.purchase({
       id: city_id,
-      costs
+      costs: level_cost.resource,
     })
 
     await this.repository.updateOne(result.building)

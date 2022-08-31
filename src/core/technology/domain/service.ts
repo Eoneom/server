@@ -1,7 +1,6 @@
-import { technology_costs, technology_required_research_levels, technology_research_durations_in_second } from './constants'
-
 import { TechnologyEntity } from './entity'
 import { TechnologyErrors } from './errors'
+import { technology_required_research_levels } from './constants'
 
 export class TechnologyService {
   initTechnologies({
@@ -26,12 +25,14 @@ export class TechnologyService {
     is_technology_in_progress,
     has_enough_resources,
     research_level,
-    technology
+    technology,
+    duration
   }: {
-    is_technology_in_progress: boolean,
-    has_enough_resources: boolean,
-    research_level: number,
+    is_technology_in_progress: boolean
+    has_enough_resources: boolean
+    research_level: number
     technology: TechnologyEntity
+    duration: number
   }): {
     technology: TechnologyEntity
   } {
@@ -48,42 +49,12 @@ export class TechnologyService {
       throw new Error(TechnologyErrors.NOT_REQUIRED_RESEARCH_LEVEL)
     }
 
-    const research_duration = this.getResearchDurationInSeconds(technology)
     return {
-      technology: technology.launchResearch(research_duration)
+      technology: technology.launchResearch(duration)
     }
-  }
-
-  getCostsForResearch({ code, level }: TechnologyEntity): { plastic: number, mushroom: number } {
-    const costs = technology_costs[code]
-    if (!costs) {
-      throw new Error(TechnologyErrors.UNKNOWN_TECHNOLOGY)
-    }
-    const upgraded_level = level + 1
-    const level_costs = costs[upgraded_level]
-    if (!level_costs) {
-      throw new Error(TechnologyErrors.UNKNOWN_COSTS_LEVEL)
-    }
-
-    return level_costs
   }
 
   private hasRequiredResearchLevel({ research_level, technology }: { research_level: number, technology: TechnologyEntity }): boolean {
     return research_level >= technology_required_research_levels[technology.code]
-  }
-
-  private getResearchDurationInSeconds({ code, level }: TechnologyEntity): number {
-    const research_durations = technology_research_durations_in_second[code]
-    if (!research_durations) {
-      throw new Error(TechnologyErrors.UNKNOWN_TECHNOLOGY)
-    }
-
-    const upgraded_level = level + 1
-    const research_duration = research_durations[upgraded_level]
-    if (!research_duration) {
-      throw new Error(TechnologyErrors.UNKNOWN_RESEARCH_DURATION_LEVEL)
-    }
-
-    return research_duration
   }
 }
