@@ -1,4 +1,3 @@
-import { BuildingCommands } from '../building/commands'
 import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'

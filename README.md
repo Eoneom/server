@@ -50,11 +50,13 @@ g.launchBuildingResearch()
 
 ## Roadmap
 
+- tech: event bus system
 - tech: add costs module to handle building and technology costs
 - feat: add rights on cities and buildings
 - feat: create other buildings
 - feat: create units
 - tech: add unit tests
+- tech: add integration tests
 - tech: add web adapter (HTTP for signup/login and WebSocket for the rest)
 
 ## Architecture
