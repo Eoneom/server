@@ -16,7 +16,7 @@ export interface Subscriber {
 }
 
 export interface EventBus {
-  dispatch<Code extends EventCode>(event: Code, arg?: Payloads[Code]): void
+  dispatch<Code extends EventCode>(event: Code, arg?: Payloads[Code]): Promise<void>
   register<Code extends EventCode>(
     event: Code,
     callback: (payload: Payloads[Code]) => void

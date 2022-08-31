@@ -1,4 +1,4 @@
-import { EventBus, Registry, Subscriber } from '../core/eventbus'
+import { EventBus, EventCode, Payloads, Registry, Subscriber } from '../core/eventbus'
 
 export class SimpleEventBus implements EventBus {
   private subscribers: Subscriber
@@ -8,17 +8,20 @@ export class SimpleEventBus implements EventBus {
     this.subscribers = {}
   }
 
-  public dispatch<T>(event: string, arg?: T): void {
+  async dispatch<Code extends EventCode>(event: Code, arg?: Payloads[Code]): Promise<void> {
     const subscriber = this.subscribers[event]
 
     if (subscriber === undefined) {
       return
     }
 
-    Object.keys(subscriber).forEach((key) => subscriber[key](arg))
+    await Promise.all(Object.keys(subscriber).map((key) => subscriber[key](arg)))
   }
 
-  public register(event: string, callback: Function): Registry {
+  register<Code extends EventCode>(
+    event: Code,
+    callback: (payload: Payloads[Code]) => void
+  ): Registry {
     const id = this.getNextId()
     if (!this.subscribers[event]) this.subscribers[event] = {}
 
