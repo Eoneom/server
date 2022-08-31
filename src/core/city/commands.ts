@@ -1,7 +1,9 @@
 import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
+import { CityEventCode } from './domain/events'
 import { CityRepository } from './repository'
+import { Factory } from '../factory'
 import { Resource } from '../shared/resource'
 
 interface CreateCityCommand {
@@ -42,7 +44,10 @@ export class CityCommands {
 
     const city = CityEntity.initCity({ name, player_id })
 
-    return this.repository.create(city)
+    const id = await this.repository.create(city)
+
+    Factory.getEventBus().dispatch(CityEventCode.CREATED_CITY, { id })
+    return id
   }
 
   async purchase({ id, costs }: CityPurchaseCommand): Promise<void> {

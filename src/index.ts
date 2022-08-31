@@ -2,7 +2,9 @@ import { App } from './core/app'
 import { BuildingCode } from './core/building/domain/constants'
 import { CityEntity } from './core/city/domain/entity'
 import { CityErrors } from './core/city/domain/errors'
+import { CityEventCode } from './core/city/domain/events'
 import { Factory } from './core/factory'
+import { Payloads } from './core/eventbus'
 import { PlayerEntity } from './core/player/domain/entity'
 import { PlayerErrors } from './core/player/domain/errors'
 import { TechnologyCode } from './core/technology/domain/constants'
@@ -44,6 +46,15 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
 (async () => {
   const repository = Factory.getRepository()
   await repository.connect()
+
+  const callback = ({ id }: Payloads[CityEventCode.CREATED_CITY]) => {
+    console.log('CREATED_CITY', id)
+  }
+
+  Factory.getEventBus().register(
+    CityEventCode.CREATED_CITY,
+    callback
+  )
 
   const app = new App()
 

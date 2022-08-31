@@ -5,6 +5,7 @@ import { BuildingService } from './building/domain/service'
 import { CityCommands } from './city/commands'
 import { CityModule } from './city/module'
 import { CityQueries } from './city/queries'
+import { EventBus } from './eventbus'
 import { Module } from './shared/module'
 import { MongoRepository } from '../database/repository'
 import { PlayerCommands } from './player/commands'
@@ -14,6 +15,7 @@ import { PricingCommands } from './pricing/commands'
 import { PricingModule } from './pricing/module'
 import { PricingQueries } from './pricing/queries'
 import { Repository } from './shared/repository'
+import { SimpleEventBus } from '../eventbus'
 import { TechnologyCommands } from './technology/commands'
 import { TechnologyModule } from './technology/module'
 import { TechnologyQueries } from './technology/queries'
@@ -21,6 +23,7 @@ import { TechnologyService } from './technology/domain/service'
 
 export class Factory {
   private static repository: Repository
+  private static eventbus: EventBus
 
   private static building_module: BuildingModule
   private static building_queries: BuildingQueries
@@ -48,6 +51,14 @@ export class Factory {
     }
 
     return this.repository
+  }
+
+  static getEventBus(): EventBus {
+    if (!this.eventbus) {
+      this.eventbus = new SimpleEventBus()
+    }
+
+    return this.eventbus
   }
 
   static getBuildingModule(): BuildingModule {
