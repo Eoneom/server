@@ -2,6 +2,7 @@ import { BaseEntity, BaseEntityProps } from '../../../types/domain'
 import { STARTING_MUSHROOM, STARTING_PLASTIC } from './constants'
 
 import { CityErrors } from './errors'
+import { Resource } from '../../shared/resource'
 import { now } from '../../shared/time'
 
 export interface Cell {
@@ -63,22 +64,16 @@ export class CityEntity extends BaseEntity {
     })
   }
 
-  purchase({
-    plastic_cost,
-    mushroom_cost
-  }: {
-    plastic_cost: number,
-    mushroom_cost: number
-  }): CityEntity {
-    const has_resources = this.hasResources({ plastic_cost, mushroom_cost })
+  purchase({ plastic, mushroom }: Resource): CityEntity {
+    const has_resources = this.hasResources({ plastic, mushroom })
     if (!has_resources) {
       throw new Error(CityErrors.NOT_ENOUGH_RESOURCES)
     }
 
     return new CityEntity({
       ...this,
-      plastic: this.plastic - plastic_cost,
-      mushroom: this.mushroom - mushroom_cost
+      plastic: this.plastic - plastic,
+      mushroom: this.mushroom - mushroom
     })
   }
 
@@ -116,9 +111,8 @@ export class CityEntity extends BaseEntity {
     }
   }
 
-  hasResources({ plastic_cost, mushroom_cost }: { mushroom_cost: number, plastic_cost: number }): boolean {
-    return this.plastic >= plastic_cost &&
-      this.mushroom >= mushroom_cost
+  hasResources({ plastic, mushroom }: Resource): boolean {
+    return this.plastic >= plastic && this.mushroom >= mushroom
   }
 
   private gatherPlastic(plastic_earnings: number): CityEntity {

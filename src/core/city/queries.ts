@@ -17,7 +17,7 @@ export class CityQueries {
       throw new Error(CityErrors.NOT_FOUND)
     }
 
-    return city.hasResources({ plastic_cost: query.plastic, mushroom_cost: query.mushroom })
+    return city.hasResources(query)
   }
 
   public async canBuild({ name }: { name: string }): Promise<boolean> {

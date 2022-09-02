@@ -39,6 +39,15 @@ export class BuildingQueries {
     this.pricing_queries = pricing_queries
   }
 
+  async getLevel({ city_id, code }: { city_id: string, code: BuildingCode }): Promise<number> {
+    const building = await this.repository.findOne({ city_id, code })
+    if (!building) {
+      throw new Error(BuildingErrors.NOT_FOUND)
+    }
+
+    return building.level
+  }
+
   async getBuildings({ city_id }: { city_id: string }): Promise<GetBuildingsResponse> {
     const buildings = await this.repository.find({ city_id })
     const response_buildings = buildings.map(async building => {

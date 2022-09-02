@@ -1,8 +1,9 @@
 import { BuildingEventCode, BuildingPayloads } from './building/domain/events'
 import { CityEventCode, CityPayloads } from './city/domain/events'
+import { PlayerEventCode, PlayerPayloads } from './player/domain/events'
 
-export type EventCode = CityEventCode | BuildingEventCode
-export type Payloads = CityPayloads & BuildingPayloads
+export type EventCode = CityEventCode | BuildingEventCode | PlayerEventCode
+export type Payloads = CityPayloads & BuildingPayloads & PlayerPayloads
 
 export interface Registry {
   unregister: () => void

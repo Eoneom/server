@@ -8,6 +8,7 @@ import { Factory } from './core/factory'
 import { Payloads } from './core/eventbus'
 import { PlayerEntity } from './core/player/domain/entity'
 import { PlayerErrors } from './core/player/domain/errors'
+import { PlayerEventCode } from './core/player/domain/events'
 import { TechnologyCode } from './core/technology/domain/constants'
 import { init_costs } from './core/migrations/init_costs'
 import { now } from './core/shared/time'
@@ -16,32 +17,23 @@ import repl from 'repl'
 const player_name = 'Kroustille'
 const city_name = 'Moustachiopolis'
 
-const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity }> => {
+const init = async (app: App): Promise<void> => {
+  try {
+    await app.player.commands.init({ name: player_name, first_city_name: city_name })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const get_player_and_city = async (app: App): Promise<{ city: CityEntity, player: PlayerEntity }> => {
+  const city = await app.city.queries.findOne({ name: city_name })
   const player = await app.player.queries.findOne({ name: player_name })
-  if (player) {
-    const city = await app.city.queries.findOne({ name: city_name })
-    if (!city) {
-      throw new Error(CityErrors.NOT_FOUND)
-    }
 
-    return { player, city }
+  if (!city || !player) {
+    throw new Error('player or city not found')
   }
 
-  const player_id = await app.player.commands.init({ name: player_name, first_city_name: city_name })
-  const created_player = await app.player.queries.findById(player_id)
-  if (!created_player) {
-    throw new Error(PlayerErrors.NOT_FOUND)
-  }
-
-  const created_city = await app.city.queries.findOne({ name: city_name })
-  if (!created_city) {
-    throw new Error(CityErrors.NOT_FOUND)
-  }
-
-  return {
-    player: created_player,
-    city: created_city
-  }
+  return { city, player }
 }
 
 (async () => {
@@ -49,29 +41,29 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
   await repository.connect()
 
   const app = new App()
+  await init(app)
 
+  const eventbus = Factory.getEventBus()
   const event_codes = [
     ...Object.values(CityEventCode).filter(value => value !== CityEventCode.RESOURCES_GATHERED),
     ...Object.values(BuildingEventCode)
   ]
 
   event_codes.forEach((event_code) => {
-    Factory.getEventBus().listen(
+    eventbus.listen(
       event_code,
       (payload) => console.log(event_code, payload)
     )
   })
-
 
   const existing_costs = await app.pricing.queries.doesLevelCostsExists()
   if (!existing_costs) {
     await init_costs(app)
   }
 
-  const { city, player } = await init(app)
-  console.log(player)
-  const player_id = player.id
+  const { city, player } = await get_player_and_city(app)
   const city_id = city.id
+  const player_id = player.id
 
   await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
   const updated_city = await app.city.queries.findByIdOrThrow(city_id)
@@ -90,13 +82,13 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
       app.technology.commands.launchResearch({ code: TechnologyCode.BUILDING, player_id, city_id })
     },
     upgradeRecyclingPlant: () => {
-      app.building.commands.launchUpgrade({ code: BuildingCode.RECYCLING_PLANT, city_id })
+      app.city.commands.purchaseBuilding({ building_code: BuildingCode.RECYCLING_PLANT, city_id })
     },
     upgradeMushroomFarm: () => {
-      app.building.commands.launchUpgrade({ code: BuildingCode.MUSHROOM_FARM, city_id })
+      app.city.commands.purchaseBuilding({ building_code: BuildingCode.MUSHROOM_FARM, city_id })
     },
     upgradeResearchLab: () => {
-      app.building.commands.launchUpgrade({ code: BuildingCode.RESEARCH_LAB, city_id })
+      app.city.commands.purchaseBuilding({ building_code: BuildingCode.RESEARCH_LAB, city_id })
     },
     buildings: () => {
       app.building.queries.getBuildings({ city_id }).then(console.log)

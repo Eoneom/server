@@ -155,6 +155,7 @@ export class Factory {
       this.city_commands = new CityCommands({
         repository: this.getRepository().city,
         building_queries: this.getBuildingQueries(),
+        pricing_queries: this.getPricingQueries()
       })
     }
 

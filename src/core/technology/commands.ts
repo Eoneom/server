@@ -92,10 +92,10 @@ export class TechnologyCommands {
       duration: next_level_costs.duration
     })
 
-    await this.city_commands.purchase({
-      id: city_id,
-      costs: next_level_costs.resource
-    })
+    // await this.city_commands.purchase({
+    //   id: city_id,
+    //   costs: next_level_costs.resource
+    // })
 
     await this.repository.updateOne(result.technology)
     console.log(`${code} research launched`)
