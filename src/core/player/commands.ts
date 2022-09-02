@@ -44,11 +44,13 @@ export class PlayerCommands {
     const player = PlayerEntity.initPlayer({ name })
     const player_id = await this.repository.create(player)
 
+    console.log('launch settle command')
     await this.city_commands.settle({
       name: first_city_name,
       player_id
     })
 
+    console.log('player created')
     Factory.getEventBus().emit(PlayerEventCode.CREATED, { player_id })
   }
 }

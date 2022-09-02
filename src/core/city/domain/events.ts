@@ -1,9 +1,12 @@
 import { BuildingCode } from '../../building/domain/constants'
+import { TechnologyCode } from '../../technology/domain/constants'
 
 export enum CityEventCode {
   SETTLED = 'city:settled',
   RESOURCES_GATHERED = 'city:resources-gathered',
-  BUILDING_PURCHASED = 'city:building-purchased'
+  PURCHASED = 'city:purchased',
+  TECHNOLOGY_PURCHASED = 'city:technology-purchased',
+  PURCHASE_REQUESTED = 'city:purchase-requested',
 }
 
 export interface CityPayloads {
@@ -13,9 +16,20 @@ export interface CityPayloads {
   [CityEventCode.RESOURCES_GATHERED]: {
     city_id: string
   },
-  [CityEventCode.BUILDING_PURCHASED]: {
+  [CityEventCode.PURCHASED]: {
     city_id: string
-    building_code: BuildingCode
+    player_id: string
+    code: string
     duration: number
+  },
+  [CityEventCode.TECHNOLOGY_PURCHASED]: {
+    city_id: string
+    technology_code: TechnologyCode
+    duration: number
+  },
+  [CityEventCode.PURCHASE_REQUESTED]: {
+    city_id: string
+    code: string
+    current_level: number
   }
 }

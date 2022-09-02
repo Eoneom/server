@@ -63,7 +63,7 @@ export class Factory {
 
   static getBuildingModule(): BuildingModule {
     if (!this.building_module) {
-      this.building_module = new Module({
+      this.building_module = new BuildingModule({
         queries: this.getBuildingQueries(),
         commands: this.getBuildingCommands()
       })
@@ -74,7 +74,7 @@ export class Factory {
 
   static getCityModule(): CityModule {
     if (!this.city_module) {
-      this.city_module = new Module({
+      this.city_module = new CityModule({
         queries: this.getCityQueries(),
         commands: this.getCityCommands()
       })
@@ -96,7 +96,7 @@ export class Factory {
 
   static getTechnologyModule(): TechnologyModule {
     if (!this.technology_module) {
-      this.technology_module = new Module({
+      this.technology_module = new TechnologyModule({
         queries: this.getTechnologyQueries(),
         commands: this.getTechnologyCommands()
       })
@@ -133,9 +133,6 @@ export class Factory {
       this.building_commands = new BuildingCommands({
         repository: this.getRepository().building,
         service: new BuildingService(),
-        city_commands: this.getCityCommands(),
-        city_queries: this.getCityQueries(),
-        pricing_queries: this.getPricingQueries()
       })
     }
 
@@ -178,8 +175,6 @@ export class Factory {
         repository: this.getRepository().player,
         city_commands: this.getCityCommands(),
         city_queries: this.getCityQueries(),
-        building_commands: this.getBuildingCommands(),
-        technology_commands: this.getTechnologyCommands()
       })
     }
 
@@ -188,7 +183,9 @@ export class Factory {
 
   private static getTechnologyQueries(): TechnologyQueries {
     if (!this.technology_queries) {
-      this.technology_queries = new TechnologyQueries()
+      this.technology_queries = new TechnologyQueries({
+        repository: this.getRepository().technology
+      })
     }
 
     return this.technology_queries
@@ -199,10 +196,7 @@ export class Factory {
       this.technology_commands = new TechnologyCommands({
         repository: this.getRepository().technology,
         service: new TechnologyService(),
-        city_queries: this.getCityQueries(),
-        city_commands: this.getCityCommands(),
         building_queries: this.getBuildingQueries(),
-        pricing_queries: this.getPricingQueries()
       })
     }
 

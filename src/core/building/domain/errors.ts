@@ -1,5 +1,4 @@
 export enum BuildingErrors {
-  ALREADY_EXISTS = 'building-already-exists',
   NOT_ENOUGH_RESOURCES = 'building-not-enough-resources',
   NOT_FOUND = 'building-not-found',
   UNKNOWN_BUILDING = 'unknown-building',

@@ -1,4 +1,3 @@
-import { BuildingCode } from '../building/domain/constants'
 import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
@@ -6,26 +5,23 @@ import { CityEventCode } from './domain/events'
 import { CityRepository } from './repository'
 import { Factory } from '../factory'
 import { PricingQueries } from '../pricing/queries'
+import { TechnologyCode } from '../technology/domain/constants'
+import { TechnologyQueries } from '../technology/queries'
 
 interface CreateCityCommand {
   name: string
   player_id: string
 }
 
-interface CityPurchaseBuildingCommand {
+interface CityPurchaseCommand {
   city_id: string
-  building_code: BuildingCode
+  code: string
+  current_level: number
 }
 
 interface CityGatherResourcesCommand {
   id: string
   gather_at_time: number
-}
-
-interface CityPurchaseCommand {
-  id: string
-  code: string
-  current_level: number
 }
 
 export class CityCommands {
@@ -58,24 +54,24 @@ export class CityCommands {
     Factory.getEventBus().emit(CityEventCode.SETTLED, { city_id: id })
   }
 
-  async purchaseBuilding({ city_id, building_code }: CityPurchaseBuildingCommand): Promise<void> {
+  async purchase({ city_id, code, current_level }: CityPurchaseCommand): Promise<void> {
     const city = await this.repository.findById(city_id)
     if (!city) {
       throw new Error(CityErrors.NOT_FOUND)
     }
 
-    const current_building_level = await this.building_queries.getLevel({
-      city_id: city_id,
-      code: building_code
+    const { duration, resource } = await this.pricing_queries.getNextLevelCost({
+      code,
+      level: current_level
     })
 
-    const { duration, resource } = await this.pricing_queries.getNextLevelCost({ code: building_code, level: current_building_level })
     const updated_city = city.purchase(resource)
     await this.repository.updateOne(updated_city)
 
-    Factory.getEventBus().emit(CityEventCode.BUILDING_PURCHASED, {
+    Factory.getEventBus().emit(CityEventCode.PURCHASED, {
       city_id,
-      building_code,
+      player_id: city.player_id,
+      code,
       duration
     })
   }

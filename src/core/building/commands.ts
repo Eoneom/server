@@ -13,7 +13,7 @@ export interface BuildingCreateCommand {
 }
 
 export interface BuildingLaunchUpgradeCommand {
-  building_code: BuildingCode
+  code: BuildingCode
   city_id: string
   duration: number
 }
@@ -42,19 +42,17 @@ export class BuildingCommands {
   }
 
   async initFirstBuildings({ city_id }: BuildingInitCityCommand): Promise<void> {
-    const has_building_in_city = await this.repository.exists({ city_id })
     const buildings = this.service.initBuildings({
       city_id,
-      has_building_in_city
     })
 
     await Promise.all(
       buildings.map((building) => this.repository.create(building))
     )
-    Factory.getEventBus().emit(BuildingEventCode.INITIALIZED, { city_id })
+    Factory.getEventBus().emit(BuildingEventCode.FIRST_INITIALIZED, { city_id })
   }
 
-  async launchUpgrade({ building_code: code, city_id, duration }: BuildingLaunchUpgradeCommand): Promise<void> {
+  async requestUpgrade({ code, city_id }: { code: BuildingCode, city_id: string }): Promise<void> {
     const is_building_in_progress = await this.repository.exists({
       city_id,
       upgrade_time: {
@@ -63,18 +61,30 @@ export class BuildingCommands {
       }
     })
 
+    if (is_building_in_progress) {
+      throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
+    }
+
     const building = await this.repository.findOne({ code, city_id })
     if (!building) {
       throw new Error(BuildingErrors.NOT_FOUND)
     }
 
-    const result = this.service.launchUpgrade({
-      building,
-      is_building_in_progress,
-      duration
+    Factory.getEventBus().emit(BuildingEventCode.UPGRADE_REQUESTED, {
+      city_id,
+      code,
+      current_level: building.level
     })
+  }
 
-    await this.repository.updateOne(result.building)
+  async launchUpgrade({ code, city_id, duration }: BuildingLaunchUpgradeCommand): Promise<void> {
+    const building = await this.repository.findOne({ code, city_id })
+    if (!building) {
+      throw new Error(BuildingErrors.NOT_FOUND)
+    }
+
+    const updated_building = building.launchUpgrade(duration)
+    await this.repository.updateOne(updated_building)
     Factory.getEventBus().emit(BuildingEventCode.UPGRADE_LAUNCHED, { code })
   }
 

@@ -22,28 +22,16 @@ export class TechnologyService {
   }
 
   launchResearch({
-    is_technology_in_progress,
-    has_enough_resources,
     research_level,
     technology,
     duration
   }: {
-    is_technology_in_progress: boolean
-    has_enough_resources: boolean
     research_level: number
     technology: TechnologyEntity
     duration: number
   }): {
     technology: TechnologyEntity
   } {
-    if (is_technology_in_progress) {
-      throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
-    }
-
-    if (!has_enough_resources) {
-      throw new Error(TechnologyErrors.NOT_ENOUGH_RESOURCES)
-    }
-
     const has_required_research_level = this.hasRequiredResearchLevel({ research_level, technology })
     if (!has_required_research_level) {
       throw new Error(TechnologyErrors.NOT_REQUIRED_RESEARCH_LEVEL)

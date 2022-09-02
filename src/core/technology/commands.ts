@@ -1,9 +1,11 @@
 import { BuildingQueries } from '../building/queries'
 import { CityCommands } from '../city/commands'
 import { CityQueries } from '../city/queries'
+import { Factory } from '../factory'
 import { PricingQueries } from '../pricing/queries'
 import { TechnologyCode } from './domain/constants'
 import { TechnologyErrors } from './domain/errors'
+import { TechnologyEventCode } from './domain/events'
 import { TechnologyRepository } from './repository'
 import { TechnologyService } from './domain/service'
 import { now } from '../shared/time'
@@ -12,6 +14,7 @@ interface TechnologyLaunchResearchCommand {
   code: TechnologyCode
   player_id: string
   city_id: string
+  duration: number
 }
 
 interface TechnologyInitCommand {
@@ -25,32 +28,20 @@ interface TechnologyFinishResearchesCommand {
 export class TechnologyCommands {
   private repository: TechnologyRepository
   private service: TechnologyService
-  private city_queries: CityQueries
-  private city_commands: CityCommands
   private building_queries: BuildingQueries
-  private pricing_queries: PricingQueries
 
   constructor({
     repository,
     service,
-    city_queries,
-    city_commands,
     building_queries,
-    pricing_queries
   }: {
     repository: TechnologyRepository
     service: TechnologyService
-    city_queries: CityQueries
-    city_commands: CityCommands
     building_queries: BuildingQueries
-    pricing_queries: PricingQueries
   }) {
     this.repository = repository
     this.service = service
-    this.city_queries = city_queries
-    this.city_commands = city_commands
     this.building_queries = building_queries
-    this.pricing_queries = pricing_queries
   }
 
   async init({ player_id }: TechnologyInitCommand): Promise<void> {
@@ -66,12 +57,7 @@ export class TechnologyCommands {
     )
   }
 
-  async launchResearch({ code, player_id, city_id }: TechnologyLaunchResearchCommand): Promise<void> {
-    const technology = await this.repository.findOne({ code, player_id })
-    if (!technology) {
-      throw new Error(TechnologyErrors.NOT_FOUND)
-    }
-
+  async requestResearch({ code, city_id, player_id }: { code: TechnologyCode, city_id: string, player_id: string }): Promise<void> {
     const is_technology_in_progress = await this.repository.exists({
       player_id,
       research_time: {
@@ -80,25 +66,37 @@ export class TechnologyCommands {
       }
     })
 
-    const next_level_costs = await this.pricing_queries.getNextLevelCost(technology)
-    const has_enough_resources = await this.city_queries.hasResources({ id: city_id, ...next_level_costs.resource })
-    const research_level = await this.building_queries.getResearchLevel({ city_id })
+    if (is_technology_in_progress) {
+      throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
+    }
 
+    const technology = await this.repository.findOne({ code, city_id })
+    if (!technology) {
+      throw new Error(TechnologyErrors.NOT_FOUND)
+    }
+
+    Factory.getEventBus().emit(TechnologyEventCode.RESEARCH_REQUESTED, {
+      city_id,
+      code,
+      current_level: technology.level
+    })
+  }
+
+  async launchResearch({ code, player_id, city_id, duration }: TechnologyLaunchResearchCommand): Promise<void> {
+    const technology = await this.repository.findOne({ code, player_id })
+    if (!technology) {
+      throw new Error(TechnologyErrors.NOT_FOUND)
+    }
+
+    const research_level = await this.building_queries.getResearchLevel({ city_id })
     const result = this.service.launchResearch({
-      is_technology_in_progress,
-      has_enough_resources,
       research_level,
       technology,
-      duration: next_level_costs.duration
+      duration
     })
 
-    // await this.city_commands.purchase({
-    //   id: city_id,
-    //   costs: next_level_costs.resource
-    // })
-
     await this.repository.updateOne(result.technology)
-    console.log(`${code} research launched`)
+    Factory.getEventBus().emit(TechnologyEventCode.RESEARCH_LAUNCHED, { code })
   }
 
   async finishResearches({ player_id }: TechnologyFinishResearchesCommand): Promise<boolean> {
