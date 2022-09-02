@@ -8,7 +8,7 @@ export class SimpleEventBus implements EventBus {
     this.subscribers = {}
   }
 
-  async dispatch<Code extends EventCode>(event: Code, arg?: Payloads[Code]): Promise<void> {
+  async emit<Code extends EventCode>(event: Code, arg: Payloads[Code]): Promise<void> {
     const subscriber = this.subscribers[event]
 
     if (subscriber === undefined) {
@@ -18,7 +18,7 @@ export class SimpleEventBus implements EventBus {
     await Promise.all(Object.keys(subscriber).map((key) => subscriber[key](arg)))
   }
 
-  register<Code extends EventCode>(
+  listen<Code extends EventCode>(
     event: Code,
     callback: (payload: Payloads[Code]) => void
   ): Registry {

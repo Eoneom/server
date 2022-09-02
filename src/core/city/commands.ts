@@ -46,7 +46,7 @@ export class CityCommands {
 
     const id = await this.repository.create(city)
 
-    Factory.getEventBus().dispatch(CityEventCode.CREATED_CITY, { id })
+    Factory.getEventBus().emit(CityEventCode.CREATED, { city_id: id })
     return id
   }
 
@@ -69,8 +69,11 @@ export class CityCommands {
     const earnings_by_second = await this.building_queries.getEarningsBySecond({ city_id: city.id })
     const { city: updated_city, updated } = city.gather({ earnings_by_second, gather_at_time })
 
-    if (updated) {
-      await this.repository.updateOne(updated_city)
+    if (!updated) {
+      return
     }
+
+    await this.repository.updateOne(updated_city)
+    Factory.getEventBus().emit(CityEventCode.RESOURCES_GATHERED, { city_id: id })
   }
 }

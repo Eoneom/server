@@ -36,16 +36,19 @@ Once the app is started, a sample city will be created. It will start gathering 
 g.city()
 
 # launch recycling plant upgrade
-g.launchRecyclingPlantUpgrade()
+g.upgradeRecyclingPlant()
 
 # launch mushroom farm upgrade
-g.launchMushroomFarmUpgrade()
+g.upgradeMushroomFarm()
 
 # launch research lab upgrade
-g.launchResearchLabUpgrade()
+g.upgradeResearchLab()
 
 # launch building research
-g.launchBuildingResearch()
+g.researchBuilding()
+
+# display all buildings
+g.buildings()
 ```
 
 ## Roadmap

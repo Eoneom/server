@@ -1,9 +1,13 @@
+import { BuildingEventCode, BuildingUpgradeEvent } from './domain/events'
+
 import { BuildingCode } from './domain/constants'
 import { BuildingErrors } from './domain/errors'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
 import { CityCommands } from '../city/commands'
+import { CityEventCode } from '../city/domain/events'
 import { CityQueries } from '../city/queries'
+import { Factory } from '../factory'
 import { PricingQueries } from '../pricing/queries'
 import { now } from '../shared/time'
 
@@ -38,7 +42,7 @@ export class BuildingCommands {
     service,
     city_commands,
     city_queries,
-    pricing_queries
+    pricing_queries,
   }: {
     repository: BuildingRepository
     service: BuildingService
@@ -63,6 +67,7 @@ export class BuildingCommands {
     await Promise.all(
       buildings.map((building) => this.repository.create(building))
     )
+    Factory.getEventBus().emit(BuildingEventCode.INITIALIZED, { city_id })
   }
 
   async launchUpgrade({ code, city_id }: BuildingLaunchUpgradeCommand): Promise<void> {
@@ -100,10 +105,10 @@ export class BuildingCommands {
     })
 
     await this.repository.updateOne(result.building)
-    console.log(`${building.code} upgrade launched`)
+    Factory.getEventBus().emit(BuildingEventCode.UPGRADE_LAUNCHED, { code })
   }
 
-  async finishUpgrades({ city_id }: BuildingFinishUpgradesCommand): Promise<boolean> {
+  async finishUpgradeIfAny({ city_id }: BuildingFinishUpgradesCommand): Promise<void> {
     const building_to_finish = await this.repository.findOne({
       city_id,
       upgrade_time: {
@@ -112,14 +117,14 @@ export class BuildingCommands {
     })
 
     if (!building_to_finish) {
-      return false
+      return
     }
 
     const finished_building = building_to_finish.finishUpgrade()
 
     await this.repository.updateOne(finished_building)
-    console.log(`${finished_building.code} upgrade done`)
-
-    return true
+    Factory.getEventBus().emit(BuildingEventCode.UPGRADED, {
+      code: finished_building.code
+    })
   }
 }

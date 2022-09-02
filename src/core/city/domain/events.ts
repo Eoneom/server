@@ -1,13 +1,13 @@
 export enum CityEventCode {
-  CREATED_CITY = 'CREATED_CITY',
-  CREATE_CITY = 'CREATE_CITY'
+  CREATED = 'city:created',
+  RESOURCES_GATHERED = 'city:resources-gathered'
 }
 
 export interface CityPayloads {
-  [CityEventCode.CREATED_CITY]: {
-    id: string
+  [CityEventCode.CREATED]: {
+    city_id: string
   },
-  [CityEventCode.CREATE_CITY]: {
-    name: string
+  [CityEventCode.RESOURCES_GATHERED]: {
+    city_id: string
   }
 }

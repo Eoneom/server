@@ -1,7 +1,8 @@
+import { BuildingEventCode, BuildingPayloads } from './building/domain/events'
 import { CityEventCode, CityPayloads } from './city/domain/events'
 
-export type EventCode = CityEventCode
-export type Payloads = CityPayloads
+export type EventCode = CityEventCode | BuildingEventCode
+export type Payloads = CityPayloads & BuildingPayloads
 
 export interface Registry {
   unregister: () => void
@@ -16,8 +17,8 @@ export interface Subscriber {
 }
 
 export interface EventBus {
-  dispatch<Code extends EventCode>(event: Code, arg?: Payloads[Code]): Promise<void>
-  register<Code extends EventCode>(
+  emit<Code extends EventCode>(event: Code, arg: Payloads[Code]): Promise<void>
+  listen<Code extends EventCode>(
     event: Code,
     callback: (payload: Payloads[Code]) => void
   ): Registry

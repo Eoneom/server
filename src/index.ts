@@ -1,5 +1,6 @@
 import { App } from './core/app'
 import { BuildingCode } from './core/building/domain/constants'
+import { BuildingEventCode } from './core/building/domain/events'
 import { CityEntity } from './core/city/domain/entity'
 import { CityErrors } from './core/city/domain/errors'
 import { CityEventCode } from './core/city/domain/events'
@@ -47,16 +48,20 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
   const repository = Factory.getRepository()
   await repository.connect()
 
-  const callback = ({ id }: Payloads[CityEventCode.CREATED_CITY]) => {
-    console.log('CREATED_CITY', id)
-  }
-
-  Factory.getEventBus().register(
-    CityEventCode.CREATED_CITY,
-    callback
-  )
-
   const app = new App()
+
+  const event_codes = [
+    ...Object.values(CityEventCode).filter(value => value !== CityEventCode.RESOURCES_GATHERED),
+    ...Object.values(BuildingEventCode)
+  ]
+
+  event_codes.forEach((event_code) => {
+    Factory.getEventBus().listen(
+      event_code,
+      (payload) => console.log(event_code, payload)
+    )
+  })
+
 
   const existing_costs = await app.pricing.queries.doesLevelCostsExists()
   if (!existing_costs) {
@@ -73,7 +78,7 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
   console.log(updated_city)
 
   setInterval(async () => {
-    await app.building.commands.finishUpgrades({ city_id })
+    await app.building.commands.finishUpgradeIfAny({ city_id })
     await app.technology.commands.finishResearches({ player_id })
     await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
   }, 1000)
@@ -81,16 +86,16 @@ const init = async (app: App): Promise<{ player: PlayerEntity, city: CityEntity 
   const local = repl.start('> ')
   local.context.g = {
     city: () => app.city.queries.findByIdOrThrow(city_id).then(console.log),
-    launchBuildingResearch: () => {
+    researchBuilding: () => {
       app.technology.commands.launchResearch({ code: TechnologyCode.BUILDING, player_id, city_id })
     },
-    launchRecyclingPlantUpgrade: () => {
+    upgradeRecyclingPlant: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.RECYCLING_PLANT, city_id })
     },
-    launchMushroomFarmUpgrade: () => {
+    upgradeMushroomFarm: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.MUSHROOM_FARM, city_id })
     },
-    launchResearchLabUpgrade: () => {
+    upgradeResearchLab: () => {
       app.building.commands.launchUpgrade({ code: BuildingCode.RESEARCH_LAB, city_id })
     },
     buildings: () => {
