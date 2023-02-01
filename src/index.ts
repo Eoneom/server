@@ -23,6 +23,7 @@ const randomString = (): string => {
 }
 
 const init = async (app: App): Promise<void> => {
+  const eventbus = Factory.getEventBus()
   const existing_costs = await app.pricing.queries.doesLevelCostsExists()
   if (!existing_costs) {
     console.log('initializing level costs...')
@@ -31,8 +32,11 @@ const init = async (app: App): Promise<void> => {
   }
 
   try {
-    console.log('initialiazing player and city...')
-    await app.player.commands.init({ name: randomString(), first_city_name: randomString() })
+    console.log('init player and city...')
+    eventbus.listen(PlayerEventCode.CREATED, async ({ player_id }) => {
+      await app.city.commands.settle({ name: randomString(), player_id })
+    })
+    await app.player.commands.init({ name: randomString() })
   } catch (err) {
     console.log(err)
   }
@@ -41,7 +45,8 @@ const init = async (app: App): Promise<void> => {
 const log_events = (eventbus: EventBus) => {
   const event_codes = [
     ...Object.values(CityEventCode).filter(value => value !== CityEventCode.RESOURCES_GATHERED),
-    ...Object.values(BuildingEventCode)
+    ...Object.values(BuildingEventCode),
+    ...Object.values(PlayerEventCode)
   ]
 
   event_codes.forEach((event_code) => {

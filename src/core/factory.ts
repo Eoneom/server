@@ -173,8 +173,6 @@ export class Factory {
     if (!this.player_commands) {
       this.player_commands = new PlayerCommands({
         repository: this.getRepository().player,
-        city_commands: this.getCityCommands(),
-        city_queries: this.getCityQueries(),
       })
     }
 

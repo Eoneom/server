@@ -1,4 +1,4 @@
-import { getModelForClass, mongoose, prop } from '@typegoose/typegoose'
+import { getModelForClass, prop, Severity } from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
 import { Resource } from '../../../../core/shared/resource'
@@ -10,7 +10,7 @@ class UnitCost {
   @prop({ required: true })
   public level!: number
 
-  @prop({ required: true })
+  @prop({ required: true, allowMixed: Severity.ALLOW })
   public resource!: Resource
 
   @prop({ required: true })
