@@ -10,6 +10,7 @@ import { TechnologyEventCode } from './core/technology/domain/events'
 import { init_costs } from './core/migrations/init_costs'
 import { now } from './core/shared/time'
 import repl from 'repl'
+import { launch } from './web/server'
 
 const randomString = (): string => {
   const inOptions: string = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -141,6 +142,7 @@ const launchApp = ({
     }
 
     launchApp({ player_id, city_id, app })
+    launch()
     clearInterval(timer)
   }, 100)
 })()

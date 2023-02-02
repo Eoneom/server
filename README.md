@@ -62,7 +62,6 @@ g.technologies()
 - feat: create units
 - tech: add unit tests
 - tech: add integration tests
-- tech: add web adapter (HTTP for signup/login and WebSocket for the rest)
 
 ## Architecture
 
@@ -107,3 +106,8 @@ Every model is built on the same pattern:
 
 - document: declare document classes and export Typegoose model
 - repository: extends the generic repository and implement specific methods
+
+## Interact with the server
+
+A websocket server is also listening on port 3000 and wait for connections. Once connected, it's possible to directly send events to tell something happened.
+All events are listed in the [events page](./docs/events.md)

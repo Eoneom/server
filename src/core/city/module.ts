@@ -4,7 +4,6 @@ import { CityQueries } from './queries'
 import { Factory } from '../factory'
 import { Module } from '../shared/module'
 import { TechnologyEventCode } from '../technology/domain/events'
-import { PlayerEventCode } from '../player/domain/events'
 
 export class CityModule extends Module<CityQueries, CityCommands> {
   constructor({

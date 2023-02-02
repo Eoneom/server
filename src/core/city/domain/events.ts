@@ -1,4 +1,3 @@
-import { BuildingCode } from '../../building/domain/constants'
 import { TechnologyCode } from '../../technology/domain/constants'
 
 export enum CityEventCode {
@@ -15,6 +14,8 @@ export interface CityPayloads {
   },
   [CityEventCode.RESOURCES_GATHERED]: {
     city_id: string
+    plastic: number
+    mushroom: number
   },
   [CityEventCode.PURCHASED]: {
     city_id: string

@@ -90,6 +90,10 @@ export class CityCommands {
     }
 
     await this.repository.updateOne(updated_city)
-    Factory.getEventBus().emit(CityEventCode.RESOURCES_GATHERED, { city_id: id })
+    Factory.getEventBus().emit(CityEventCode.RESOURCES_GATHERED, {
+      city_id: id,
+      plastic: updated_city.plastic,
+      mushroom: updated_city.mushroom
+    })
   }
 }

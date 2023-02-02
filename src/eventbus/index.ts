@@ -8,9 +8,8 @@ export class SimpleEventBus implements EventBus {
     this.subscribers = {}
   }
 
-  async emit<Code extends EventCode>(event: Code, arg: Payloads[Code]): Promise<void> {
-    const subscriber = this.subscribers[event]
-
+  async emit<Code extends EventCode>(code: Code, arg: Payloads[Code]): Promise<void> {
+    const subscriber = this.subscribers[code]
     if (subscriber === undefined) {
       return
     }
@@ -19,19 +18,21 @@ export class SimpleEventBus implements EventBus {
   }
 
   listen<Code extends EventCode>(
-    event: Code,
+    code: Code,
     callback: (payload: Payloads[Code]) => void
   ): Registry {
     const id = this.getNextId()
-    if (!this.subscribers[event]) this.subscribers[event] = {}
+    if (!this.subscribers[code]) {
+      this.subscribers[code] = {}
+    }
 
-    this.subscribers[event][id] = callback
+    this.subscribers[code][id] = callback
 
     return {
       unregister: () => {
-        delete this.subscribers[event][id]
-        if (Object.keys(this.subscribers[event]).length === 0)
-          delete this.subscribers[event]
+        delete this.subscribers[code][id]
+        if (Object.keys(this.subscribers[code]).length === 0)
+          delete this.subscribers[code]
       },
     }
   }

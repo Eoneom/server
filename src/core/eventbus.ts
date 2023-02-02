@@ -3,10 +3,18 @@ import { CityEventCode, CityPayloads } from './city/domain/events'
 import { PlayerEventCode, PlayerPayloads } from './player/domain/events'
 import { TechnologyEventCode, TechnologyPayloads } from './technology/domain/events'
 
+export const event_codes = {
+  ...CityEventCode,
+  ...BuildingEventCode,
+  ...PlayerEventCode,
+  ...TechnologyEventCode
+}
+
 export type EventCode = CityEventCode |
   BuildingEventCode |
   PlayerEventCode |
   TechnologyEventCode
+
 export type Payloads = CityPayloads &
   BuildingPayloads &
   PlayerPayloads &
