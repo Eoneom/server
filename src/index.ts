@@ -42,11 +42,12 @@ const init = async (app: App): Promise<void> => {
   }
 }
 
-const log_events = (eventbus: EventBus) => {
+const logEvents = (eventbus: EventBus) => {
   const event_codes = [
     ...Object.values(CityEventCode).filter(value => value !== CityEventCode.RESOURCES_GATHERED),
     ...Object.values(BuildingEventCode),
-    ...Object.values(PlayerEventCode)
+    ...Object.values(PlayerEventCode),
+    ...Object.values(TechnologyEventCode)
   ]
 
   event_codes.forEach((event_code) => {
@@ -57,26 +58,20 @@ const log_events = (eventbus: EventBus) => {
   })
 }
 
-const launch_app = ({
-  player_id,
-  city_id,
+const getGameCommands = ({
   app,
-  eventbus
+  player_id,
+  city_id
 }: {
-  player_id: string
+  app: App,
+  player_id: string,
   city_id: string
-  app: App
-  eventbus: EventBus
 }) => {
-  setInterval(async () => {
-    await app.building.commands.finishUpgradeIfAny({ city_id })
-    await app.technology.commands.finishResearches({ player_id })
-    await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
-  }, 1000)
-
-  const local = repl.start('> ')
-  local.context.g = {
+  const eventbus = Factory.getEventBus()
+  return {
     city: () => app.city.queries.findByIdOrThrow(city_id).then(console.log),
+    technologies: () => app.technology.queries.getTechnologies({ player_id }).then(console.log),
+    buildings: () => app.building.queries.getBuildings({ city_id }).then(console.log),
     researchBuilding: () => {
       eventbus.emit(TechnologyEventCode.REQUEST_RESEARCH_TRIGGERED, {
         code: TechnologyCode.BUILDING,
@@ -102,10 +97,26 @@ const launch_app = ({
         city_id
       })
     },
-    buildings: () => {
-      app.building.queries.getBuildings({ city_id }).then(console.log)
-    }
   }
+}
+
+const launchApp = ({
+  player_id,
+  city_id,
+  app,
+}: {
+  player_id: string
+  city_id: string
+  app: App
+}) => {
+  setInterval(async () => {
+    await app.building.commands.finishUpgradeIfAny({ city_id })
+    await app.technology.commands.finishResearches({ player_id })
+    await app.city.commands.gatherResources({ id: city_id, gather_at_time: now() })
+  }, 1000)
+
+  const local = repl.start('> ')
+  local.context.g = getGameCommands({ app, player_id, city_id })
 }
 
 (async () => {
@@ -115,7 +126,7 @@ const launch_app = ({
   const app = new App()
   const eventbus = Factory.getEventBus()
 
-  log_events(eventbus)
+  logEvents(eventbus)
 
   let city_id: string | null = null
   let player_id: string | null = null
@@ -125,10 +136,12 @@ const launch_app = ({
   await init(app)
 
   const timer = setInterval(() => {
-    if (player_id && city_id) {
-      launch_app({ player_id, city_id, app, eventbus })
-      clearInterval(timer)
+    if (!player_id || !city_id) {
+      return
     }
+
+    launchApp({ player_id, city_id, app })
+    clearInterval(timer)
   }, 100)
 })()
 

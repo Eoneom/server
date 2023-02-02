@@ -49,13 +49,14 @@ g.researchBuilding()
 
 # display all buildings
 g.buildings()
+
+# display all technologies
+g.technologies()
 ```
 
 ## Roadmap
 
 - tech: add resources module
-- feat: add technology query
-- tech: event bus system
 - feat: add rights on cities and buildings
 - feat: create other buildings
 - feat: create units
@@ -92,6 +93,7 @@ The current modules are:
 - city: gather resources
 - player: init account and store player name
 - technology: research technologies
+- pricing: handle costs for building, technologies and units
 
 ### Database
 

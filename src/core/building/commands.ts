@@ -55,7 +55,7 @@ export class BuildingCommands {
   async requestUpgrade({ code, city_id }: { code: BuildingCode, city_id: string }): Promise<void> {
     const is_building_in_progress = await this.repository.exists({
       city_id,
-      upgrade_time: {
+      upgraded_at: {
         $exists: true,
         $ne: null
       }
@@ -91,7 +91,7 @@ export class BuildingCommands {
   async finishUpgradeIfAny({ city_id }: BuildingFinishUpgradesCommand): Promise<void> {
     const building_to_finish = await this.repository.findOne({
       city_id,
-      upgrade_time: {
+      upgraded_at: {
         $lte: now()
       }
     })

@@ -121,7 +121,6 @@ export class Factory {
       this.building_queries = new BuildingQueries({
         repository: this.getRepository().building,
         service: new BuildingService(),
-        pricing_queries: this.getPricingQueries()
       })
     }
 
@@ -182,7 +181,7 @@ export class Factory {
   private static getTechnologyQueries(): TechnologyQueries {
     if (!this.technology_queries) {
       this.technology_queries = new TechnologyQueries({
-        repository: this.getRepository().technology
+        repository: this.getRepository().technology,
       })
     }
 

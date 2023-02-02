@@ -17,7 +17,7 @@ export class MongoTechnologyRepository
       player_id: document.player_id.toString(),
       code: document.code,
       level: document.level,
-      research_time: document.research_time
+      researched_at: document.researched_at
     })
   }
 }

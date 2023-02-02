@@ -18,7 +18,7 @@ export class MongoBuildingRepository
       code: document.code,
       level: document.level,
       city_id: document.city_id.toString(),
-      upgrade_time: document.upgrade_time
+      upgraded_at: document.upgraded_at
     })
   }
 }

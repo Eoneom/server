@@ -2,41 +2,22 @@ import { BuildingCode } from './domain/constants'
 import { BuildingErrors } from './domain/errors'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
-import { PricingQueries } from '../pricing/queries'
 import { Resource } from '../shared/resource'
-
-interface GetBuildingsResponse {
-  buildings: {
-    code: string
-    level: number
-    upgrade_time: number | null
-    upgrade_costs: {
-      duration: number
-      resource: {
-        plastic: number
-        mushroom: number
-      }
-    }
-  }[]
-}
+import { BuildingEntity } from './domain/entity'
 
 export class BuildingQueries {
   private repository: BuildingRepository
   private service: BuildingService
-  private pricing_queries: PricingQueries
 
   public constructor({
     repository,
     service,
-    pricing_queries
   }: {
     repository: BuildingRepository
     service: BuildingService
-    pricing_queries: PricingQueries
   }) {
     this.repository = repository
     this.service = service
-    this.pricing_queries = pricing_queries
   }
 
   async getLevel({ city_id, code }: { city_id: string, code: BuildingCode }): Promise<number> {
@@ -48,22 +29,8 @@ export class BuildingQueries {
     return building.level
   }
 
-  async getBuildings({ city_id }: { city_id: string }): Promise<GetBuildingsResponse> {
-    const buildings = await this.repository.find({ city_id })
-    const response_buildings = buildings.map(async building => {
-      const upgrade_costs = await this.pricing_queries.getNextLevelCost(building)
-
-      return {
-        code: building.code,
-        level: building.level,
-        upgrade_time: building.upgrade_time,
-        upgrade_costs
-      }
-    })
-
-    return {
-      buildings: await Promise.all(response_buildings)
-    }
+  async getBuildings({ city_id }: { city_id: string }): Promise<BuildingEntity[]> {
+    return this.repository.find({ city_id })
   }
 
   async getEarningsBySecond({ city_id }: { city_id: string }): Promise<Resource> {

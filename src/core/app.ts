@@ -1,6 +1,5 @@
 import { BuildingModule } from './building/module'
 import { CityModule } from './city/module'
-import { EventBus } from './eventbus'
 import { Factory } from './factory'
 import { PlayerModule } from './player/module'
 import { PricingModule } from './pricing/module'

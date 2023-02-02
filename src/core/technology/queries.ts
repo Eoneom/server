@@ -1,4 +1,5 @@
 import { TechnologyCode } from './domain/constants'
+import { TechnologyEntity } from './domain/entity'
 import { TechnologyErrors } from './domain/errors'
 import { TechnologyRepository } from './repository'
 
@@ -11,6 +12,10 @@ export class TechnologyQueries {
     repository: TechnologyRepository
   }) {
     this.repository = repository
+  }
+
+  async getTechnologies({ player_id }: { player_id: string }): Promise<TechnologyEntity[]> {
+    return this.repository.find({ player_id })
   }
 
   async getLevel({ city_id, code }: { city_id: string, code: TechnologyCode }): Promise<number> {
