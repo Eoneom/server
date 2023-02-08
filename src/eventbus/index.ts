@@ -2,7 +2,8 @@ import { EventBus, EventCode, Payloads, Registry, Subscriber } from '../core/eve
 
 export class SimpleEventBus implements EventBus {
   private subscribers: Subscriber
-  private static nextId = 0;
+
+  private static nextId = 0
 
   constructor() {
     this.subscribers = {}

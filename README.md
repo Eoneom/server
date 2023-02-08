@@ -62,6 +62,7 @@ g.technologies()
 - feat: create units
 - tech: add unit tests
 - tech: add integration tests
+- tech: add a logging system
 
 ## Architecture
 

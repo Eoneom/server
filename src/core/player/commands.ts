@@ -1,5 +1,3 @@
-import { CityCommands } from '../city/commands'
-import { CityQueries } from '../city/queries'
 import { Factory } from '../factory'
 import { PlayerEntity } from './domain/entity'
 import { PlayerErrors } from './domain/errors'

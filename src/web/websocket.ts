@@ -1,7 +1,7 @@
-import expressWs from "express-ws"
-import { Express } from "express"
-import { Factory } from "../core/factory"
-import { event_codes } from "../core/eventbus"
+import expressWs from 'express-ws'
+import { Express } from 'express'
+import { Factory } from '../core/factory'
+import { event_codes } from '../core/eventbus'
 
 export const initWebsocketServer = (app: Express) => {
   const wsInstance = expressWs(app)
@@ -11,7 +11,7 @@ export const initWebsocketServer = (app: Express) => {
     const eventbus_unregisters: (() => void)[] = []
     Object.values(event_codes).forEach(event => {
       const { unregister } = eventbus.listen(event, (payload) => {
-        ws.emit(event, payload)
+        ws.send(JSON.stringify({ code: event, payload }))
       })
 
       eventbus_unregisters.push(unregister)

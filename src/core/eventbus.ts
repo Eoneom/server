@@ -25,7 +25,7 @@ export interface Registry {
 }
 
 export interface Callable {
-  [key: string]: Function
+  [key: string]: (payload: any) => void
 }
 
 export interface Subscriber {
@@ -33,9 +33,9 @@ export interface Subscriber {
 }
 
 export interface EventBus {
-  emit<Code extends EventCode>(event: Code, arg: Payloads[Code]): Promise<void>
+  emit<Code extends EventCode>(code: Code, arg: Payloads[Code]): Promise<void>
   listen<Code extends EventCode>(
-    event: Code,
+    code: Code,
     callback: (payload: Payloads[Code]) => void
   ): Registry
 }

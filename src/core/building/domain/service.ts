@@ -4,7 +4,6 @@ import {
 } from './constants'
 
 import { BuildingEntity } from './entity'
-import { BuildingErrors } from './errors'
 
 export class BuildingService {
   initBuildings({
