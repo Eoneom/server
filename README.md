@@ -31,6 +31,7 @@ npm run start
 
 ## Roadmap
 
+- /!\ tech: send only event to the one concerned
 - tech: add resources module
 - feat: add rights on cities and buildings
 - feat: create other buildings
