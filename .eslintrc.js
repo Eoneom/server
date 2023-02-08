@@ -39,7 +39,6 @@ module.exports = {
     'function-paren-newline': [ 'error', 'multiline' ],
     'implicit-arrow-linebreak': [ 'error', 'beside' ],
     'keyword-spacing': [ 'error', { 'before': true, 'after': true } ],
-    'lines-between-class-members': [ 'error', 'always' ],
     'no-multi-spaces': 'error',
     'template-curly-spacing': [ 'error', 'never' ],
   },

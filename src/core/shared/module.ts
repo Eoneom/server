@@ -8,9 +8,9 @@ export class Module<Queries, Commands> {
   }: {
     queries: Queries,
     commands: Commands
-  }
-  ) {
+  }) {
     this.queries = queries
     this.commands = commands
   }
 }
+
