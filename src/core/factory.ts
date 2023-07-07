@@ -20,6 +20,7 @@ import { TechnologyCommands } from './technology/commands'
 import { TechnologyModule } from './technology/module'
 import { TechnologyQueries } from './technology/queries'
 import { TechnologyService } from './technology/domain/service'
+import { Modules } from './modules'
 
 export class Factory {
   private static repository: Repository
@@ -45,6 +46,16 @@ export class Factory {
   private static pricing_queries: PricingQueries
   private static pricing_commands: PricingCommands
 
+  static getModules(): Modules {
+    return {
+      city: this.getCityModule(),
+      building: this.getBuildingModule(),
+      player: this.getPlayerModule(),
+      technology: this.getTechnologyModule(),
+      pricing: this.getPricingModule(),
+    }
+  }
+
   static getRepository(): Repository {
     if (!this.repository) {
       this.repository = new MongoRepository()
@@ -61,7 +72,7 @@ export class Factory {
     return this.eventbus
   }
 
-  static getBuildingModule(): BuildingModule {
+  private static getBuildingModule(): BuildingModule {
     if (!this.building_module) {
       this.building_module = new BuildingModule({
         queries: this.getBuildingQueries(),
@@ -72,7 +83,7 @@ export class Factory {
     return this.building_module
   }
 
-  static getCityModule(): CityModule {
+  private static getCityModule(): CityModule {
     if (!this.city_module) {
       this.city_module = new CityModule({
         queries: this.getCityQueries(),
@@ -83,7 +94,7 @@ export class Factory {
     return this.city_module
   }
 
-  static getPlayerModule(): PlayerModule {
+  private static getPlayerModule(): PlayerModule {
     if (!this.player_module) {
       this.player_module = new Module({
         queries: this.getPlayerQueries(),
@@ -94,7 +105,7 @@ export class Factory {
     return this.player_module
   }
 
-  static getTechnologyModule(): TechnologyModule {
+  private static getTechnologyModule(): TechnologyModule {
     if (!this.technology_module) {
       this.technology_module = new TechnologyModule({
         queries: this.getTechnologyQueries(),
@@ -105,7 +116,7 @@ export class Factory {
     return this.technology_module
   }
 
-  static getPricingModule(): PricingModule {
+  private static getPricingModule(): PricingModule {
     if (!this.pricing_module) {
       this.pricing_module = new Module({
         queries: this.getPricingQueries(),

@@ -16,7 +16,7 @@ export const init_costs = async (app: App): Promise<void> => {
     Object.keys(costs_for_building).forEach(level => {
       const int_level = Number.parseInt(level, 10)
 
-      app.pricing.commands.createBulkLevelCost([ {
+      app.modules.pricing.commands.createBulkLevelCost([ {
         code,
         level: int_level,
         resource: costs_for_building[int_level],
@@ -31,7 +31,7 @@ export const init_costs = async (app: App): Promise<void> => {
     Object.keys(costs_for_technology).forEach(level => {
       const int_level = Number.parseInt(level, 10)
 
-      app.pricing.commands.createBulkLevelCost([ {
+      app.modules.pricing.commands.createBulkLevelCost([ {
         code,
         level: int_level,
         resource: costs_for_technology[int_level],

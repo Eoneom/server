@@ -1,7 +1,6 @@
 import { TechnologyCode } from './constants'
 
 export enum TechnologyEventCode {
-  FIRST_INITIALIZED = 'technology:first-initialized',
   REQUEST_RESEARCH_TRIGGERED = 'technology:request-research-triggered',
   RESEARCH_REQUESTED = 'technology:research-requested',
   RESEARCH_LAUNCHED = 'technology:research-launched',
@@ -9,9 +8,6 @@ export enum TechnologyEventCode {
 }
 
 export interface TechnologyPayloads {
-  [TechnologyEventCode.FIRST_INITIALIZED]: {
-    player_id: string
-  }
   [TechnologyEventCode.REQUEST_RESEARCH_TRIGGERED]: {
     city_id: string
     player_id: string

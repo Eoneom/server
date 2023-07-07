@@ -1,7 +1,6 @@
 import { TechnologyCode } from '../../technology/domain/constants'
 
 export enum CityEventCode {
-  SETTLED = 'city:settled',
   RESOURCES_GATHERED = 'city:resources-gathered',
   PURCHASED = 'city:purchased',
   TECHNOLOGY_PURCHASED = 'city:technology-purchased',
@@ -9,9 +8,6 @@ export enum CityEventCode {
 }
 
 export interface CityPayloads {
-  [CityEventCode.SETTLED]: {
-    city_id: string
-  },
   [CityEventCode.RESOURCES_GATHERED]: {
     city_id: string
     plastic: number

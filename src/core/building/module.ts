@@ -31,6 +31,5 @@ export class BuildingModule extends Module<BuildingQueries, BuildingCommands> {
         code: payload.code as BuildingCode
       })
     })
-    eventbus.listen(CityEventCode.SETTLED, payload => this.commands.initFirstBuildings(payload))
   }
 }

@@ -1,6 +1,5 @@
 import { FilterQuery } from '../../types/database'
 import { PlayerEntity } from './domain/entity'
-import { PlayerErrors } from './domain/errors'
 import { PlayerRepository } from './repository'
 
 export class PlayerQueries {
@@ -12,6 +11,11 @@ export class PlayerQueries {
     repository: PlayerRepository
   }) {
     this.repository = repository
+  }
+
+  async canCreate({ name }: { name: string}): Promise<boolean> {
+    const existing_player = await this.repository.exists({ name })
+    return !existing_player
   }
 
   async findById(id: string): Promise<PlayerEntity | null> {

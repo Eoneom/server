@@ -43,15 +43,12 @@ export class CityCommands {
     this.pricing_queries = pricing_queries
   }
 
-  async settle({ name, player_id }: CreateCityCommand): Promise<void> {
-    const city_already_exists = await this.repository.exists({ name })
-    if (city_already_exists) {
-      throw new Error(CityErrors.ALREADY_EXISTS)
-    }
-
+  async settle({ name, player_id }: CreateCityCommand): Promise<{ city_id: string }> {
     const city = CityEntity.initCity({ name, player_id })
     const id = await this.repository.create(city)
-    Factory.getEventBus().emit(CityEventCode.SETTLED, { city_id: id })
+    return {
+      city_id: id
+    }
   }
 
   async purchase({ city_id, code, current_level }: CityPurchaseCommand): Promise<void> {

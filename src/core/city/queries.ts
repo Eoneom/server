@@ -20,7 +20,7 @@ export class CityQueries {
     return city.hasResources(query)
   }
 
-  public async canBuild({ name }: { name: string }): Promise<boolean> {
+  public async canSettle({ name }: { name: string }): Promise<boolean> {
     const does_city_with_same_name_exists = await this.repository.exists({ name })
     return !does_city_with_same_name_exists
   }

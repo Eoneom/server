@@ -53,7 +53,6 @@ export class TechnologyCommands {
     })
 
     await Promise.all(technologies.map((technology) => this.repository.create(technology)))
-    Factory.getEventBus().emit(TechnologyEventCode.FIRST_INITIALIZED, { player_id })
   }
 
   async requestResearch({ code, city_id, player_id }: { code: TechnologyCode, city_id: string, player_id: string }): Promise<void> {

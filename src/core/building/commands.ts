@@ -41,15 +41,12 @@ export class BuildingCommands {
     this.service = service
   }
 
-  async initFirstBuildings({ city_id }: BuildingInitCityCommand): Promise<void> {
+  async init({ city_id }: BuildingInitCityCommand): Promise<void> {
     const buildings = this.service.initBuildings({
       city_id,
     })
 
-    await Promise.all(
-      buildings.map((building) => this.repository.create(building))
-    )
-    Factory.getEventBus().emit(BuildingEventCode.FIRST_INITIALIZED, { city_id })
+    await Promise.all(buildings.map((building) => this.repository.create(building)))
   }
 
   async requestUpgrade({ code, city_id }: { code: BuildingCode, city_id: string }): Promise<void> {

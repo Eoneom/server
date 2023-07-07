@@ -1,7 +1,4 @@
-import { Factory } from '../factory'
 import { PlayerEntity } from './domain/entity'
-import { PlayerErrors } from './domain/errors'
-import { PlayerEventCode } from './domain/events'
 import { PlayerRepository } from './repository'
 
 interface PlayerInitCommand {
@@ -19,15 +16,9 @@ export class PlayerCommands {
     this.repository = repository
   }
 
-  async init({ name }: PlayerInitCommand): Promise<void> {
-    const does_player_with_same_name_exists = await this.repository.findOne({ name })
-    if (does_player_with_same_name_exists) {
-      throw new Error(PlayerErrors.ALREADY_EXISTS)
-    }
-
+  async init({ name }: PlayerInitCommand): Promise<{ player_id: string}> {
     const player = PlayerEntity.initPlayer({ name })
     const player_id = await this.repository.create(player)
-
-    Factory.getEventBus().emit(PlayerEventCode.CREATED, { player_id })
+    return { player_id }
   }
 }
