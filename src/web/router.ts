@@ -1,5 +1,9 @@
 import { Router } from 'express'
 import { App } from '../app'
+import { signup_handler } from './handler/signup'
+import { building_upgrade_handler } from './handler/building-upgrade'
+import { refresh_handler } from './handler/refresh'
+import { sync_handler } from './handler/sync'
 
 export const router = (app: App): Router => {
   const r = Router()
@@ -8,80 +12,13 @@ export const router = (app: App): Router => {
     res.send({ status: 'ok' })
   })
 
-  r.post('/signup', async (req, res) => {
-    const player_name = req.body.player_name
-    if (!player_name) {
-      return res.status(400).json({ status: 'nok', error_code: 'player_name:not-found'})
-    }
+  r.post('/signup', signup_handler(app))
 
-    const city_name = req.body.city_name
-    if (!city_name) {
-      return res.status(400).json({ status: 'nok', error_code: 'city_name:not-found'})
-    }
+  r.put('/building/upgrade', building_upgrade_handler(app))
 
-    const { player_id, city_id } = await app.commands.signup({ player_name, city_name })
-    return res.status(200).send({
-      status: 'ok',
-      data: { player_id, city_id }
-    })
-  })
+  r.put('/refresh', refresh_handler(app))
 
-  r.put('/building/upgrade', async (req, res) => {
-    // TODO: take player id from authentication
-    const player_id = req.body.player_id
-    if (!player_id) {
-      return res.status(401).json({ status: 'nok', error_code: 'player_id:not-found'})
-    }
-
-    const city_id = req.body.city_id
-    if (!city_id) {
-      return res.status(400).json({ status: 'nok', error_code: 'city_id:not-found'})
-    }
-
-    const building_code = req.body.building_code
-    if (!building_code) {
-      return res.status(400).json({ status: 'nok', error_code: 'building_code:not-found'})
-    }
-
-    await app.commands.upgradeBuilding({ city_id, building_code, player_id })
-    return res.status(200).send({ status: 'ok' })
-  })
-
-  r.put('/refresh', async (req, res) => {
-    // TODO: take player id from authentication
-    const player_id = req.body.player_id
-    if (!player_id) {
-      return res.status(401).json({ status: 'nok', error_code: 'player_id:not-found'})
-    }
-
-    await app.commands.refresh({ player_id })
-    return res.status(200).send({ status: 'ok' })
-  })
-
-  r.post('/sync', async (req, res) => {
-    // TODO: take player id from authentication
-    const player_id = req.body.player_id
-    if (!player_id) {
-      return res.status(401).json({ status: 'nok', error_code: 'player_id:not-found'})
-    }
-
-    const { player, buildings, cities, technologies } = await app.queries.sync({ player_id })
-    const cities_response = cities.map(city => {
-      return {
-        ...city,
-        buildings: buildings[city.id]
-      }
-    })
-
-    return res.json({
-      status: 'ok',
-      data: {
-        player,
-        cities: cities_response,
-        technologies
-      }
-    })
-  })
+  r.post('/sync', sync_handler(app))
 
   return r
 }
