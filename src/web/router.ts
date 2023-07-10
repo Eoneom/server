@@ -61,31 +61,25 @@ export const router = (app: App): Router => {
   })
 
   r.post('/sync', async (req, res) => {
-    const token = req.body.token
-
-    if (!token) {
-      return res.status(400).json({ status: 'nok', error_code: 'token:not-found'})
+    // TODO: take player id from authentication
+    const player_id = req.body.player_id
+    if (!player_id) {
+      return res.status(401).json({ status: 'nok', error_code: 'player_id:not-found'})
     }
 
-    const player = await app.modules.player.queries.findOne({ name: token })
-    if (!player) {
-      return res.status(404).json({ status: 'nok', error_code: PlayerErrors.NOT_FOUND})
-    }
-
-    const city = await app.modules.city.queries.findOne({ player_id: player.id })
-    if (!city) {
-      return res.status(404).json({ status: 'nok', error_code: CityErrors.NOT_FOUND})
-    }
-
-    const buildings = await app.modules.building.queries.getBuildings({ city_id: city.id })
-    const technologies = await app.modules.technology.queries.getTechnologies({ player_id: player.id })
+    const { player, buildings, cities, technologies } = await app.queries.sync({ player_id })
+    const cities_response = cities.map(city => {
+      return {
+        ...city,
+        buildings: buildings[city.id]
+      }
+    })
 
     return res.json({
       status: 'ok',
       data: {
         player,
-        city,
-        buildings,
+        cities: cities_response,
         technologies
       }
     })

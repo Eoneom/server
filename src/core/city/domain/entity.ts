@@ -5,11 +5,6 @@ import { CityErrors } from './errors'
 import { Resource } from '../../../shared/resource'
 import { now } from '../../../shared/time'
 
-export interface Cell {
-  x: number
-  y: number
-}
-
 type CityEntityProps = BaseEntityProps & {
   player_id: string
   name: string,
@@ -26,7 +21,6 @@ export class CityEntity extends BaseEntity {
   readonly mushroom: number
   readonly last_plastic_gather: number
   readonly last_mushroom_gather: number
-  readonly cells: Array<Cell>
 
   private constructor({
     id,
@@ -45,7 +39,6 @@ export class CityEntity extends BaseEntity {
     this.mushroom = mushroom
     this.last_plastic_gather = last_plastic_gather
     this.last_mushroom_gather = last_mushroom_gather
-    this.cells = []
   }
 
   static create(props: CityEntityProps): CityEntity {
