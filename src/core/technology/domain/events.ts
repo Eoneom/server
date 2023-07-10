@@ -4,7 +4,6 @@ export enum TechnologyEventCode {
   REQUEST_RESEARCH_TRIGGERED = 'technology:request-research-triggered',
   RESEARCH_REQUESTED = 'technology:research-requested',
   RESEARCH_LAUNCHED = 'technology:research-launched',
-  RESEARCHED = 'technology:research',
 }
 
 export interface TechnologyPayloads {
@@ -19,9 +18,6 @@ export interface TechnologyPayloads {
     current_level: number
   }
   [TechnologyEventCode.RESEARCH_LAUNCHED]: {
-    code: string
-  },
-  [TechnologyEventCode.RESEARCHED]: {
     code: string
   },
 }

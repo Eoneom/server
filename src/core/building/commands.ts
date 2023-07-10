@@ -1,8 +1,6 @@
 import { BuildingCode } from './domain/constants'
-import { BuildingEventCode } from './domain/events'
 import { BuildingRepository } from './model'
 import { BuildingService } from './domain/service'
-import { Factory } from '../factory'
 import { now } from '../../shared/time'
 import { BuildingEntity } from './domain/entity'
 
@@ -53,23 +51,18 @@ export class BuildingCommands {
     await this.repository.updateOne(updated_building)
   }
 
-  async finishUpgradeIfAny({ city_id }: BuildingFinishUpgradesCommand): Promise<void> {
+  async finishUpgrade({ city_id }: BuildingFinishUpgradesCommand): Promise<void> {
     const building_to_finish = await this.repository.findOne({
       city_id,
       upgraded_at: {
         $lte: now()
       }
     })
-
     if (!building_to_finish) {
       return
     }
 
     const finished_building = building_to_finish.finishUpgrade()
-
     await this.repository.updateOne(finished_building)
-    Factory.getEventBus().emit(BuildingEventCode.UPGRADED, {
-      code: finished_building.code
-    })
   }
 }

@@ -15,6 +15,10 @@ export class CityQueries {
     return !does_city_with_same_name_exists
   }
 
+  public async find(query: FilterQuery<CityEntity>): Promise<CityEntity[]> {
+    return this.repository.find(query)
+  }
+
   public async findOne(query: FilterQuery<CityEntity>): Promise<CityEntity | null> {
     return this.repository.findOne(query)
   }

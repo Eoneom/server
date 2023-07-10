@@ -97,23 +97,18 @@ export class TechnologyCommands {
     Factory.getEventBus().emit(TechnologyEventCode.RESEARCH_LAUNCHED, { code })
   }
 
-  async finishResearches({ player_id }: TechnologyFinishResearchesCommand): Promise<boolean> {
+  async finishResearch({ player_id }: TechnologyFinishResearchesCommand): Promise<void> {
     const technology_to_finish = await this.repository.findOne({
       player_id,
       researched_at: {
         $lte: now()
       }
     })
-
     if (!technology_to_finish) {
-      return false
+      return
     }
 
     const finished_technology = technology_to_finish.finishResearch()
-
     await this.repository.updateOne(finished_technology)
-    console.log(`${finished_technology.code} research done`)
-
-    return true
   }
 }

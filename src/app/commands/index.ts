@@ -63,4 +63,18 @@ export class AppCommands {
     await this.modules.city.commands.purchase({ city, cost: building_costs.resource })
     await this.modules.building.commands.launchUpgrade({ building, duration: building_costs.duration })
   }
+
+  async refresh({
+    player_id
+  }: {
+    player_id: string
+  }): Promise<void> {
+    const cities = await this.modules.city.queries.find({ player_id })
+
+    const gather_resources = cities.map(city => this.modules.city.commands.gatherResources({ city, gather_at_time: new Date().getTime()}))
+    const finish_building_upgrades = cities.map(city => this.modules.building.commands.finishUpgrade({ city_id: city.id }))
+    const finish_technology_researches = this.modules.technology.commands.finishResearch({ player_id })
+
+    await Promise.all([ ...gather_resources, ...finish_building_upgrades, finish_technology_researches ])
+  }
 }

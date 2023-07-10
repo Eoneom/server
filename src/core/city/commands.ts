@@ -18,7 +18,7 @@ interface CityPurchaseCommand {
 }
 
 interface CityGatherResourcesCommand {
-  id: string
+  city: CityEntity
   gather_at_time: number
 }
 
@@ -59,12 +59,7 @@ export class CityCommands {
     await this.repository.updateOne(updated_city)
   }
 
-  async gatherResources({ id, gather_at_time }: CityGatherResourcesCommand): Promise<void> {
-    const city = await this.repository.findById(id)
-    if (!city) {
-      throw new Error(CityErrors.NOT_FOUND)
-    }
-
+  async gatherResources({ city, gather_at_time }: CityGatherResourcesCommand): Promise<void> {
     const earnings_by_second = await this.building_queries.getEarningsBySecond({ city_id: city.id })
     const { city: updated_city, updated } = city.gather({ earnings_by_second, gather_at_time })
 
@@ -73,10 +68,5 @@ export class CityCommands {
     }
 
     await this.repository.updateOne(updated_city)
-    Factory.getEventBus().emit(CityEventCode.RESOURCES_GATHERED, {
-      city_id: id,
-      plastic: updated_city.plastic,
-      mushroom: updated_city.mushroom
-    })
   }
 }

@@ -32,7 +32,7 @@ export const router = (app: App): Router => {
     // TODO: take player id from authentication
     const player_id = req.body.player_id
     if (!player_id) {
-      return res.status(401).json({ status: 'nok', error_code: 'player:not-found'})
+      return res.status(401).json({ status: 'nok', error_code: 'player_id:not-found'})
     }
 
     const city_id = req.body.city_id
@@ -46,6 +46,17 @@ export const router = (app: App): Router => {
     }
 
     await app.commands.upgradeBuilding({ city_id, building_code, player_id })
+    return res.status(200).send({ status: 'ok' })
+  })
+
+  r.put('/refresh', async (req, res) => {
+    // TODO: take player id from authentication
+    const player_id = req.body.player_id
+    if (!player_id) {
+      return res.status(401).json({ status: 'nok', error_code: 'player_id:not-found'})
+    }
+
+    await app.commands.refresh({ player_id })
     return res.status(200).send({ status: 'ok' })
   })
 
@@ -71,10 +82,12 @@ export const router = (app: App): Router => {
 
     return res.json({
       status: 'ok',
-      player,
-      city,
-      buildings,
-      technologies
+      data: {
+        player,
+        city,
+        buildings,
+        technologies
+      }
     })
   })
 
