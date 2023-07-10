@@ -1,15 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
-import { App } from '../../app'
-import { GenericResponse } from '../responses'
+import { App } from '../../../app'
+import { BuildingUpgradeRequest, BuildingUpgradeResponse } from '../../../../client/src/endpoints/building/upgrade'
 
-interface BuildingUpgradeRequest {
-  player_id: string
-  city_id: string
-}
-
-type BuildingUpgradeResponse = GenericResponse<undefined>
-
-export const building_upgrade_handler = (app: App) => async (req: Request<BuildingUpgradeRequest>, res: Response<BuildingUpgradeResponse>, next: NextFunction) => {
+export const building_upgrade_handler = (app: App) => async (
+  req: Request<BuildingUpgradeRequest>,
+  res: Response<BuildingUpgradeResponse>,
+  next: NextFunction
+) => {
   // TODO: take player id from authentication
   const player_id = req.body.player_id
   if (!player_id) {

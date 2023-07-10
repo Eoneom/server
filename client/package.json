@@ -1,0 +1,13 @@
+{
+  "name": "@kroust/swarm-client",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --pretty",
+    "publish-minor": "npm version minor && npm publish"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

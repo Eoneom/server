@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2020",
     "lib": [
       "dom",
       "es2022"
     ],
+    "baseUrl": ".",
     "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "dist",
     "allowJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "sourceMap": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
@@ -21,9 +24,10 @@
     "emitDecoratorMetadata": true,
   },
   "include": [
-    "src",
+    "src/**/*"
   ],
   "exclude": [
+    "./client",
     "node_modules"
   ]
 }

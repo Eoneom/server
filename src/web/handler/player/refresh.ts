@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
-import { App } from '../../app'
-import { GenericResponse } from '../responses'
+import { App } from '../../../app'
+import { RefreshRequest, RefreshResponse } from '../../../../client/src/endpoints/player/refresh'
 
-interface RefreshRequest {
-  player_id: string
-}
 
-type RefreshResponse = GenericResponse<undefined>
-
-export const refresh_handler = (app: App) => async (req: Request<RefreshRequest>, res: Response<RefreshResponse>, next: NextFunction) => {
+export const refresh_handler = (app: App) => async (
+  req: Request<RefreshRequest>,
+  res: Response<RefreshResponse>,
+  next: NextFunction
+) => {
   // TODO: take player id from authentication
   const player_id = req.body.player_id
   if (!player_id) {
