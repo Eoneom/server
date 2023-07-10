@@ -8,11 +8,7 @@ export class MongoLevelCostRepository
   extends MongoGenericRepository<typeof LevelCostModel, LevelCostDocument, LevelCostEntity>
   implements LevelCostRepository {
 
-  protected buildFromModel(document: LevelCostDocument | null): LevelCostEntity | null {
-    if (!document) {
-      return null
-    }
-
+  protected buildFromModel(document: LevelCostDocument): LevelCostEntity {
     return LevelCostEntity.create({
       id: document._id.toString(),
       code: document.code,

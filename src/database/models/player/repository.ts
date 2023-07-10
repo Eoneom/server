@@ -7,11 +7,7 @@ import { PlayerRepository } from '../../../core/player/repository'
 export class MongoPlayerRepository
   extends MongoGenericRepository<typeof PlayerModel, PlayerDocument, PlayerEntity>
   implements PlayerRepository {
-  protected buildFromModel(document: PlayerDocument | null): PlayerEntity | null {
-    if (!document) {
-      return null
-    }
-
+  protected buildFromModel(document: PlayerDocument): PlayerEntity {
     return PlayerEntity.create({
       id: document._id.toString(),
       name: document.name,

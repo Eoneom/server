@@ -4,6 +4,7 @@ import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
 import { Resource } from '../shared/resource'
 import { BuildingEntity } from './domain/entity'
+import { FilterQuery } from '../../types/database'
 
 export class BuildingQueries {
   private repository: BuildingRepository
@@ -20,17 +21,29 @@ export class BuildingQueries {
     this.service = service
   }
 
-  async getLevel({ city_id, code }: { city_id: string, code: BuildingCode }): Promise<number> {
-    const building = await this.repository.findOne({ city_id, code })
-    if (!building) {
-      throw new Error(BuildingErrors.NOT_FOUND)
-    }
+  async canUpgrade({ city_id }: { city_id: string }): Promise<boolean> {
+    const is_building_in_progress = await this.repository.exists({
+      city_id,
+      upgraded_at: {
+        $exists: true,
+        $ne: null
+      }
+    })
 
-    return building.level
+    return !is_building_in_progress
   }
 
   async getBuildings({ city_id }: { city_id: string }): Promise<BuildingEntity[]> {
     return this.repository.find({ city_id })
+  }
+
+  async findOneOrThrow(query: FilterQuery<BuildingEntity>): Promise<BuildingEntity> {
+    const building = await this.repository.findOne(query)
+    if (!building) {
+      throw new Error(BuildingErrors.NOT_FOUND)
+    }
+
+    return building
   }
 
   async getEarningsBySecond({ city_id }: { city_id: string }): Promise<Resource> {

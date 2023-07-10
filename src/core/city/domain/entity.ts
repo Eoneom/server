@@ -115,6 +115,10 @@ export class CityEntity extends BaseEntity {
     return this.plastic >= plastic && this.mushroom >= mushroom
   }
 
+  isOwnedBy(player_id: string): boolean {
+    return this.player_id === player_id
+  }
+
   private gatherPlastic(plastic_earnings: number): CityEntity {
     if (!plastic_earnings) {
       return this

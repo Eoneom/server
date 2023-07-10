@@ -1,10 +1,10 @@
 import { BuildingCode } from './domain/constants'
-import { BuildingErrors } from './domain/errors'
 import { BuildingEventCode } from './domain/events'
 import { BuildingRepository } from './repository'
 import { BuildingService } from './domain/service'
 import { Factory } from '../factory'
 import { now } from '../shared/time'
+import { BuildingEntity } from './domain/entity'
 
 export interface BuildingCreateCommand {
   code: BuildingCode
@@ -13,8 +13,7 @@ export interface BuildingCreateCommand {
 }
 
 export interface BuildingLaunchUpgradeCommand {
-  code: BuildingCode
-  city_id: string
+  building: BuildingEntity
   duration: number
 }
 
@@ -49,40 +48,9 @@ export class BuildingCommands {
     await Promise.all(buildings.map((building) => this.repository.create(building)))
   }
 
-  async requestUpgrade({ code, city_id }: { code: BuildingCode, city_id: string }): Promise<void> {
-    const is_building_in_progress = await this.repository.exists({
-      city_id,
-      upgraded_at: {
-        $exists: true,
-        $ne: null
-      }
-    })
-
-    if (is_building_in_progress) {
-      throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
-    }
-
-    const building = await this.repository.findOne({ code, city_id })
-    if (!building) {
-      throw new Error(BuildingErrors.NOT_FOUND)
-    }
-
-    Factory.getEventBus().emit(BuildingEventCode.UPGRADE_REQUESTED, {
-      city_id,
-      code,
-      current_level: building.level
-    })
-  }
-
-  async launchUpgrade({ code, city_id, duration }: BuildingLaunchUpgradeCommand): Promise<void> {
-    const building = await this.repository.findOne({ code, city_id })
-    if (!building) {
-      throw new Error(BuildingErrors.NOT_FOUND)
-    }
-
+  async launchUpgrade({ building, duration }: BuildingLaunchUpgradeCommand): Promise<void> {
     const updated_building = building.launchUpgrade(duration)
     await this.repository.updateOne(updated_building)
-    Factory.getEventBus().emit(BuildingEventCode.UPGRADE_LAUNCHED, { code })
   }
 
   async finishUpgradeIfAny({ city_id }: BuildingFinishUpgradesCommand): Promise<void> {

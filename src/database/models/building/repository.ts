@@ -8,11 +8,7 @@ export class MongoBuildingRepository
   extends MongoGenericRepository<typeof BuildingModel, BuildingDocument, BuildingEntity>
   implements BuildingRepository {
 
-  protected buildFromModel(document: BuildingDocument | null): BuildingEntity | null {
-    if (!document) {
-      return null
-    }
-
+  protected buildFromModel(document: BuildingDocument): BuildingEntity {
     return BuildingEntity.create({
       id: document._id.toString(),
       code: document.code,

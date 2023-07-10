@@ -7,11 +7,7 @@ import { UnitCostRepository } from '../../../../core/pricing/repository'
 export class MongoUnitCostRepository
   extends MongoGenericRepository<typeof UnitCostModel, UnitCostDocument, UnitCostEntity>
   implements UnitCostRepository {
-  protected buildFromModel(document: UnitCostDocument | null): UnitCostEntity | null {
-    if (!document) {
-      return null
-    }
-
+  protected buildFromModel(document: UnitCostDocument): UnitCostEntity {
     return UnitCostEntity.create({
       id: document._id.toString(),
       code: document.code,

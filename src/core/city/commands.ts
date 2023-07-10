@@ -5,8 +5,7 @@ import { CityEventCode } from './domain/events'
 import { CityRepository } from './repository'
 import { Factory } from '../factory'
 import { PricingQueries } from '../pricing/queries'
-import { TechnologyCode } from '../technology/domain/constants'
-import { TechnologyQueries } from '../technology/queries'
+import { Resource } from '../shared/resource'
 
 interface CreateCityCommand {
   name: string
@@ -14,9 +13,8 @@ interface CreateCityCommand {
 }
 
 interface CityPurchaseCommand {
-  city_id: string
-  code: string
-  current_level: number
+  city: CityEntity
+  cost: Resource
 }
 
 interface CityGatherResourcesCommand {
@@ -51,26 +49,14 @@ export class CityCommands {
     }
   }
 
-  async purchase({ city_id, code, current_level }: CityPurchaseCommand): Promise<void> {
-    const city = await this.repository.findById(city_id)
-    if (!city) {
-      throw new Error(CityErrors.NOT_FOUND)
+  async purchase({ city, cost }: CityPurchaseCommand): Promise<void> {
+    const has_resources = city.hasResources(cost)
+    if (!has_resources) {
+      throw new Error(CityErrors.NOT_ENOUGH_RESOURCES)
     }
 
-    const { duration, resource } = await this.pricing_queries.getNextLevelCost({
-      code,
-      level: current_level
-    })
-
-    const updated_city = city.purchase(resource)
+    const updated_city = city.purchase(cost)
     await this.repository.updateOne(updated_city)
-
-    Factory.getEventBus().emit(CityEventCode.PURCHASED, {
-      city_id,
-      player_id: city.player_id,
-      code,
-      duration
-    })
   }
 
   async gatherResources({ id, gather_at_time }: CityGatherResourcesCommand): Promise<void> {

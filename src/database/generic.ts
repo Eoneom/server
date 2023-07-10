@@ -8,14 +8,11 @@ export abstract class MongoGenericRepository<
   Model extends AnyParamConstructor<any>,
   Doc,
   Entity extends BaseEntity
-  >
-  implements GenericRepository<Entity> {
+> implements GenericRepository<Entity> {
 
   private model: ReturnModelType<Model, BeAnObject>
 
-  constructor(
-    model: ReturnModelType<Model>
-  ) {
+  constructor(model: ReturnModelType<Model>) {
     this.model = model
   }
 
@@ -26,16 +23,24 @@ export abstract class MongoGenericRepository<
 
   async find(query: FilterQuery<Entity>): Promise<Entity[]> {
     const documents = await this.model.find(query)
-    return documents.map(document => this.buildFromModel(document)!)
+    return documents.map(document => this.buildFromModel(document))
   }
 
   async findById(id: string): Promise<Entity | null> {
     const document = await this.model.findById(id)
+    if (!document) {
+      return null
+    }
+
     return this.buildFromModel(document)
   }
 
   async findOne(query: FilterQuery<Entity>): Promise<Entity | null> {
     const document = await this.model.findOne(query)
+    if (!document) {
+      return null
+    }
+
     return this.buildFromModel(document)
   }
 
@@ -48,5 +53,5 @@ export abstract class MongoGenericRepository<
     await this.model.updateOne({ _id: entity.id }, entity)
   }
 
-  protected abstract buildFromModel(document: Doc | null): Entity | null
+  protected abstract buildFromModel(document: Doc): Entity
 }

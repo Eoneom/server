@@ -7,11 +7,7 @@ import { MongoGenericRepository } from '../../generic'
 export class MongoCityRepository
   extends MongoGenericRepository<typeof CityModel, CityDocument, CityEntity>
   implements CityRepository {
-  protected buildFromModel(document: CityDocument | null): CityEntity | null {
-    if (!document) {
-      return null
-    }
-
+  protected buildFromModel(document: CityDocument): CityEntity {
     return CityEntity.create({
       id: document._id.toString(),
       player_id: document.player_id.toString(),

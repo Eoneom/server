@@ -7,7 +7,7 @@ export const router = (app: App): Router => {
   const r = Router()
 
   r.get('/', (req, res) => {
-    res.send('Hello world')
+    res.send({ status: 'ok' })
   })
 
   r.post('/signup', async (req, res) => {
@@ -26,6 +26,27 @@ export const router = (app: App): Router => {
       status: 'ok',
       data: { player_id, city_id }
     })
+  })
+
+  r.put('/building/upgrade', async (req, res) => {
+    // TODO: take player id from authentication
+    const player_id = req.body.player_id
+    if (!player_id) {
+      return res.status(401).json({ status: 'nok', error_code: 'player:not-found'})
+    }
+
+    const city_id = req.body.city_id
+    if (!city_id) {
+      return res.status(400).json({ status: 'nok', error_code: 'city_id:not-found'})
+    }
+
+    const building_code = req.body.building_code
+    if (!building_code) {
+      return res.status(400).json({ status: 'nok', error_code: 'building_code:not-found'})
+    }
+
+    await app.commands.upgradeBuilding({ city_id, building_code, player_id })
+    return res.status(200).send({ status: 'ok' })
   })
 
   r.post('/sync', async (req, res) => {
