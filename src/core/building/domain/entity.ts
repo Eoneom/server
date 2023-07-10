@@ -1,7 +1,7 @@
 import { BaseEntity, BaseEntityProps } from '../../../types/domain'
 
 import { BuildingCode } from './constants'
-import { now } from '../../shared/time'
+import { now } from '../../../shared/time'
 
 type BuildingEntityProps = BaseEntityProps & {
   city_id: string

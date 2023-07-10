@@ -2,7 +2,7 @@ import { AnyParamConstructor, BeAnObject, ReturnModelType } from '@typegoose/typ
 
 import { BaseEntity } from '../types/domain'
 import { FilterQuery } from '../types/database'
-import { GenericRepository } from '../core/shared/repository'
+import { GenericRepository } from '../shared/repository'
 
 export abstract class MongoGenericRepository<
   Model extends AnyParamConstructor<any>,

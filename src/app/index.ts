@@ -1,5 +1,5 @@
-import { Factory } from '../factory'
-import { Modules } from '../modules'
+import { Factory } from '../core/factory'
+import { Modules } from '../core/modules'
 import { AppCommands } from './commands'
 
 export class App {

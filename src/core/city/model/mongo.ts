@@ -1,8 +1,8 @@
 import { CityDocument, CityModel } from './document'
 
-import { CityEntity } from '../../../core/city/domain/entity'
-import { CityRepository } from '../../../core/city/repository'
-import { MongoGenericRepository } from '../../generic'
+import { CityEntity } from '../domain/entity'
+import { CityRepository } from '.'
+import { MongoGenericRepository } from '../../../database/generic'
 
 export class MongoCityRepository
   extends MongoGenericRepository<typeof CityModel, CityDocument, CityEntity>

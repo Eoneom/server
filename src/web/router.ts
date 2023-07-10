@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { App } from '../core/app'
+import { App } from '../app'
 import { CityErrors } from '../core/city/domain/errors'
 import { PlayerErrors } from '../core/player/domain/errors'
 

@@ -1,6 +1,6 @@
 import { FilterQuery } from '../../types/database'
 import { PlayerEntity } from './domain/entity'
-import { PlayerRepository } from './repository'
+import { PlayerRepository } from './model'
 
 export class PlayerQueries {
   private repository: PlayerRepository

@@ -1,7 +1,7 @@
 import { getModelForClass, prop, Severity } from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
-import { Resource } from '../../../../core/shared/resource'
+import { Resource } from '../../../../shared/resource'
 
 class LevelCost {
   @prop({ required: true })

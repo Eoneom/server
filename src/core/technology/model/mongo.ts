@@ -1,8 +1,8 @@
 import { TechnologyDocument, TechnologyModel } from './document'
 
-import { MongoGenericRepository } from '../../generic'
-import { TechnologyEntity } from '../../../core/technology/domain/entity'
-import { TechnologyRepository } from '../../../core/technology/repository'
+import { MongoGenericRepository } from '../../../database/generic'
+import { TechnologyEntity } from '../domain/entity'
+import { TechnologyRepository } from '.'
 
 export class MongoTechnologyRepository
   extends MongoGenericRepository<typeof TechnologyModel, TechnologyDocument, TechnologyEntity>

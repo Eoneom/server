@@ -1,5 +1,5 @@
 import { PlayerEntity } from './domain/entity'
-import { PlayerRepository } from './repository'
+import { PlayerRepository } from './model'
 
 interface PlayerInitCommand {
   name: string

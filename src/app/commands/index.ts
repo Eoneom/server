@@ -1,9 +1,9 @@
-import { BuildingCode } from '../../building/domain/constants'
-import { BuildingErrors } from '../../building/domain/errors'
-import { CityErrors } from '../../city/domain/errors'
-import { Factory } from '../../factory'
-import { Modules } from '../../modules'
-import { PlayerErrors } from '../../player/domain/errors'
+import { BuildingCode } from '../../core/building/domain/constants'
+import { BuildingErrors } from '../../core/building/domain/errors'
+import { CityErrors } from '../../core/city/domain/errors'
+import { Factory } from '../../core/factory'
+import { Modules } from '../../core/modules'
+import { PlayerErrors } from '../../core/player/domain/errors'
 
 export class AppCommands {
   private modules: Modules

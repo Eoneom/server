@@ -1,4 +1,4 @@
-import { Module } from '../shared/module'
+import { Module } from '../../shared/module'
 import { PricingCommands } from './commands'
 import { PricingQueries } from './queries'
 

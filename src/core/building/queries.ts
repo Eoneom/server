@@ -1,8 +1,8 @@
 import { BuildingCode } from './domain/constants'
 import { BuildingErrors } from './domain/errors'
-import { BuildingRepository } from './repository'
+import { BuildingRepository } from './model'
 import { BuildingService } from './domain/service'
-import { Resource } from '../shared/resource'
+import { Resource } from '../../shared/resource'
 import { BuildingEntity } from './domain/entity'
 import { FilterQuery } from '../../types/database'
 

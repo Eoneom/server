@@ -1,8 +1,8 @@
 import { PlayerDocument, PlayerModel } from './document'
 
-import { MongoGenericRepository } from '../../generic'
-import { PlayerEntity } from '../../../core/player/domain/entity'
-import { PlayerRepository } from '../../../core/player/repository'
+import { MongoGenericRepository } from '../../../database/generic'
+import { PlayerEntity } from '../domain/entity'
+import { PlayerRepository } from '.'
 
 export class MongoPlayerRepository
   extends MongoGenericRepository<typeof PlayerModel, PlayerDocument, PlayerEntity>

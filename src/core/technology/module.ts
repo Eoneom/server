@@ -1,5 +1,5 @@
 import { Factory } from '../factory'
-import { Module } from '../shared/module'
+import { Module } from '../../shared/module'
 import { TechnologyCommands } from './commands'
 import { TechnologyEventCode } from './domain/events'
 import { TechnologyQueries } from './queries'

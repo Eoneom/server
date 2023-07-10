@@ -1,6 +1,6 @@
 import { BaseEntity } from '../../../types/domain'
 import { TechnologyCode } from './constants'
-import { now } from '../../shared/time'
+import { now } from '../../../shared/time'
 
 type TechnologyEntityProps = BaseEntity & {
   code: TechnologyCode

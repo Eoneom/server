@@ -1,6 +1,6 @@
-import { LevelCostRepository, UnitCostRepository } from './repository'
+import { LevelCostRepository, UnitCostRepository } from './model'
 
-import { Resource } from '../shared/resource'
+import { Resource } from '../../shared/resource'
 
 interface PricingCreateLevelCommand {
   code: string

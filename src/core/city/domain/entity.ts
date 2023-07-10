@@ -2,8 +2,8 @@ import { BaseEntity, BaseEntityProps } from '../../../types/domain'
 import { STARTING_MUSHROOM, STARTING_PLASTIC } from './constants'
 
 import { CityErrors } from './errors'
-import { Resource } from '../../shared/resource'
-import { now } from '../../shared/time'
+import { Resource } from '../../../shared/resource'
+import { now } from '../../../shared/time'
 
 export interface Cell {
   x: number

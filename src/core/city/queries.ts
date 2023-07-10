@@ -1,6 +1,6 @@
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
-import { CityRepository } from './repository'
+import { CityRepository } from './model'
 import { FilterQuery } from '../../types/database'
 
 export class CityQueries {

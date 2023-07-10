@@ -1,5 +1,5 @@
 import express from 'express'
-import { App } from '../core/app'
+import { App } from '../app'
 import { initWebsocketServer } from './websocket'
 import bodyParser from 'body-parser'
 import cors from 'cors'

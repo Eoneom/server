@@ -1,6 +1,6 @@
 import { CityCommands } from './commands'
 import { CityQueries } from './queries'
-import { Module } from '../shared/module'
+import { Module } from '../../shared/module'
 
 export class CityModule extends Module<CityQueries, CityCommands> {
   constructor({

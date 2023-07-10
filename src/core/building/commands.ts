@@ -1,9 +1,9 @@
 import { BuildingCode } from './domain/constants'
 import { BuildingEventCode } from './domain/events'
-import { BuildingRepository } from './repository'
+import { BuildingRepository } from './model'
 import { BuildingService } from './domain/service'
 import { Factory } from '../factory'
-import { now } from '../shared/time'
+import { now } from '../../shared/time'
 import { BuildingEntity } from './domain/entity'
 
 export interface BuildingCreateCommand {

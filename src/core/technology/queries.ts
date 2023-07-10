@@ -1,7 +1,7 @@
 import { TechnologyCode } from './domain/constants'
 import { TechnologyEntity } from './domain/entity'
 import { TechnologyErrors } from './domain/errors'
-import { TechnologyRepository } from './repository'
+import { TechnologyRepository } from './model'
 
 export class TechnologyQueries {
   private repository: TechnologyRepository

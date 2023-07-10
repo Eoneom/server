@@ -6,9 +6,9 @@ import { PricingQueries } from '../pricing/queries'
 import { TechnologyCode } from './domain/constants'
 import { TechnologyErrors } from './domain/errors'
 import { TechnologyEventCode } from './domain/events'
-import { TechnologyRepository } from './repository'
+import { TechnologyRepository } from './model'
 import { TechnologyService } from './domain/service'
-import { now } from '../shared/time'
+import { now } from '../../shared/time'
 
 interface TechnologyLaunchResearchCommand {
   code: TechnologyCode

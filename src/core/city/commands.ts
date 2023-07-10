@@ -2,10 +2,10 @@ import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
 import { CityEventCode } from './domain/events'
-import { CityRepository } from './repository'
+import { CityRepository } from './model'
 import { Factory } from '../factory'
 import { PricingQueries } from '../pricing/queries'
-import { Resource } from '../shared/resource'
+import { Resource } from '../../shared/resource'
 
 interface CreateCityCommand {
   name: string

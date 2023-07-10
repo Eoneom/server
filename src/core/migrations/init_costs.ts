@@ -5,7 +5,7 @@ import {
   technology_research_durations_in_second
 } from './constants'
 
-import { App } from '../app'
+import { App } from '../../app'
 import { BuildingCode } from '../building/domain/constants'
 import { TechnologyCode } from '../technology/domain/constants'
 

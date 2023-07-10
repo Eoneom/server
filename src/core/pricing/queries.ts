@@ -1,4 +1,4 @@
-import { LevelCostRepository, UnitCostRepository } from './repository'
+import { LevelCostRepository, UnitCostRepository } from './model'
 
 import { LevelCostEntity } from './domain/entities/level'
 import { PricingErrors } from './domain/errors'

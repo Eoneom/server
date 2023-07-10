@@ -1,4 +1,4 @@
-import { App } from './core/app'
+import { App } from './app'
 import { Factory } from './core/factory'
 import { initData } from './core/migrations'
 import { logEvents } from './log'
