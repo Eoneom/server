@@ -31,9 +31,8 @@ npm run start
 
 ## Roadmap
 
-- /!\ tech: send only event to the one concerned
 - tech: add resources module
-- feat: add rights on cities and buildings
+- feat: add rights on cities and buildings (WIP)
 - feat: create other buildings
 - feat: create units
 - tech: add unit tests
@@ -41,6 +40,10 @@ npm run start
 - tech: add a logging system
 
 ## Architecture
+
+### App
+
+Contains all the app features, divided into commands and queries
 
 ### Core
 
@@ -53,38 +56,38 @@ The factory is here to help creating these modules, and handle dependencies betw
 
 There is a similar architecture for every module:
 
-- domain: business logic only
-  - constants: store every constants needed by the domain
-  - entity: declare entities used by the domain
-  - errors: declare all errors thrown by the domain
-  - service: implement business logic to handle commands and queries
-- commands: interact with the application to update things
-- module: group queries and commands
-- queries: ask the application for some data
-- repository: declare repositories for the needed entities
+- `domain`: business logic only
+  - `constants`: store every constants needed by the domain
+  - `entity`: declare entities used by the domain
+  - `errors`: declare all errors thrown by the domain
+  - `service`: implement business logic to handle commands and queries
+- `model`: related to data storage and repository
+- `commands`: interact with the application to update things
+- `module`: group queries and commands
+- `queries`: ask the application for some data
 
 The current modules are:
 
-- building: upgrade buildings
-- city: gather resources
-- player: init account and store player name
-- technology: research technologies
-- pricing: handle costs for building, technologies and units
+- `building`: upgrade buildings
+- `city`: gather resources
+- `migration`: create initial data and update existing one
+- `player`: init account and store player name
+- `pricing`: handle costs for building, technologies and units
+- `technology`: research technologies
 
 ### Database
 
 MongoDB implementation for repository methods. Simple adapter to call mongoDB, and define collections.
+Each document type and model is specified in their own module, inside the `core` folder.
 
-- models: declare document classes to create new collections
-- generic: implement CRUD calls to MongoDB
-- repository: group several repositories together
+- `generic`: implement CRUD calls to MongoDB
+- `repository`: group several repositories together
 
 Every model is built on the same pattern:
 
-- document: declare document classes and export Typegoose model
-- repository: extends the generic repository and implement specific methods
+- `document`: declare document classes and export Typegoose model
+- `repository`: extends the generic repository and implement specific methods
 
 ## Interact with the server
 
-A websocket server is also listening on port 3000 and wait for connections. Once connected, it's possible to directly send events to tell something happened.
-All events are listed in the [events page](./docs/events.md)
+Once launched, the app is listening on port `3000` and accept HTTP requests for commands and queries.

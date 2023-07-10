@@ -1,4 +1,4 @@
-import { BaseEntity } from '../../../../types/domain'
+import { BaseEntity } from '../../../../type/domain'
 import { Resource } from '../../../../shared/resource'
 
 type UnitCostEntityProps = BaseEntity & {

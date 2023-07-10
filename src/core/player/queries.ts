@@ -1,4 +1,4 @@
-import { FilterQuery } from '../../types/database'
+import { FilterQuery } from '../../type/database'
 import { PlayerEntity } from './domain/entity'
 import { PlayerErrors } from './domain/errors'
 import { PlayerRepository } from './model'

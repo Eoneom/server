@@ -1,4 +1,4 @@
-import { BaseEntity } from '../../../types/domain'
+import { BaseEntity } from '../../../type/domain'
 import { TechnologyCode } from './constants'
 import { now } from '../../../shared/time'
 

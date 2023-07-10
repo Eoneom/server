@@ -1,4 +1,4 @@
-import { BaseEntity, BaseEntityProps } from '../../../types/domain'
+import { BaseEntity, BaseEntityProps } from '../../../type/domain'
 import { STARTING_MUSHROOM, STARTING_PLASTIC } from './constants'
 
 import { CityErrors } from './errors'

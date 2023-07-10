@@ -1,4 +1,4 @@
-import { BaseEntity } from '../../../types/domain'
+import { BaseEntity } from '../../../type/domain'
 
 export type PlayerEntityProps = BaseEntity & {
   name: string

@@ -1,7 +1,5 @@
 import { Router } from 'express'
 import { App } from '../app'
-import { CityErrors } from '../core/city/domain/errors'
-import { PlayerErrors } from '../core/player/domain/errors'
 
 export const router = (app: App): Router => {
   const r = Router()

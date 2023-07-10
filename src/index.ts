@@ -1,6 +1,6 @@
 import { App } from './app'
 import { Factory } from './core/factory'
-import { initData } from './core/migrations'
+import { initData } from './core/migration'
 import { logEvents } from './log'
 import { launchServer } from './web/http'
 

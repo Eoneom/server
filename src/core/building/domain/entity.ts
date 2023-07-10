@@ -1,4 +1,4 @@
-import { BaseEntity, BaseEntityProps } from '../../../types/domain'
+import { BaseEntity, BaseEntityProps } from '../../../type/domain'
 
 import { BuildingCode } from './constants'
 import { now } from '../../../shared/time'

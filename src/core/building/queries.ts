@@ -4,7 +4,7 @@ import { BuildingRepository } from './model'
 import { BuildingService } from './domain/service'
 import { Resource } from '../../shared/resource'
 import { BuildingEntity } from './domain/entity'
-import { FilterQuery } from '../../types/database'
+import { FilterQuery } from '../../type/database'
 
 export class BuildingQueries {
   private repository: BuildingRepository

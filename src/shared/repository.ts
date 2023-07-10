@@ -1,9 +1,9 @@
 import { LevelCostRepository, UnitCostRepository } from '../core/pricing/model'
 
-import { BaseEntity } from '../types/domain'
+import { BaseEntity } from '../type/domain'
 import { BuildingRepository } from '../core/building/model'
 import { CityRepository } from '../core/city/model'
-import { FilterQuery } from '../types/database'
+import { FilterQuery } from '../type/database'
 import { PlayerRepository } from '../core/player/model'
 import { TechnologyRepository } from '../core/technology/model'
 

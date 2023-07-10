@@ -1,7 +1,7 @@
 import { Factory } from '../core/factory'
 import { Modules } from '../core/modules'
-import { AppCommands } from './commands'
-import { AppQueries } from './queries'
+import { AppCommands } from './command'
+import { AppQueries } from './query'
 
 export class App {
   modules: Modules
