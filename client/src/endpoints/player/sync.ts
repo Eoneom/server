@@ -18,6 +18,7 @@ export interface SyncDataResponse {
       id: string
       code: string
       level: number
+      upgrade_at?: number
     }[]
   }[]
   technologies: {

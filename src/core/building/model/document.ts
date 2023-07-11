@@ -14,7 +14,7 @@ class Building {
   public level!: number
 
   @prop()
-  public upgraded_at?: number
+  public upgrade_at?: number
 }
 
 export type BuildingDocument = Document & Building

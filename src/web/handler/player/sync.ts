@@ -56,7 +56,8 @@ const response_mapper = ({
       buildings: buildings[city.id].map(building => ({
         id: building.id,
         code: building.code,
-        level: building.level
+        level: building.level,
+        upgrade_at: building.upgrade_at ?? undefined
       }))
     })),
     technologies: technologies.map(technology => ({

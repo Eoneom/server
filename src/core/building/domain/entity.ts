@@ -7,28 +7,28 @@ type BuildingEntityProps = BaseEntityProps & {
   city_id: string
   code: BuildingCode
   level: number
-  upgraded_at?: number
+  upgrade_at?: number
 }
 
 export class BuildingEntity extends BaseEntity {
   readonly city_id: string
   readonly code: BuildingCode
   readonly level: number
-  readonly upgraded_at: number | null
+  readonly upgrade_at: number | null
 
   private constructor({
     id,
     city_id,
     code,
     level,
-    upgraded_at
+    upgrade_at
   }: BuildingEntityProps) {
     super({ id })
 
     this.city_id = city_id
     this.code = code
     this.level = level
-    this.upgraded_at = upgraded_at ?? null
+    this.upgrade_at = upgrade_at ?? null
   }
 
   static create(props: BuildingEntityProps): BuildingEntity {
@@ -65,7 +65,7 @@ export class BuildingEntity extends BaseEntity {
   launchUpgrade(upgrade_time_in_seconds: number): BuildingEntity {
     return new BuildingEntity({
       ...this,
-      upgraded_at: now() + upgrade_time_in_seconds * 1000
+      upgrade_at: now() + upgrade_time_in_seconds * 1000
     })
   }
 
@@ -73,7 +73,7 @@ export class BuildingEntity extends BaseEntity {
     return new BuildingEntity({
       ...this,
       level: this.level + 1,
-      upgraded_at: undefined,
+      upgrade_at: undefined,
     })
   }
 }

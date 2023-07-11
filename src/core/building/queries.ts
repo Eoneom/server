@@ -24,7 +24,7 @@ export class BuildingQueries {
   async canUpgrade({ city_id }: { city_id: string }): Promise<boolean> {
     const is_building_in_progress = await this.repository.exists({
       city_id,
-      upgraded_at: {
+      upgrade_at: {
         $exists: true,
         $ne: null
       }
