@@ -45,18 +45,22 @@ const response_mapper = ({
 }): SyncDataResponse => {
   return {
     player: {
+      id: player.id,
       name: player.name,
     },
     cities: cities.map(city => ({
+      id: city.id,
       name: city.name,
       plastic: city.plastic,
       mushroom: city.mushroom,
       buildings: buildings[city.id].map(building => ({
+        id: building.id,
         code: building.code,
         level: building.level
       }))
     })),
     technologies: technologies.map(technology => ({
+      id: technology.id,
       code: technology.code,
       level: technology.level
     }))
