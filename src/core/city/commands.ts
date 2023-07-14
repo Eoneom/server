@@ -1,10 +1,6 @@
-import { BuildingQueries } from '../building/queries'
 import { CityEntity } from './domain/entity'
 import { CityErrors } from './domain/errors'
-import { CityEventCode } from './domain/events'
 import { CityRepository } from './model'
-import { Factory } from '../factory'
-import { PricingQueries } from '../pricing/queries'
 import { Resource } from '../../shared/resource'
 
 interface CreateCityCommand {
@@ -20,25 +16,18 @@ interface CityPurchaseCommand {
 interface CityGatherResourcesCommand {
   city: CityEntity
   gather_at_time: number
+  earnings_by_second: Resource
 }
 
 export class CityCommands {
   private repository: CityRepository
-  private building_queries: BuildingQueries
-  private pricing_queries: PricingQueries
 
   constructor({
     repository,
-    building_queries,
-    pricing_queries
   }: {
     repository: CityRepository
-    building_queries: BuildingQueries
-    pricing_queries: PricingQueries
   }) {
     this.repository = repository
-    this.building_queries = building_queries
-    this.pricing_queries = pricing_queries
   }
 
   async settle({ name, player_id }: CreateCityCommand): Promise<{ city_id: string }> {
@@ -59,8 +48,7 @@ export class CityCommands {
     await this.repository.updateOne(updated_city)
   }
 
-  async gatherResources({ city, gather_at_time }: CityGatherResourcesCommand): Promise<void> {
-    const earnings_by_second = await this.building_queries.getEarningsBySecond({ city_id: city.id })
+  async gatherResources({ city, gather_at_time, earnings_by_second }: CityGatherResourcesCommand): Promise<void> {
     const { city: updated_city, updated } = city.gather({ earnings_by_second, gather_at_time })
 
     if (!updated) {

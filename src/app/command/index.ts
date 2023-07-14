@@ -71,7 +71,10 @@ export class AppCommands {
   }): Promise<void> {
     const cities = await this.modules.city.queries.find({ player_id })
 
-    const gather_resources = cities.map(city => this.modules.city.commands.gatherResources({ city, gather_at_time: new Date().getTime()}))
+    const gather_resources = cities.map(async city => {
+      const earnings_by_second = await this.modules.building.queries.getEarningsBySecond({ city_id: city.id })
+      return this.modules.city.commands.gatherResources({ city, gather_at_time: new Date().getTime(), earnings_by_second})
+    })
     const finish_building_upgrades = cities.map(city => this.modules.building.commands.finishUpgrade({ city_id: city.id }))
     const finish_technology_researches = this.modules.technology.commands.finishResearch({ player_id })
 

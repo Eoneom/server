@@ -1,8 +1,4 @@
-import { BuildingQueries } from '../building/queries'
-import { CityCommands } from '../city/commands'
-import { CityQueries } from '../city/queries'
 import { Factory } from '../factory'
-import { PricingQueries } from '../pricing/queries'
 import { TechnologyCode } from './domain/constants'
 import { TechnologyErrors } from './domain/errors'
 import { TechnologyEventCode } from './domain/events'
@@ -13,8 +9,8 @@ import { now } from '../../shared/time'
 interface TechnologyLaunchResearchCommand {
   code: TechnologyCode
   player_id: string
-  city_id: string
   duration: number
+  research_lab_level: number
 }
 
 interface TechnologyInitCommand {
@@ -28,20 +24,16 @@ interface TechnologyFinishResearchesCommand {
 export class TechnologyCommands {
   private repository: TechnologyRepository
   private service: TechnologyService
-  private building_queries: BuildingQueries
 
   constructor({
     repository,
     service,
-    building_queries,
   }: {
     repository: TechnologyRepository
     service: TechnologyService
-    building_queries: BuildingQueries
   }) {
     this.repository = repository
     this.service = service
-    this.building_queries = building_queries
   }
 
   async init({ player_id }: TechnologyInitCommand): Promise<void> {
@@ -80,15 +72,14 @@ export class TechnologyCommands {
     })
   }
 
-  async launchResearch({ code, player_id, city_id, duration }: TechnologyLaunchResearchCommand): Promise<void> {
+  async launchResearch({ code, player_id, duration, research_lab_level }: TechnologyLaunchResearchCommand): Promise<void> {
     const technology = await this.repository.findOne({ code, player_id })
     if (!technology) {
       throw new Error(TechnologyErrors.NOT_FOUND)
     }
 
-    const research_level = await this.building_queries.getResearchLevel({ city_id })
     const result = this.service.launchResearch({
-      research_level,
+      research_level: research_lab_level,
       technology,
       duration
     })

@@ -6,7 +6,7 @@ import { FilterQuery } from '../../type/database'
 export class CityQueries {
   private repository: CityRepository
 
-  public constructor(repository: CityRepository) {
+  public constructor({ repository }: { repository: CityRepository }) {
     this.repository = repository
   }
 

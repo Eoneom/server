@@ -1,5 +1,33 @@
-import { Module } from '../../shared/module'
 import { PlayerCommands } from './commands'
 import { PlayerQueries } from './queries'
+import { Module } from '../../shared/module'
+import { Factory } from '../../core/factory'
 
-export type PlayerModule = Module<PlayerQueries, PlayerCommands>
+export class PlayerModule extends Module<PlayerQueries, PlayerCommands> {
+  private static instance: PlayerModule
+
+  constructor({
+    queries,
+    commands
+  }: {
+    queries: PlayerQueries,
+    commands: PlayerCommands
+  }) {
+    super({ queries, commands })
+  }
+
+  static getInstance(): PlayerModule {
+    if (!this.instance) {
+      const repository = Factory.getRepository().player
+      const queries = new PlayerQueries({
+        repository
+      })
+      const commands = new PlayerCommands({
+        repository
+      })
+      this.instance = new PlayerModule({ commands, queries })
+    }
+
+    return this.instance
+  }
+}

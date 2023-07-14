@@ -37,6 +37,7 @@ export class MongoRepository implements Repository {
   }
 
   async connect(): Promise<void> {
+    console.log('connecting to database...')
     await mongoose.connect('mongodb://localhost:27017/', {
       dbName: 'swarm'
     })
