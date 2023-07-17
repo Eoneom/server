@@ -21,18 +21,6 @@ export class BuildingQueries {
     this.service = service
   }
 
-  async canUpgrade({ city_id }: { city_id: string }): Promise<boolean> {
-    const is_building_in_progress = await this.repository.exists({
-      city_id,
-      upgrade_at: {
-        $exists: true,
-        $ne: null
-      }
-    })
-
-    return !is_building_in_progress
-  }
-
   async getBuildings({ city_id }: { city_id: string }): Promise<BuildingEntity[]> {
     return this.repository.find({ city_id })
   }

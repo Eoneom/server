@@ -11,7 +11,9 @@ export interface GenericRepository<Entity extends BaseEntity> {
   exists(query: FilterQuery<Entity>): Promise<boolean>
   find(query: FilterQuery<Entity>): Promise<Entity[]>
   findById(id: string): Promise<Entity | null>
+  findByIdOrThrow(id: string): Promise<Entity>
   findOne(query: FilterQuery<Entity>): Promise<Entity | null>
+  findOneOrThrow(query: FilterQuery<Entity>): Promise<Entity>
   create(entity: Omit<Entity, 'id'>): Promise<string>
   updateOne(entity: Entity): Promise<void>
 }

@@ -11,9 +11,11 @@ export abstract class MongoGenericRepository<
 > implements GenericRepository<Entity> {
 
   private model: ReturnModelType<Model, BeAnObject>
+  private not_found_error: string
 
-  constructor(model: ReturnModelType<Model>) {
+  constructor(model: ReturnModelType<Model>, not_found_error: string) {
     this.model = model
+    this.not_found_error = not_found_error
   }
 
   async exists(query: FilterQuery<Entity>): Promise<boolean> {
@@ -35,6 +37,15 @@ export abstract class MongoGenericRepository<
     return this.buildFromModel(document)
   }
 
+  async findByIdOrThrow(id: string): Promise<Entity> {
+    const document = await this.findById(id)
+    if (!document) {
+      throw new Error(this.not_found_error)
+    }
+
+    return document
+  }
+
   async findOne(query: FilterQuery<Entity>): Promise<Entity | null> {
     const document = await this.model.findOne(query)
     if (!document) {
@@ -42,6 +53,15 @@ export abstract class MongoGenericRepository<
     }
 
     return this.buildFromModel(document)
+  }
+
+  async findOneOrThrow(query: FilterQuery<Entity>): Promise<Entity> {
+    const document = await this.findOne(query)
+    if (!document) {
+      throw new Error(this.not_found_error)
+    }
+
+    return document
   }
 
   async create(entity: Entity): Promise<string> {

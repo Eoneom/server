@@ -1,15 +1,19 @@
+import { TechnologyCode } from 'src/core/technology/domain/constants'
 import { BuildingCode } from '../../core/building/domain/constants'
 import { BuildingErrors } from '../../core/building/domain/errors'
 import { CityErrors } from '../../core/city/domain/errors'
 import { Factory } from '../../core/factory'
 import { Modules } from '../../core/modules'
 import { PlayerErrors } from '../../core/player/domain/errors'
+import { Repository } from '../../shared/repository'
 
 export class AppCommands {
   private modules: Modules
+  private repository: Repository
 
   constructor() {
     this.modules = Factory.getModules()
+    this.repository = Factory.getRepository()
   }
 
   async signup({
@@ -46,22 +50,50 @@ export class AppCommands {
     city_id: string
     building_code: BuildingCode
   }): Promise<void> {
-    const city = await this.modules.city.queries.findByIdOrThrow(city_id)
-    const is_city_owned_by_player = city.isOwnedBy(player_id)
-    if (!is_city_owned_by_player) {
-      throw new Error(CityErrors.NOT_OWNER)
-    }
-
-    const can_upgrade_building = await this.modules.building.queries.canUpgrade({ city_id })
-    if (!can_upgrade_building) {
-      throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
-    }
-
-    const building = await this.modules.building.queries.findOneOrThrow({ city_id, code: building_code })
+    const [ city, building ] = await Promise.all([
+      this.modules.city.queries.findByIdOrThrow(city_id),
+      this.modules.building.queries.findOneOrThrow({ city_id, code: building_code })
+    ])
     const building_costs = await this.modules.pricing.queries.getNextLevelCost({ level: building.level, code: building_code })
 
-    await this.modules.city.commands.purchase({ city, cost: building_costs.resource })
-    await this.modules.building.commands.launchUpgrade({ building, duration: building_costs.duration })
+    const updated_city = await this.modules.city.commands.purchase({ player_id, city, cost: building_costs.resource })
+    const updated_building = await this.modules.building.commands.launchUpgrade({ city_id, building, duration: building_costs.duration })
+
+    await Promise.all([
+      this.repository.city.updateOne(updated_city),
+      this.repository.building.updateOne(updated_building)
+    ])
+  }
+
+  async researchTechnology({
+    player_id,
+    city_id,
+    technology_code
+  }: {
+    player_id: string
+    city_id: string
+    technology_code: TechnologyCode
+  }): Promise<void> {
+    const [ city, research_lab, technology ] = await Promise.all([
+      this.modules.city.queries.findByIdOrThrow(city_id),
+      this.modules.building.queries.findOneOrThrow({ city_id, code: BuildingCode.RESEARCH_LAB }),
+      this.modules.technology.queries.findOneOrThrow({ player_id, code: technology_code })
+    ])
+
+    const technology_costs = await this.modules.pricing.queries.getNextLevelCost({ level: technology.level, code: technology_code })
+
+    const updated_city = await this.modules.city.commands.purchase({ player_id, city, cost: technology_costs.resource })
+    const updated_technology = await this.modules.technology.commands.launchResearch({
+      player_id,
+      technology,
+      duration: technology_costs.duration,
+      research_lab_level: research_lab.level
+    })
+
+    await Promise.all([
+      this.repository.city.updateOne(updated_city),
+      this.repository.technology.updateOne(updated_technology)
+    ])
   }
 
   async refresh({

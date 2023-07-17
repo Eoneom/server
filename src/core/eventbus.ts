@@ -1,16 +1,12 @@
 import { CityEventCode, CityPayloads } from './city/domain/events'
-import { TechnologyEventCode, TechnologyPayloads } from './technology/domain/events'
 
 export const event_codes = {
-  ...CityEventCode,
-  ...TechnologyEventCode
+  ...CityEventCode
 }
 
-export type EventCode = CityEventCode |
-  TechnologyEventCode
+export type EventCode = CityEventCode
 
-export type Payloads = CityPayloads &
-  TechnologyPayloads
+export type Payloads = CityPayloads
 
 export interface Registry {
   unregister: () => void

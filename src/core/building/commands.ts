@@ -3,6 +3,7 @@ import { BuildingRepository } from './model'
 import { BuildingService } from './domain/service'
 import { now } from '../../shared/time'
 import { BuildingEntity } from './domain/entity'
+import { BuildingErrors } from 'src/core/building/domain/errors'
 
 export interface BuildingCreateCommand {
   code: BuildingCode
@@ -11,6 +12,7 @@ export interface BuildingCreateCommand {
 }
 
 export interface BuildingLaunchUpgradeCommand {
+  city_id: string
   building: BuildingEntity
   duration: number
 }
@@ -46,9 +48,19 @@ export class BuildingCommands {
     await Promise.all(buildings.map((building) => this.repository.create(building)))
   }
 
-  async launchUpgrade({ building, duration }: BuildingLaunchUpgradeCommand): Promise<void> {
-    const updated_building = building.launchUpgrade(duration)
-    await this.repository.updateOne(updated_building)
+  async launchUpgrade({ city_id, building, duration }: BuildingLaunchUpgradeCommand): Promise<BuildingEntity> {
+    const is_building_in_progress = await this.repository.exists({
+      city_id,
+      upgrade_at: {
+        $exists: true,
+        $ne: null
+      }
+    })
+    if (!is_building_in_progress) {
+      throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
+    }
+
+    return building.launchUpgrade(duration)
   }
 
   async finishUpgrade({ city_id }: BuildingFinishUpgradesCommand): Promise<void> {

@@ -18,6 +18,11 @@ import { TechnologyModel } from '../core/technology/model/document'
 import { TechnologyRepository } from '../core/technology/model'
 import { UnitCostModel } from '../core/pricing/model/unit/document'
 import mongoose from 'mongoose'
+import { CityErrors } from 'src/core/city/domain/errors'
+import { BuildingErrors } from 'src/core/building/domain/errors'
+import { PlayerErrors } from 'src/core/player/domain/errors'
+import { TechnologyErrors } from 'src/core/technology/domain/errors'
+import { PricingErrors } from 'src/core/pricing/domain/errors'
 
 export class MongoRepository implements Repository {
   city: CityRepository
@@ -28,12 +33,12 @@ export class MongoRepository implements Repository {
   unit_cost: UnitCostRepository
 
   constructor() {
-    this.city = new MongoCityRepository(CityModel)
-    this.building = new MongoBuildingRepository(BuildingModel)
-    this.player = new MongoPlayerRepository(PlayerModel)
-    this.technology = new MongoTechnologyRepository(TechnologyModel)
-    this.level_cost = new MongoLevelCostRepository(LevelCostModel)
-    this.unit_cost = new MongoUnitCostRepository(UnitCostModel)
+    this.city = new MongoCityRepository(CityModel, CityErrors.NOT_FOUND)
+    this.building = new MongoBuildingRepository(BuildingModel, BuildingErrors.NOT_FOUND)
+    this.player = new MongoPlayerRepository(PlayerModel, PlayerErrors.NOT_FOUND)
+    this.technology = new MongoTechnologyRepository(TechnologyModel, TechnologyErrors.NOT_FOUND)
+    this.level_cost = new MongoLevelCostRepository(LevelCostModel, PricingErrors.LEVEL_COST_NOT_FOUND)
+    this.unit_cost = new MongoUnitCostRepository(UnitCostModel, PricingErrors.LEVEL_COST_NOT_FOUND)
   }
 
   async connect(): Promise<void> {

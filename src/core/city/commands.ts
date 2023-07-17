@@ -11,6 +11,7 @@ interface CreateCityCommand {
 interface CityPurchaseCommand {
   city: CityEntity
   cost: Resource
+  player_id: string
 }
 
 interface CityGatherResourcesCommand {
@@ -38,14 +39,18 @@ export class CityCommands {
     }
   }
 
-  async purchase({ city, cost }: CityPurchaseCommand): Promise<void> {
+  async purchase({ city, cost, player_id }: CityPurchaseCommand): Promise<CityEntity> {
+    const is_city_owned_by_player = city.isOwnedBy(player_id)
+    if (!is_city_owned_by_player) {
+      throw new Error(CityErrors.NOT_OWNER)
+    }
+
     const has_resources = city.hasResources(cost)
     if (!has_resources) {
       throw new Error(CityErrors.NOT_ENOUGH_RESOURCES)
     }
 
-    const updated_city = city.purchase(cost)
-    await this.repository.updateOne(updated_city)
+    return city.purchase(cost)
   }
 
   async gatherResources({ city, gather_at_time, earnings_by_second }: CityGatherResourcesCommand): Promise<void> {
