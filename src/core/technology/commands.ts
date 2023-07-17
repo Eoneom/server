@@ -34,15 +34,13 @@ export class TechnologyCommands {
     this.service = service
   }
 
-  async init({ player_id }: TechnologyInitCommand): Promise<void> {
+  async init({ player_id }: TechnologyInitCommand): Promise<TechnologyEntity[]> {
     const has_technologies = await this.repository.exists({ player_id })
 
-    const technologies = this.service.initTechnologies({
+    return this.service.initTechnologies({
       player_id,
       has_technologies
     })
-
-    await Promise.all(technologies.map((technology) => this.repository.create(technology)))
   }
 
   async launchResearch({
@@ -64,7 +62,7 @@ export class TechnologyCommands {
     }
 
     const { technology: updated_technology } = this.service.launchResearch({
-      research_level: research_lab_level,
+      research_lab_level,
       technology,
       duration
     })

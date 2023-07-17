@@ -1,10 +1,7 @@
 import { TechnologyCode } from 'src/core/technology/domain/constants'
 import { BuildingCode } from '../../core/building/domain/constants'
-import { BuildingErrors } from '../../core/building/domain/errors'
-import { CityErrors } from '../../core/city/domain/errors'
 import { Factory } from '../../core/factory'
 import { Modules } from '../../core/modules'
-import { PlayerErrors } from '../../core/player/domain/errors'
 import { Repository } from '../../shared/repository'
 
 export class AppCommands {
@@ -23,22 +20,22 @@ export class AppCommands {
     player_name: string
     city_name: string
   }): Promise<{ player_id: string; city_id: string }> {
-    const can_create_player = await this.modules.player.queries.canCreate({ name: player_name })
-    if (!can_create_player) {
-      throw new Error(PlayerErrors.ALREADY_EXISTS)
+    const player = await this.modules.player.commands.init({ name: player_name })
+    const city = await this.modules.city.commands.settle({ name: city_name, player_id: player.id })
+    const buildings = this.modules.building.commands.init({ city_id: city.id })
+    const technologies = await this.modules.technology.commands.init({ player_id: player.id })
+
+    await Promise.all([
+      this.repository.player.create(player),
+      this.repository.city.create(city),
+      ...buildings.map(building => this.repository.building.create(building)),
+      ...technologies.map(technology => this.repository.technology.create(technology))
+    ])
+
+    return {
+      player_id: player.id,
+      city_id: city.id
     }
-
-    const can_create_city = await this.modules.city.queries.canSettle({ name: city_name })
-    if (!can_create_city) {
-      throw new Error(CityErrors.ALREADY_EXISTS)
-    }
-
-    const { player_id } = await this.modules.player.commands.init({ name: player_name })
-    const { city_id } = await this.modules.city.commands.settle({ name: city_name, player_id })
-    await this.modules.building.commands.init({ city_id })
-    await this.modules.technology.commands.init({ player_id })
-
-    return { player_id, city_id }
   }
 
   async upgradeBuilding({

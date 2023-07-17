@@ -40,12 +40,10 @@ export class BuildingCommands {
     this.service = service
   }
 
-  async init({ city_id }: BuildingInitCityCommand): Promise<void> {
-    const buildings = this.service.initBuildings({
+  init({ city_id }: BuildingInitCityCommand): BuildingEntity[] {
+    return this.service.initBuildings({
       city_id,
     })
-
-    await Promise.all(buildings.map((building) => this.repository.create(building)))
   }
 
   async launchUpgrade({ city_id, building, duration }: BuildingLaunchUpgradeCommand): Promise<BuildingEntity> {

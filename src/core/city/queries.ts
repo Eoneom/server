@@ -10,11 +10,6 @@ export class CityQueries {
     this.repository = repository
   }
 
-  public async canSettle({ name }: { name: string }): Promise<boolean> {
-    const does_city_with_same_name_exists = await this.repository.exists({ name })
-    return !does_city_with_same_name_exists
-  }
-
   public async find(query: FilterQuery<CityEntity>): Promise<CityEntity[]> {
     return this.repository.find(query)
   }

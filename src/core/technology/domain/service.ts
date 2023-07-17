@@ -22,17 +22,17 @@ export class TechnologyService {
   }
 
   launchResearch({
-    research_level,
+    research_lab_level,
     technology,
     duration
   }: {
-    research_level: number
+    research_lab_level: number
     technology: TechnologyEntity
     duration: number
   }): {
     technology: TechnologyEntity
   } {
-    const has_required_research_level = this.hasRequiredResearchLevel({ research_level, technology })
+    const has_required_research_level = this.hasRequiredResearchLevel({ research_lab_level, technology })
     if (!has_required_research_level) {
       throw new Error(TechnologyErrors.NOT_REQUIRED_RESEARCH_LEVEL)
     }
@@ -42,7 +42,7 @@ export class TechnologyService {
     }
   }
 
-  private hasRequiredResearchLevel({ research_level, technology }: { research_level: number, technology: TechnologyEntity }): boolean {
-    return research_level >= technology_required_research_levels[technology.code]
+  private hasRequiredResearchLevel({ research_lab_level, technology }: { research_lab_level: number, technology: TechnologyEntity }): boolean {
+    return research_lab_level >= technology_required_research_levels[technology.code]
   }
 }

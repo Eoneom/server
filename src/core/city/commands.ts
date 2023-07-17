@@ -31,12 +31,13 @@ export class CityCommands {
     this.repository = repository
   }
 
-  async settle({ name, player_id }: CreateCityCommand): Promise<{ city_id: string }> {
-    const city = CityEntity.initCity({ name, player_id })
-    const id = await this.repository.create(city)
-    return {
-      city_id: id
+  async settle({ name, player_id }: CreateCityCommand): Promise<CityEntity> {
+    const existing_city = await this.repository.exists({ name })
+    if (existing_city) {
+      throw new Error(CityErrors.ALREADY_EXISTS)
     }
+
+    return CityEntity.initCity({ name, player_id })
   }
 
   async purchase({ city, cost, player_id }: CityPurchaseCommand): Promise<CityEntity> {

@@ -14,11 +14,6 @@ export class PlayerQueries {
     this.repository = repository
   }
 
-  async canCreate({ name }: { name: string}): Promise<boolean> {
-    const existing_player = await this.repository.exists({ name })
-    return !existing_player
-  }
-
   async findByIdOrThrow(id: string): Promise<PlayerEntity> {
     const player = await this.repository.findById(id)
     if (!player) {

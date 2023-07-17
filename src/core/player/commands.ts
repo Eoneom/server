@@ -1,3 +1,4 @@
+import { PlayerErrors } from 'src/core/player/domain/errors'
 import { PlayerEntity } from './domain/entity'
 import { PlayerRepository } from './model'
 
@@ -16,9 +17,12 @@ export class PlayerCommands {
     this.repository = repository
   }
 
-  async init({ name }: PlayerInitCommand): Promise<{ player_id: string}> {
-    const player = PlayerEntity.initPlayer({ name })
-    const player_id = await this.repository.create(player)
-    return { player_id }
+  async init({ name }: PlayerInitCommand): Promise<PlayerEntity> {
+    const existing_player = await this.repository.exists({ name })
+    if (existing_player) {
+      throw new Error(PlayerErrors.ALREADY_EXISTS)
+    }
+
+    return PlayerEntity.initPlayer({ name })
   }
 }
