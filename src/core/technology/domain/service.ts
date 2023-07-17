@@ -14,7 +14,7 @@ export class TechnologyService {
       throw new Error(TechnologyErrors.ALREADY_EXISTS)
     }
 
-    const building = TechnologyEntity.initBuilding({ player_id })
+    const building = TechnologyEntity.initArchitecture({ player_id })
 
     return [
       building

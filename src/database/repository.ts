@@ -18,11 +18,11 @@ import { TechnologyModel } from '../core/technology/model/document'
 import { TechnologyRepository } from '../core/technology/model'
 import { UnitCostModel } from '../core/pricing/model/unit/document'
 import mongoose from 'mongoose'
-import { CityErrors } from 'src/core/city/domain/errors'
-import { BuildingErrors } from 'src/core/building/domain/errors'
-import { PlayerErrors } from 'src/core/player/domain/errors'
-import { TechnologyErrors } from 'src/core/technology/domain/errors'
-import { PricingErrors } from 'src/core/pricing/domain/errors'
+import { CityErrors } from '../core/city/domain/errors'
+import { BuildingErrors } from '../core/building/domain/errors'
+import { PlayerErrors } from '../core/player/domain/errors'
+import { TechnologyErrors } from '../core/technology/domain/errors'
+import { PricingErrors } from '../core/pricing/domain/errors'
 
 export class MongoRepository implements Repository {
   city: CityRepository

@@ -1,7 +1,7 @@
 export enum TechnologyCode {
-  BUILDING = 'building'
+  ARCHITECTURE = 'architecture'
 }
 
 export const technology_required_research_levels: Record<TechnologyCode, number> = {
-  [TechnologyCode.BUILDING]: 1
+  [TechnologyCode.ARCHITECTURE]: 1
 }

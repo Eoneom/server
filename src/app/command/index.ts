@@ -1,4 +1,4 @@
-import { TechnologyCode } from 'src/core/technology/domain/constants'
+import { TechnologyCode } from '../../core/technology/domain/constants'
 import { BuildingCode } from '../../core/building/domain/constants'
 import { Factory } from '../../core/factory'
 import { Modules } from '../../core/modules'
@@ -53,8 +53,14 @@ export class AppCommands {
     ])
     const building_costs = await this.modules.pricing.queries.getNextLevelCost({ level: building.level, code: building_code })
 
+    const architecture_bonus = await this.modules.technology.queries.getArchitectureBonus({ player_id })
     const updated_city = await this.modules.city.commands.purchase({ player_id, city, cost: building_costs.resource })
-    const updated_building = await this.modules.building.commands.launchUpgrade({ city_id, building, duration: building_costs.duration })
+    const updated_building = await this.modules.building.commands.launchUpgrade({
+      city_id,
+      building,
+      duration: building_costs.duration,
+      architecture_bonus
+    })
 
     await Promise.all([
       this.repository.city.updateOne(updated_city),

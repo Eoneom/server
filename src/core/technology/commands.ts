@@ -2,7 +2,7 @@ import { TechnologyErrors } from './domain/errors'
 import { TechnologyRepository } from './model'
 import { TechnologyService } from './domain/service'
 import { now } from '../../shared/time'
-import { TechnologyEntity } from 'src/core/technology/domain/entity'
+import { TechnologyEntity } from './domain/entity'
 
 interface TechnologyLaunchResearchCommand {
   player_id: string

@@ -1,4 +1,4 @@
-import { PlayerErrors } from 'src/core/player/domain/errors'
+import { PlayerErrors } from './domain/errors'
 import { PlayerEntity } from './domain/entity'
 import { PlayerRepository } from './model'
 

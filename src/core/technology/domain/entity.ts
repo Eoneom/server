@@ -33,10 +33,10 @@ export class TechnologyEntity extends BaseEntity {
     return new TechnologyEntity(props)
   }
 
-  static initBuilding({ player_id }: { player_id: string }): TechnologyEntity {
+  static initArchitecture({ player_id }: { player_id: string }): TechnologyEntity {
     return new TechnologyEntity({
       id: 'fake',
-      code: TechnologyCode.BUILDING,
+      code: TechnologyCode.ARCHITECTURE,
       player_id,
       level: 0,
     })

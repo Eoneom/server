@@ -71,7 +71,7 @@ export const building_upgrade_durations_in_second: Record<BuildingCode, Record<n
 
 
 export const technology_costs: Record<TechnologyCode, Record<number, { plastic: number, mushroom: number }>> = {
-  [TechnologyCode.BUILDING]: {
+  [TechnologyCode.ARCHITECTURE]: {
     1: {
       plastic: 1000,
       mushroom: 2000
@@ -92,7 +92,7 @@ export const technology_costs: Record<TechnologyCode, Record<number, { plastic: 
 }
 
 export const technology_research_durations_in_second: Record<TechnologyCode, Record<number, number>> = {
-  [TechnologyCode.BUILDING]: {
+  [TechnologyCode.ARCHITECTURE]: {
     1: 30,
     2: 60,
     3: 120,
