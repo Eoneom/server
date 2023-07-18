@@ -7,27 +7,27 @@ type TechnologyEntityProps = BaseEntity & {
   code: TechnologyCode
   player_id: string
   level: number
-  researched_at?: number
+  research_at?: number
 }
 
 export class TechnologyEntity extends BaseEntity {
   readonly code: TechnologyCode
   readonly player_id: string
   readonly level: number
-  readonly researched_at: number | null
+  readonly research_at: number | null
 
   private constructor({
     id,
     code,
     player_id,
     level,
-    researched_at
+    research_at
   }: TechnologyEntityProps) {
     super({ id })
     this.code = code
     this.player_id = player_id
     this.level = level
-    this.researched_at = researched_at ?? null
+    this.research_at = research_at ?? null
   }
 
   static create(props: TechnologyEntityProps): TechnologyEntity {
@@ -46,7 +46,7 @@ export class TechnologyEntity extends BaseEntity {
   launchResearch(research_duration: number): TechnologyEntity {
     return new TechnologyEntity({
       ...this,
-      researched_at: now() + research_duration * 1000
+      research_at: now() + research_duration * 1000
     })
   }
 
@@ -54,7 +54,7 @@ export class TechnologyEntity extends BaseEntity {
     return new TechnologyEntity({
       ...this,
       level: this.level + 1,
-      researched_at: undefined,
+      research_at: undefined,
     })
   }
 }

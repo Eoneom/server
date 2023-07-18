@@ -51,7 +51,7 @@ export class TechnologyCommands {
   }: TechnologyLaunchResearchCommand): Promise<TechnologyEntity> {
     const technology_in_progress = await this.repository.exists({
       player_id,
-      researched_at: {
+      research_at: {
         $exists: true,
         $ne: null
       }
@@ -72,7 +72,7 @@ export class TechnologyCommands {
   async finishResearch({ player_id }: TechnologyFinishResearchesCommand): Promise<void> {
     const technology_to_finish = await this.repository.findOne({
       player_id,
-      researched_at: {
+      research_at: {
         $lte: now()
       }
     })

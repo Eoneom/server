@@ -59,7 +59,8 @@ const response_mapper = ({
     technologies: technologies.map(technology => ({
       id: technology.id,
       code: technology.code,
-      level: technology.level
+      level: technology.level,
+      research_at: technology.research_at ?? undefined
     }))
   }
 }

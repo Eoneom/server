@@ -14,7 +14,7 @@ class Technology {
   public level!: number
 
   @prop()
-  public researched_at?: number
+  public research_at?: number
 }
 
 export type TechnologyDocument = Document & Technology

@@ -21,6 +21,7 @@ export interface SyncDataResponse {
     id: string
     code: string
     level: number
+    research_at?: number
   }[]
 }
 
