@@ -43,9 +43,6 @@
     "#database/*": {
       "default": "./dist/src/database/*.js"
     },
-    "#eventbus/*": {
-      "default": "./dist/src/eventbus/*.js"
-    },
     "#shared/*": {
       "default": "./dist/src/shared/*.js"
     },

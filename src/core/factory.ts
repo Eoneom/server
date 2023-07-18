@@ -1,17 +1,14 @@
 import { BuildingModule } from '#core/building/module'
 import { CityModule } from '#core/city/module'
-import { EventBus } from '#core/eventbus'
 import { Modules } from '#core/modules'
 import { PlayerModule } from '#core/player/module'
 import { PricingModule } from '#core/pricing/module'
 import { TechnologyModule } from '#core/technology/module'
 import { MongoRepository } from '#database/repository'
-import { SimpleEventBus } from '#eventbus/index'
 import { Repository } from '#shared/repository'
 
 export class Factory {
   private static repository: Repository
-  private static eventbus: EventBus
 
   static getModules(): Modules {
     return {
@@ -29,13 +26,5 @@ export class Factory {
     }
 
     return this.repository
-  }
-
-  static getEventBus(): EventBus {
-    if (!this.eventbus) {
-      this.eventbus = new SimpleEventBus()
-    }
-
-    return this.eventbus
   }
 }

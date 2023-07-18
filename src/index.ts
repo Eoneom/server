@@ -1,7 +1,6 @@
 import { App } from '#app'
 import { Factory } from '#core/factory'
 import { initData } from '#core/migration/index'
-import { logEvents } from './log'
 import { launchServer } from '#web/http'
 
 (async () => {
@@ -9,10 +8,6 @@ import { launchServer } from '#web/http'
   await repository.connect()
 
   const app = new App()
-
-  const eventbus = Factory.getEventBus()
-
-  logEvents(eventbus)
 
   await initData(app)
 
