@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { App } from '../../../app'
-import { TechnologyResearchRequest, TechnologyResearchResponse } from '../../../../client/src/endpoints/technology/research'
+import { TechnologyResearchRequest, TechnologyResearchResponse } from '#client/src/endpoints/technology/research'
+import { App } from '#app'
 
 export const technology_research_handler = (app: App) => async (
   req: Request<TechnologyResearchRequest>,

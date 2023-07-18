@@ -1,4 +1,5 @@
-import { BaseEntity } from '../../../type/domain'
+import { id } from '#shared/identification'
+import { BaseEntity } from '#type/domain'
 
 export type PlayerEntityProps = BaseEntity & {
   name: string
@@ -22,7 +23,7 @@ export class PlayerEntity extends BaseEntity {
 
   static initPlayer({ name }: { name: string }): PlayerEntity {
     return new PlayerEntity({
-      id: 'fake',
+      id: id(),
       name
     })
   }

@@ -1,6 +1,6 @@
-import { TechnologyEntity } from './entity'
-import { TechnologyErrors } from './errors'
-import { technology_required_research_levels } from './constants'
+import { technology_required_research_levels } from '#core/technology/domain/constants'
+import { TechnologyEntity } from '#core/technology/domain/entity'
+import { TechnologyErrors } from '#core/technology/domain/errors'
 
 export class TechnologyService {
   initTechnologies({

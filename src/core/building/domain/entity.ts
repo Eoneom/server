@@ -1,7 +1,7 @@
-import { BaseEntity, BaseEntityProps } from '../../../type/domain'
-
-import { BuildingCode } from './constants'
-import { now } from '../../../shared/time'
+import { BuildingCode } from '#core/building/domain/constants'
+import { FAKE_ID } from '#shared/identification'
+import { now } from '#shared/time'
+import { BaseEntity, BaseEntityProps } from '#type/domain'
 
 type BuildingEntityProps = BaseEntityProps & {
   city_id: string
@@ -37,7 +37,7 @@ export class BuildingEntity extends BaseEntity {
 
   static initRecyclingPlant({ city_id }: { city_id: string }): BuildingEntity {
     return new BuildingEntity({
-      id: 'fake',
+      id: FAKE_ID,
       city_id,
       code: BuildingCode.RECYCLING_PLANT,
       level: 1
@@ -46,7 +46,7 @@ export class BuildingEntity extends BaseEntity {
 
   static initMushroomFarm({ city_id }: { city_id: string }): BuildingEntity {
     return new BuildingEntity({
-      id: 'fake',
+      id: FAKE_ID,
       city_id,
       code: BuildingCode.MUSHROOM_FARM,
       level: 1
@@ -55,7 +55,7 @@ export class BuildingEntity extends BaseEntity {
 
   static initResearchLab({ city_id }: { city_id: string }): BuildingEntity {
     return new BuildingEntity({
-      id: 'fake',
+      id: FAKE_ID,
       city_id,
       code: BuildingCode.RESEARCH_LAB,
       level: 0

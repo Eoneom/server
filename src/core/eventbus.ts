@@ -1,4 +1,4 @@
-import { CityEventCode, CityPayloads } from './city/domain/events'
+import { CityEventCode, CityPayloads } from '#core/city/domain/events'
 
 export const event_codes = {
   ...CityEventCode

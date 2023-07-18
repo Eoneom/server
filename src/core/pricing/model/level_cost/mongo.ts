@@ -1,8 +1,7 @@
-import { LevelCostDocument, LevelCostModel } from './document'
-
-import { LevelCostEntity } from '../../domain/entities/level'
-import { LevelCostRepository } from '..'
-import { MongoGenericRepository } from '../../../../database/generic'
+import { LevelCostEntity } from '#core/pricing/domain/entities/level'
+import { LevelCostRepository } from '#core/pricing/model'
+import { LevelCostDocument, LevelCostModel } from '#core/pricing/model/level_cost/document'
+import { MongoGenericRepository } from '#database/generic'
 
 export class MongoLevelCostRepository
   extends MongoGenericRepository<typeof LevelCostModel, LevelCostDocument, LevelCostEntity>

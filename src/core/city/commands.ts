@@ -1,7 +1,7 @@
-import { CityEntity } from './domain/entity'
-import { CityErrors } from './domain/errors'
-import { CityRepository } from './model'
-import { Resource } from '../../shared/resource'
+import { CityEntity } from '#core/city/domain/entity'
+import { CityErrors } from '#core/city/domain/errors'
+import { CityRepository } from '#core/city/model'
+import { Resource } from '#shared/resource'
 
 interface CreateCityCommand {
   name: string

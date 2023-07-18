@@ -1,8 +1,8 @@
-import { BuildingCommands } from './commands'
-import { BuildingQueries } from './queries'
-import { Module } from '../../shared/module'
-import { BuildingService } from './domain/service'
-import { Factory } from '../factory'
+import { BuildingCommands } from '#core/building/commands'
+import { BuildingService } from '#core/building/domain/service'
+import { BuildingQueries } from '#core/building/queries'
+import { Factory } from '#core/factory'
+import { Module } from '#shared/module'
 
 export class BuildingModule extends Module<BuildingQueries, BuildingCommands> {
   private static instance: BuildingModule

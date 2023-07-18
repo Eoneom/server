@@ -1,8 +1,8 @@
-import { TechnologyCode } from './domain/constants'
-import { TechnologyEntity } from './domain/entity'
-import { TechnologyRepository } from './model'
-import { FilterQuery } from '../../type/database'
-import { TechnologyErrors } from './domain/errors'
+import { TechnologyCode } from '#core/technology/domain/constants'
+import { TechnologyEntity } from '#core/technology/domain/entity'
+import { TechnologyErrors } from '#core/technology/domain/errors'
+import { TechnologyRepository } from '#core/technology/model'
+import { FilterQuery } from '#type/database'
 
 export class TechnologyQueries {
   private repository: TechnologyRepository

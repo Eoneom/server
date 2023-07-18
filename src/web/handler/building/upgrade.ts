@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { App } from '../../../app'
-import { BuildingUpgradeRequest, BuildingUpgradeResponse } from '../../../../client/src/endpoints/building/upgrade'
+import { BuildingUpgradeRequest, BuildingUpgradeResponse } from '#client/src/endpoints/building/upgrade'
+import { App } from '#app'
 
 export const building_upgrade_handler = (app: App) => async (
   req: Request<BuildingUpgradeRequest>,

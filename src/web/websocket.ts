@@ -1,7 +1,7 @@
 import expressWs from 'express-ws'
 import { Express } from 'express'
-import { Factory } from '../core/factory'
-import { event_codes } from '../core/eventbus'
+import { Factory } from '#core/factory'
+import { event_codes } from '#core/eventbus'
 
 export const initWebsocketServer = (app: Express) => {
   const wsInstance = expressWs(app)

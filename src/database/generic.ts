@@ -1,8 +1,8 @@
+import { FAKE_ID } from '#shared/identification'
+import { GenericRepository } from '#shared/repository'
+import { FilterQuery } from '#type/database'
+import { BaseEntity } from '#type/domain'
 import { AnyParamConstructor, BeAnObject, ReturnModelType } from '@typegoose/typegoose/lib/types'
-
-import { BaseEntity } from '../type/domain'
-import { FilterQuery } from '../type/database'
-import { GenericRepository } from '../shared/repository'
 
 export abstract class MongoGenericRepository<
   Model extends AnyParamConstructor<any>,
@@ -65,6 +65,11 @@ export abstract class MongoGenericRepository<
   }
 
   async create(entity: Entity): Promise<string> {
+    if (entity.id && entity.id !== FAKE_ID) {
+      await this.model.updateOne({ _id: entity.id }, entity, { upsert: true })
+      return entity.id
+    }
+
     const document = await this.model.create(entity)
     return document._id.toString()
   }

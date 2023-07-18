@@ -1,8 +1,8 @@
-import { App } from './app'
-import { Factory } from './core/factory'
-import { initData } from './core/migration'
+import { App } from '#app'
+import { Factory } from '#core/factory'
+import { initData } from '#core/migration/index'
 import { logEvents } from './log'
-import { launchServer } from './web/http'
+import { launchServer } from '#web/http'
 
 (async () => {
   const repository = Factory.getRepository()

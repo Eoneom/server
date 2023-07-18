@@ -1,10 +1,10 @@
-import { BuildingCode } from './domain/constants'
-import { BuildingErrors } from './domain/errors'
-import { BuildingRepository } from './model'
-import { BuildingService } from './domain/service'
-import { Resource } from '../../shared/resource'
-import { BuildingEntity } from './domain/entity'
-import { FilterQuery } from '../../type/database'
+import { BuildingCode } from '#core/building/domain/constants'
+import { BuildingEntity } from '#core/building/domain/entity'
+import { BuildingErrors } from '#core/building/domain/errors'
+import { BuildingService } from '#core/building/domain/service'
+import { BuildingRepository } from '#core/building/model'
+import { Resource } from '#shared/resource'
+import { FilterQuery } from '#type/database'
 
 export class BuildingQueries {
   private repository: BuildingRepository

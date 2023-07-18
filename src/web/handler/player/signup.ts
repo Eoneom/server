@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { App } from '../../../app'
-import { SignupRequest, SignupResponse } from '../../../../client/src/endpoints/player/signup'
+import { SignupRequest, SignupResponse } from '#client/src/endpoints/player/signup'
+import { App } from '#app'
 
 export const signup_handler = (app: App) => async (
   req: Request<SignupRequest>,

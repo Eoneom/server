@@ -1,4 +1,4 @@
-import { TechnologyCode } from '../../technology/domain/constants'
+import { TechnologyCode } from '#core/technology/domain/constants'
 
 export enum CityEventCode {
   TECHNOLOGY_PURCHASED = 'city:technology-purchased'

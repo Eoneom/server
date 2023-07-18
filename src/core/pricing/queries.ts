@@ -1,8 +1,7 @@
-import { LevelCostRepository, UnitCostRepository } from './model'
-
-import { LevelCostEntity } from './domain/entities/level'
-import { PricingErrors } from './domain/errors'
-import { UnitCostEntity } from './domain/entities/unit'
+import { LevelCostEntity } from '#core/pricing/domain/entities/level'
+import { UnitCostEntity } from '#core/pricing/domain/entities/unit'
+import { PricingErrors } from '#core/pricing/domain/errors'
+import { LevelCostRepository, UnitCostRepository } from '#core/pricing/model'
 
 export class PricingQueries {
   private level_repository: LevelCostRepository

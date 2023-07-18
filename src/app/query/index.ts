@@ -1,9 +1,9 @@
-import { BuildingEntity } from '../../core/building/domain/entity'
-import { CityEntity } from '../../core/city/domain/entity'
-import { Factory } from '../../core/factory'
-import { Modules } from '../../core/modules'
-import { PlayerEntity } from '../../core/player/domain/entity'
-import { TechnologyEntity } from '../../core/technology/domain/entity'
+import { BuildingEntity } from '#core/building/domain/entity'
+import { CityEntity } from '#core/city/domain/entity'
+import { Factory } from '#core/factory'
+import { Modules } from '#core/modules'
+import { PlayerEntity } from '#core/player/domain/entity'
+import { TechnologyEntity } from '#core/technology/domain/entity'
 
 export class AppQueries {
   private modules: Modules

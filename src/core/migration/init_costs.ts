@@ -1,13 +1,7 @@
-import {
-  building_costs,
-  building_upgrade_durations_in_second,
-  technology_costs,
-  technology_research_durations_in_second
-} from './constants'
-
-import { App } from '../../app'
-import { BuildingCode } from '../building/domain/constants'
-import { TechnologyCode } from '../technology/domain/constants'
+import { App } from '#app'
+import { BuildingCode } from '#core/building/domain/constants'
+import { building_costs, building_upgrade_durations_in_second, technology_costs, technology_research_durations_in_second } from '#core/migration/constants'
+import { TechnologyCode } from '#core/technology/domain/constants'
 
 export const init_costs = async (app: App): Promise<void> => {
   Object.keys(building_costs).forEach(code => {

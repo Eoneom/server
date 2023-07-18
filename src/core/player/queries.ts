@@ -1,7 +1,7 @@
-import { FilterQuery } from '../../type/database'
-import { PlayerEntity } from './domain/entity'
-import { PlayerErrors } from './domain/errors'
-import { PlayerRepository } from './model'
+import { PlayerEntity } from '#core/player/domain/entity'
+import { PlayerErrors } from '#core/player/domain/errors'
+import { PlayerRepository } from '#core/player/model'
+import { FilterQuery } from '#type/database'
 
 export class PlayerQueries {
   private repository: PlayerRepository

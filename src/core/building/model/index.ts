@@ -1,4 +1,4 @@
-import { BuildingEntity } from '../domain/entity'
-import { GenericRepository } from '../../../shared/repository'
+import { BuildingEntity } from '#core/building/domain/entity'
+import { GenericRepository } from '#shared/repository'
 
 export type BuildingRepository = GenericRepository<BuildingEntity>

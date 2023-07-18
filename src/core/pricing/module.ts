@@ -1,7 +1,7 @@
-import { PricingCommands } from './commands'
-import { PricingQueries } from './queries'
-import { Module } from '../../shared/module'
-import { Factory } from '../../core/factory'
+import { Factory } from '#core/factory'
+import { PricingCommands } from '#core/pricing/commands'
+import { PricingQueries } from '#core/pricing/queries'
+import { Module } from '#shared/module'
 
 export class PricingModule extends Module<PricingQueries, PricingCommands> {
   private static instance: PricingModule

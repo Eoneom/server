@@ -1,6 +1,6 @@
-import { PlayerErrors } from './domain/errors'
-import { PlayerEntity } from './domain/entity'
-import { PlayerRepository } from './model'
+import { PlayerEntity } from '#core/player/domain/entity'
+import { PlayerErrors } from '#core/player/domain/errors'
+import { PlayerRepository } from '#core/player/model'
 
 interface PlayerInitCommand {
   name: string

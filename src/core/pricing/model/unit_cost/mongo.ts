@@ -1,8 +1,7 @@
-import { UnitCostDocument, UnitCostModel } from './document'
-
-import { MongoGenericRepository } from '../../../../database/generic'
-import { UnitCostEntity } from '../../domain/entities/unit'
-import { UnitCostRepository } from '..'
+import { UnitCostEntity } from '#core/pricing/domain/entities/unit'
+import { UnitCostRepository } from '#core/pricing/model'
+import { UnitCostDocument, UnitCostModel } from '#core/pricing/model/unit_cost/document'
+import { MongoGenericRepository } from '#database/generic'
 
 export class MongoUnitCostRepository
   extends MongoGenericRepository<typeof UnitCostModel, UnitCostDocument, UnitCostEntity>

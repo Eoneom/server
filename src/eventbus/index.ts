@@ -1,4 +1,4 @@
-import { EventBus, EventCode, Payloads, Registry, Subscriber } from '../core/eventbus'
+import { EventBus, EventCode, Payloads, Registry, Subscriber } from '#core/eventbus'
 
 export class SimpleEventBus implements EventBus {
   private subscribers: Subscriber

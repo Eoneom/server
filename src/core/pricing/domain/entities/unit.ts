@@ -1,5 +1,5 @@
-import { BaseEntity } from '../../../../type/domain'
-import { Resource } from '../../../../shared/resource'
+import { Resource } from '#shared/resource'
+import { BaseEntity } from '#type/domain'
 
 type UnitCostEntityProps = BaseEntity & {
   code: string

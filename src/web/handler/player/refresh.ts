@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { App } from '../../../app'
-import { RefreshRequest, RefreshResponse } from '../../../../client/src/endpoints/player/refresh'
+import { RefreshRequest, RefreshResponse } from '#client/src/endpoints/player/refresh'
+import { App } from '#app'
 
 
 export const refresh_handler = (app: App) => async (

@@ -1,9 +1,5 @@
-import {
-  BuildingCode,
-  building_earnings,
-} from './constants'
-
-import { BuildingEntity } from './entity'
+import { BuildingCode, building_earnings } from '#core/building/domain/constants'
+import { BuildingEntity } from '#core/building/domain/entity'
 
 export class BuildingService {
   initBuildings({

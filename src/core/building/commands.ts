@@ -1,9 +1,9 @@
-import { BuildingCode } from './domain/constants'
-import { BuildingRepository } from './model'
-import { BuildingService } from './domain/service'
-import { now } from '../../shared/time'
-import { BuildingEntity } from './domain/entity'
-import { BuildingErrors } from './domain/errors'
+import { BuildingCode } from '#core/building/domain/constants'
+import { BuildingEntity } from '#core/building/domain/entity'
+import { BuildingErrors } from '#core/building/domain/errors'
+import { BuildingService } from '#core/building/domain/service'
+import { BuildingRepository } from '#core/building/model'
+import { now } from '#shared/time'
 
 export interface BuildingCreateCommand {
   code: BuildingCode
@@ -60,7 +60,7 @@ export class BuildingCommands {
         $ne: null
       }
     })
-    if (!is_building_in_progress) {
+    if (is_building_in_progress) {
       throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
     }
 

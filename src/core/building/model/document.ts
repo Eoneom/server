@@ -1,6 +1,6 @@
+import { BuildingCode } from '#core/building/domain/constants'
 import { getModelForClass, mongoose, prop } from '@typegoose/typegoose'
 
-import { BuildingCode } from '../domain/constants'
 import { Document } from 'mongoose'
 
 class Building {

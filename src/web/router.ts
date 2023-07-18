@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import { App } from '../app'
-import { signup_handler } from './handler/player/signup'
-import { building_upgrade_handler } from './handler/building/upgrade'
-import { refresh_handler } from './handler/player/refresh'
-import { sync_handler } from './handler/player/sync'
-import { technology_research_handler } from './handler/techonology/research'
+import { signup_handler } from '#web/handler/player/signup'
+import { building_upgrade_handler } from '#web/handler/building/upgrade'
+import { refresh_handler } from '#web/handler/player/refresh'
+import { sync_handler } from '#web/handler/player/sync'
+import { technology_research_handler } from '#web/handler/techonology/research'
+import { App } from '#app'
 
 export const router = (app: App): Router => {
   const r = Router()

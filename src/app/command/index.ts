@@ -1,8 +1,8 @@
-import { TechnologyCode } from '../../core/technology/domain/constants'
-import { BuildingCode } from '../../core/building/domain/constants'
-import { Factory } from '../../core/factory'
-import { Modules } from '../../core/modules'
-import { Repository } from '../../shared/repository'
+import { BuildingCode } from '#core/building/domain/constants'
+import { Factory } from '#core/factory'
+import { Modules } from '#core/modules'
+import { TechnologyCode } from '#core/technology/domain/constants'
+import { Repository } from '#shared/repository'
 
 export class AppCommands {
   private modules: Modules

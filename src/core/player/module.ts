@@ -1,7 +1,7 @@
-import { PlayerCommands } from './commands'
-import { PlayerQueries } from './queries'
-import { Module } from '../../shared/module'
-import { Factory } from '../../core/factory'
+import { Factory } from '#core/factory'
+import { PlayerCommands } from '#core/player/commands'
+import { PlayerQueries } from '#core/player/queries'
+import { Module } from '#shared/module'
 
 export class PlayerModule extends Module<PlayerQueries, PlayerCommands> {
   private static instance: PlayerModule

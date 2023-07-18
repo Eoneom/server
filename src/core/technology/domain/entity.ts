@@ -1,6 +1,7 @@
-import { BaseEntity } from '../../../type/domain'
-import { TechnologyCode } from './constants'
-import { now } from '../../../shared/time'
+import { TechnologyCode } from '#core/technology/domain/constants'
+import { FAKE_ID } from '#shared/identification'
+import { now } from '#shared/time'
+import { BaseEntity } from '#type/domain'
 
 type TechnologyEntityProps = BaseEntity & {
   code: TechnologyCode
@@ -35,7 +36,7 @@ export class TechnologyEntity extends BaseEntity {
 
   static initArchitecture({ player_id }: { player_id: string }): TechnologyEntity {
     return new TechnologyEntity({
-      id: 'fake',
+      id: FAKE_ID,
       code: TechnologyCode.ARCHITECTURE,
       player_id,
       level: 0,

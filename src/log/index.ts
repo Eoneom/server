@@ -1,6 +1,5 @@
-
-import { CityEventCode } from '../core/city/domain/events'
-import { EventBus } from '../core/eventbus'
+import { CityEventCode } from '#core/city/domain/events'
+import { EventBus } from '#core/eventbus'
 
 export const logEvents = (eventbus: EventBus) => {
   const event_codes = [

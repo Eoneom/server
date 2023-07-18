@@ -6,6 +6,35 @@
       "es2022"
     ],
     "baseUrl": ".",
+    "paths": {
+      "#app": [
+        "./src/app/index.ts"
+      ],
+      "#app/*": [
+        "./src/app/*"
+      ],
+      "#client/*": [
+        "./client/*"
+      ],
+      "#core/*": [
+        "./src/core/*"
+      ],
+      "#database/*": [
+        "./src/database/*"
+      ],
+      "#eventbus/*": [
+        "./src/eventbus/*"
+      ],
+      "#shared/*": [
+        "./src/shared/*"
+      ],
+      "#type/*": [
+        "./src/type/*"
+      ],
+      "#web/*": [
+        "./src/web/*"
+      ]
+    },
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "dist",

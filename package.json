@@ -26,5 +26,34 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-ws": "^5.0.2"
+  },
+  "imports": {
+    "#app": {
+      "default": "./dist/src/app/index.js"
+    },
+    "#app/*": {
+      "default": "./dist/src/app/*.js"
+    },
+    "#client/*": {
+      "default": "./client/*.js"
+    },
+    "#core/*": {
+      "default": "./dist/src/core/*.js"
+    },
+    "#database/*": {
+      "default": "./dist/src/database/*.js"
+    },
+    "#eventbus/*": {
+      "default": "./dist/src/eventbus/*.js"
+    },
+    "#shared/*": {
+      "default": "./dist/src/shared/*.js"
+    },
+    "#type/*": {
+      "default": "./dist/src/type/*.js"
+    },
+    "#web/*": {
+      "default": "./dist/src/web/*.js"
+    }
   }
 }

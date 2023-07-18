@@ -1,7 +1,7 @@
-import { CityCommands } from './commands'
-import { CityQueries } from './queries'
-import { Module } from '../../shared/module'
-import { Factory } from '../factory'
+import { CityCommands } from '#core/city/commands'
+import { CityQueries } from '#core/city/queries'
+import { Factory } from '#core/factory'
+import { Module } from '#shared/module'
 
 export class CityModule extends Module<CityQueries, CityCommands> {
   private static instance: CityModule

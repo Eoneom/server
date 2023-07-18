@@ -1,6 +1,5 @@
-import { LevelCostRepository, UnitCostRepository } from './model'
-
-import { Resource } from '../../shared/resource'
+import { LevelCostRepository, UnitCostRepository } from '#core/pricing/model'
+import { Resource } from '#shared/resource'
 
 interface PricingCreateLevelCommand {
   code: string
@@ -14,7 +13,6 @@ interface PricingCreateUnitCommand {
   resource: Resource
   duration: number
 }
-
 
 export class PricingCommands {
   private level_repository: LevelCostRepository

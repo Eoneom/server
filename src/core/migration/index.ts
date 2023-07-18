@@ -1,6 +1,5 @@
-import { App } from '../../app'
-import { init_costs } from './init_costs'
-
+import { App } from '#app'
+import { init_costs } from '#core/migration/init_costs'
 
 export const initData = async (app: App): Promise<void> => {
   const existing_costs = await app.modules.pricing.queries.doesLevelCostsExists()

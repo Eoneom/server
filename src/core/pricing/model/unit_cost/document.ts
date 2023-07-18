@@ -1,7 +1,7 @@
+import { Resource } from '#shared/resource'
 import { getModelForClass, prop, Severity } from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
-import { Resource } from '../../../../shared/resource'
 
 class UnitCost {
   @prop({ required: true })

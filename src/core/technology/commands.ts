@@ -1,8 +1,8 @@
-import { TechnologyErrors } from './domain/errors'
-import { TechnologyRepository } from './model'
-import { TechnologyService } from './domain/service'
-import { now } from '../../shared/time'
-import { TechnologyEntity } from './domain/entity'
+import { TechnologyEntity } from '#core/technology/domain/entity'
+import { TechnologyErrors } from '#core/technology/domain/errors'
+import { TechnologyService } from '#core/technology/domain/service'
+import { TechnologyRepository } from '#core/technology/model'
+import { now } from '#shared/time'
 
 interface TechnologyLaunchResearchCommand {
   player_id: string
@@ -51,12 +51,11 @@ export class TechnologyCommands {
   }: TechnologyLaunchResearchCommand): Promise<TechnologyEntity> {
     const technology_in_progress = await this.repository.exists({
       player_id,
-      upgrade_at: {
+      researched_at: {
         $exists: true,
         $ne: null
       }
     })
-
     if (technology_in_progress) {
       throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
     }

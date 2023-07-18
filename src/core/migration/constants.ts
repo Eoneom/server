@@ -1,5 +1,5 @@
-import { BuildingCode } from '../building/domain/constants'
-import { TechnologyCode } from '../technology/domain/constants'
+import { BuildingCode } from '#core/building/domain/constants'
+import { TechnologyCode } from '#core/technology/domain/constants'
 
 export const building_costs: Record<BuildingCode, Record<number, { plastic: number, mushroom: number }>> = {
   [BuildingCode.RECYCLING_PLANT]: {

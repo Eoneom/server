@@ -1,9 +1,9 @@
-import { BaseEntity, BaseEntityProps } from '../../../type/domain'
-import { STARTING_MUSHROOM, STARTING_PLASTIC } from './constants'
-
-import { CityErrors } from './errors'
-import { Resource } from '../../../shared/resource'
-import { now } from '../../../shared/time'
+import { STARTING_MUSHROOM, STARTING_PLASTIC } from '#core/city/domain/constants'
+import { CityErrors } from '#core/city/domain/errors'
+import { id } from '#shared/identification'
+import { Resource } from '#shared/resource'
+import { now } from '#shared/time'
+import { BaseEntity, BaseEntityProps } from '#type/domain'
 
 type CityEntityProps = BaseEntityProps & {
   player_id: string
@@ -47,7 +47,7 @@ export class CityEntity extends BaseEntity {
 
   static initCity({ name, player_id }: { name: string, player_id: string }): CityEntity {
     return new CityEntity({
-      id: 'fake',
+      id: id(),
       player_id,
       name,
       plastic: STARTING_PLASTIC,

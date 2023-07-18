@@ -1,8 +1,8 @@
-import { Factory } from '../factory'
-import { Module } from '../../shared/module'
-import { TechnologyCommands } from './commands'
-import { TechnologyQueries } from './queries'
-import { TechnologyService } from './domain/service'
+import { Factory } from '#core/factory'
+import { TechnologyCommands } from '#core/technology/commands'
+import { TechnologyService } from '#core/technology/domain/service'
+import { TechnologyQueries } from '#core/technology/queries'
+import { Module } from '#shared/module'
 
 export class TechnologyModule extends Module<TechnologyQueries, TechnologyCommands> {
   private static instance: TechnologyModule

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
-import { App } from '../../../app'
-import { PlayerEntity } from '../../../core/player/domain/entity'
-import { BuildingEntity } from '../../../core/building/domain/entity'
-import { CityEntity } from '../../../core/city/domain/entity'
-import { TechnologyEntity } from '../../../core/technology/domain/entity'
-import { SyncRequest, SyncResponse, SyncDataResponse } from '../../../../client/src/endpoints/player/sync'
+import { SyncRequest, SyncResponse, SyncDataResponse } from '#client/src/endpoints/player/sync'
+import { App } from '#app'
+import { PlayerEntity } from '#core/player/domain/entity'
+import { BuildingEntity } from '#core/building/domain/entity'
+import { CityEntity } from '#core/city/domain/entity'
+import { TechnologyEntity } from '#core/technology/domain/entity'
 
 export const sync_handler = (app: App) => async (
   req: Request<SyncRequest>,

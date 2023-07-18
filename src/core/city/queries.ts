@@ -1,7 +1,7 @@
-import { CityEntity } from './domain/entity'
-import { CityErrors } from './domain/errors'
-import { CityRepository } from './model'
-import { FilterQuery } from '../../type/database'
+import { CityEntity } from '#core/city/domain/entity'
+import { CityErrors } from '#core/city/domain/errors'
+import { CityRepository } from '#core/city/model'
+import { FilterQuery } from '#type/database'
 
 export class CityQueries {
   private repository: CityRepository
