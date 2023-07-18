@@ -38,6 +38,19 @@ export class AppCommands {
     }
   }
 
+  async login({
+    player_name
+  }: {
+    player_name: string
+  }): Promise<{ token: string }> {
+    const player = await this.repository.player.findOneOrThrow({ name: player_name })
+    const auth = await this.modules.auth.commands.login({ player_id: player.id })
+
+    await this.repository.auth.create(auth)
+
+    return { token: auth.token }
+  }
+
   async upgradeBuilding({
     player_id,
     city_id,

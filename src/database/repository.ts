@@ -1,3 +1,7 @@
+import { AuthErrors } from '#core/auth/domain/errors'
+import { AuthRepository } from '#core/auth/model'
+import { AuthModel } from '#core/auth/model/document'
+import { MongoAuthRepository } from '#core/auth/model/mongo'
 import { BuildingErrors } from '#core/building/domain/errors'
 import { BuildingRepository } from '#core/building/model'
 import { BuildingModel } from '#core/building/model/document'
@@ -25,19 +29,21 @@ import { mongoose } from '@typegoose/typegoose'
 
 
 export class MongoRepository implements Repository {
-  city: CityRepository
+  auth: AuthRepository
   building: BuildingRepository
+  city: CityRepository
+  level_cost: LevelCostRepository
   player: PlayerRepository
   technology: TechnologyRepository
-  level_cost: LevelCostRepository
   unit_cost: UnitCostRepository
 
   constructor() {
-    this.city = new MongoCityRepository(CityModel, CityErrors.NOT_FOUND)
+    this.auth = new MongoAuthRepository(AuthModel, AuthErrors.NOT_FOUND)
     this.building = new MongoBuildingRepository(BuildingModel, BuildingErrors.NOT_FOUND)
+    this.city = new MongoCityRepository(CityModel, CityErrors.NOT_FOUND)
+    this.level_cost = new MongoLevelCostRepository(LevelCostModel, PricingErrors.LEVEL_COST_NOT_FOUND)
     this.player = new MongoPlayerRepository(PlayerModel, PlayerErrors.NOT_FOUND)
     this.technology = new MongoTechnologyRepository(TechnologyModel, TechnologyErrors.NOT_FOUND)
-    this.level_cost = new MongoLevelCostRepository(LevelCostModel, PricingErrors.LEVEL_COST_NOT_FOUND)
     this.unit_cost = new MongoUnitCostRepository(UnitCostModel, PricingErrors.LEVEL_COST_NOT_FOUND)
   }
 

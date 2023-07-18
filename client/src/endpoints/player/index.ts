@@ -1,4 +1,5 @@
 import { Fetcher } from '../../fetcher'
+import { LoginRequest, LoginResponse } from './login'
 import { RefreshRequest, RefreshResponse } from './refresh'
 import { SignupRequest, SignupResponse } from './signup'
 import { SyncRequest, SyncResponse } from './sync'
@@ -8,6 +9,10 @@ export class PlayerEndpoint {
 
   constructor({ fetcher }: { fetcher: Fetcher }) {
     this.fetcher = fetcher
+  }
+
+  login(body: LoginRequest): Promise<LoginResponse> {
+    return this.fetcher.post('/player/login', body)
   }
 
   signup(body: SignupRequest): Promise<SignupResponse> {

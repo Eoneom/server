@@ -1,3 +1,4 @@
+import { AuthModule } from '#core/auth/module'
 import { BuildingModule } from '#core/building/module'
 import { CityModule } from '#core/city/module'
 import { Modules } from '#core/modules'
@@ -12,11 +13,12 @@ export class Factory {
 
   static getModules(): Modules {
     return {
-      city: CityModule.getInstance(),
+      auth: AuthModule.getInstance(),
       building: BuildingModule.getInstance(),
+      city: CityModule.getInstance(),
       player: PlayerModule.getInstance(),
-      technology: TechnologyModule.getInstance(),
       pricing: PricingModule.getInstance(),
+      technology: TechnologyModule.getInstance(),
     }
   }
 
