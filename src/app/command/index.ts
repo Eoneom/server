@@ -126,6 +126,10 @@ export class AppCommands {
     const finish_building_upgrades = cities.map(city => this.modules.building.commands.finishUpgrade({ city_id: city.id }))
     const finish_technology_researches = this.modules.technology.commands.finishResearch({ player_id })
 
-    await Promise.all([ ...gather_resources, ...finish_building_upgrades, finish_technology_researches ])
+    await Promise.all([
+      ...gather_resources,
+      ...finish_building_upgrades,
+      finish_technology_researches
+    ])
   }
 }

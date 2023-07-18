@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { SignupRequest, SignupResponse } from '#client/src/endpoints/player/signup'
 import { App } from '#app'
 
-export const signup_handler = (app: App) => async (
+export const signupHandler = (app: App) => async (
   req: Request<SignupRequest>,
   res: Response<SignupResponse>,
   next: NextFunction
@@ -16,6 +16,7 @@ export const signup_handler = (app: App) => async (
   if (!city_name) {
     return res.status(400).json({ status: 'nok', error_code: 'city_name:not-found'})
   }
+
   try {
     const { player_id, city_id } = await app.commands.signup({ player_name, city_name })
     return res.status(200).send({

@@ -1,9 +1,5 @@
 import { GenericResponse } from '../../response'
 
-export interface SyncRequest {
-  player_id: string
-}
-
 export interface SyncDataResponse {
   player: {
     id: string

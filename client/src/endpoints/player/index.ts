@@ -1,8 +1,8 @@
 import { Fetcher } from '../../fetcher'
 import { LoginRequest, LoginResponse } from './login'
-import { RefreshRequest, RefreshResponse } from './refresh'
+import { RefreshResponse } from './refresh'
 import { SignupRequest, SignupResponse } from './signup'
-import { SyncRequest, SyncResponse } from './sync'
+import { SyncResponse } from './sync'
 
 export class PlayerEndpoint {
   private fetcher: Fetcher
@@ -12,18 +12,18 @@ export class PlayerEndpoint {
   }
 
   login(body: LoginRequest): Promise<LoginResponse> {
-    return this.fetcher.post('/player/login', body)
+    return this.fetcher.post('/player/login', { body })
   }
 
   signup(body: SignupRequest): Promise<SignupResponse> {
-    return this.fetcher.post('/player/signup', body)
+    return this.fetcher.post('/player/signup', { body })
   }
 
-  refresh(body: RefreshRequest): Promise<RefreshResponse> {
-    return this.fetcher.put('/player/refresh', body)
+  refresh(token: string): Promise<RefreshResponse> {
+    return this.fetcher.put('/player/refresh', { token })
   }
 
-  sync(body: SyncRequest): Promise<SyncResponse> {
-    return this.fetcher.post('/player/sync', body)
+  sync(token: string): Promise<SyncResponse> {
+    return this.fetcher.post('/player/sync', { token })
   }
 }

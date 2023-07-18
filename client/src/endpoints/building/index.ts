@@ -8,7 +8,7 @@ export class BuildingEndpoint {
     this.fetcher = fetcher
   }
 
-  public async upgrade(body: BuildingUpgradeRequest): Promise<BuildingUpgradeResponse> {
-    return this.fetcher.put('/building/upgrade', body)
+  public async upgrade(token: string, body: BuildingUpgradeRequest): Promise<BuildingUpgradeResponse> {
+    return this.fetcher.put('/building/upgrade', { body, token })
   }
 }

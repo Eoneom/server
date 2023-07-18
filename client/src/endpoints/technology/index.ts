@@ -8,7 +8,7 @@ export class TechnologyEndpoint {
     this.fetcher = fetcher
   }
 
-  public async research(body: TechnologyResearchRequest): Promise<TechnologyResearchResponse> {
-    return this.fetcher.put('/technology/research', body)
+  public async research(token: string, body: TechnologyResearchRequest): Promise<TechnologyResearchResponse> {
+    return this.fetcher.put('/technology/research', { body, token })
   }
 }

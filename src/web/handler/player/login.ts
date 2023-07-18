@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { LoginRequest, LoginResponse } from '#client/src/endpoints/player/login'
 import { App } from '#app'
 
-export const login_handler = (app: App) => async (
+export const loginHandler = (app: App) => async (
   req: Request<LoginRequest>,
   res: Response<LoginResponse>,
   next: NextFunction

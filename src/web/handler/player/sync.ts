@@ -1,23 +1,19 @@
 import { NextFunction, Request, Response } from 'express'
-import { SyncRequest, SyncResponse, SyncDataResponse } from '#client/src/endpoints/player/sync'
+import { SyncResponse, SyncDataResponse } from '#client/src/endpoints/player/sync'
 import { App } from '#app'
 import { PlayerEntity } from '#core/player/domain/entity'
 import { BuildingEntity } from '#core/building/domain/entity'
 import { CityEntity } from '#core/city/domain/entity'
 import { TechnologyEntity } from '#core/technology/domain/entity'
+import { getPlayerIdFromContext } from '#web/helpers'
 
-export const sync_handler = (app: App) => async (
-  req: Request<SyncRequest>,
+export const syncHandler = (app: App) => async (
+  req: Request<void>,
   res: Response<SyncResponse>,
   next: NextFunction
 ) => {
-  // TODO: take player id from authentication
-  const player_id = req.body.player_id
-  if (!player_id) {
-    return res.status(401).json({ status: 'nok', error_code: 'player_id:not-found'})
-  }
-
   try {
+    const player_id = getPlayerIdFromContext(res)
     const { player, buildings, cities, technologies } = await app.queries.sync({ player_id })
 
     const response = response_mapper({ player, buildings, cities, technologies })

@@ -1,4 +1,3 @@
-
 import { BuildingEndpoint } from './endpoints/building'
 import { PlayerEndpoint } from './endpoints/player'
 import { TechnologyEndpoint } from './endpoints/technology'
@@ -10,7 +9,7 @@ export class Client {
   public building: BuildingEndpoint
   public technology: TechnologyEndpoint
 
-  constructor({ base_url}: { base_url: string }) {
+  constructor({ base_url }: { base_url: string }) {
     this.fetcher = new Fetcher({ base_url })
 
     this.player = new PlayerEndpoint({ fetcher: this.fetcher })
