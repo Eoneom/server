@@ -11,6 +11,7 @@ export class MongoBuildingRepository
     return BuildingEntity.create({
       id: document._id.toString(),
       code: document.code,
+      name: document.name,
       level: document.level,
       city_id: document.city_id.toString(),
       upgrade_at: document.upgrade_at

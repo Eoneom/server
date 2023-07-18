@@ -6,6 +6,7 @@ import { BaseEntity, BaseEntityProps } from '#type/domain'
 type BuildingEntityProps = BaseEntityProps & {
   city_id: string
   code: BuildingCode
+  name: string
   level: number
   upgrade_at?: number
 }
@@ -13,6 +14,7 @@ type BuildingEntityProps = BaseEntityProps & {
 export class BuildingEntity extends BaseEntity {
   readonly city_id: string
   readonly code: BuildingCode
+  readonly name: string
   readonly level: number
   readonly upgrade_at: number | null
 
@@ -20,6 +22,7 @@ export class BuildingEntity extends BaseEntity {
     id,
     city_id,
     code,
+    name,
     level,
     upgrade_at
   }: BuildingEntityProps) {
@@ -27,6 +30,7 @@ export class BuildingEntity extends BaseEntity {
 
     this.city_id = city_id
     this.code = code
+    this.name = name
     this.level = level
     this.upgrade_at = upgrade_at ?? null
   }
@@ -40,6 +44,7 @@ export class BuildingEntity extends BaseEntity {
       id: FAKE_ID,
       city_id,
       code: BuildingCode.RECYCLING_PLANT,
+      name: 'Centre de recyclage',
       level: 1
     })
   }
@@ -49,6 +54,7 @@ export class BuildingEntity extends BaseEntity {
       id: FAKE_ID,
       city_id,
       code: BuildingCode.MUSHROOM_FARM,
+      name: 'Ferme à champignons',
       level: 1
     })
   }
@@ -58,6 +64,7 @@ export class BuildingEntity extends BaseEntity {
       id: FAKE_ID,
       city_id,
       code: BuildingCode.RESEARCH_LAB,
+      name: 'Laboratoire de recherche',
       level: 0
     })
   }

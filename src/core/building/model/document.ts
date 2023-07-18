@@ -11,6 +11,9 @@ class Building {
   public code!: BuildingCode
 
   @prop({ required: true })
+  public name!: string
+
+  @prop({ required: true })
   public level!: number
 
   @prop()

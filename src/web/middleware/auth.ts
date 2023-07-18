@@ -6,7 +6,12 @@ export const authMiddleware = (app: App) => async (req: Request<unknown>, res: R
   if (!token) {
     return res.status(401).json({ status: 'nok', error_code: 'token:not_found'})
   }
-  const { player_id } = await app.queries.authorize({ token })
-  res.locals.player_id = player_id
-  next()
+  try {
+    const { player_id } = await app.queries.authorize({ token })
+    res.locals.player_id = player_id
+    next()
+
+  } catch (err) {
+    next(err)
+  }
 }

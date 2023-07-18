@@ -13,6 +13,7 @@ export interface SyncDataResponse {
     buildings: {
       id: string
       code: string
+      name: string
       level: number
       upgrade_at?: number
     }[]

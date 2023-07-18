@@ -15,7 +15,6 @@ export const syncHandler = (app: App) => async (
   try {
     const player_id = getPlayerIdFromContext(res)
     const { player, buildings, cities, technologies } = await app.queries.sync({ player_id })
-
     const response = response_mapper({ player, buildings, cities, technologies })
 
     return res.json({
@@ -52,6 +51,7 @@ const response_mapper = ({
       buildings: buildings[city.id].map(building => ({
         id: building.id,
         code: building.code,
+        name: building.name,
         level: building.level,
         upgrade_at: building.upgrade_at ?? undefined
       }))

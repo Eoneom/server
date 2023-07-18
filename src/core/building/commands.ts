@@ -42,9 +42,7 @@ export class BuildingCommands {
   }
 
   init({ city_id }: BuildingInitCityCommand): BuildingEntity[] {
-    return this.service.initBuildings({
-      city_id,
-    })
+    return this.service.initBuildings({ city_id })
   }
 
   async launchUpgrade({
