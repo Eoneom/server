@@ -7,9 +7,7 @@ import { FilterQuery } from '#type/database'
 export class TechnologyQueries {
   private repository: TechnologyRepository
 
-  public constructor({
-    repository,
-  }: {
+  public constructor({ repository }: {
     repository: TechnologyRepository
   }) {
     this.repository = repository
@@ -28,7 +26,10 @@ export class TechnologyQueries {
   }
 
   async getArchitectureBonus({ player_id }: { player_id: string }): Promise<number> {
-    const technology = await this.repository.findOneOrThrow({ player_id, code: TechnologyCode.ARCHITECTURE })
+    const technology = await this.repository.findOneOrThrow({
+      player_id,
+      code: TechnologyCode.ARCHITECTURE 
+    })
     return technology.level / 100
   }
 

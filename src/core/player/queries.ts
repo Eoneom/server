@@ -6,9 +6,7 @@ import { FilterQuery } from '#type/database'
 export class PlayerQueries {
   private repository: PlayerRepository
 
-  constructor({
-    repository
-  }: {
+  constructor({ repository }: {
     repository: PlayerRepository
   }) {
     this.repository = repository

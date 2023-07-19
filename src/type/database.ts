@@ -1,5 +1,9 @@
-import { AnyParamConstructor, BeAnObject } from '@typegoose/typegoose/lib/types'
-import { ReturnModelType, mongoose } from '@typegoose/typegoose'
+import {
+  AnyParamConstructor, BeAnObject 
+} from '@typegoose/typegoose/lib/types'
+import {
+  ReturnModelType, mongoose 
+} from '@typegoose/typegoose'
 
 export type FilterQuery<Document> = mongoose.FilterQuery<Document>
 export type DatabaseDocument = AnyParamConstructor<any>

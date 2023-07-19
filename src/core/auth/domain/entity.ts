@@ -1,4 +1,6 @@
-import { FAKE_ID, generateToken } from '#shared/identification'
+import {
+  FAKE_ID, generateToken 
+} from '#shared/identification'
 import { BaseEntity } from '#type/domain'
 
 type AuthEntityProps = BaseEntity & {

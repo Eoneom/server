@@ -1,5 +1,9 @@
-import { NextFunction, Request, Response } from 'express'
-import { SyncResponse, SyncDataResponse } from '#client/src/endpoints/player/sync'
+import {
+  NextFunction, Request, Response 
+} from 'express'
+import {
+  SyncResponse, SyncDataResponse 
+} from '#client/src/endpoints/player/sync'
 import { App } from '#app'
 import { PlayerEntity } from '#core/player/domain/entity'
 import { BuildingEntity } from '#core/building/domain/entity'
@@ -14,8 +18,15 @@ export const syncHandler = (app: App) => async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const { player, buildings, cities, technologies } = await app.queries.sync({ player_id })
-    const response = response_mapper({ player, buildings, cities, technologies })
+    const {
+      player, buildings, cities, technologies 
+    } = await app.queries.sync({ player_id })
+    const response = response_mapper({
+      player,
+      buildings,
+      cities,
+      technologies 
+    })
 
     return res.json({
       status: 'ok',

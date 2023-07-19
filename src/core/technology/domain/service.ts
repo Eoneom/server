@@ -16,9 +16,7 @@ export class TechnologyService {
 
     const building = TechnologyEntity.initArchitecture({ player_id })
 
-    return [
-      building
-    ]
+    return [ building ]
   }
 
   launchResearch({
@@ -32,17 +30,20 @@ export class TechnologyService {
   }): {
     technology: TechnologyEntity
   } {
-    const has_required_research_level = this.hasRequiredResearchLevel({ research_lab_level, technology })
+    const has_required_research_level = this.hasRequiredResearchLevel({
+      research_lab_level,
+      technology
+    })
     if (!has_required_research_level) {
       throw new Error(TechnologyErrors.NOT_REQUIRED_RESEARCH_LEVEL)
     }
 
-    return {
-      technology: technology.launchResearch(duration)
-    }
+    return { technology: technology.launchResearch(duration) }
   }
 
-  private hasRequiredResearchLevel({ research_lab_level, technology }: { research_lab_level: number, technology: TechnologyEntity }): boolean {
+  private hasRequiredResearchLevel({
+    research_lab_level, technology
+  }: { research_lab_level: number, technology: TechnologyEntity }): boolean {
     return research_lab_level >= technology_required_research_levels[technology.code]
   }
 }

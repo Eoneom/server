@@ -39,8 +39,14 @@ export class BuildingQueries {
       recycling_plant,
       mushroom_farm,
     ] = await Promise.all([
-      this.repository.findOne({ code: BuildingCode.RECYCLING_PLANT, city_id }),
-      this.repository.findOne({ code: BuildingCode.MUSHROOM_FARM, city_id }),
+      this.repository.findOne({
+        code: BuildingCode.RECYCLING_PLANT,
+        city_id 
+      }),
+      this.repository.findOne({
+        code: BuildingCode.MUSHROOM_FARM,
+        city_id 
+      }),
     ])
     if (!mushroom_farm || !recycling_plant) {
       throw new Error(BuildingErrors.NOT_FOUND)
@@ -53,7 +59,10 @@ export class BuildingQueries {
   }
 
   async getResearchLevel({ city_id }: { city_id: string }): Promise<number> {
-    const research_lab = await this.repository.findOne({ city_id, code: BuildingCode.RESEARCH_LAB })
+    const research_lab = await this.repository.findOne({
+      city_id,
+      code: BuildingCode.RESEARCH_LAB 
+    })
     if (!research_lab) {
       throw new Error(BuildingErrors.NOT_FOUND)
     }

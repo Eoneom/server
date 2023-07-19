@@ -1,6 +1,8 @@
 import { UnitCostEntity } from '#core/pricing/domain/entities/unit'
 import { UnitCostRepository } from '#core/pricing/model'
-import { UnitCostDocument, UnitCostModel } from '#core/pricing/model/unit_cost/document'
+import {
+  UnitCostDocument, UnitCostModel 
+} from '#core/pricing/model/unit_cost/document'
 import { MongoGenericRepository } from '#database/generic'
 
 export class MongoUnitCostRepository

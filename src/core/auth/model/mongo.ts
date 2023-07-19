@@ -1,6 +1,8 @@
 import { AuthEntity } from '#core/auth/domain/entity'
 import { AuthRepository } from '#core/auth/model'
-import { AuthDocument, AuthModel } from '#core/auth/model/document'
+import {
+  AuthDocument, AuthModel 
+} from '#core/auth/model/document'
 import { MongoGenericRepository } from '#database/generic'
 
 export class MongoAuthRepository

@@ -21,7 +21,10 @@ export class AppCommands {
     city_name: string
   }): Promise<{ player_id: string; city_id: string }> {
     const player = await this.modules.player.commands.init({ name: player_name })
-    const city = await this.modules.city.commands.settle({ name: city_name, player_id: player.id })
+    const city = await this.modules.city.commands.settle({
+      name: city_name,
+      player_id: player.id
+    })
     const buildings = this.modules.building.commands.init({ city_id: city.id })
     const technologies = await this.modules.technology.commands.init({ player_id: player.id })
 
@@ -38,9 +41,7 @@ export class AppCommands {
     }
   }
 
-  async login({
-    player_name
-  }: {
+  async login({ player_name }: {
     player_name: string
   }): Promise<{ token: string }> {
     const player = await this.repository.player.findOneOrThrow({ name: player_name })
@@ -60,14 +61,27 @@ export class AppCommands {
     city_id: string
     building_code: BuildingCode
   }): Promise<void> {
-    const [ city, building ] = await Promise.all([
+    const [
+      city,
+      building
+    ] = await Promise.all([
       this.modules.city.queries.findByIdOrThrow(city_id),
-      this.modules.building.queries.findOneOrThrow({ city_id, code: building_code })
+      this.modules.building.queries.findOneOrThrow({
+        city_id,
+        code: building_code
+      })
     ])
-    const building_costs = await this.modules.pricing.queries.getNextLevelCost({ level: building.level, code: building_code })
+    const building_costs = await this.modules.pricing.queries.getNextLevelCost({
+      level: building.level,
+      code: building_code
+    })
 
     const architecture_bonus = await this.modules.technology.queries.getArchitectureBonus({ player_id })
-    const updated_city = await this.modules.city.commands.purchase({ player_id, city, cost: building_costs.resource })
+    const updated_city = await this.modules.city.commands.purchase({
+      player_id,
+      city,
+      cost: building_costs.resource
+    })
     const updated_building = await this.modules.building.commands.launchUpgrade({
       city_id,
       building,
@@ -90,15 +104,32 @@ export class AppCommands {
     city_id: string
     technology_code: TechnologyCode
   }): Promise<void> {
-    const [ city, research_lab, technology ] = await Promise.all([
+    const [
+      city,
+      research_lab,
+      technology
+    ] = await Promise.all([
       this.modules.city.queries.findByIdOrThrow(city_id),
-      this.modules.building.queries.findOneOrThrow({ city_id, code: BuildingCode.RESEARCH_LAB }),
-      this.modules.technology.queries.findOneOrThrow({ player_id, code: technology_code })
+      this.modules.building.queries.findOneOrThrow({
+        city_id,
+        code: BuildingCode.RESEARCH_LAB
+      }),
+      this.modules.technology.queries.findOneOrThrow({
+        player_id,
+        code: technology_code
+      })
     ])
 
-    const technology_costs = await this.modules.pricing.queries.getNextLevelCost({ level: technology.level, code: technology_code })
+    const technology_costs = await this.modules.pricing.queries.getNextLevelCost({
+      level: technology.level,
+      code: technology_code
+    })
 
-    const updated_city = await this.modules.city.commands.purchase({ player_id, city, cost: technology_costs.resource })
+    const updated_city = await this.modules.city.commands.purchase({
+      player_id,
+      city,
+      cost: technology_costs.resource
+    })
     const updated_technology = await this.modules.technology.commands.launchResearch({
       player_id,
       technology,
@@ -112,16 +143,16 @@ export class AppCommands {
     ])
   }
 
-  async refresh({
-    player_id
-  }: {
-    player_id: string
-  }): Promise<void> {
+  async refresh({ player_id }: {player_id: string}): Promise<void> {
     const cities = await this.modules.city.queries.find({ player_id })
 
     const gather_resources = cities.map(async city => {
       const earnings_by_second = await this.modules.building.queries.getEarningsBySecond({ city_id: city.id })
-      return this.modules.city.commands.gatherResources({ city, gather_at_time: new Date().getTime(), earnings_by_second})
+      return this.modules.city.commands.gatherResources({
+        city,
+        gather_at_time: new Date().getTime(),
+        earnings_by_second
+      })
     })
     const finish_building_upgrades = cities.map(city => this.modules.building.commands.finishUpgrade({ city_id: city.id }))
     const finish_technology_researches = this.modules.technology.commands.finishResearch({ player_id })

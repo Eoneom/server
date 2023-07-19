@@ -2,7 +2,9 @@ import { FAKE_ID } from '#shared/identification'
 import { GenericRepository } from '#shared/repository'
 import { FilterQuery } from '#type/database'
 import { BaseEntity } from '#type/domain'
-import { AnyParamConstructor, BeAnObject, ReturnModelType } from '@typegoose/typegoose/lib/types'
+import {
+  AnyParamConstructor, BeAnObject, ReturnModelType 
+} from '@typegoose/typegoose/lib/types'
 
 export abstract class MongoGenericRepository<
   Model extends AnyParamConstructor<any>,

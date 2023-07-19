@@ -14,7 +14,10 @@ export class BuildingModule extends Module<BuildingQueries, BuildingCommands> {
     queries: BuildingQueries,
     commands: BuildingCommands
   }) {
-    super({ queries, commands })
+    super({
+      queries,
+      commands 
+    })
   }
 
   static getInstance(): BuildingModule {
@@ -29,7 +32,10 @@ export class BuildingModule extends Module<BuildingQueries, BuildingCommands> {
         service,
         repository
       })
-      this.instance = new BuildingModule({ commands, queries })
+      this.instance = new BuildingModule({
+        commands,
+        queries 
+      })
     }
 
     return this.instance

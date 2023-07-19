@@ -1,6 +1,8 @@
 import { BuildingEntity } from '#core/building/domain/entity'
 import { BuildingRepository } from '#core/building/model'
-import { BuildingDocument, BuildingModel } from '#core/building/model/document'
+import {
+  BuildingDocument, BuildingModel 
+} from '#core/building/model/document'
 import { MongoGenericRepository } from '#database/generic'
 
 export class MongoBuildingRepository

@@ -14,7 +14,10 @@ export class TechnologyModule extends Module<TechnologyQueries, TechnologyComman
     queries: TechnologyQueries,
     commands: TechnologyCommands
   }) {
-    super({ queries, commands })
+    super({
+      queries,
+      commands 
+    })
   }
 
   static getInstance(): TechnologyModule {

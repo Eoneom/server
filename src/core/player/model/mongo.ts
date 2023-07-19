@@ -1,6 +1,8 @@
 import { PlayerEntity } from '#core/player/domain/entity'
 import { PlayerRepository } from '#core/player/model'
-import { PlayerDocument, PlayerModel } from '#core/player/model/document'
+import {
+  PlayerDocument, PlayerModel 
+} from '#core/player/model/document'
 import { MongoGenericRepository } from '#database/generic'
 
 export class MongoPlayerRepository

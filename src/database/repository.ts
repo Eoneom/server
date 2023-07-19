@@ -15,7 +15,9 @@ import { PlayerRepository } from '#core/player/model'
 import { PlayerModel } from '#core/player/model/document'
 import { MongoPlayerRepository } from '#core/player/model/mongo'
 import { PricingErrors } from '#core/pricing/domain/errors'
-import { LevelCostRepository, UnitCostRepository } from '#core/pricing/model'
+import {
+  LevelCostRepository, UnitCostRepository 
+} from '#core/pricing/model'
 import { LevelCostModel } from '#core/pricing/model/level_cost/document'
 import { MongoLevelCostRepository } from '#core/pricing/model/level_cost/mongo'
 import { UnitCostModel } from '#core/pricing/model/unit_cost/document'
@@ -49,9 +51,7 @@ export class MongoRepository implements Repository {
 
   async connect(): Promise<void> {
     console.log('connecting to database...')
-    await mongoose.connect('mongodb://localhost:27017/', {
-      dbName: 'swarm'
-    })
+    await mongoose.connect('mongodb://localhost:27017/', { dbName: 'swarm' })
 
     console.log('connected to database')
   }

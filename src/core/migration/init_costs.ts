@@ -1,6 +1,8 @@
 import { App } from '#app'
 import { BuildingCode } from '#core/building/domain/constants'
-import { building_costs, building_upgrade_durations_in_second, technology_costs, technology_research_durations_in_second } from '#core/migration/constants'
+import {
+  building_costs, building_upgrade_durations_in_second, technology_costs, technology_research_durations_in_second 
+} from '#core/migration/constants'
 import { TechnologyCode } from '#core/technology/domain/constants'
 
 export const init_costs = async (app: App): Promise<void> => {
@@ -10,12 +12,14 @@ export const init_costs = async (app: App): Promise<void> => {
     Object.keys(costs_for_building).forEach(level => {
       const int_level = Number.parseInt(level, 10)
 
-      app.modules.pricing.commands.createBulkLevelCost([ {
-        code,
-        level: int_level,
-        resource: costs_for_building[int_level],
-        duration: duration_for_building[int_level]
-      } ])
+      app.modules.pricing.commands.createBulkLevelCost([
+        {
+          code,
+          level: int_level,
+          resource: costs_for_building[int_level],
+          duration: duration_for_building[int_level]
+        } 
+      ])
     })
   })
 
@@ -25,12 +29,14 @@ export const init_costs = async (app: App): Promise<void> => {
     Object.keys(costs_for_technology).forEach(level => {
       const int_level = Number.parseInt(level, 10)
 
-      app.modules.pricing.commands.createBulkLevelCost([ {
-        code,
-        level: int_level,
-        resource: costs_for_technology[int_level],
-        duration: duration_for_technology[int_level]
-      } ])
+      app.modules.pricing.commands.createBulkLevelCost([
+        {
+          code,
+          level: int_level,
+          resource: costs_for_technology[int_level],
+          duration: duration_for_technology[int_level]
+        } 
+      ])
     })
   })
 }

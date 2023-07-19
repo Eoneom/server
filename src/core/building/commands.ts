@@ -70,9 +70,7 @@ export class BuildingCommands {
   async finishUpgrade({ city_id }: BuildingFinishUpgradesCommand): Promise<void> {
     const building_to_finish = await this.repository.findOne({
       city_id,
-      upgrade_at: {
-        $lte: now()
-      }
+      upgrade_at: { $lte: now() }
     })
     if (!building_to_finish) {
       return

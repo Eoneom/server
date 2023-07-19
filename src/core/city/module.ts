@@ -13,13 +13,16 @@ export class CityModule extends Module<CityQueries, CityCommands> {
     queries: CityQueries,
     commands: CityCommands
   }) {
-    super({ queries, commands })
+    super({
+      queries,
+      commands 
+    })
   }
 
   static getInstance(): CityModule {
     if (!this.instance) {
       const repository = Factory.getRepository().city
-      const commands = new CityCommands({ repository})
+      const commands = new CityCommands({ repository })
       const queries = new CityQueries({ repository })
       this.instance = new CityModule({
         commands,

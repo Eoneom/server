@@ -9,7 +9,10 @@ export class AuthModule extends Module<AuthQueries, AuthCommands> {
     if (!this.instance) {
       const queries = new AuthQueries()
       const commands = new AuthCommands()
-      this.instance = new AuthModule({ commands, queries })
+      this.instance = new AuthModule({
+        commands,
+        queries 
+      })
     }
 
     return this.instance

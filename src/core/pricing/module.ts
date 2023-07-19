@@ -13,7 +13,10 @@ export class PricingModule extends Module<PricingQueries, PricingCommands> {
     queries: PricingQueries,
     commands: PricingCommands
   }) {
-    super({ queries, commands })
+    super({
+      queries,
+      commands 
+    })
   }
 
   static getInstance(): PricingModule {
@@ -28,7 +31,10 @@ export class PricingModule extends Module<PricingQueries, PricingCommands> {
         unit_repository,
         level_repository
       })
-      this.instance = new PricingModule({ commands, queries })
+      this.instance = new PricingModule({
+        commands,
+        queries 
+      })
     }
 
     return this.instance

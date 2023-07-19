@@ -1,10 +1,10 @@
-import { BuildingCode, building_earnings } from '#core/building/domain/constants'
+import {
+  BuildingCode, building_earnings 
+} from '#core/building/domain/constants'
 import { BuildingEntity } from '#core/building/domain/entity'
 
 export class BuildingService {
-  initBuildings({
-    city_id
-  }: {
+  initBuildings({ city_id }: {
     city_id: string
   }): BuildingEntity[] {
     const recycling_plant = BuildingEntity.initRecyclingPlant({ city_id })

@@ -72,9 +72,7 @@ export class TechnologyCommands {
   async finishResearch({ player_id }: TechnologyFinishResearchesCommand): Promise<void> {
     const technology_to_finish = await this.repository.findOne({
       player_id,
-      research_at: {
-        $lte: now()
-      }
+      research_at: { $lte: now() }
     })
     if (!technology_to_finish) {
       return

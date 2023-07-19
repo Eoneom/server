@@ -1,7 +1,9 @@
 import { BuildingCode } from '#core/building/domain/constants'
 import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
-import { BaseEntity, BaseEntityProps } from '#type/domain'
+import {
+  BaseEntity, BaseEntityProps 
+} from '#type/domain'
 
 type BuildingEntityProps = BaseEntityProps & {
   city_id: string

@@ -23,24 +23,29 @@ interface CityGatherResourcesCommand {
 export class CityCommands {
   private repository: CityRepository
 
-  constructor({
-    repository,
-  }: {
+  constructor({ repository }: {
     repository: CityRepository
   }) {
     this.repository = repository
   }
 
-  async settle({ name, player_id }: CreateCityCommand): Promise<CityEntity> {
+  async settle({
+    name, player_id 
+  }: CreateCityCommand): Promise<CityEntity> {
     const existing_city = await this.repository.exists({ name })
     if (existing_city) {
       throw new Error(CityErrors.ALREADY_EXISTS)
     }
 
-    return CityEntity.initCity({ name, player_id })
+    return CityEntity.initCity({
+      name,
+      player_id 
+    })
   }
 
-  async purchase({ city, cost, player_id }: CityPurchaseCommand): Promise<CityEntity> {
+  async purchase({
+    city, cost, player_id 
+  }: CityPurchaseCommand): Promise<CityEntity> {
     const is_city_owned_by_player = city.isOwnedBy(player_id)
     if (!is_city_owned_by_player) {
       throw new Error(CityErrors.NOT_OWNER)
@@ -54,8 +59,15 @@ export class CityCommands {
     return city.purchase(cost)
   }
 
-  async gatherResources({ city, gather_at_time, earnings_by_second }: CityGatherResourcesCommand): Promise<void> {
-    const { city: updated_city, updated } = city.gather({ earnings_by_second, gather_at_time })
+  async gatherResources({
+    city, gather_at_time, earnings_by_second 
+  }: CityGatherResourcesCommand): Promise<void> {
+    const {
+      city: updated_city, updated 
+    } = city.gather({
+      earnings_by_second,
+      gather_at_time 
+    })
 
     if (!updated) {
       return

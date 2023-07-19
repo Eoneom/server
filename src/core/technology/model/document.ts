@@ -1,5 +1,7 @@
 import { TechnologyCode } from '#core/technology/domain/constants'
-import { getModelForClass, mongoose, prop } from '@typegoose/typegoose'
+import {
+  getModelForClass, mongoose, prop 
+} from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
 

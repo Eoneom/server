@@ -1,4 +1,6 @@
-import { getModelForClass, mongoose, prop } from '@typegoose/typegoose'
+import {
+  getModelForClass, mongoose, prop 
+} from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
 

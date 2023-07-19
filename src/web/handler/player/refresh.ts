@@ -1,4 +1,8 @@
-import { NextFunction, Request, Response } from 'express'
+import {
+  NextFunction,
+  Request,
+  Response
+} from 'express'
 import { RefreshResponse } from '#client/src/endpoints/player/refresh'
 import { App } from '#app'
 import { getPlayerIdFromContext } from '#web/helpers'

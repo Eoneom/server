@@ -15,20 +15,14 @@ export class AppQueries {
     this.repository = Factory.getRepository()
   }
 
-  async authorize({
-    token
-  }: {
+  async authorize({ token }: {
     token: string
   }): Promise<{ player_id: string }> {
     const auth = await this.repository.auth.findOneOrThrow({ token })
-    return {
-      player_id: auth.player_id.toString()
-    }
+    return { player_id: auth.player_id.toString() }
   }
 
-  async sync({
-    player_id
-  }: {
+  async sync({ player_id }: {
     player_id: string
   }): Promise<{
     player: PlayerEntity,
@@ -36,7 +30,11 @@ export class AppQueries {
     buildings: Record<string, BuildingEntity[]>,
     technologies: TechnologyEntity[]
   }> {
-    const [ player, cities, technologies ] = await Promise.all([
+    const [
+      player,
+      cities,
+      technologies
+    ] = await Promise.all([
       this.modules.player.queries.findByIdOrThrow(player_id),
       this.modules.city.queries.find({ player_id }),
       this.modules.technology.queries.getTechnologies({ player_id })

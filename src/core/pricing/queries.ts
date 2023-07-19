@@ -1,7 +1,9 @@
 import { LevelCostEntity } from '#core/pricing/domain/entities/level'
 import { UnitCostEntity } from '#core/pricing/domain/entities/unit'
 import { PricingErrors } from '#core/pricing/domain/errors'
-import { LevelCostRepository, UnitCostRepository } from '#core/pricing/model'
+import {
+  LevelCostRepository, UnitCostRepository 
+} from '#core/pricing/model'
 
 export class PricingQueries {
   private level_repository: LevelCostRepository
@@ -22,8 +24,13 @@ export class PricingQueries {
     return this.level_repository.exists({})
   }
 
-  async getNextLevelCost({ level, code }: { level: number, code: string }): Promise<LevelCostEntity> {
-    const level_cost = await this.level_repository.findOne({ code, level: level + 1 })
+  async getNextLevelCost({
+    level, code 
+  }: { level: number, code: string }): Promise<LevelCostEntity> {
+    const level_cost = await this.level_repository.findOne({
+      code,
+      level: level + 1 
+    })
     if (!level_cost) {
       throw new Error(PricingErrors.LEVEL_COST_NOT_FOUND)
     }

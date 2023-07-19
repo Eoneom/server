@@ -9,9 +9,7 @@ interface PlayerInitCommand {
 export class PlayerCommands {
   private repository: PlayerRepository
 
-  constructor({
-    repository,
-  }: {
+  constructor({ repository }: {
     repository: PlayerRepository,
   }) {
     this.repository = repository

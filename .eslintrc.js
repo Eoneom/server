@@ -1,6 +1,6 @@
 module.exports = {
   'env': {
-    'browser': true,
+    'node': true,
     'es2021': true,
   },
   'extends': [
@@ -12,34 +12,118 @@ module.exports = {
     'ecmaVersion': 'latest',
     'sourceType': 'module',
   },
-  'plugins': [
-    '@typescript-eslint',
-  ],
+  'plugins': [ '@typescript-eslint' ],
   'rules': {
-    'indent': [ 'error', 2 ],
-    'linebreak-style': [ 'error', 'unix' ],
-    'quotes': [ 'error', 'single' ],
-    'semi': [ 'error', 'never' ],
+    'array-bracket-spacing': [
+      'error',
+      'always'
+    ],
+    'array-bracket-newline': [
+      'error',
+      {
+        minItems: 2,
+        multiline: true
+      }
+    ],
+    'array-element-newline': [
+      'error',
+      { minItems: 2 }
+    ],
+    'object-property-newline': 'error',
+    'arrow-spacing': [
+      'error',
+      {
+        'before': true,
+        'after': true
+      }
+    ],
+    'block-spacing': 'error',
+    'brace-style': [
+      'error',
+      '1tbs'
+    ],
+    'comma-dangle': [
+      'error',
+      'only-multiline'
+    ],
+    'comma-spacing': [
+      'error',
+      {
+        'before': false,
+        'after': true
+      }
+    ],
+    'computed-property-spacing': [
+      'error',
+      'never'
+    ],
+    'dot-location': [
+      'error',
+      'property'
+    ],
+    'eol-last': [
+      'error',
+      'always'
+    ],
+    'func-call-spacing': [
+      'error',
+      'never'
+    ],
+    'function-call-argument-newline': [
+      'error',
+      'consistent'
+    ],
+    'function-paren-newline': [
+      'error',
+      'multiline'
+    ],
+    'implicit-arrow-linebreak': [
+      'error',
+      'beside'
+    ],
+    'indent': [
+      'error',
+      2
+    ],
+    'keyword-spacing': [
+      'error',
+      {
+        'before': true,
+        'after': true
+      }
+    ],
+    'linebreak-style': [
+      'error',
+      'unix'
+    ],
     'no-constant-binary-expression': 'error',
     'no-duplicate-imports': 'error',
+    'no-multi-spaces': 'error',
     'no-self-compare': 'error',
     'no-template-curly-in-string': 'error',
     'no-unmodified-loop-condition': 'error',
-    'block-spacing': 'error',
-    'brace-style': [ 'error', '1tbs' ],
-    'array-bracket-spacing': [ 'error', 'always' ],
-    'arrow-spacing': [ 'error', { 'before': true, 'after': true } ],
-    'comma-dangle': [ 'error', 'only-multiline' ],
-    'comma-spacing': [ 'error', { 'before': false, 'after': true } ],
-    'computed-property-spacing': [ 'error', 'never' ],
-    'dot-location': [ 'error', 'property' ],
-    'eol-last': [ 'error', 'always' ],
-    'func-call-spacing': [ 'error', 'never' ],
-    'function-call-argument-newline': [ 'error', 'consistent' ],
-    'function-paren-newline': [ 'error', 'multiline' ],
-    'implicit-arrow-linebreak': [ 'error', 'beside' ],
-    'keyword-spacing': [ 'error', { 'before': true, 'after': true } ],
-    'no-multi-spaces': 'error',
-    'template-curly-spacing': [ 'error', 'never' ],
+    'object-curly-spacing': [
+      'error',
+      'always'
+    ],
+    'object-curly-newline': [
+      'error',
+      {
+        multiline: true,
+        minProperties: 2
+      }
+    ],
+    'quotes': [
+      'error',
+      'single'
+    ],
+    'semi': [
+      'error',
+      'never'
+    ],
+    'template-curly-spacing': [
+      'error',
+      'never'
+    ],
   },
 }

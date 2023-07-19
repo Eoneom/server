@@ -13,19 +13,21 @@ export class PlayerModule extends Module<PlayerQueries, PlayerCommands> {
     queries: PlayerQueries,
     commands: PlayerCommands
   }) {
-    super({ queries, commands })
+    super({
+      queries,
+      commands 
+    })
   }
 
   static getInstance(): PlayerModule {
     if (!this.instance) {
       const repository = Factory.getRepository().player
-      const queries = new PlayerQueries({
-        repository
+      const queries = new PlayerQueries({ repository })
+      const commands = new PlayerCommands({ repository })
+      this.instance = new PlayerModule({
+        commands,
+        queries 
       })
-      const commands = new PlayerCommands({
-        repository
-      })
-      this.instance = new PlayerModule({ commands, queries })
     }
 
     return this.instance
