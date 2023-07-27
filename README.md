@@ -52,6 +52,16 @@ Contains domain logic with mostly pure functions.
 The app is built with every module declared in core.
 The factory is here to help creating these modules, and handle dependencies between queries and commands.
 
+### Principles
+
+#### Application service
+
+The commands and queries that interact with the app have the following role:
+
+- retrieve entities from the repository (storage)
+- call business logic methods on entities itself or with domain services
+- save the changes if any
+
 ### Modules
 
 There is a similar architecture for every module:

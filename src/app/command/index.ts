@@ -1,4 +1,6 @@
+import { ResearchTechnologyCommand } from '#app/command/research-technology'
 import { BuildingCode } from '#core/building/domain/constants'
+import { CityService } from '#core/city/domain/service'
 import { Factory } from '#core/factory'
 import { Modules } from '#core/modules'
 import { TechnologyCode } from '#core/technology/domain/constants'
@@ -71,13 +73,14 @@ export class AppCommands {
         code: building_code
       })
     ])
-    const building_costs = await this.modules.pricing.queries.getNextLevelCost({
+    const building_costs = await this.repository.level_cost.getNextLevelCost({
       level: building.level,
       code: building_code
     })
 
     const architecture_bonus = await this.modules.technology.queries.getArchitectureBonus({ player_id })
-    const updated_city = await this.modules.city.commands.purchase({
+    const city_service = new CityService()
+    const updated_city = city_service.purchase({
       player_id,
       city,
       cost: building_costs.resource
@@ -104,43 +107,12 @@ export class AppCommands {
     city_id: string
     technology_code: TechnologyCode
   }): Promise<void> {
-    const [
-      city,
-      research_lab,
-      technology
-    ] = await Promise.all([
-      this.modules.city.queries.findByIdOrThrow(city_id),
-      this.modules.building.queries.findOneOrThrow({
-        city_id,
-        code: BuildingCode.RESEARCH_LAB
-      }),
-      this.modules.technology.queries.findOneOrThrow({
-        player_id,
-        code: technology_code
-      })
-    ])
-
-    const technology_costs = await this.modules.pricing.queries.getNextLevelCost({
-      level: technology.level,
-      code: technology_code
-    })
-
-    const updated_city = await this.modules.city.commands.purchase({
+    const command = new ResearchTechnologyCommand()
+    await command.run({
       player_id,
-      city,
-      cost: technology_costs.resource
+      city_id,
+      technology_code
     })
-    const updated_technology = await this.modules.technology.commands.launchResearch({
-      player_id,
-      technology,
-      duration: technology_costs.duration,
-      research_lab_level: research_lab.level
-    })
-
-    await Promise.all([
-      this.repository.city.updateOne(updated_city),
-      this.repository.technology.updateOne(updated_technology)
-    ])
   }
 
   async refresh({ player_id }: {player_id: string}): Promise<void> {

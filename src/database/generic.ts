@@ -3,7 +3,7 @@ import { GenericRepository } from '#shared/repository'
 import { FilterQuery } from '#type/database'
 import { BaseEntity } from '#type/domain'
 import {
-  AnyParamConstructor, BeAnObject, ReturnModelType 
+  AnyParamConstructor, BeAnObject, ReturnModelType
 } from '@typegoose/typegoose/lib/types'
 
 export abstract class MongoGenericRepository<

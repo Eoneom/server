@@ -1,5 +1,4 @@
 import { TechnologyEntity } from '#core/technology/domain/entity'
-import { TechnologyErrors } from '#core/technology/domain/errors'
 import { TechnologyService } from '#core/technology/domain/service'
 import { TechnologyRepository } from '#core/technology/model'
 import { now } from '#shared/time'
@@ -41,32 +40,6 @@ export class TechnologyCommands {
       player_id,
       has_technologies
     })
-  }
-
-  async launchResearch({
-    technology,
-    duration,
-    player_id,
-    research_lab_level
-  }: TechnologyLaunchResearchCommand): Promise<TechnologyEntity> {
-    const technology_in_progress = await this.repository.exists({
-      player_id,
-      research_at: {
-        $exists: true,
-        $ne: null
-      }
-    })
-    if (technology_in_progress) {
-      throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
-    }
-
-    const { technology: updated_technology } = this.service.launchResearch({
-      research_lab_level,
-      technology,
-      duration
-    })
-
-    return updated_technology
   }
 
   async finishResearch({ player_id }: TechnologyFinishResearchesCommand): Promise<void> {

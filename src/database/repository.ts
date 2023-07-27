@@ -1,3 +1,4 @@
+import { LevelCostRepository } from '#app/repository/pricing'
 import { AuthErrors } from '#core/auth/domain/errors'
 import { AuthRepository } from '#core/auth/model'
 import { AuthModel } from '#core/auth/model/document'
@@ -15,9 +16,7 @@ import { PlayerRepository } from '#core/player/model'
 import { PlayerModel } from '#core/player/model/document'
 import { MongoPlayerRepository } from '#core/player/model/mongo'
 import { PricingErrors } from '#core/pricing/domain/errors'
-import {
-  LevelCostRepository, UnitCostRepository 
-} from '#core/pricing/model'
+import { UnitCostRepository } from '#core/pricing/model'
 import { LevelCostModel } from '#core/pricing/model/level_cost/document'
 import { MongoLevelCostRepository } from '#core/pricing/model/level_cost/mongo'
 import { UnitCostModel } from '#core/pricing/model/unit_cost/document'

@@ -20,6 +20,7 @@ export class TechnologyService {
   }
 
   launchResearch({
+    is_technology_in_progress,
     research_lab_level,
     technology,
     duration
@@ -27,9 +28,11 @@ export class TechnologyService {
     research_lab_level: number
     technology: TechnologyEntity
     duration: number
-  }): {
-    technology: TechnologyEntity
-  } {
+    is_technology_in_progress: boolean
+  }): TechnologyEntity {
+    if (!is_technology_in_progress) {
+      throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
+    }
     const has_required_research_level = this.hasRequiredResearchLevel({
       research_lab_level,
       technology
@@ -38,7 +41,7 @@ export class TechnologyService {
       throw new Error(TechnologyErrors.NOT_REQUIRED_RESEARCH_LEVEL)
     }
 
-    return { technology: technology.launchResearch(duration) }
+    return technology.launchResearch(duration)
   }
 
   private hasRequiredResearchLevel({
