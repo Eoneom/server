@@ -11,7 +11,7 @@ http.use(cors())
 http.use(bodyParser.json())
 
 export const launchServer = () => {
-  http.use(router)
+  http.use(router())
   http.use(errorMiddleware)
 
   http.listen(port, () => {
