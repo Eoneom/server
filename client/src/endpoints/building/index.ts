@@ -1,5 +1,7 @@
 import { Fetcher } from '../../fetcher'
-import { BuildingUpgradeRequest, BuildingUpgradeResponse } from './upgrade'
+import {
+  BuildingUpgradeRequest, BuildingUpgradeResponse
+} from './upgrade'
 
 export class BuildingEndpoint {
   private fetcher: Fetcher
@@ -9,6 +11,9 @@ export class BuildingEndpoint {
   }
 
   public async upgrade(token: string, body: BuildingUpgradeRequest): Promise<BuildingUpgradeResponse> {
-    return this.fetcher.put('/building/upgrade', { body, token })
+    return this.fetcher.put('/building/upgrade', {
+      body,
+      token
+    })
   }
 }

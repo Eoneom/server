@@ -4,11 +4,11 @@ import {
   Response
 } from 'express'
 import { RefreshResponse } from '#client/src/endpoints/player/refresh'
-import { App } from '#app'
 import { getPlayerIdFromContext } from '#web/helpers'
+import { RefreshCommand } from '#app/command/refresh'
 
 
-export const refreshHandler = (app: App) => async (
+export const refreshHandler = async (
   req: Request<void>,
   res: Response<RefreshResponse>,
   next: NextFunction
@@ -16,7 +16,8 @@ export const refreshHandler = (app: App) => async (
   try {
     const player_id = getPlayerIdFromContext(res)
 
-    await app.commands.refresh({ player_id })
+    const command = new RefreshCommand()
+    await command.run({ player_id })
 
     return res.status(200).send({ status: 'ok' })
   } catch (err) {

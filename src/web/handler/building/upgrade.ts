@@ -1,13 +1,13 @@
 import {
-  NextFunction, Request, Response 
+  NextFunction, Request, Response
 } from 'express'
 import {
-  BuildingUpgradeRequest, BuildingUpgradeResponse 
+  BuildingUpgradeRequest, BuildingUpgradeResponse
 } from '#client/src/endpoints/building/upgrade'
-import { App } from '#app'
 import { getPlayerIdFromContext } from '#web/helpers'
+import { UpgradeBuildingCommand } from '#app/command/upgrade-building'
 
-export const buildingUpgradeHandler = (app: App) => async (
+export const buildingUpgradeHandler = async (
   req: Request<BuildingUpgradeRequest>,
   res: Response<BuildingUpgradeResponse>,
   next: NextFunction
@@ -16,7 +16,7 @@ export const buildingUpgradeHandler = (app: App) => async (
   if (!city_id) {
     return res.status(400).json({
       status: 'nok',
-      error_code: 'city_id:not-found' 
+      error_code: 'city_id:not-found'
     })
   }
 
@@ -24,17 +24,19 @@ export const buildingUpgradeHandler = (app: App) => async (
   if (!building_code) {
     return res.status(400).json({
       status: 'nok',
-      error_code: 'building_code:not-found' 
+      error_code: 'building_code:not-found'
     })
   }
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await app.commands.upgradeBuilding({
+    const command = new UpgradeBuildingCommand()
+    await command.run({
+      player_id,
       city_id,
-      building_code,
-      player_id 
+      building_code
     })
+
     return res.status(200).send({ status: 'ok' })
   } catch (err) {
     next(err)

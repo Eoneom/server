@@ -8,7 +8,7 @@
     "baseUrl": ".",
     "paths": {
       "#app": [
-        "./src/app/index.ts"
+        "src/app/queries.ts"
       ],
       "#app/*": [
         "./src/app/*"

@@ -1,5 +1,4 @@
 import express from 'express'
-import { App } from '#app'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import { router } from '#web/router'
@@ -11,8 +10,8 @@ const port = 3000
 http.use(cors())
 http.use(bodyParser.json())
 
-export const launchServer = (app: App) => {
-  http.use(router(app))
+export const launchServer = () => {
+  http.use(router())
   http.use(errorMiddleware)
 
   http.listen(port, () => {
