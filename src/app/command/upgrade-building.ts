@@ -60,11 +60,6 @@ export class UpgradeBuildingCommand extends GenericCommand<
       })
     ])
 
-    console.log({
-      level: building.level,
-      code: building_code
-    })
-
     return {
       architecture_level: architecture_technology.level,
       building,

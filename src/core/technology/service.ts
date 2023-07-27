@@ -20,7 +20,7 @@ export class TechnologyService {
     duration: number
     is_technology_in_progress: boolean
   }): TechnologyEntity {
-    if (!is_technology_in_progress) {
+    if (is_technology_in_progress) {
       throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
     }
 

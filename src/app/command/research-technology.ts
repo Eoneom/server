@@ -18,6 +18,7 @@ interface ResearchTechnologyExec {
   city: CityEntity
   technology: TechnologyEntity
   research_lab_level: number
+  is_technology_in_progress: boolean
 }
 
 interface ResearchTechnologySave {
@@ -36,7 +37,8 @@ export class ResearchTechnologyCommand extends GenericCommand<
     const [
       city,
       research_lab,
-      technology
+      technology,
+      is_technology_in_progress
     ] = await Promise.all([
       this.repository.city.findByIdOrThrow(city_id),
       this.repository.building.findOneOrThrow({
@@ -46,6 +48,13 @@ export class ResearchTechnologyCommand extends GenericCommand<
       this.repository.technology.findOneOrThrow({
         player_id,
         code: technology_code
+      }),
+      this.repository.technology.exists({
+        player_id,
+        research_at: {
+          $exists: true,
+          $ne: null
+        }
       })
     ])
 
@@ -53,6 +62,7 @@ export class ResearchTechnologyCommand extends GenericCommand<
       player_id,
       city,
       technology,
+      is_technology_in_progress,
       research_lab_level: research_lab.level
     }
   }
@@ -63,13 +73,7 @@ export class ResearchTechnologyCommand extends GenericCommand<
     technology,
     research_lab_level,
     is_technology_in_progress
-  }: {
-    player_id: string
-    city: CityEntity
-    technology: TechnologyEntity
-    research_lab_level: number
-    is_technology_in_progress: boolean
-  }): ResearchTechnologySave {
+  }: ResearchTechnologyExec): ResearchTechnologySave {
     const city_service = new CityService()
     const technology_service = new TechnologyService()
     const technology_costs = PricingService.getTechnologyLevelCost({

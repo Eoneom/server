@@ -11,6 +11,7 @@ import { TechnologyEntity } from '#core/technology/entity'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { Queries } from '#app/queries'
 import { Factory } from '#app/factory'
+import { RefreshCommand } from '#app/command/refresh'
 
 export const syncHandler = async (
   req: Request<void>,
@@ -19,16 +20,14 @@ export const syncHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
+
+    const command = new RefreshCommand()
+    await command.run({ player_id })
+
     const queries = new Queries({ repository: Factory.getRepository() })
-    const {
-      player, buildings, cities, technologies
-    } = await queries.sync({ player_id })
-    const response = response_mapper({
-      player,
-      buildings,
-      cities,
-      technologies
-    })
+    const result = await queries.sync({ player_id })
+
+    const response = response_mapper(result)
 
     return res.json({
       status: 'ok',
