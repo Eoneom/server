@@ -1,12 +1,11 @@
 import {
-  BuildingCode, building_earnings 
+  BuildingCode, building_earnings
 } from '#core/building/domain/constants'
 import { BuildingEntity } from '#core/building/domain/entity'
+import { BuildingErrors } from '#core/building/domain/errors'
 
 export class BuildingService {
-  initBuildings({ city_id }: {
-    city_id: string
-  }): BuildingEntity[] {
+  static init({ city_id }: { city_id: string }): BuildingEntity[] {
     const recycling_plant = BuildingEntity.initRecyclingPlant({ city_id })
     const mushroom_farm = BuildingEntity.initMushroomFarm({ city_id })
     const research_lab = BuildingEntity.initResearchLab({ city_id })
@@ -18,7 +17,28 @@ export class BuildingService {
     ]
   }
 
-  getEarningsBySecond({
+  launchUpgrade({
+    is_building_in_progress,
+    duration,
+    architecture_level,
+    building
+  }: {
+    architecture_level: number
+    building: BuildingEntity
+    duration: number
+    is_building_in_progress: boolean
+  }) {
+    if (is_building_in_progress) {
+      throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
+    }
+
+    const architecture_bonus = architecture_level / 100
+    const reduced_duration = Math.ceil(duration * (1 - architecture_bonus))
+
+    return building.launchUpgrade(reduced_duration)
+  }
+
+  static getEarningsBySecond({
     recycling_plant_level,
     mushroom_farm_level
   }: {

@@ -1,18 +1,5 @@
-import { TechnologyEntity } from '#core/technology/domain/entity'
-import { TechnologyService } from '#core/technology/domain/service'
 import { TechnologyRepository } from '#core/technology/model'
 import { now } from '#shared/time'
-
-interface TechnologyLaunchResearchCommand {
-  player_id: string
-  technology: TechnologyEntity
-  duration: number
-  research_lab_level: number
-}
-
-interface TechnologyInitCommand {
-  player_id: string
-}
 
 interface TechnologyFinishResearchesCommand {
   player_id: string
@@ -20,26 +7,11 @@ interface TechnologyFinishResearchesCommand {
 
 export class TechnologyCommands {
   private repository: TechnologyRepository
-  private service: TechnologyService
 
-  constructor({
-    repository,
-    service,
-  }: {
+  constructor({ repository }: {
     repository: TechnologyRepository
-    service: TechnologyService
   }) {
     this.repository = repository
-    this.service = service
-  }
-
-  async init({ player_id }: TechnologyInitCommand): Promise<TechnologyEntity[]> {
-    const has_technologies = await this.repository.exists({ player_id })
-
-    return this.service.initTechnologies({
-      player_id,
-      has_technologies
-    })
   }
 
   async finishResearch({ player_id }: TechnologyFinishResearchesCommand): Promise<void> {

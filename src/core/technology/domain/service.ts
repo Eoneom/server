@@ -3,20 +3,10 @@ import { TechnologyEntity } from '#core/technology/domain/entity'
 import { TechnologyErrors } from '#core/technology/domain/errors'
 
 export class TechnologyService {
-  initTechnologies({
-    player_id,
-    has_technologies
-  }: {
-    player_id: string,
-    has_technologies: boolean
-  }): TechnologyEntity[] {
-    if (has_technologies) {
-      throw new Error(TechnologyErrors.ALREADY_EXISTS)
-    }
+  static init({ player_id }: { player_id: string }): TechnologyEntity[] {
+    const architecture = TechnologyEntity.initArchitecture({ player_id })
 
-    const building = TechnologyEntity.initArchitecture({ player_id })
-
-    return [ building ]
+    return [ architecture ]
   }
 
   launchResearch({
@@ -33,6 +23,7 @@ export class TechnologyService {
     if (!is_technology_in_progress) {
       throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
     }
+
     const has_required_research_level = this.hasRequiredResearchLevel({
       research_lab_level,
       technology

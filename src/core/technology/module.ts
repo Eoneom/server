@@ -16,18 +16,14 @@ export class TechnologyModule extends Module<TechnologyQueries, TechnologyComman
   }) {
     super({
       queries,
-      commands 
+      commands
     })
   }
 
   static getInstance(): TechnologyModule {
     if (!this.instance) {
       const repository = Factory.getRepository().technology
-      const service = new TechnologyService()
-      const commands = new TechnologyCommands({
-        repository,
-        service
-      })
+      const commands = new TechnologyCommands({ repository })
       const queries = new TechnologyQueries({ repository })
       this.instance = new TechnologyModule({
         commands,

@@ -3,13 +3,14 @@ import { BuildingCode } from '#core/building/domain/constants'
 import { CityEntity } from '#core/city/domain/entity'
 import { CityService } from '#core/city/domain/service'
 import { LevelCostEntity } from '#core/pricing/domain/entities/level'
+import { TechnologyCode } from '#core/technology/domain/constants'
 import { TechnologyEntity } from '#core/technology/domain/entity'
 import { TechnologyService } from '#core/technology/domain/service'
 
-interface ResearchTechnologyCommandRequest {
+export interface ResearchTechnologyRequest {
   player_id: string
   city_id: string
-  technology_code: string
+  technology_code: TechnologyCode
 }
 
 interface ResearchTechnologyExec {
@@ -25,10 +26,14 @@ interface ResearchTechnologySave {
   technology: TechnologyEntity
 }
 
-export class ResearchTechnologyCommand extends GenericCommand<ResearchTechnologyCommandRequest, ResearchTechnologyExec, ResearchTechnologySave> {
+export class ResearchTechnologyCommand extends GenericCommand<
+  ResearchTechnologyRequest,
+  ResearchTechnologyExec,
+  ResearchTechnologySave
+> {
   async fetch({
     city_id, player_id, technology_code
-  }: ResearchTechnologyCommandRequest): Promise<ResearchTechnologyExec> {
+  }: ResearchTechnologyRequest): Promise<ResearchTechnologyExec> {
     const [
       city,
       research_lab,

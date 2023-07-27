@@ -11,8 +11,17 @@ export class MongoLevelCostRepository
   extends MongoGenericRepository<typeof LevelCostModel, LevelCostDocument, LevelCostEntity>
   implements LevelCostRepository {
 
-  async getNextLevelCost (query: { level: number; code: BuildingCode | TechnologyCode }): Promise<LevelCostEntity> {
-    return this.findOneOrThrow(query)
+  async getNextLevelCost ({
+    level,
+    code
+  }: {
+    level: number
+    code: BuildingCode | TechnologyCode
+  }): Promise<LevelCostEntity> {
+    return this.findOneOrThrow({
+      level: level + 1,
+      code
+    })
   }
 
   protected buildFromModel(document: LevelCostDocument): LevelCostEntity {

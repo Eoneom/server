@@ -16,7 +16,7 @@ export class BuildingModule extends Module<BuildingQueries, BuildingCommands> {
   }) {
     super({
       queries,
-      commands 
+      commands
     })
   }
 
@@ -24,17 +24,14 @@ export class BuildingModule extends Module<BuildingQueries, BuildingCommands> {
     if (!this.instance) {
       const service = new BuildingService()
       const repository = Factory.getRepository().building
-      const queries = new BuildingQueries({
-        service,
-        repository
-      })
+      const queries = new BuildingQueries({ repository })
       const commands = new BuildingCommands({
         service,
         repository
       })
       this.instance = new BuildingModule({
         commands,
-        queries 
+        queries
       })
     }
 

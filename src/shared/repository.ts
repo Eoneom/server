@@ -1,10 +1,9 @@
+import { LevelCostRepository } from '#app/repository/pricing'
 import { AuthRepository } from '#core/auth/model'
 import { BuildingRepository } from '#core/building/model'
 import { CityRepository } from '#core/city/model'
 import { PlayerRepository } from '#core/player/model'
-import {
-  LevelCostRepository, UnitCostRepository 
-} from '#core/pricing/model'
+import { UnitCostRepository } from '#core/pricing/model'
 import { TechnologyRepository } from '#core/technology/model'
 import { FilterQuery } from '#type/database'
 import { BaseEntity } from '#type/domain'
