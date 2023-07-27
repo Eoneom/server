@@ -1,8 +1,8 @@
 import { CityEntity } from '#core/city/entity'
-import { CityRepository } from '#core/city/model'
+import { CityRepository } from '#app/repository/city'
 import {
   CityDocument, CityModel
-} from '#core/city/model/document'
+} from '#database/city/document'
 import { MongoGenericRepository } from '#database/generic'
 
 export class MongoCityRepository

@@ -1,4 +1,4 @@
-import { Factory } from '#core/factory'
+import { Factory } from '#app/factory'
 import { launchServer } from '#web/http'
 
 (async () => {

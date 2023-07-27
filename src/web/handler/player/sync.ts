@@ -9,8 +9,8 @@ import { BuildingEntity } from '#core/building/entity'
 import { CityEntity } from '#core/city/entity'
 import { TechnologyEntity } from '#core/technology/entity'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { AppQueries } from '#app/query'
-import { Factory } from '#core/factory'
+import { Queries } from '#app/queries'
+import { Factory } from '#app/factory'
 
 export const syncHandler = async (
   req: Request<void>,
@@ -19,7 +19,7 @@ export const syncHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const queries = new AppQueries({ repository: Factory.getRepository() })
+    const queries = new Queries({ repository: Factory.getRepository() })
     const {
       player, buildings, cities, technologies
     } = await queries.sync({ player_id })

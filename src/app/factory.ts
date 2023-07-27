@@ -1,5 +1,5 @@
 import { MongoRepository } from '#database/repository'
-import { Repository } from '#shared/repository'
+import { Repository } from '#app/repository/generic'
 
 export class Factory {
   private static repository: Repository

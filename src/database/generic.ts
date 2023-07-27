@@ -1,5 +1,5 @@
 import { FAKE_ID } from '#shared/identification'
-import { GenericRepository } from '#shared/repository'
+import { GenericRepository } from '#app/repository/generic'
 import { FilterQuery } from '#type/database'
 import { BaseEntity } from '#type/domain'
 import {

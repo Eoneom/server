@@ -1,7 +1,11 @@
 import { Fetcher } from '../../fetcher'
-import { LoginRequest, LoginResponse } from './login'
+import {
+  LoginRequest, LoginResponse 
+} from './login'
 import { RefreshResponse } from './refresh'
-import { SignupRequest, SignupResponse } from './signup'
+import {
+  SignupRequest, SignupResponse 
+} from './signup'
 import { SyncResponse } from './sync'
 
 export class PlayerEndpoint {

@@ -2,9 +2,9 @@ import { BuildingEntity } from '#core/building/entity'
 import { CityEntity } from '#core/city/entity'
 import { PlayerEntity } from '#core/player/entity'
 import { TechnologyEntity } from '#core/technology/entity'
-import { Repository } from '#shared/repository'
+import { Repository } from '#app/repository/generic'
 
-export class AppQueries {
+export class Queries {
   private repository: Repository
 
   constructor({ repository }: { repository: Repository }) {

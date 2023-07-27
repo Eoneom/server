@@ -1,8 +1,8 @@
 import {
-  AnyParamConstructor, BeAnObject 
+  AnyParamConstructor, BeAnObject
 } from '@typegoose/typegoose/lib/types'
 import {
-  ReturnModelType, mongoose 
+  ReturnModelType, mongoose
 } from '@typegoose/typegoose'
 
 export type FilterQuery<Document> = mongoose.FilterQuery<Document>

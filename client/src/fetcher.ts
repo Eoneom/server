@@ -47,9 +47,7 @@ export class Fetcher {
     token?: string
   }): Promise<T> {
     const url = this.getUrl(path)
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-    })
+    const headers = new Headers({ 'Content-Type': 'application/json' })
     if (token) {
       headers.append('Authorization', token)
     }

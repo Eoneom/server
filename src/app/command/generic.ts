@@ -1,5 +1,5 @@
-import { Factory } from '#core/factory'
-import { Repository } from '#shared/repository'
+import { Factory } from '#app/factory'
+import { Repository } from '#app/repository/generic'
 
 export abstract class GenericCommand<FetchParam, ExecParam, SaveParam, Response = void> {
   protected repository: Repository

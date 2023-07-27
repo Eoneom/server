@@ -1,8 +1,8 @@
-import { AuthRepository } from '#core/auth/model'
-import { BuildingRepository } from '#core/building/model'
-import { CityRepository } from '#core/city/model'
-import { PlayerRepository } from '#core/player/model'
-import { TechnologyRepository } from '#core/technology/model'
+import { AuthRepository } from '#app/repository/auth'
+import { BuildingRepository } from '#app/repository/building'
+import { CityRepository } from '#app/repository/city'
+import { PlayerRepository } from '#app/repository/player'
+import { TechnologyRepository } from '#app/repository/technology'
 import { FilterQuery } from '#type/database'
 import { BaseEntity } from '#type/domain'
 

@@ -1,5 +1,7 @@
 import { Fetcher } from '../../fetcher'
-import { TechnologyResearchRequest, TechnologyResearchResponse } from './research'
+import {
+  TechnologyResearchRequest, TechnologyResearchResponse 
+} from './research'
 
 export class TechnologyEndpoint {
   private fetcher: Fetcher
@@ -9,6 +11,9 @@ export class TechnologyEndpoint {
   }
 
   public async research(token: string, body: TechnologyResearchRequest): Promise<TechnologyResearchResponse> {
-    return this.fetcher.put('/technology/research', { body, token })
+    return this.fetcher.put('/technology/research', {
+      body,
+      token 
+    })
   }
 }

@@ -1,8 +1,8 @@
 import { TechnologyEntity } from '#core/technology/entity'
-import { TechnologyRepository } from '#core/technology/model'
+import { TechnologyRepository } from '#app/repository/technology'
 import {
   TechnologyDocument, TechnologyModel
-} from '#core/technology/model/document'
+} from '#database/technology/document'
 import { MongoGenericRepository } from '#database/generic'
 
 export class MongoTechnologyRepository
