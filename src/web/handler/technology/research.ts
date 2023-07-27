@@ -1,13 +1,13 @@
 import {
-  NextFunction, Request, Response 
+  NextFunction, Request, Response
 } from 'express'
 import {
-  TechnologyResearchRequest, TechnologyResearchResponse 
+  TechnologyResearchRequest, TechnologyResearchResponse
 } from '#client/src/endpoints/technology/research'
-import { App } from '#app'
 import { getPlayerIdFromContext } from '#web/helpers'
+import { ResearchTechnologyCommand } from '#app/command/research-technology'
 
-export const technologyResearchHandler = (app: App) => async (
+export const technologyResearchHandler = async (
   req: Request<TechnologyResearchRequest>,
   res: Response<TechnologyResearchResponse>,
   next: NextFunction
@@ -16,7 +16,7 @@ export const technologyResearchHandler = (app: App) => async (
   if (!city_id) {
     return res.status(400).json({
       status: 'nok',
-      error_code: 'city_id:not-found' 
+      error_code: 'city_id:not-found'
     })
   }
 
@@ -24,16 +24,17 @@ export const technologyResearchHandler = (app: App) => async (
   if (!technology_code) {
     return res.status(400).json({
       status: 'nok',
-      error_code: 'technology_code:not-found' 
+      error_code: 'technology_code:not-found'
     })
   }
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await app.commands.researchTechnology({
+    const command = new ResearchTechnologyCommand()
+    await command.run({
       city_id,
       technology_code,
-      player_id 
+      player_id
     })
     return res.status(200).send({ status: 'ok' })
   } catch (err) {

@@ -15,15 +15,15 @@ export const router = (app: App): Router => {
     res.send({ status: 'ok' })
   })
 
-  r.post('/player/login', loginHandler(app))
-  r.post('/player/signup', signupHandler(app))
+  r.post('/player/login', loginHandler)
+  r.post('/player/signup', signupHandler)
 
-  r.put('/player/refresh', authMiddleware(app), refreshHandler(app))
+  r.put('/player/refresh', authMiddleware(app), refreshHandler)
   r.post('/player/sync', authMiddleware(app), syncHandler(app))
 
-  r.put('/building/upgrade', authMiddleware(app), buildingUpgradeHandler(app))
+  r.put('/building/upgrade', authMiddleware(app), buildingUpgradeHandler)
 
-  r.put('/technology/research', authMiddleware(app), technologyResearchHandler(app))
+  r.put('/technology/research', authMiddleware(app), technologyResearchHandler)
 
   return r
 }
