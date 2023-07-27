@@ -1,7 +1,7 @@
-import { PlayerEntity } from '#core/player/domain/entity'
+import { PlayerEntity } from '#core/player/entity'
 import { PlayerRepository } from '#core/player/model'
 import {
-  PlayerDocument, PlayerModel 
+  PlayerDocument, PlayerModel
 } from '#core/player/model/document'
 import { MongoGenericRepository } from '#database/generic'
 

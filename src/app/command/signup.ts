@@ -1,12 +1,12 @@
 import { GenericCommand } from '#app/command/generic'
-import { BuildingEntity } from '#core/building/domain/entity'
-import { BuildingService } from '#core/building/domain/service'
-import { CityEntity } from '#core/city/domain/entity'
-import { CityService } from '#core/city/domain/service'
-import { PlayerEntity } from '#core/player/domain/entity'
-import { PlayerService } from '#core/player/domain/service'
-import { TechnologyEntity } from '#core/technology/domain/entity'
-import { TechnologyService } from '#core/technology/domain/service'
+import { BuildingEntity } from '#core/building/entity'
+import { BuildingService } from '#core/building/service'
+import { CityEntity } from '#core/city/entity'
+import { CityService } from '#core/city/service'
+import { PlayerEntity } from '#core/player/entity'
+import { PlayerService } from '#core/player/service'
+import { TechnologyEntity } from '#core/technology/entity'
+import { TechnologyService } from '#core/technology/service'
 
 export interface SignupRequest {
   player_name: string

@@ -1,7 +1,7 @@
-import { TechnologyEntity } from '#core/technology/domain/entity'
+import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyRepository } from '#core/technology/model'
 import {
-  TechnologyDocument, TechnologyModel 
+  TechnologyDocument, TechnologyModel
 } from '#core/technology/model/document'
 import { MongoGenericRepository } from '#database/generic'
 

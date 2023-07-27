@@ -4,23 +4,25 @@ import {
 import {
   SyncResponse, SyncDataResponse
 } from '#client/src/endpoints/player/sync'
-import { App } from '#app'
-import { PlayerEntity } from '#core/player/domain/entity'
-import { BuildingEntity } from '#core/building/domain/entity'
-import { CityEntity } from '#core/city/domain/entity'
-import { TechnologyEntity } from '#core/technology/domain/entity'
+import { PlayerEntity } from '#core/player/entity'
+import { BuildingEntity } from '#core/building/entity'
+import { CityEntity } from '#core/city/entity'
+import { TechnologyEntity } from '#core/technology/entity'
 import { getPlayerIdFromContext } from '#web/helpers'
+import { AppQueries } from '#app/query'
+import { Factory } from '#core/factory'
 
-export const syncHandler = (app: App) => async (
+export const syncHandler = async (
   req: Request<void>,
   res: Response<SyncResponse>,
   next: NextFunction
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
+    const queries = new AppQueries({ repository: Factory.getRepository() })
     const {
       player, buildings, cities, technologies
-    } = await app.queries.sync({ player_id })
+    } = await queries.sync({ player_id })
     const response = response_mapper({
       player,
       buildings,

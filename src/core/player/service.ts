@@ -1,5 +1,5 @@
-import { PlayerEntity } from '#core/player/domain/entity'
-import { PlayerErrors } from '#core/player/domain/errors'
+import { PlayerEntity } from '#core/player/entity'
+import { PlayerErrors } from '#core/player/errors'
 
 
 export class PlayerService {

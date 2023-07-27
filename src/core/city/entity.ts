@@ -1,12 +1,12 @@
 import {
-  STARTING_MUSHROOM, STARTING_PLASTIC 
-} from '#core/city/domain/constants'
-import { CityErrors } from '#core/city/domain/errors'
+  STARTING_MUSHROOM, STARTING_PLASTIC
+} from '#core/city/constants'
+import { CityErrors } from '#core/city/errors'
 import { id } from '#shared/identification'
 import { Resource } from '#shared/resource'
 import { now } from '#shared/time'
 import {
-  BaseEntity, BaseEntityProps 
+  BaseEntity, BaseEntityProps
 } from '#type/domain'
 
 type CityEntityProps = BaseEntityProps & {
@@ -50,7 +50,7 @@ export class CityEntity extends BaseEntity {
   }
 
   static initCity({
-    name, player_id 
+    name, player_id
   }: { name: string, player_id: string }): CityEntity {
     return new CityEntity({
       id: id(),
@@ -64,11 +64,11 @@ export class CityEntity extends BaseEntity {
   }
 
   purchase({
-    plastic, mushroom 
+    plastic, mushroom
   }: Resource): CityEntity {
     const has_resources = this.hasResources({
       plastic,
-      mushroom 
+      mushroom
     })
     if (!has_resources) {
       throw new Error(CityErrors.NOT_ENOUGH_RESOURCES)
@@ -116,7 +116,7 @@ export class CityEntity extends BaseEntity {
   }
 
   hasResources({
-    plastic, mushroom 
+    plastic, mushroom
   }: Resource): boolean {
     return this.plastic >= plastic && this.mushroom >= mushroom
   }

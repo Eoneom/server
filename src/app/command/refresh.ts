@@ -1,10 +1,10 @@
 import { GenericCommand } from '#app/command/generic'
-import { BuildingCode } from '#core/building/domain/constants'
-import { BuildingEntity } from '#core/building/domain/entity'
-import { BuildingService } from '#core/building/domain/service'
-import { CityEntity } from '#core/city/domain/entity'
-import { CityService } from '#core/city/domain/service'
-import { TechnologyEntity } from '#core/technology/domain/entity'
+import { BuildingCode } from '#core/building/constants'
+import { BuildingEntity } from '#core/building/entity'
+import { BuildingService } from '#core/building/service'
+import { CityEntity } from '#core/city/entity'
+import { CityService } from '#core/city/service'
+import { TechnologyEntity } from '#core/technology/entity'
 import { now } from '#shared/time'
 
 export interface RefreshRequest {

@@ -1,6 +1,6 @@
-import { technology_required_research_levels } from '#core/technology/domain/constants'
-import { TechnologyEntity } from '#core/technology/domain/entity'
-import { TechnologyErrors } from '#core/technology/domain/errors'
+import { technology_required_research_levels } from '#core/technology/constants'
+import { TechnologyEntity } from '#core/technology/entity'
+import { TechnologyErrors } from '#core/technology/errors'
 
 export class TechnologyService {
   static init({ player_id }: { player_id: string }): TechnologyEntity[] {

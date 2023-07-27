@@ -1,5 +1,5 @@
-import { CityEntity } from '#core/city/domain/entity'
-import { CityErrors } from '#core/city/domain/errors'
+import { CityEntity } from '#core/city/entity'
+import { CityErrors } from '#core/city/errors'
 import { Resource } from '#shared/resource'
 
 interface CityPurchaseParams {

@@ -1,5 +1,5 @@
 import { GenericCommand } from '#app/command/generic'
-import { AuthEntity } from '#core/auth/domain/entity'
+import { AuthEntity } from '#core/auth/entity'
 
 export interface LoginRequest {
   player_name: string

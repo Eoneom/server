@@ -1,6 +1,6 @@
-import { BuildingCode } from '#core/building/domain/constants'
+import { BuildingCode } from '#core/building/constants'
 import {
-  getModelForClass, mongoose, prop 
+  getModelForClass, mongoose, prop
 } from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
@@ -11,7 +11,7 @@ class Building {
 
   @prop({
     required: true,
-    enum: BuildingCode 
+    enum: BuildingCode
   })
   public code!: BuildingCode
 

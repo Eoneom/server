@@ -1,8 +1,8 @@
-import { BuildingCode } from '#core/building/domain/constants'
+import { BuildingCode } from '#core/building/constants'
 import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
 import {
-  BaseEntity, BaseEntityProps 
+  BaseEntity, BaseEntityProps
 } from '#type/domain'
 
 type BuildingEntityProps = BaseEntityProps & {

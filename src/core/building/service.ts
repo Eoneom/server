@@ -1,8 +1,8 @@
 import {
   BuildingCode, building_earnings
-} from '#core/building/domain/constants'
-import { BuildingEntity } from '#core/building/domain/entity'
-import { BuildingErrors } from '#core/building/domain/errors'
+} from '#core/building/constants'
+import { BuildingEntity } from '#core/building/entity'
+import { BuildingErrors } from '#core/building/errors'
 
 export class BuildingService {
   static init({ city_id }: { city_id: string }): BuildingEntity[] {

@@ -1,35 +1,31 @@
 import { Resource } from '#shared/resource'
-import { BaseEntity } from '#type/domain'
 
-type LevelCostEntityProps = BaseEntity & {
+type LevelCostValueProps = {
   code: string
   level: number
   resource: Resource
   duration: number
 }
 
-export class LevelCostEntity extends BaseEntity {
+export class LevelCostValue {
   readonly code: string
   readonly level: number
   readonly resource: Resource
   readonly duration: number
 
   private constructor({
-    id,
     code,
     level,
     resource,
     duration
-  }: LevelCostEntityProps) {
-    super({ id })
-
+  }: LevelCostValueProps) {
     this.code = code
     this.level = level
     this.resource = resource
     this.duration = duration
   }
 
-  static create(props: LevelCostEntityProps): LevelCostEntity {
-    return new LevelCostEntity(props)
+  static create(props: LevelCostValueProps): LevelCostValue {
+    return new LevelCostValue(props)
   }
 }

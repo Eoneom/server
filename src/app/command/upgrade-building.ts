@@ -1,11 +1,11 @@
 import { GenericCommand } from '#app/command/generic'
-import { BuildingCode } from '#core/building/domain/constants'
-import { BuildingEntity } from '#core/building/domain/entity'
-import { BuildingService } from '#core/building/domain/service'
-import { CityEntity } from '#core/city/domain/entity'
-import { CityService } from '#core/city/domain/service'
-import { LevelCostEntity } from '#core/pricing/domain/entities/level'
-import { TechnologyCode } from '#core/technology/domain/constants'
+import { BuildingCode } from '#core/building/constants'
+import { BuildingEntity } from '#core/building/entity'
+import { BuildingService } from '#core/building/service'
+import { CityEntity } from '#core/city/entity'
+import { CityService } from '#core/city/service'
+import { PricingService } from '#core/pricing/service'
+import { TechnologyCode } from '#core/technology/constants'
 
 export interface UpgradeBuildingRequest {
   player_id: string
@@ -17,7 +17,6 @@ interface UpgradeBuildingExec {
   player_id: string
   city: CityEntity
   is_building_in_progress: boolean
-  building_costs: LevelCostEntity
   architecture_level: number
   building: BuildingEntity
 }
@@ -65,14 +64,9 @@ export class UpgradeBuildingCommand extends GenericCommand<
       level: building.level,
       code: building_code
     })
-    const building_costs = await this.repository.level_cost.getNextLevelCost({
-      level: building.level,
-      code: building_code
-    })
 
     return {
       architecture_level: architecture_technology.level,
-      building_costs,
       building,
       city,
       is_building_in_progress,
@@ -81,7 +75,6 @@ export class UpgradeBuildingCommand extends GenericCommand<
   }
   exec({
     architecture_level,
-    building_costs,
     building,
     city,
     is_building_in_progress,
@@ -89,6 +82,10 @@ export class UpgradeBuildingCommand extends GenericCommand<
   }: UpgradeBuildingExec): UpgradeBuildingSave {
     const city_service = new CityService()
     const building_service = new BuildingService()
+    const building_costs = PricingService.getBuildingLevelCost({
+      level: building.level + 1,
+      code: building.code
+    })
     const updated_city = city_service.purchase({
       player_id,
       city,

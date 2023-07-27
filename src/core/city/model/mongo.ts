@@ -1,7 +1,7 @@
-import { CityEntity } from '#core/city/domain/entity'
+import { CityEntity } from '#core/city/entity'
 import { CityRepository } from '#core/city/model'
 import {
-  CityDocument, CityModel 
+  CityDocument, CityModel
 } from '#core/city/model/document'
 import { MongoGenericRepository } from '#database/generic'
 

@@ -1,11 +1,11 @@
 import { GenericCommand } from '#app/command/generic'
-import { BuildingCode } from '#core/building/domain/constants'
-import { CityEntity } from '#core/city/domain/entity'
-import { CityService } from '#core/city/domain/service'
-import { LevelCostEntity } from '#core/pricing/domain/entities/level'
-import { TechnologyCode } from '#core/technology/domain/constants'
-import { TechnologyEntity } from '#core/technology/domain/entity'
-import { TechnologyService } from '#core/technology/domain/service'
+import { BuildingCode } from '#core/building/constants'
+import { CityEntity } from '#core/city/entity'
+import { CityService } from '#core/city/service'
+import { PricingService } from '#core/pricing/service'
+import { TechnologyCode } from '#core/technology/constants'
+import { TechnologyEntity } from '#core/technology/entity'
+import { TechnologyService } from '#core/technology/service'
 
 export interface ResearchTechnologyRequest {
   player_id: string
@@ -16,7 +16,6 @@ export interface ResearchTechnologyRequest {
 interface ResearchTechnologyExec {
   player_id: string
   city: CityEntity
-  technology_costs: LevelCostEntity
   technology: TechnologyEntity
   research_lab_level: number
 }
@@ -50,15 +49,9 @@ export class ResearchTechnologyCommand extends GenericCommand<
       })
     ])
 
-    const technology_costs = await this.repository.level_cost.getNextLevelCost({
-      level: technology.level,
-      code: technology_code
-    })
-
     return {
       player_id,
       city,
-      technology_costs,
       technology,
       research_lab_level: research_lab.level
     }
@@ -67,20 +60,22 @@ export class ResearchTechnologyCommand extends GenericCommand<
   exec({
     player_id,
     city,
-    technology_costs,
     technology,
     research_lab_level,
     is_technology_in_progress
   }: {
     player_id: string
     city: CityEntity
-    technology_costs: LevelCostEntity
     technology: TechnologyEntity
     research_lab_level: number
     is_technology_in_progress: boolean
   }): ResearchTechnologySave {
     const city_service = new CityService()
     const technology_service = new TechnologyService()
+    const technology_costs = PricingService.getTechnologyLevelCost({
+      code: technology.code,
+      level: technology.level + 1
+    })
     const updated_city = city_service.purchase({
       player_id,
       city,
