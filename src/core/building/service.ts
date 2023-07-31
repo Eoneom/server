@@ -20,10 +20,8 @@ export class BuildingService {
   launchUpgrade({
     is_building_in_progress,
     duration,
-    architecture_level,
     building
   }: {
-    architecture_level: number
     building: BuildingEntity
     duration: number
     is_building_in_progress: boolean
@@ -32,10 +30,7 @@ export class BuildingService {
       throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
     }
 
-    const architecture_bonus = architecture_level / 100
-    const reduced_duration = Math.ceil(duration * (1 - architecture_bonus))
-
-    return building.launchUpgrade(reduced_duration)
+    return building.launchUpgrade(duration)
   }
 
   static getEarningsBySecond({

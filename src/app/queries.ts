@@ -5,6 +5,7 @@ import { TechnologyEntity } from '#core/technology/entity'
 import { Factory } from '#app/factory'
 import { LevelCostValue } from '#core/pricing/values/level'
 import { PricingService } from '#core/pricing/service'
+import { TechnologyCode } from '#core/technology/constants'
 
 export interface ListBuildingQueryResponse {
   buildings: BuildingEntity[],
@@ -47,13 +48,20 @@ export class Queries {
     }
   }
 
-  static async listBuildings({ city_id }: { city_id: string }): Promise<ListBuildingQueryResponse> {
+  static async listBuildings({
+    city_id, player_id
+  }: { city_id: string, player_id: string }): Promise<ListBuildingQueryResponse> {
     const repository = Factory.getRepository()
     const buildings = await repository.building.find({ city_id })
+    const architecture = await repository.technology.findOneOrThrow({
+      player_id,
+      code: TechnologyCode.ARCHITECTURE
+    })
     const costs = buildings.reduce((acc, building) => {
       const cost = PricingService.getBuildingLevelCost({
         code: building.code,
-        level: building.level + 1
+        level: building.level + 1,
+        architecture_level: architecture.level
       })
 
       return {

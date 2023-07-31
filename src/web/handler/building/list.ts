@@ -7,6 +7,7 @@ import {
 import {
   ListBuildingQueryResponse, Queries
 } from '#app/queries'
+import { getPlayerIdFromContext } from '#web/helpers'
 
 export const buildingListHandler = async (
   req: Request,
@@ -22,7 +23,11 @@ export const buildingListHandler = async (
   }
 
   try {
-    const result = await Queries.listBuildings({ city_id })
+    const player_id = getPlayerIdFromContext(res)
+    const result = await Queries.listBuildings({
+      city_id,
+      player_id 
+    })
     const response = response_mapper(result)
 
     return res.json({

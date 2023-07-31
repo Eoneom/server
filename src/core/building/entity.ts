@@ -47,7 +47,7 @@ export class BuildingEntity extends BaseEntity {
       city_id,
       code: BuildingCode.RECYCLING_PLANT,
       name: 'Centre de recyclage',
-      level: 1
+      level: 0
     })
   }
 
@@ -57,7 +57,7 @@ export class BuildingEntity extends BaseEntity {
       city_id,
       code: BuildingCode.MUSHROOM_FARM,
       name: 'Ferme à champignons',
-      level: 1
+      level: 0
     })
   }
 

@@ -85,7 +85,8 @@ export class UpgradeBuildingCommand extends GenericCommand<
     const building_service = new BuildingService()
     const building_costs = PricingService.getBuildingLevelCost({
       level: building.level + 1,
-      code: building.code
+      code: building.code,
+      architecture_level
     })
     const updated_city = city_service.purchase({
       player_id,
@@ -96,7 +97,6 @@ export class UpgradeBuildingCommand extends GenericCommand<
       building,
       is_building_in_progress,
       duration: building_costs.duration,
-      architecture_level
     })
 
     return {
@@ -114,7 +114,6 @@ export class UpgradeBuildingCommand extends GenericCommand<
     ])
 
     assert(building.upgrade_at)
-
     return { upgrade_at: building.upgrade_at }
   }
 

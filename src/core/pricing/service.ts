@@ -1,30 +1,35 @@
 import { BuildingCode } from '#core/building/constants'
-import {
-  building_costs, building_upgrade_durations_in_second, technology_costs, technology_research_durations_in_second
-} from '#core/pricing/constants'
-import { PricingErrors } from '#core/pricing/errors'
+import { Cost } from '#core/pricing/constant'
+import { building_costs } from '#core/pricing/constant/building'
+import { technology_costs } from '#core/pricing/constant/technology'
 import { LevelCostValue } from '#core/pricing/values/level'
 import { TechnologyCode } from '#core/technology/constants'
 
 export class PricingService {
   static getBuildingLevelCost({
     code,
-    level
+    level,
+    architecture_level
   }: {
     code: BuildingCode
     level: number
+    architecture_level: number
   }): LevelCostValue {
-    const resource = building_costs[code][level]
-    const duration = building_upgrade_durations_in_second[code][level]
-    if (!resource || !duration) {
-      throw new Error(PricingErrors.LEVEL_COST_NOT_FOUND)
-    }
+    const {
+      plastic,
+      mushroom,
+      duration
+    } = building_costs[code]
 
+    const architecture_bonus = architecture_level / 100
     return LevelCostValue.create({
       code,
       level: level,
-      resource,
-      duration
+      resource: {
+        plastic: this.computeCost(plastic, level),
+        mushroom: this.computeCost(mushroom, level)
+      },
+      duration: Math.ceil(this.computeCost(duration, level) * (1 - architecture_bonus))
     })
   }
 
@@ -35,18 +40,24 @@ export class PricingService {
     code: TechnologyCode
     level: number
   }): LevelCostValue {
-    const resource = technology_costs[code][level]
-    const duration = technology_research_durations_in_second[code][level]
-    if (!resource || !duration) {
-      throw new Error(PricingErrors.LEVEL_COST_NOT_FOUND)
-    }
+    const {
+      plastic,
+      mushroom,
+      duration
+    } = technology_costs[code]
 
     return LevelCostValue.create({
       code,
       level: level,
-      resource,
-      duration
+      resource: {
+        plastic: this.computeCost(plastic, level),
+        mushroom: this.computeCost(mushroom, level)
+      },
+      duration: this.computeCost(duration, level)
     })
   }
 
+  private static computeCost(cost: Cost, level: number): number {
+    return Math.ceil(cost.base*Math.pow(cost.multiplier, level - 1))
+  }
 }
