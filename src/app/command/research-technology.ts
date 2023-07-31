@@ -6,6 +6,7 @@ import { PricingService } from '#core/pricing/service'
 import { TechnologyCode } from '#core/technology/constants'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
+import assert from 'assert'
 
 export interface ResearchTechnologyRequest {
   player_id: string
@@ -26,10 +27,15 @@ interface ResearchTechnologySave {
   technology: TechnologyEntity
 }
 
+export interface ResearchTechnologyResponse {
+  research_at: number
+}
+
 export class ResearchTechnologyCommand extends GenericCommand<
   ResearchTechnologyRequest,
   ResearchTechnologyExec,
-  ResearchTechnologySave
+  ResearchTechnologySave,
+  ResearchTechnologyResponse
 > {
   async fetch({
     city_id, player_id, technology_code
@@ -99,10 +105,14 @@ export class ResearchTechnologyCommand extends GenericCommand<
 
   async save({
     city, technology
-  }: ResearchTechnologySave): Promise<void>{
+  }: ResearchTechnologySave): Promise<ResearchTechnologyResponse>{
     await Promise.all([
       this.repository.city.updateOne(city),
       this.repository.technology.updateOne(technology)
     ])
+
+    assert(technology.research_at)
+
+    return { research_at: technology.research_at }
   }
 }

@@ -5,4 +5,8 @@ export interface TechnologyResearchRequest {
   technology_code: string
 }
 
-export type TechnologyResearchResponse = GenericResponse<undefined>
+interface TechnologyResearchDataResponse {
+  research_at: number
+}
+
+export type TechnologyResearchResponse = GenericResponse<TechnologyResearchDataResponse>

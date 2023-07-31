@@ -9,7 +9,12 @@ import { PricingService } from '#core/pricing/service'
 export interface ListBuildingQueryResponse {
   buildings: BuildingEntity[],
   costs: Record<string, LevelCostValue>
- }
+}
+
+export interface ListTechnologyQueryResponse {
+  technologies: TechnologyEntity[]
+  costs: Record<string, LevelCostValue>
+}
 
 export class Queries {
   static async authorize({ token }: {
@@ -25,24 +30,20 @@ export class Queries {
   }): Promise<{
     player: PlayerEntity,
     cities: CityEntity[],
-    technologies: TechnologyEntity[]
   }> {
     const repository = Factory.getRepository()
 
     const [
       player,
       cities,
-      technologies
     ] = await Promise.all([
       repository.player.findByIdOrThrow(player_id),
-      repository.city.find({ player_id }),
-      repository.technology.find({ player_id })
+      repository.city.find({ player_id })
     ])
 
     return {
       player,
       cities,
-      technologies
     }
   }
 
@@ -63,6 +64,27 @@ export class Queries {
 
     return {
       buildings,
+      costs
+    }
+  }
+
+  static async listTechnologies({ player_id }: { player_id: string }): Promise<ListTechnologyQueryResponse> {
+    const repository = Factory.getRepository()
+    const technologies = await repository.technology.find({ player_id })
+    const costs = technologies.reduce((acc, technology) => {
+      const cost = PricingService.getTechnologyLevelCost({
+        code: technology.code,
+        level: technology.level + 1
+      })
+
+      return {
+        ...acc,
+        [technology.id]: cost
+      }
+    }, {} as Record<string, LevelCostValue>)
+
+    return {
+      technologies,
       costs
     }
   }

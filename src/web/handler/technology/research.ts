@@ -31,12 +31,16 @@ export const technologyResearchHandler = async (
   try {
     const player_id = getPlayerIdFromContext(res)
     const command = new ResearchTechnologyCommand()
-    await command.run({
+    const { research_at } = await command.run({
       city_id,
       technology_code,
       player_id
     })
-    return res.status(200).send({ status: 'ok' })
+    const response: TechnologyResearchResponse = {
+      status: 'ok',
+      data: { research_at }
+    }
+    return res.status(200).json(response)
   } catch (err) {
     next(err)
   }

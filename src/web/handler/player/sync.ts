@@ -6,7 +6,6 @@ import {
 } from '#client/src/endpoints/player/sync'
 import { PlayerEntity } from '#core/player/entity'
 import { CityEntity } from '#core/city/entity'
-import { TechnologyEntity } from '#core/technology/entity'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { Queries } from '#app/queries'
 import { RefreshCommand } from '#app/command/refresh'
@@ -35,15 +34,12 @@ export const syncHandler = async (
   }
 }
 
-
 const response_mapper = ({
   player,
   cities,
-  technologies
 }: {
   player: PlayerEntity
   cities: CityEntity[]
-  technologies: TechnologyEntity[]
 }): SyncDataResponse => {
   return {
     player: {
@@ -55,12 +51,6 @@ const response_mapper = ({
       name: city.name,
       plastic: city.plastic,
       mushroom: city.mushroom
-    })),
-    technologies: technologies.map(technology => ({
-      id: technology.id,
-      code: technology.code,
-      level: technology.level,
-      research_at: technology.research_at ?? undefined
     }))
   }
 }

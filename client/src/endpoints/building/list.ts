@@ -1,4 +1,3 @@
-
 import { GenericResponse } from '../../response'
 
 export interface BuildingListRequest {
