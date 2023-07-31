@@ -5,6 +5,14 @@ export class Fetcher {
     this.base_url = base_url
   }
 
+  public async get<T>(path: string, { token }: { token: string }): Promise<T> {
+    return this.request({
+      method: 'GET',
+      path,
+      token
+    })
+  }
+
   public async post<T>(path: string, {
     body,
     token

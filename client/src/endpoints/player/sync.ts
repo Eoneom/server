@@ -10,13 +10,6 @@ export interface SyncDataResponse {
     name: string
     plastic: number
     mushroom: number
-    buildings: {
-      id: string
-      code: string
-      name: string
-      level: number
-      upgrade_at?: number
-    }[]
   }[]
   technologies: {
     id: string

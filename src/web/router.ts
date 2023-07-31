@@ -5,6 +5,7 @@ import { signupHandler } from '#web/handler/player/signup'
 import { syncHandler } from '#web/handler/player/sync'
 import { technologyResearchHandler } from '#web/handler/technology/research'
 import { authMiddleware } from '#web/middleware/auth'
+import { buildingListHandler } from '#web/handler/building/list'
 
 export const router = (): Router => {
   const r = Router()
@@ -17,6 +18,8 @@ export const router = (): Router => {
   r.post('/player/signup', signupHandler)
 
   r.post('/player/sync', authMiddleware, syncHandler)
+
+  r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
 
   r.put('/building/upgrade', authMiddleware, buildingUpgradeHandler)
 

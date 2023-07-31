@@ -1,5 +1,4 @@
 import { Queries } from '#app/queries'
-import { Factory } from '#app/factory'
 import {
   NextFunction, Request, Response
 } from 'express'
@@ -13,8 +12,7 @@ export const authMiddleware = async (req: Request<unknown>, res: Response<unknow
     })
   }
   try {
-    const queries = new Queries({ repository: Factory.getRepository() })
-    const { player_id } = await queries.authorize({ token })
+    const { player_id } = await Queries.authorize({ token })
     res.locals.player_id = player_id
     next()
 

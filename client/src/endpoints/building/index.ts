@@ -1,5 +1,8 @@
 import { Fetcher } from '../../fetcher'
 import {
+  BuildingListRequest, BuildingListResponse
+} from './list'
+import {
   BuildingUpgradeRequest, BuildingUpgradeResponse
 } from './upgrade'
 
@@ -15,5 +18,9 @@ export class BuildingEndpoint {
       body,
       token
     })
+  }
+
+  public async list(token: string, { city_id }: BuildingListRequest): Promise<BuildingListResponse> {
+    return this.fetcher.get(`/city/${city_id}/building`, { token })
   }
 }

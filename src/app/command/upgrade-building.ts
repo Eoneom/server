@@ -6,6 +6,7 @@ import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 import { TechnologyCode } from '#core/technology/constants'
+import assert from 'assert'
 
 export interface UpgradeBuildingRequest {
   player_id: string
@@ -26,10 +27,15 @@ interface UpgradeBuildingSave {
   building: BuildingEntity
 }
 
+export interface UpgradeBuildingResponse {
+  upgrade_at: number
+}
+
 export class UpgradeBuildingCommand extends GenericCommand<
   UpgradeBuildingRequest,
   UpgradeBuildingExec,
-  UpgradeBuildingSave
+  UpgradeBuildingSave,
+  UpgradeBuildingResponse
 > {
   async fetch({
     player_id,
@@ -101,11 +107,15 @@ export class UpgradeBuildingCommand extends GenericCommand<
   async save({
     city,
     building
-  }: UpgradeBuildingSave): Promise<void> {
+  }: UpgradeBuildingSave): Promise<UpgradeBuildingResponse> {
     await Promise.all([
       this.repository.city.updateOne(city),
       this.repository.building.updateOne(building)
     ])
+
+    assert(building.upgrade_at)
+
+    return { upgrade_at: building.upgrade_at }
   }
 
 }

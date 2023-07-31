@@ -5,4 +5,6 @@ export interface BuildingUpgradeRequest {
   building_code: string
 }
 
-export type BuildingUpgradeResponse = GenericResponse<undefined>
+export type BuildingUpgradeResponse = GenericResponse<{
+  upgrade_at: number
+}>

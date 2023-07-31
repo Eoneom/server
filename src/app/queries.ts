@@ -2,50 +2,68 @@ import { BuildingEntity } from '#core/building/entity'
 import { CityEntity } from '#core/city/entity'
 import { PlayerEntity } from '#core/player/entity'
 import { TechnologyEntity } from '#core/technology/entity'
-import { Repository } from '#app/repository/generic'
+import { Factory } from '#app/factory'
+import { LevelCostValue } from '#core/pricing/values/level'
+import { PricingService } from '#core/pricing/service'
+
+export interface ListBuildingQueryResponse {
+  buildings: BuildingEntity[],
+  costs: Record<string, LevelCostValue>
+ }
 
 export class Queries {
-  private repository: Repository
-
-  constructor({ repository }: { repository: Repository }) {
-    this.repository = repository
-  }
-
-  async authorize({ token }: {
+  static async authorize({ token }: {
     token: string
   }): Promise<{ player_id: string }> {
-    const auth = await this.repository.auth.findOneOrThrow({ token })
+    const repository = Factory.getRepository()
+    const auth = await repository.auth.findOneOrThrow({ token })
     return { player_id: auth.player_id.toString() }
   }
 
-  async sync({ player_id }: {
+  static async sync({ player_id }: {
     player_id: string
   }): Promise<{
     player: PlayerEntity,
     cities: CityEntity[],
-    buildings: Record<string, BuildingEntity[]>,
     technologies: TechnologyEntity[]
   }> {
+    const repository = Factory.getRepository()
+
     const [
       player,
       cities,
       technologies
     ] = await Promise.all([
-      this.repository.player.findByIdOrThrow(player_id),
-      this.repository.city.find({ player_id }),
-      this.repository.technology.find({ player_id })
+      repository.player.findByIdOrThrow(player_id),
+      repository.city.find({ player_id }),
+      repository.technology.find({ player_id })
     ])
-
-    const buildings: Record<string, BuildingEntity[]> = {}
-    for (const city of cities) {
-      buildings[city.id] = await this.repository.building.find({ city_id: city.id })
-    }
 
     return {
       player,
       cities,
-      technologies,
-      buildings
+      technologies
+    }
+  }
+
+  static async listBuildings({ city_id }: { city_id: string }): Promise<ListBuildingQueryResponse> {
+    const repository = Factory.getRepository()
+    const buildings = await repository.building.find({ city_id })
+    const costs = buildings.reduce((acc, building) => {
+      const cost = PricingService.getBuildingLevelCost({
+        code: building.code,
+        level: building.level + 1
+      })
+
+      return {
+        ...acc,
+        [building.id]: cost
+      }
+    }, {} as Record<string, LevelCostValue>)
+
+    return {
+      buildings,
+      costs
     }
   }
 }

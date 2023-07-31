@@ -31,13 +31,18 @@ export const buildingUpgradeHandler = async (
   try {
     const player_id = getPlayerIdFromContext(res)
     const command = new UpgradeBuildingCommand()
-    await command.run({
+    const { upgrade_at } = await command.run({
       player_id,
       city_id,
       building_code
     })
 
-    return res.status(200).send({ status: 'ok' })
+    const response: BuildingUpgradeResponse = {
+      status: 'ok',
+      data: { upgrade_at }
+    }
+
+    return res.json(response)
   } catch (err) {
     next(err)
   }
