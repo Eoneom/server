@@ -21,9 +21,9 @@ export const router = (): Router => {
 
   // Authenticated routes
   r.post('/player/sync', authMiddleware, syncHandler)
-  r.get('/player/technology', authMiddleware, technologyListHandler)
 
   r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
+  r.get('/city/:city_id/technology', authMiddleware, technologyListHandler)
 
   r.put('/building/upgrade', authMiddleware, buildingUpgradeHandler)
 

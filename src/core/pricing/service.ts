@@ -29,16 +29,18 @@ export class PricingService {
         plastic: this.computeCost(plastic, level),
         mushroom: this.computeCost(mushroom, level)
       },
-      duration: Math.ceil(this.computeCost(duration, level) * (1 - architecture_bonus))
+      duration: this.computeCost(duration, level, architecture_bonus)
     })
   }
 
   static getTechnologyLevelCost({
     code,
-    level
+    level,
+    research_lab_level
   }: {
     code: TechnologyCode
     level: number
+    research_lab_level: number
   }): LevelCostValue {
     const {
       plastic,
@@ -46,6 +48,7 @@ export class PricingService {
       duration
     } = technology_costs[code]
 
+    const research_lab_bonus = research_lab_level / 100
     return LevelCostValue.create({
       code,
       level: level,
@@ -53,11 +56,11 @@ export class PricingService {
         plastic: this.computeCost(plastic, level),
         mushroom: this.computeCost(mushroom, level)
       },
-      duration: this.computeCost(duration, level)
+      duration: this.computeCost(duration, level, research_lab_bonus)
     })
   }
 
-  private static computeCost(cost: Cost, level: number): number {
-    return Math.ceil(cost.base*Math.pow(cost.multiplier, level - 1))
+  private static computeCost(cost: Cost, level: number, bonus = 0): number {
+    return Math.ceil(cost.base*Math.pow(cost.multiplier, level - 1)*(1-bonus))
   }
 }

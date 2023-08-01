@@ -84,7 +84,8 @@ export class ResearchTechnologyCommand extends GenericCommand<
     const technology_service = new TechnologyService()
     const technology_costs = PricingService.getTechnologyLevelCost({
       code: technology.code,
-      level: technology.level + 1
+      level: technology.level + 1,
+      research_lab_level
     })
     const updated_city = city_service.purchase({
       player_id,

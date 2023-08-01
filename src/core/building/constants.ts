@@ -4,17 +4,18 @@ export enum BuildingCode {
   RESEARCH_LAB = 'research_lab'
 }
 
-export const building_earnings: Record<BuildingCode.RECYCLING_PLANT | BuildingCode.MUSHROOM_FARM, Record<number, number>> = {
+export interface Earnings {
+  base: number
+  multiplier: number
+}
+
+export const building_earnings: Record<BuildingCode.RECYCLING_PLANT | BuildingCode.MUSHROOM_FARM, Earnings> = {
   [BuildingCode.RECYCLING_PLANT]: {
-    1: 2,
-    2: 10,
-    3: 15,
-    4: 30
+    base: 2,
+    multiplier: 1.3
   },
   [BuildingCode.MUSHROOM_FARM]: {
-    1: 25,
-    2: 35,
-    3: 60,
-    4: 100
+    base: 5,
+    multiplier: 1.5
   }
 }

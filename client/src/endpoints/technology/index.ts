@@ -1,5 +1,7 @@
 import { Fetcher } from '../../fetcher'
-import { TechnologyListResponse } from './list'
+import {
+  TechnologyListRequest, TechnologyListResponse
+} from './list'
 import {
   TechnologyResearchRequest, TechnologyResearchResponse
 } from './research'
@@ -18,7 +20,7 @@ export class TechnologyEndpoint {
     })
   }
 
-  public async list(token: string): Promise<TechnologyListResponse> {
-    return this.fetcher.get('/player/technology', { token })
+  public async list(token: string, body: TechnologyListRequest): Promise<TechnologyListResponse> {
+    return this.fetcher.get(`/city/${body.city_id}/technology`, { token })
   }
 }

@@ -2,7 +2,7 @@ import {
   NextFunction, Request, Response
 } from 'express'
 import {
-  TechnologyListDataResponse, TechnologyListResponse
+  TechnologyListDataResponse, TechnologyListRequest, TechnologyListResponse
 } from '#client/src/endpoints/technology/list'
 import {
   ListTechnologyQueryResponse, Queries
@@ -10,13 +10,23 @@ import {
 import { getPlayerIdFromContext } from '#web/helpers'
 
 export const technologyListHandler = async (
-  req: Request,
+  req: Request<TechnologyListRequest>,
   res: Response<TechnologyListResponse>,
   next: NextFunction
 ) => {
+  const city_id = req.params.city_id
+  if (!city_id) {
+    return res.status(400).json({
+      status: 'nok',
+      error_code: 'city_id:not_found'
+    })
+  }
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await Queries.listTechnologies({ player_id })
+    const result = await Queries.listTechnologies({
+      player_id,
+      city_id
+    })
     const response = response_mapper(result)
 
     return res.json({

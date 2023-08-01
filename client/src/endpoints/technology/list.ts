@@ -1,5 +1,9 @@
 import { GenericResponse } from '../../response'
 
+export interface TechnologyListRequest {
+  city_id: string
+}
+
 export interface TechnologyListDataResponse {
   technologies: {
     id: string
