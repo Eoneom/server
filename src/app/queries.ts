@@ -7,6 +7,13 @@ import { LevelCostValue } from '#core/pricing/values/level'
 import { PricingService } from '#core/pricing/service'
 import { TechnologyCode } from '#core/technology/constants'
 import { BuildingCode } from '#core/building/constants'
+import { AppService } from '#app/service'
+
+export interface SyncQueryResponse {
+  player: PlayerEntity
+  cities: CityEntity[],
+  earnings_per_second_by_city: Record<string, { plastic: number, mushroom: number}>
+}
 
 export interface ListBuildingQueryResponse {
   buildings: BuildingEntity[],
@@ -27,12 +34,7 @@ export class Queries {
     return { player_id: auth.player_id.toString() }
   }
 
-  static async sync({ player_id }: {
-    player_id: string
-  }): Promise<{
-    player: PlayerEntity,
-    cities: CityEntity[],
-  }> {
+  static async sync({ player_id }: {player_id: string }): Promise<SyncQueryResponse> {
     const repository = Factory.getRepository()
 
     const [
@@ -43,9 +45,28 @@ export class Queries {
       repository.city.find({ player_id })
     ])
 
+    const earnings_per_second = await Promise.all(cities.map(async city => {
+      const earnings = await AppService.getCityEarningsBySecond({ city_id: city.id })
+      return {
+        city_id: city.id,
+        ...earnings
+      }
+    }))
+
+    const earnings_per_second_by_city = earnings_per_second.reduce((acc, earnings) => {
+      return {
+        ...acc,
+        [earnings.city_id]: {
+          plastic: earnings.plastic,
+          mushroom: earnings.mushroom
+        }
+      }
+    }, {} as Record<string, { plastic: number, mushroom: number }>)
+
     return {
       player,
       cities,
+      earnings_per_second_by_city
     }
   }
 

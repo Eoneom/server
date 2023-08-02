@@ -4,10 +4,10 @@ import {
 import {
   SyncResponse, SyncDataResponse
 } from '#client/src/endpoints/player/sync'
-import { PlayerEntity } from '#core/player/entity'
-import { CityEntity } from '#core/city/entity'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { Queries } from '#app/queries'
+import {
+  Queries, SyncQueryResponse
+} from '#app/queries'
 import { RefreshCommand } from '#app/command/refresh'
 
 export const syncHandler = async (
@@ -37,20 +37,27 @@ export const syncHandler = async (
 const response_mapper = ({
   player,
   cities,
-}: {
-  player: PlayerEntity
-  cities: CityEntity[]
-}): SyncDataResponse => {
+  earnings_per_second_by_city
+}: SyncQueryResponse): SyncDataResponse => {
+  const cities_response: SyncDataResponse['cities'] =cities.map(city => {
+    const earnings_per_second = earnings_per_second_by_city[city.id]
+    return {
+      id: city.id,
+      name: city.name,
+      plastic: city.plastic,
+      mushroom: city.mushroom,
+      earnings_per_second: {
+        plastic: earnings_per_second.plastic,
+        mushroom: earnings_per_second.mushroom
+      }
+    }
+  })
+
   return {
     player: {
       id: player.id,
       name: player.name,
     },
-    cities: cities.map(city => ({
-      id: city.id,
-      name: city.name,
-      plastic: city.plastic,
-      mushroom: city.mushroom
-    }))
+    cities: cities_response
   }
 }

@@ -10,6 +10,10 @@ export interface SyncDataResponse {
     name: string
     plastic: number
     mushroom: number
+    earnings_per_second: {
+      plastic: number
+      mushroom: number
+    }
   }[]
 }
 

@@ -45,9 +45,15 @@ export class BuildingService {
   } {
     const plastic_earnings = building_earnings[BuildingCode.RECYCLING_PLANT]
     const mushroom_earnings = building_earnings[BuildingCode.MUSHROOM_FARM]
+    const plastic = recycling_plant_level > 0 ?
+      Math.round(Math.pow(plastic_earnings.multiplier, recycling_plant_level - 1)*plastic_earnings.base*100)/100:
+      0
+    const mushroom = mushroom_farm_level > 0 ?
+      Math.round(Math.pow(mushroom_earnings.multiplier, mushroom_farm_level - 1)*mushroom_earnings.base*100)/100 :
+      0
     return {
-      plastic: recycling_plant_level > 0 ? Math.pow(plastic_earnings.multiplier, recycling_plant_level - 1): 0,
-      mushroom: mushroom_farm_level > 0 ? Math.pow(mushroom_earnings.multiplier, mushroom_farm_level - 1) : 0
+      plastic,
+      mushroom
     }
   }
 }

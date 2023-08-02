@@ -16,6 +16,6 @@ export const building_earnings: Record<BuildingCode.RECYCLING_PLANT | BuildingCo
   },
   [BuildingCode.MUSHROOM_FARM]: {
     base: 5,
-    multiplier: 1.5
+    multiplier: 1.15
   }
 }
