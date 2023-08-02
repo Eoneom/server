@@ -2,6 +2,16 @@ import { BuildingEndpoint } from './endpoints/building'
 import { PlayerEndpoint } from './endpoints/player'
 import { TechnologyEndpoint } from './endpoints/technology'
 import { Fetcher } from './fetcher'
+export { TechnologyCode } from '../../src/core/technology/constants'
+export { BuildingCode } from '../../src/core/building/constants'
+export * from './endpoints/building/list'
+export * from './endpoints/building/upgrade'
+export * from './endpoints/player/login'
+export * from './endpoints/player/signup'
+export * from './endpoints/player/sync'
+export * from './endpoints/technology/list'
+export * from './endpoints/technology/research'
+export * from './response'
 
 export class Client {
   private fetcher: Fetcher

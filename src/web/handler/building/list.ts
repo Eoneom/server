@@ -26,7 +26,7 @@ export const buildingListHandler = async (
     const player_id = getPlayerIdFromContext(res)
     const result = await Queries.listBuildings({
       city_id,
-      player_id 
+      player_id
     })
     const response = response_mapper(result)
 
@@ -48,7 +48,6 @@ const response_mapper = ({
       id: building.id,
       city_id: building.city_id,
       code: building.code,
-      name: building.name,
       level: building.level,
       upgrade_at: building.upgrade_at ?? undefined,
       upgrade_cost: {

@@ -1,3 +1,4 @@
+import { TechnologyCode } from '../../../../src/core/technology/constants'
 import { GenericResponse } from '../../response'
 
 export interface TechnologyListRequest {
@@ -7,7 +8,7 @@ export interface TechnologyListRequest {
 export interface TechnologyListDataResponse {
   technologies: {
     id: string
-    code: string
+    code: TechnologyCode
     level: number
     research_cost: {
       plastic: number

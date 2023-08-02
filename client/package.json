@@ -2,7 +2,7 @@
   "name": "@kroust/swarm-client",
   "version": "0.2.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/client/src/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc --pretty",
     "publish-minor": "npm version minor && npm publish"

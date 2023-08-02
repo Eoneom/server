@@ -1,3 +1,4 @@
+import { BuildingCode } from '../../../../src/core/building/constants'
 import { GenericResponse } from '../../response'
 
 export interface BuildingListRequest {
@@ -8,8 +9,7 @@ export interface BuildingListDataResponse {
   buildings: {
     id: string
     city_id: string
-    code: string
-    name: string
+    code: BuildingCode
     level: number
     upgrade_cost: {
       plastic: number
