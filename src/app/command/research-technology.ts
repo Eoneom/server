@@ -80,19 +80,17 @@ export class ResearchTechnologyCommand extends GenericCommand<
     research_lab_level,
     is_technology_in_progress
   }: ResearchTechnologyExec): ResearchTechnologySave {
-    const city_service = new CityService()
-    const technology_service = new TechnologyService()
     const technology_costs = PricingService.getTechnologyLevelCost({
       code: technology.code,
       level: technology.level + 1,
       research_lab_level
     })
-    const updated_city = city_service.purchase({
+    const updated_city = CityService.purchase({
       player_id,
       city,
       cost: technology_costs.resource
     })
-    const updated_technology = technology_service.launchResearch({
+    const updated_technology = TechnologyService.launchResearch({
       is_technology_in_progress,
       technology,
       duration: technology_costs.duration,

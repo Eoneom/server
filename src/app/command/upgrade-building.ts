@@ -81,19 +81,17 @@ export class UpgradeBuildingCommand extends GenericCommand<
     is_building_in_progress,
     player_id
   }: UpgradeBuildingExec): UpgradeBuildingSave {
-    const city_service = new CityService()
-    const building_service = new BuildingService()
     const building_costs = PricingService.getBuildingLevelCost({
       level: building.level + 1,
       code: building.code,
       architecture_level
     })
-    const updated_city = city_service.purchase({
+    const updated_city = CityService.purchase({
       player_id,
       city,
       cost: building_costs.resource
     })
-    const updated_building = building_service.launchUpgrade({
+    const updated_building = BuildingService.launchUpgrade({
       building,
       is_building_in_progress,
       duration: building_costs.duration,

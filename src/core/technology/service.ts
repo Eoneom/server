@@ -9,7 +9,7 @@ export class TechnologyService {
     return [ architecture ]
   }
 
-  launchResearch({
+  static launchResearch({
     is_technology_in_progress,
     research_lab_level,
     technology,
@@ -35,7 +35,7 @@ export class TechnologyService {
     return technology.launchResearch(duration)
   }
 
-  private hasRequiredResearchLevel({
+  private static hasRequiredResearchLevel({
     research_lab_level, technology
   }: { research_lab_level: number, technology: TechnologyEntity }): boolean {
     return research_lab_level >= technology_required_research_levels[technology.code]

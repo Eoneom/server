@@ -17,7 +17,7 @@ export class BuildingService {
     ]
   }
 
-  launchUpgrade({
+  static launchUpgrade({
     is_building_in_progress,
     duration,
     building

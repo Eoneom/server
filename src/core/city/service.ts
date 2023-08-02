@@ -9,7 +9,7 @@ interface CityPurchaseParams {
 }
 
 export class CityService {
-  purchase({
+  static purchase({
     city, cost, player_id
   }: CityPurchaseParams): CityEntity {
     const is_city_owned_by_player = city.isOwnedBy(player_id)
