@@ -2,7 +2,7 @@ import { BuildingCode } from '#core/building/constants'
 import { Cost } from '#core/pricing/constant'
 import { building_costs } from '#core/pricing/constant/building'
 import { technology_costs } from '#core/pricing/constant/technology'
-import { LevelCostValue } from '#core/pricing/values/level'
+import { LevelCostValue } from '#core/pricing/value/level'
 import { TechnologyCode } from '#core/technology/constants'
 
 export class PricingService {

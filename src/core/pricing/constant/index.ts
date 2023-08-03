@@ -1,4 +1,3 @@
-
 export interface Cost {
   base: number
   multiplier: number

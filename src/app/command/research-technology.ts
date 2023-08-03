@@ -1,8 +1,10 @@
 import { GenericCommand } from '#app/command/generic'
+import { AppService } from '#app/service'
 import { BuildingCode } from '#core/building/constants'
 import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
+import { RequirementService } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constants'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
@@ -19,6 +21,8 @@ interface ResearchTechnologyExec {
   city: CityEntity
   technology: TechnologyEntity
   research_lab_level: number
+  required_building_levels: Record<BuildingCode, number>
+  required_technology_levels: Record<TechnologyCode, number>
   is_technology_in_progress: boolean
 }
 
@@ -42,15 +46,12 @@ export class ResearchTechnologyCommand extends GenericCommand<
   }: ResearchTechnologyRequest): Promise<ResearchTechnologyExec> {
     const [
       city,
-      research_lab,
       technology,
-      is_technology_in_progress
+      is_technology_in_progress,
+      research_lab,
+      requirements
     ] = await Promise.all([
       this.repository.city.findByIdOrThrow(city_id),
-      this.repository.building.findOneOrThrow({
-        city_id,
-        code: BuildingCode.RESEARCH_LAB
-      }),
       this.repository.technology.findOneOrThrow({
         player_id,
         code: technology_code
@@ -61,6 +62,15 @@ export class ResearchTechnologyCommand extends GenericCommand<
           $exists: true,
           $ne: null
         }
+      }),
+      this.repository.building.findOneOrThrow({
+        city_id,
+        code: BuildingCode.RESEARCH_LAB
+      }),
+      AppService.getTechnologyRequirementLevels({
+        city_id,
+        player_id,
+        technology_code
       })
     ])
 
@@ -68,18 +78,27 @@ export class ResearchTechnologyCommand extends GenericCommand<
       player_id,
       city,
       technology,
+      research_lab_level: research_lab.level,
+      required_building_levels: requirements.building_levels,
+      required_technology_levels: requirements.technology_levels,
       is_technology_in_progress,
-      research_lab_level: research_lab.level
     }
   }
 
   exec({
-    player_id,
     city,
-    technology,
+    is_technology_in_progress,
+    player_id,
+    required_building_levels: required_buildings,
+    required_technology_levels: required_technologies,
     research_lab_level,
-    is_technology_in_progress
+    technology,
   }: ResearchTechnologyExec): ResearchTechnologySave {
+    RequirementService.checkTechnologyRequirement({
+      technology_code: technology.code,
+      building_levels: required_buildings,
+      technology_levels: required_technologies
+    })
     const technology_costs = PricingService.getTechnologyLevelCost({
       code: technology.code,
       level: technology.level + 1,
@@ -94,7 +113,6 @@ export class ResearchTechnologyCommand extends GenericCommand<
       is_technology_in_progress,
       technology,
       duration: technology_costs.duration,
-      research_lab_level
     })
     return {
       city: updated_city,
