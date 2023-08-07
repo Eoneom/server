@@ -11,6 +11,7 @@ export * from './endpoints/player/signup'
 export * from './endpoints/player/sync'
 export * from './endpoints/technology/list'
 export * from './endpoints/technology/research'
+export * from './endpoints/requirement/index'
 export * from './response'
 
 export class Client {

@@ -8,6 +8,9 @@ export class RequirementService {
   static getTechnologyRequirement({ technology_code }: { technology_code: TechnologyCode }): RequirementValue {
     return TechnologyRequirement[technology_code]
   }
+  static listTechnologyRequirements(): typeof TechnologyRequirement {
+    return TechnologyRequirement
+  }
   static checkTechnologyRequirement({
     technology_code,
     building_levels,

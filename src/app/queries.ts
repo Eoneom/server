@@ -8,6 +8,8 @@ import { PricingService } from '#core/pricing/service'
 import { TechnologyCode } from '#core/technology/constants'
 import { BuildingCode } from '#core/building/constants'
 import { AppService } from '#app/service'
+import { RequirementValue } from '#core/requirement/value/requirement'
+import { RequirementService } from '#core/requirement/service'
 
 export interface SyncQueryResponse {
   player: PlayerEntity
@@ -23,6 +25,7 @@ export interface ListBuildingQueryResponse {
 export interface ListTechnologyQueryResponse {
   technologies: TechnologyEntity[]
   costs: Record<string, LevelCostValue>
+  requirements: Record<TechnologyCode, RequirementValue>
 }
 
 export class Queries {
@@ -124,9 +127,12 @@ export class Queries {
       }
     }, {} as Record<string, LevelCostValue>)
 
+    const requirements = RequirementService.listTechnologyRequirements()
+
     return {
       technologies,
-      costs
+      costs,
+      requirements
     }
   }
 }

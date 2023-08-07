@@ -39,10 +39,13 @@ export const technologyListHandler = async (
 }
 
 const response_mapper = ({
-  technologies, costs
+  technologies,
+  costs,
+  requirements
 }: ListTechnologyQueryResponse): TechnologyListDataResponse => {
   const response_technologies: TechnologyListDataResponse['technologies'] = technologies.map(technology => {
     const cost = costs[technology.id]
+    const requirement = requirements[technology.code]
     return {
       id: technology.id,
       code: technology.code,
@@ -52,7 +55,8 @@ const response_mapper = ({
         plastic: cost.resource.plastic,
         mushroom: cost.resource.mushroom,
         duration: cost.duration
-      }
+      },
+      requirements: requirement
     }
   })
 
