@@ -17,11 +17,6 @@ export class CityService {
       throw new Error(CityErrors.NOT_OWNER)
     }
 
-    const has_resources = city.hasResources(cost)
-    if (!has_resources) {
-      throw new Error(CityErrors.NOT_ENOUGH_RESOURCES)
-    }
-
     return city.purchase(cost)
   }
 

@@ -52,14 +52,15 @@ export class CityEntity extends BaseEntity {
   static initCity({
     name, player_id
   }: { name: string, player_id: string }): CityEntity {
+    const last_gather = now()
     return new CityEntity({
       id: id(),
       player_id,
       name,
       plastic: STARTING_PLASTIC,
       mushroom: STARTING_MUSHROOM,
-      last_plastic_gather: now(),
-      last_mushroom_gather: now()
+      last_plastic_gather: last_gather,
+      last_mushroom_gather: last_gather
     })
   }
 
@@ -121,8 +122,14 @@ export class CityEntity extends BaseEntity {
     })
     const updated = Boolean(plastic_earnings) || Boolean(mushroom_earnings)
     const city: CityEntity = this
-      .gatherPlastic(plastic_earnings)
-      .gatherMushroom(mushroom_earnings)
+      .gatherPlastic({
+        earnings: plastic_earnings,
+        gather_at_time
+      })
+      .gatherMushroom({
+        earnings: mushroom_earnings,
+        gather_at_time
+      })
 
     return {
       city,
@@ -130,37 +137,49 @@ export class CityEntity extends BaseEntity {
     }
   }
 
-  hasResources({
+  isOwnedBy(player_id: string): boolean {
+    return this.player_id === player_id
+  }
+
+  private hasResources({
     plastic, mushroom
   }: Resource): boolean {
     return this.plastic >= plastic && this.mushroom >= mushroom
   }
 
-  isOwnedBy(player_id: string): boolean {
-    return this.player_id === player_id
-  }
-
-  private gatherPlastic(plastic_earnings: number): CityEntity {
-    if (!plastic_earnings) {
+  private gatherPlastic({
+    earnings,
+    gather_at_time
+  }:{
+    earnings: number
+    gather_at_time: number
+  }): CityEntity {
+    if (!earnings) {
       return this
     }
 
     return new CityEntity({
       ...this,
-      last_plastic_gather: now(),
-      plastic: this.plastic + plastic_earnings
+      last_plastic_gather: gather_at_time,
+      plastic: this.plastic + earnings
     })
   }
 
-  private gatherMushroom(mushroom_earnings: number): CityEntity {
-    if (!mushroom_earnings) {
+  private gatherMushroom({
+    earnings,
+    gather_at_time
+  }: {
+    earnings: number
+    gather_at_time: number
+  }): CityEntity {
+    if (!earnings) {
       return this
     }
 
     return new CityEntity({
       ...this,
-      last_mushroom_gather: now(),
-      mushroom: this.mushroom + mushroom_earnings
+      last_mushroom_gather: gather_at_time,
+      mushroom: this.mushroom + earnings
     })
   }
 
