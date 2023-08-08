@@ -64,7 +64,8 @@ export class CityEntity extends BaseEntity {
   }
 
   purchase({
-    plastic, mushroom
+    plastic,
+    mushroom
   }: Resource): CityEntity {
     const has_resources = this.hasResources({
       plastic,
@@ -78,6 +79,20 @@ export class CityEntity extends BaseEntity {
       ...this,
       plastic: this.plastic - plastic,
       mushroom: this.mushroom - mushroom
+    })
+  }
+
+  refund({
+    plastic,
+    mushroom
+  }: {
+    plastic: number
+    mushroom: number
+  }): CityEntity {
+    return new CityEntity({
+      ...this,
+      plastic: this.plastic + plastic,
+      mushroom: this.mushroom + mushroom
     })
   }
 

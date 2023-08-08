@@ -7,6 +7,7 @@ import { technologyResearchHandler } from '#web/handler/technology/research'
 import { authMiddleware } from '#web/middleware/auth'
 import { buildingListHandler } from '#web/handler/building/list'
 import { technologyListHandler } from '#web/handler/technology/list'
+import { buildingCancelHandler } from '#web/handler/building/cancel'
 
 export const router = (): Router => {
   const r = Router()
@@ -25,6 +26,7 @@ export const router = (): Router => {
   r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
   r.get('/city/:city_id/technology', authMiddleware, technologyListHandler)
 
+  r.put('/building/cancel', authMiddleware, buildingCancelHandler)
   r.put('/building/upgrade', authMiddleware, buildingUpgradeHandler)
 
   r.put('/technology/research', authMiddleware, technologyResearchHandler)

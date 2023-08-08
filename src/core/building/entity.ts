@@ -64,6 +64,13 @@ export class BuildingEntity extends BaseEntity {
     })
   }
 
+  cancel(): BuildingEntity {
+    return new BuildingEntity({
+      ...this,
+      upgrade_at: undefined
+    })
+  }
+
   launchUpgrade(upgrade_time_in_seconds: number): BuildingEntity {
     return new BuildingEntity({
       ...this,
