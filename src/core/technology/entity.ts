@@ -57,4 +57,11 @@ export class TechnologyEntity extends BaseEntity {
       research_at: undefined,
     })
   }
+
+  cancel(): TechnologyEntity {
+    return new TechnologyEntity({
+      ...this,
+      research_at: undefined
+    })
+  }
 }
