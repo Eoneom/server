@@ -8,6 +8,23 @@ import { MongoGenericRepository } from '#database/generic'
 export class MongoCityRepository
   extends MongoGenericRepository<typeof CityModel, CityDocument, CityEntity>
   implements CityRepository {
+
+  async get(id: string): Promise<CityEntity> {
+    return this.findByIdOrThrow(id)
+  }
+
+  async list(query: { player_id: string }): Promise<CityEntity[]> {
+    return this.find(query)
+  }
+
+  async exist(name: string): Promise<boolean> {
+    return this.exists({ name })
+  }
+
+  async getPlayerCities(player_id: string): Promise<CityEntity[]> {
+    return this.find({ player_id })
+  }
+
   protected buildFromModel(document: CityDocument): CityEntity {
     return CityEntity.create({
       id: document._id.toString(),

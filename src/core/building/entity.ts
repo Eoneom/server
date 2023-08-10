@@ -3,7 +3,7 @@ import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
 import {
   BaseEntity, BaseEntityProps
-} from '#type/domain'
+} from '#core/type/entity'
 
 type BuildingEntityProps = BaseEntityProps & {
   city_id: string

@@ -48,22 +48,16 @@ export class UpgradeBuildingCommand extends GenericCommand<
       building,
       is_building_in_progress
     ] = await Promise.all([
-      this.repository.technology.findOneOrThrow({
+      this.repository.technology.get({
         player_id,
         code: TechnologyCode.ARCHITECTURE
       }),
-      this.repository.city.findByIdOrThrow(city_id),
-      this.repository.building.findOneOrThrow({
+      this.repository.city.get(city_id),
+      this.repository.building.get({
         city_id,
         code: building_code
       }),
-      this.repository.building.exists({
-        city_id,
-        upgrade_at: {
-          $exists: true,
-          $ne: null
-        }
-      })
+      this.repository.building.isInProgress({ city_id })
     ])
 
     return {

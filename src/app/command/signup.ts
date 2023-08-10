@@ -46,8 +46,8 @@ export class SignupCommand extends GenericCommand<
       does_player_exist,
       does_city_exist
     ] = await Promise.all([
-      this.repository.player.exists({ name: player_name }),
-      this.repository.city.exists({ name: city_name })
+      this.repository.player.exist(player_name),
+      this.repository.city.exist(city_name)
     ])
 
     return {

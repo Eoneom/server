@@ -8,22 +8,22 @@ export class AppService {
   static async getCityEarningsBySecond({ city_id }: { city_id: string }): Promise<{ plastic: number, mushroom: number }> {
     const repository = Factory.getRepository()
     const [
-      mushroom_farm,
-      recycling_plant
+      mushroom_farm_level,
+      recycling_plant_level
     ] = await Promise.all([
-      repository.building.findOneOrThrow({
+      repository.building.getLevel({
         city_id,
         code: BuildingCode.MUSHROOM_FARM
       }),
-      repository.building.findOneOrThrow({
+      repository.building.getLevel({
         city_id,
         code: BuildingCode.RECYCLING_PLANT
       })
     ])
 
     return BuildingService.getEarningsBySecond({
-      recycling_plant_level: recycling_plant.level,
-      mushroom_farm_level: mushroom_farm.level
+      recycling_plant_level,
+      mushroom_farm_level
     })
   }
 
@@ -47,13 +47,13 @@ export class AppService {
       buildings,
       technologies
     ] = await Promise.all([
-      repository.building.find({
+      repository.building.list({
         city_id,
-        code: { $in: required_building_codes }
+        codes: required_building_codes
       }),
-      repository.technology.find({
+      repository.technology.list({
         player_id,
-        code: { $in: required_technology_codes }
+        codes: required_technology_codes
       })
     ])
 

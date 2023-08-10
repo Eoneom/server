@@ -7,7 +7,7 @@ import { Resource } from '#shared/resource'
 import { now } from '#shared/time'
 import {
   BaseEntity, BaseEntityProps
-} from '#type/domain'
+} from '#core/type/entity'
 
 type CityEntityProps = BaseEntityProps & {
   player_id: string

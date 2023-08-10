@@ -26,7 +26,7 @@
         "./src/shared/*"
       ],
       "#type/*": [
-        "./src/type/*"
+        "src/core/type/*"
       ],
       "#web/*": [
         "./src/web/*"

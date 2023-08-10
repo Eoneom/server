@@ -1,10 +1,10 @@
 import { FAKE_ID } from '#shared/identification'
 import { GenericRepository } from '#app/repository/generic'
-import { FilterQuery } from '#type/database'
-import { BaseEntity } from '#type/domain'
+import { BaseEntity } from '#core/type/entity'
 import {
   AnyParamConstructor, BeAnObject, ReturnModelType
 } from '@typegoose/typegoose/lib/types'
+import { mongoose } from '@typegoose/typegoose'
 
 export abstract class MongoGenericRepository<
   Model extends AnyParamConstructor<any>,
@@ -12,7 +12,7 @@ export abstract class MongoGenericRepository<
   Entity extends BaseEntity
 > implements GenericRepository<Entity> {
 
-  private model: ReturnModelType<Model, BeAnObject>
+  protected model: ReturnModelType<Model, BeAnObject>
   private not_found_error: string
 
   constructor(model: ReturnModelType<Model>, not_found_error: string) {
@@ -20,12 +20,12 @@ export abstract class MongoGenericRepository<
     this.not_found_error = not_found_error
   }
 
-  async exists(query: FilterQuery<Entity>): Promise<boolean> {
+  async exists(query: mongoose.FilterQuery<Entity>): Promise<boolean> {
     const existing = await this.model.exists(query)
     return Boolean(existing)
   }
 
-  async find(query: FilterQuery<Entity>): Promise<Entity[]> {
+  async find(query: mongoose.FilterQuery<Entity>): Promise<Entity[]> {
     const documents = await this.model.find(query)
     return documents.map(document => this.buildFromModel(document))
   }
@@ -48,7 +48,7 @@ export abstract class MongoGenericRepository<
     return document
   }
 
-  async findOne(query: FilterQuery<Entity>): Promise<Entity | null> {
+  async findOne(query: mongoose.FilterQuery<Entity>): Promise<Entity | null> {
     const document = await this.model.findOne(query)
     if (!document) {
       return null
@@ -57,7 +57,7 @@ export abstract class MongoGenericRepository<
     return this.buildFromModel(document)
   }
 
-  async findOneOrThrow(query: FilterQuery<Entity>): Promise<Entity> {
+  async findOneOrThrow(query: mongoose.FilterQuery<Entity>): Promise<Entity> {
     const document = await this.findOne(query)
     if (!document) {
       throw new Error(this.not_found_error)

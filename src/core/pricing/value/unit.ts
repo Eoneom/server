@@ -1,5 +1,5 @@
 import { Resource } from '#shared/resource'
-import { BaseEntity } from '#type/domain'
+import { BaseEntity } from '#core/type/entity'
 
 type UnitCostEntityProps = BaseEntity & {
   code: string

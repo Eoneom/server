@@ -32,29 +32,24 @@ export class RefreshCommand extends GenericCommand<
   RefreshSave
 > {
   async fetch({ player_id }: RefreshRequest): Promise<RefreshExec> {
-    const cities = await this.repository.city.find({ player_id })
+    const cities = await this.repository.city.list({ player_id })
     const buildings_to_finish = await Promise.all(cities.map(city => {
-      return this.repository.building.findOne({
-        city_id: city.id,
-        upgrade_at: { $lte: now() }
-      })
+      return this.repository.building.getUpgradeDone({ city_id: city.id })
     }))
-    const technology_to_finish = await this.repository.technology.findOne({
-      player_id,
-      research_at: { $lte: now() }
-    })
+    const technology_to_finish = await this.repository.technology.getResearchDone({ player_id })
     const building_levels_with_city_id = await Promise.all(cities.map(async city => {
-      const recycling_plant = await this.repository.building.findOneOrThrow({
+      const recycling_plant_level = await this.repository.building.getLevel({
         city_id: city.id,
         code: BuildingCode.RECYCLING_PLANT
       })
-      const mushroom_farm = await this.repository.building.findOneOrThrow({
+      const mushroom_farm_level = await this.repository.building.getLevel({
         city_id: city.id,
         code: BuildingCode.MUSHROOM_FARM
       })
+
       return {
-        [BuildingCode.RECYCLING_PLANT]: recycling_plant.level,
-        [BuildingCode.MUSHROOM_FARM]: mushroom_farm.level,
+        [BuildingCode.RECYCLING_PLANT]: recycling_plant_level,
+        [BuildingCode.MUSHROOM_FARM]: mushroom_farm_level,
         city_id: city.id
       }
     }))

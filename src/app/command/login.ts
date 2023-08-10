@@ -24,7 +24,7 @@ export class LoginCommand extends GenericCommand<
   LoginResponse
 > {
   async fetch({ player_name }: LoginRequest): Promise<LoginExec> {
-    const player = await this.repository.player.findOneOrThrow({ name: player_name })
+    const player = await this.repository.player.getByName(player_name)
     return { player_id: player.id }
   }
   exec({ player_id }: LoginExec): LoginSave {

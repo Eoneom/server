@@ -51,19 +51,13 @@ export class ResearchTechnologyCommand extends GenericCommand<
       research_lab,
       requirements
     ] = await Promise.all([
-      this.repository.city.findByIdOrThrow(city_id),
-      this.repository.technology.findOneOrThrow({
+      this.repository.city.get(city_id),
+      this.repository.technology.get({
         player_id,
         code: technology_code
       }),
-      this.repository.technology.exists({
-        player_id,
-        research_at: {
-          $exists: true,
-          $ne: null
-        }
-      }),
-      this.repository.building.findOneOrThrow({
+      this.repository.technology.isInProgress({ player_id }),
+      this.repository.building.get({
         city_id,
         code: BuildingCode.RESEARCH_LAB
       }),

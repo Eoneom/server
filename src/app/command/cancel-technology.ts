@@ -1,5 +1,4 @@
 import { GenericCommand } from '#app/command/generic'
-import { Factory } from '#app/factory'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyErrors } from '#core/technology/errors'
 
@@ -21,14 +20,7 @@ export class CancelTechnologyCommand extends GenericCommand<
   CancelTechnologySave
 > {
   async fetch({ player_id }: CancelTechnologyRequest): Promise<CancelTechnologyExec> {
-    const repository = Factory.getRepository()
-    const technology = await repository.technology.findOne({
-      player_id,
-      upgrade_at: {
-        $exists: true,
-        $ne: null
-      }
-    })
+    const technology = await this.repository.technology.getInProgress({ player_id })
 
     return { technology }
   }
@@ -40,7 +32,6 @@ export class CancelTechnologyCommand extends GenericCommand<
     return { technology: technology.cancel() }
   }
   async save({ technology }: CancelTechnologySave): Promise<void> {
-    const repository = Factory.getRepository()
-    await repository.technology.updateOne(technology)
+    await this.repository.technology.updateOne(technology)
   }
 }

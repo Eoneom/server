@@ -33,7 +33,7 @@ export class Queries {
     token: string
   }): Promise<{ player_id: string }> {
     const repository = Factory.getRepository()
-    const auth = await repository.auth.findOneOrThrow({ token })
+    const auth = await repository.auth.get({ token })
     return { player_id: auth.player_id.toString() }
   }
 
@@ -44,8 +44,8 @@ export class Queries {
       player,
       cities,
     ] = await Promise.all([
-      repository.player.findByIdOrThrow(player_id),
-      repository.city.find({ player_id })
+      repository.player.get(player_id),
+      repository.city.list({ player_id })
     ])
 
     const earnings_per_second = await Promise.all(cities.map(async city => {
@@ -77,8 +77,8 @@ export class Queries {
     city_id, player_id
   }: { city_id: string, player_id: string }): Promise<ListBuildingQueryResponse> {
     const repository = Factory.getRepository()
-    const buildings = await repository.building.find({ city_id })
-    const architecture = await repository.technology.findOneOrThrow({
+    const buildings = await repository.building.list({ city_id })
+    const architecture = await repository.technology.get({
       player_id,
       code: TechnologyCode.ARCHITECTURE
     })
@@ -109,8 +109,8 @@ export class Queries {
     city_id: string
   }): Promise<ListTechnologyQueryResponse> {
     const repository = Factory.getRepository()
-    const technologies = await repository.technology.find({ player_id })
-    const research_lab = await repository.building.findOneOrThrow({
+    const technologies = await repository.technology.list({ player_id })
+    const research_lab_level = await repository.building.getLevel({
       city_id,
       code: BuildingCode.RESEARCH_LAB
     })
@@ -118,7 +118,7 @@ export class Queries {
       const cost = PricingService.getTechnologyLevelCost({
         code: technology.code,
         level: technology.level + 1,
-        research_lab_level: research_lab.level
+        research_lab_level: research_lab_level
       })
 
       return {

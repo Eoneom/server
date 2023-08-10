@@ -1,5 +1,4 @@
 import { GenericCommand } from '#app/command/generic'
-import { Factory } from '#app/factory'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingErrors } from '#core/building/errors'
 import { CityEntity } from '#core/city/entity'
@@ -31,19 +30,12 @@ export class CancelBuildingCommand extends GenericCommand<
     city_id,
     player_id
   }: CancelBuildingRequest): Promise<CancelBuildingExec> {
-    const repository = Factory.getRepository()
     const [
       city,
       building
     ] = await Promise.all([
-      repository.city.findOneOrThrow({ city_id }),
-      repository.building.findOne({
-        city_id,
-        upgrade_at: {
-          $exists: true,
-          $ne: null
-        }
-      })
+      this.repository.city.get(city_id),
+      this.repository.building.getInProgress({ city_id })
     ])
 
     return {
@@ -88,10 +80,9 @@ export class CancelBuildingCommand extends GenericCommand<
     building,
     city
   }: CancelBuildingSave): Promise<void> {
-    const repository = Factory.getRepository()
     await Promise.all([
-      repository.building.updateOne(building),
-      repository.city.updateOne(city)
+      this.repository.building.updateOne(building),
+      this.repository.city.updateOne(city)
     ])
   }
 }

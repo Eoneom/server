@@ -1,7 +1,7 @@
 import { TechnologyCode } from '#core/technology/constants'
 import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
-import { BaseEntity } from '#type/domain'
+import { BaseEntity } from '#core/type/entity'
 
 type TechnologyEntityProps = BaseEntity & {
   code: TechnologyCode
