@@ -8,7 +8,7 @@
     "baseUrl": ".",
     "paths": {
       "#app": [
-        "src/app/queries.ts"
+        "src/app/query/technology/list.ts"
       ],
       "#app/*": [
         "./src/app/*"
@@ -19,8 +19,14 @@
       "#core/*": [
         "./src/core/*"
       ],
+      "#command/*": [
+        "./src/app/command/*"
+      ],
       "#database/*": [
         "./src/database/*"
+      ],
+      "#query/*": [
+        "./src/app/query/*"
       ],
       "#shared/*": [
         "./src/shared/*"

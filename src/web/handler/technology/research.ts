@@ -5,7 +5,7 @@ import {
   TechnologyResearchRequest, TechnologyResearchResponse
 } from '#client/src/endpoints/technology/research'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { ResearchTechnologyCommand } from '#app/command/research-technology'
+import { TechnologyResearchCommand } from '#command/technology/research'
 
 export const technologyResearchHandler = async (
   req: Request<TechnologyResearchRequest>,
@@ -30,7 +30,7 @@ export const technologyResearchHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new ResearchTechnologyCommand()
+    const command = new TechnologyResearchCommand()
     const { research_at } = await command.run({
       city_id,
       technology_code,

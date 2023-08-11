@@ -4,10 +4,10 @@ import {
 import {
   BuildingListResponse, BuildingListDataResponse
 } from '#client/src/endpoints/building/list'
-import {
-  ListBuildingQueryResponse, Queries
-} from '#app/queries'
 import { getPlayerIdFromContext } from '#web/helpers'
+import {
+  BuildingListQuery, ListBuildingQueryResponse
+} from '#query/building/list'
 
 export const buildingListHandler = async (
   req: Request,
@@ -24,7 +24,8 @@ export const buildingListHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await Queries.listBuildings({
+    const query = new BuildingListQuery()
+    const result = await query.get({
       city_id,
       player_id
     })

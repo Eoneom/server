@@ -1,4 +1,4 @@
-import { GenericCommand } from '#app/command/generic'
+import { GenericCommand } from '#command/generic'
 import { BuildingCode } from '#core/building/constants'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingService } from '#core/building/service'

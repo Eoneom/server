@@ -1,4 +1,4 @@
-import { GenericCommand } from '#app/command/generic'
+import { GenericCommand } from '#command/generic'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingService } from '#core/building/service'
 import { CityEntity } from '#core/city/entity'
@@ -8,40 +8,40 @@ import { PlayerService } from '#core/player/service'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
 
-export interface SignupRequest {
+export interface AuthSignupRequest {
   player_name: string
   city_name: string
 }
 
-interface SignupExec {
+interface AuthSignupExec {
   does_player_exist: boolean
   does_city_exist: boolean
   player_name: string
   city_name: string
 }
 
-interface SignupSave {
+interface AuthSignupSave {
   player: PlayerEntity
   city: CityEntity
   buildings: BuildingEntity[]
   technologies: TechnologyEntity[]
 }
 
-export interface SignupResponse {
+export interface AuthSignupResponse {
   player_id: string
   city_id: string
 }
 
-export class SignupCommand extends GenericCommand<
-  SignupRequest,
-  SignupExec,
-  SignupSave,
-  SignupResponse
+export class AuthSignupCommand extends GenericCommand<
+  AuthSignupRequest,
+  AuthSignupExec,
+  AuthSignupSave,
+  AuthSignupResponse
 > {
   async fetch({
     player_name,
     city_name
-  }: SignupRequest): Promise<SignupExec> {
+  }: AuthSignupRequest): Promise<AuthSignupExec> {
     const [
       does_player_exist,
       does_city_exist
@@ -62,7 +62,7 @@ export class SignupCommand extends GenericCommand<
     does_player_exist,
     player_name,
     city_name
-  }: SignupExec): SignupSave {
+  }: AuthSignupExec): AuthSignupSave {
     const player = PlayerService.init({
       name: player_name,
       does_player_exist
@@ -87,7 +87,7 @@ export class SignupCommand extends GenericCommand<
     city,
     buildings,
     technologies
-  }: SignupSave): Promise<SignupResponse> {
+  }: AuthSignupSave): Promise<AuthSignupResponse> {
     await Promise.all([
       this.repository.player.create(player),
       this.repository.city.create(city),

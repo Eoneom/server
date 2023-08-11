@@ -45,11 +45,17 @@
     "#client/*": {
       "default": "./client/*.js"
     },
+    "#command/*": {
+      "default": "./dist/src/app/command/*.js"
+    },
     "#core/*": {
       "default": "./dist/src/core/*.js"
     },
     "#database/*": {
       "default": "./dist/src/database/*.js"
+    },
+    "#query/*": {
+      "default": "./dist/src/app/query/*.js"
     },
     "#shared/*": {
       "default": "./dist/src/shared/*.js"

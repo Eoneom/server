@@ -5,7 +5,7 @@ import {
   BuildingUpgradeRequest, BuildingUpgradeResponse
 } from '#client/src/endpoints/building/upgrade'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { UpgradeBuildingCommand } from '#app/command/upgrade-building'
+import { BuildingUpgradeCommand } from '#command/building/upgrade'
 
 export const buildingUpgradeHandler = async (
   req: Request<BuildingUpgradeRequest>,
@@ -30,7 +30,7 @@ export const buildingUpgradeHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new UpgradeBuildingCommand()
+    const command = new BuildingUpgradeCommand()
     const { upgrade_at } = await command.run({
       player_id,
       city_id,

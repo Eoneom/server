@@ -1,4 +1,4 @@
-import { GenericCommand } from '#app/command/generic'
+import { GenericCommand } from '#command/generic'
 import { BuildingCode } from '#core/building/constants'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingService } from '#core/building/service'
@@ -8,13 +8,13 @@ import { PricingService } from '#core/pricing/service'
 import { TechnologyCode } from '#core/technology/constants'
 import assert from 'assert'
 
-export interface UpgradeBuildingRequest {
+export interface BuildingUpgradeRequest {
   player_id: string
   city_id: string
   building_code: BuildingCode
 }
 
-interface UpgradeBuildingExec {
+interface BuildingUpgradeExec {
   player_id: string
   city: CityEntity
   is_building_in_progress: boolean
@@ -22,26 +22,26 @@ interface UpgradeBuildingExec {
   building: BuildingEntity
 }
 
-interface UpgradeBuildingSave {
+interface BuildingUpgradeSave {
   city: CityEntity
   building: BuildingEntity
 }
 
-export interface UpgradeBuildingResponse {
+export interface BuildingUpgradeResponse {
   upgrade_at: number
 }
 
-export class UpgradeBuildingCommand extends GenericCommand<
-  UpgradeBuildingRequest,
-  UpgradeBuildingExec,
-  UpgradeBuildingSave,
-  UpgradeBuildingResponse
+export class BuildingUpgradeCommand extends GenericCommand<
+  BuildingUpgradeRequest,
+  BuildingUpgradeExec,
+  BuildingUpgradeSave,
+  BuildingUpgradeResponse
 > {
   async fetch({
     player_id,
     city_id,
     building_code,
-  }: UpgradeBuildingRequest): Promise<UpgradeBuildingExec> {
+  }: BuildingUpgradeRequest): Promise<BuildingUpgradeExec> {
     const [
       architecture_technology,
       city,
@@ -74,7 +74,7 @@ export class UpgradeBuildingCommand extends GenericCommand<
     city,
     is_building_in_progress,
     player_id
-  }: UpgradeBuildingExec): UpgradeBuildingSave {
+  }: BuildingUpgradeExec): BuildingUpgradeSave {
     const building_costs = PricingService.getBuildingLevelCost({
       level: building.level + 1,
       code: building.code,
@@ -99,7 +99,7 @@ export class UpgradeBuildingCommand extends GenericCommand<
   async save({
     city,
     building
-  }: UpgradeBuildingSave): Promise<UpgradeBuildingResponse> {
+  }: BuildingUpgradeSave): Promise<BuildingUpgradeResponse> {
     await Promise.all([
       this.repository.city.updateOne(city),
       this.repository.building.updateOne(building)

@@ -3,7 +3,7 @@ import {
 } from 'express'
 import { TechnologyCancelResponse } from '#client/src/endpoints/technology/cancel'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { CancelTechnologyCommand } from '#app/command/cancel-technology'
+import { TechnologyCancelCommand } from '#command/technology/cancel'
 
 export const technologyCancelHandler = async (
   req: Request,
@@ -12,7 +12,7 @@ export const technologyCancelHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new CancelTechnologyCommand()
+    const command = new TechnologyCancelCommand()
     await command.run({ player_id })
 
     const response: TechnologyCancelResponse = { status: 'ok' }

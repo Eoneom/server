@@ -1,4 +1,4 @@
-import { GenericCommand } from '#app/command/generic'
+import { GenericCommand } from '#command/generic'
 import { AppService } from '#app/service'
 import { BuildingCode } from '#core/building/constants'
 import { CityEntity } from '#core/city/entity'
@@ -10,13 +10,13 @@ import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
 import assert from 'assert'
 
-export interface ResearchTechnologyRequest {
+export interface TechnologyResearchRequest {
   player_id: string
   city_id: string
   technology_code: TechnologyCode
 }
 
-interface ResearchTechnologyExec {
+interface TechnologyResearchExec {
   player_id: string
   city: CityEntity
   technology: TechnologyEntity
@@ -26,24 +26,24 @@ interface ResearchTechnologyExec {
   is_technology_in_progress: boolean
 }
 
-interface ResearchTechnologySave {
+interface TechnologyResearchSave {
   city: CityEntity
   technology: TechnologyEntity
 }
 
-export interface ResearchTechnologyResponse {
+export interface TechnologyResearchResponse {
   research_at: number
 }
 
-export class ResearchTechnologyCommand extends GenericCommand<
-  ResearchTechnologyRequest,
-  ResearchTechnologyExec,
-  ResearchTechnologySave,
-  ResearchTechnologyResponse
+export class TechnologyResearchCommand extends GenericCommand<
+  TechnologyResearchRequest,
+  TechnologyResearchExec,
+  TechnologyResearchSave,
+  TechnologyResearchResponse
 > {
   async fetch({
     city_id, player_id, technology_code
-  }: ResearchTechnologyRequest): Promise<ResearchTechnologyExec> {
+  }: TechnologyResearchRequest): Promise<TechnologyResearchExec> {
     const [
       city,
       technology,
@@ -87,7 +87,7 @@ export class ResearchTechnologyCommand extends GenericCommand<
     required_technology_levels: required_technologies,
     research_lab_level,
     technology,
-  }: ResearchTechnologyExec): ResearchTechnologySave {
+  }: TechnologyResearchExec): TechnologyResearchSave {
     RequirementService.checkTechnologyRequirement({
       technology_code: technology.code,
       building_levels: required_buildings,
@@ -116,7 +116,7 @@ export class ResearchTechnologyCommand extends GenericCommand<
 
   async save({
     city, technology
-  }: ResearchTechnologySave): Promise<ResearchTechnologyResponse>{
+  }: TechnologyResearchSave): Promise<TechnologyResearchResponse>{
     await Promise.all([
       this.repository.city.updateOne(city),
       this.repository.technology.updateOne(technology)

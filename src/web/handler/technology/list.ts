@@ -4,10 +4,10 @@ import {
 import {
   TechnologyListDataResponse, TechnologyListRequest, TechnologyListResponse
 } from '#client/src/endpoints/technology/list'
-import {
-  ListTechnologyQueryResponse, Queries
-} from '#app/queries'
 import { getPlayerIdFromContext } from '#web/helpers'
+import {
+  TechnologyListQuery, TechnologyListQueryResponse
+} from '#app'
 
 export const technologyListHandler = async (
   req: Request<TechnologyListRequest>,
@@ -23,7 +23,8 @@ export const technologyListHandler = async (
   }
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await Queries.listTechnologies({
+    const query = new TechnologyListQuery()
+    const result = await query.get({
       player_id,
       city_id
     })
@@ -42,7 +43,7 @@ const response_mapper = ({
   technologies,
   costs,
   requirements
-}: ListTechnologyQueryResponse): TechnologyListDataResponse => {
+}: TechnologyListQueryResponse): TechnologyListDataResponse => {
   const response_technologies: TechnologyListDataResponse['technologies'] = technologies.map(technology => {
     const cost = costs[technology.id]
     const requirement = requirements[technology.code]

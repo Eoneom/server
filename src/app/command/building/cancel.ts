@@ -1,35 +1,35 @@
-import { GenericCommand } from '#app/command/generic'
+import { GenericCommand } from '#command/generic'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingErrors } from '#core/building/errors'
 import { CityEntity } from '#core/city/entity'
 import { CityErrors } from '#core/city/errors'
 import { PricingService } from '#core/pricing/service'
 
-interface CancelBuildingRequest {
+interface BuildingCancelRequest {
   city_id: string
   player_id: string
 }
 
-interface CancelBuildingExec {
+interface BuildingCancelExec {
   city: CityEntity
   player_id: string
   building: BuildingEntity | null
 }
 
-interface CancelBuildingSave {
+interface BuildingCancelSave {
   building: BuildingEntity
   city: CityEntity
 }
 
-export class CancelBuildingCommand extends GenericCommand<
-  CancelBuildingRequest,
-  CancelBuildingExec,
-  CancelBuildingSave
+export class BuildingCancelCommand extends GenericCommand<
+  BuildingCancelRequest,
+  BuildingCancelExec,
+  BuildingCancelSave
 > {
   async fetch({
     city_id,
     player_id
-  }: CancelBuildingRequest): Promise<CancelBuildingExec> {
+  }: BuildingCancelRequest): Promise<BuildingCancelExec> {
     const [
       city,
       building
@@ -48,7 +48,7 @@ export class CancelBuildingCommand extends GenericCommand<
     city,
     player_id,
     building
-  }: CancelBuildingExec): CancelBuildingSave {
+  }: BuildingCancelExec): BuildingCancelSave {
     if (!city.isOwnedBy(player_id)) {
       throw new Error(CityErrors.NOT_OWNER)
     }
@@ -79,7 +79,7 @@ export class CancelBuildingCommand extends GenericCommand<
   async save({
     building,
     city
-  }: CancelBuildingSave): Promise<void> {
+  }: BuildingCancelSave): Promise<void> {
     await Promise.all([
       this.repository.building.updateOne(building),
       this.repository.city.updateOne(city)

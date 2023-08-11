@@ -4,7 +4,7 @@ import {
 import {
   SignupRequest, SignupResponse
 } from '#client/src/endpoints/player/signup'
-import { SignupCommand } from '#app/command/signup'
+import { AuthSignupCommand } from '#command/auth/signup'
 
 export const signupHandler = async (
   req: Request<SignupRequest>,
@@ -28,7 +28,7 @@ export const signupHandler = async (
   }
 
   try {
-    const command = new SignupCommand()
+    const command = new AuthSignupCommand()
     const {
       player_id, city_id
     } = await command.run({

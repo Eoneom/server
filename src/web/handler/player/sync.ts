@@ -5,10 +5,10 @@ import {
   SyncResponse, SyncDataResponse
 } from '#client/src/endpoints/player/sync'
 import { getPlayerIdFromContext } from '#web/helpers'
+import { RefreshCommand } from '#command/refresh'
 import {
-  Queries, SyncQueryResponse
-} from '#app/queries'
-import { RefreshCommand } from '#app/command/refresh'
+  SyncQuery, SyncQueryResponse
+} from '#query/sync'
 
 export const syncHandler = async (
   req: Request<void>,
@@ -21,7 +21,8 @@ export const syncHandler = async (
     const command = new RefreshCommand()
     await command.run({ player_id })
 
-    const result = await Queries.sync({ player_id })
+    const query = new SyncQuery()
+    const result = await query.get({ player_id })
 
     const response = response_mapper(result)
 

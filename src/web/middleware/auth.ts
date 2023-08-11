@@ -1,4 +1,4 @@
-import { Queries } from '#app/queries'
+import { AuthorizeQuery } from '#query/authorize'
 import {
   NextFunction, Request, Response
 } from 'express'
@@ -12,7 +12,8 @@ export const authMiddleware = async (req: Request<unknown>, res: Response<unknow
     })
   }
   try {
-    const { player_id } = await Queries.authorize({ token })
+    const query = new AuthorizeQuery()
+    const { player_id } = await query.get({ token })
     res.locals.player_id = player_id
     next()
 
