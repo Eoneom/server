@@ -10,7 +10,9 @@ interface CityPurchaseParams {
 
 export class CityService {
   static purchase({
-    city, cost, player_id
+    city,
+    cost,
+    player_id
   }: CityPurchaseParams): CityEntity {
     const is_city_owned_by_player = city.isOwnedBy(player_id)
     if (!is_city_owned_by_player) {
@@ -18,6 +20,28 @@ export class CityService {
     }
 
     return city.purchase(cost)
+  }
+
+  static refund({
+    city,
+    player_id,
+    plastic,
+    mushroom
+  }: {
+    city: CityEntity,
+    player_id: string,
+    plastic: number
+    mushroom: number
+  }): CityEntity {
+    const is_city_owned_by_player = city.isOwnedBy(player_id)
+    if (!is_city_owned_by_player) {
+      throw new Error(CityErrors.NOT_OWNER)
+    }
+
+    return city.refund({
+      plastic,
+      mushroom
+    })
   }
 
   static gatherResources({

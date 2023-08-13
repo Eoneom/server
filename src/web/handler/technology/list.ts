@@ -7,7 +7,7 @@ import {
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   TechnologyListQuery, TechnologyListQueryResponse
-} from '#app'
+} from '#query/technology/list'
 
 export const technologyListHandler = async (
   req: Request<TechnologyListRequest>,

@@ -2,6 +2,7 @@ import { GenericQuery } from '#query/generic'
 import { AppService } from '#app/service'
 import { CityEntity } from '#core/city/entity'
 import { PlayerEntity } from '#core/player/entity'
+import { Resource } from '#shared/resource'
 
 interface SyncRequest {
   player_id: string
@@ -10,7 +11,7 @@ interface SyncRequest {
 export interface SyncQueryResponse {
   player: PlayerEntity
   cities: CityEntity[],
-  earnings_per_second_by_city: Record<string, { plastic: number, mushroom: number}>
+  earnings_per_second_by_city: Record<string, Resource>
 }
 
 export class SyncQuery extends GenericQuery<SyncRequest, SyncQueryResponse> {
@@ -39,7 +40,7 @@ export class SyncQuery extends GenericQuery<SyncRequest, SyncQueryResponse> {
           mushroom: earnings.mushroom
         }
       }
-    }, {} as Record<string, { plastic: number, mushroom: number }>)
+    }, {} as Record<string, Resource>)
 
     return {
       player,

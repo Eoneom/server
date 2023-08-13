@@ -3,9 +3,10 @@ import { BuildingCode } from '#core/building/constants'
 import { BuildingService } from '#core/building/service'
 import { RequirementService } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constants'
+import { Resource } from '#shared/resource'
 
 export class AppService {
-  static async getCityEarningsBySecond({ city_id }: { city_id: string }): Promise<{ plastic: number, mushroom: number }> {
+  static async getCityEarningsBySecond({ city_id }: { city_id: string }): Promise<Resource> {
     const repository = Factory.getRepository()
     const [
       mushroom_farm_level,

@@ -3,6 +3,7 @@ import {
 } from '#core/building/constants'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingErrors } from '#core/building/errors'
+import { Resource } from '#shared/resource'
 
 export class BuildingService {
   static init({ city_id }: { city_id: string }): BuildingEntity[] {
@@ -39,10 +40,7 @@ export class BuildingService {
   }: {
     recycling_plant_level: number,
     mushroom_farm_level: number,
-  }): {
-    plastic: number,
-    mushroom: number
-  } {
+  }): Resource {
     const plastic_earnings = building_earnings[BuildingCode.RECYCLING_PLANT]
     const mushroom_earnings = building_earnings[BuildingCode.MUSHROOM_FARM]
     const plastic = recycling_plant_level > 0 ?

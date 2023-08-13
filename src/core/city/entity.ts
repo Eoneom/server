@@ -11,9 +11,9 @@ import {
 
 type CityEntityProps = BaseEntityProps & {
   player_id: string
-  name: string,
-  plastic: number,
-  mushroom: number,
+  name: string
+  plastic: number
+  mushroom: number
   last_plastic_gather: number
   last_mushroom_gather: number
 }
@@ -86,10 +86,7 @@ export class CityEntity extends BaseEntity {
   refund({
     plastic,
     mushroom
-  }: {
-    plastic: number
-    mushroom: number
-  }): CityEntity {
+  }: Resource): CityEntity {
     return new CityEntity({
       ...this,
       plastic: this.plastic + plastic,
@@ -101,10 +98,7 @@ export class CityEntity extends BaseEntity {
     earnings_by_second,
     gather_at_time
   }: {
-    earnings_by_second: {
-      plastic: number,
-      mushroom: number
-    },
+    earnings_by_second: Resource,
     gather_at_time: number
   }): {
     city: CityEntity,

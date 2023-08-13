@@ -34,7 +34,7 @@ export class MongoTechnologyRepository
   async isInProgress({ player_id }: { player_id: string }): Promise<boolean> {
     return this.exists({
       player_id,
-      upgrade_at: {
+      research_at: {
         $exists: true,
         $ne: null
       }
@@ -51,7 +51,7 @@ export class MongoTechnologyRepository
   async getInProgress({ player_id }: { player_id: string }): Promise<TechnologyEntity | null> {
     return this.findOne({
       player_id,
-      upgrade_at: {
+      research_at: {
         $exists: true,
         $ne: null
       }

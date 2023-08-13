@@ -3,6 +3,7 @@ import { BuildingEntity } from '#core/building/entity'
 import { BuildingErrors } from '#core/building/errors'
 import { CityEntity } from '#core/city/entity'
 import { CityErrors } from '#core/city/errors'
+import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 
 interface BuildingCancelRequest {
@@ -49,10 +50,6 @@ export class BuildingCancelCommand extends GenericCommand<
     player_id,
     building
   }: BuildingCancelExec): BuildingCancelSave {
-    if (!city.isOwnedBy(player_id)) {
-      throw new Error(CityErrors.NOT_OWNER)
-    }
-
     if (!building) {
       throw new Error(BuildingErrors.NOT_IN_PROGRESS)
     }
@@ -66,9 +63,11 @@ export class BuildingCancelCommand extends GenericCommand<
     const plastic = Math.round(building_costs.resource.plastic/2)
     const mushroom = Math.round(building_costs.resource.mushroom/2)
 
-    const updated_city = city.refund({
+    const updated_city = CityService.refund({
       plastic,
-      mushroom
+      mushroom,
+      player_id,
+      city
     })
 
     return {
