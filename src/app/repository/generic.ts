@@ -3,6 +3,7 @@ import { BuildingRepository } from '#app/repository/building'
 import { CityRepository } from '#app/repository/city'
 import { PlayerRepository } from '#app/repository/player'
 import { TechnologyRepository } from '#app/repository/technology'
+import { WorldRepository } from '#app/repository/world'
 import { BaseEntity } from '#core/type/entity'
 
 export interface GenericRepository<Entity extends BaseEntity> {
@@ -17,4 +18,5 @@ export interface Repository {
   city: CityRepository
   player: PlayerRepository
   technology: TechnologyRepository
+  world: WorldRepository
 }

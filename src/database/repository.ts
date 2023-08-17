@@ -20,6 +20,10 @@ import { TechnologyModel } from '#database/technology/document'
 import { MongoTechnologyRepository } from '#database/technology/repository'
 import { Repository } from '#app/repository/generic'
 import { mongoose } from '@typegoose/typegoose'
+import { WorldRepository } from '#app/repository/world'
+import { MongoWorldRepository } from '#database/world/repository'
+import { CellModel } from '#database/world/document'
+import { WorldErrors } from '#core/world/errors'
 
 export class MongoRepository implements Repository {
   auth: AuthRepository
@@ -27,6 +31,7 @@ export class MongoRepository implements Repository {
   city: CityRepository
   player: PlayerRepository
   technology: TechnologyRepository
+  world: WorldRepository
 
   constructor() {
     this.auth = new MongoAuthRepository(AuthModel, AuthErrors.NOT_FOUND)
@@ -34,6 +39,7 @@ export class MongoRepository implements Repository {
     this.city = new MongoCityRepository(CityModel, CityErrors.NOT_FOUND)
     this.player = new MongoPlayerRepository(PlayerModel, PlayerErrors.NOT_FOUND)
     this.technology = new MongoTechnologyRepository(TechnologyModel, TechnologyErrors.NOT_FOUND)
+    this.world = new MongoWorldRepository(CellModel, WorldErrors.NOT_FOUND)
   }
 
   async connect(): Promise<void> {

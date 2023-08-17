@@ -1,4 +1,4 @@
 export interface Resource {
-  plastic: number,
+  plastic: number
   mushroom: number
 }
