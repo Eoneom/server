@@ -36,12 +36,13 @@ export const syncHandler = async (
 }
 
 const response_mapper = ({
-  player,
   cities,
-  earnings_per_second_by_city
+  earnings_per_second_by_city,
+  cities_cells
 }: SyncQueryResponse): SyncDataResponse => {
-  const cities_response: SyncDataResponse['cities'] =cities.map(city => {
+  const cities_response: SyncDataResponse['cities'] = cities.map(city => {
     const earnings_per_second = earnings_per_second_by_city[city.id]
+    const cell = cities_cells[city.id]
     return {
       id: city.id,
       name: city.name,
@@ -50,15 +51,14 @@ const response_mapper = ({
       earnings_per_second: {
         plastic: earnings_per_second.plastic,
         mushroom: earnings_per_second.mushroom
+      },
+      coordinates: {
+        x: cell.coordinates.x,
+        y: cell.coordinates.y,
+        sector: cell.coordinates.sector
       }
     }
   })
 
-  return {
-    player: {
-      id: player.id,
-      name: player.name,
-    },
-    cities: cities_response
-  }
+  return { cities: cities_response }
 }

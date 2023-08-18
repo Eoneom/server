@@ -3,11 +3,28 @@ import { BuildingCode } from '#core/building/constants'
 import { CityErrors } from '#core/city/errors'
 import { PlayerErrors } from '#core/player/errors'
 import { TechnologyCode } from '#core/technology/constants'
+import { CellEntity } from '#core/world/entity'
+import { CellType } from '#core/world/value/cell-type'
+import { FAKE_ID } from '#shared/identification'
 import assert from 'assert'
 
 describe('AuthSignupCommand', () => {
   const player_name = 'player_name'
   const city_name = 'city_name'
+  const city_first_cell = CellEntity.create({
+    id: FAKE_ID,
+    type: CellType.FOREST,
+    coordinates: {
+      x: 1,
+      y: 1,
+      sector: 1
+    },
+    resource_coefficient: {
+      plastic: 1,
+      mushroom: 1
+    }
+  })
+
   let command: AuthSignupCommand
 
   beforeEach(() => {
@@ -19,7 +36,8 @@ describe('AuthSignupCommand', () => {
       does_city_exist: false,
       does_player_exist: true,
       player_name,
-      city_name
+      city_name,
+      city_first_cell
     }), new RegExp(PlayerErrors.ALREADY_EXISTS))
   })
 
@@ -28,7 +46,8 @@ describe('AuthSignupCommand', () => {
       does_city_exist: true,
       does_player_exist: false,
       player_name,
-      city_name
+      city_name,
+      city_first_cell
     }), new RegExp(CityErrors.ALREADY_EXISTS))
   })
 
@@ -40,7 +59,8 @@ describe('AuthSignupCommand', () => {
       does_city_exist: false,
       does_player_exist: false,
       player_name,
-      city_name
+      city_name,
+      city_first_cell
     })
 
     assert.strictEqual(buildings.length, Object.keys(BuildingCode).length)
@@ -57,12 +77,28 @@ describe('AuthSignupCommand', () => {
       does_city_exist: false,
       does_player_exist: false,
       player_name,
-      city_name
+      city_name,
+      city_first_cell
     })
 
     assert.strictEqual(technologies.length, Object.keys(TechnologyCode).length)
     technologies.forEach(technology => {
       assert.strictEqual(technology.player_id, player.id)
     })
+  })
+
+  it('should place the city in the world', () => {
+    const {
+      cell,
+      city,
+    } = command.exec({
+      does_city_exist: false,
+      does_player_exist: false,
+      player_name,
+      city_name,
+      city_first_cell
+    })
+
+    assert.strictEqual(cell.city_id, city.id)
   })
 })

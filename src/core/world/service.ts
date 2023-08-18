@@ -4,6 +4,7 @@ import {
 import { CellEntity } from '#core/world/entity'
 import { PerlinService } from '#core/world/perlin'
 import { CellType } from '#core/world/value/cell-type'
+import { Coordinates } from '#core/world/value/coordinates'
 import { FAKE_ID } from '#shared/identification'
 
 export class WorldService {
@@ -26,6 +27,18 @@ export class WorldService {
     }
 
     return world
+  }
+
+  static getRandomCoordinates(): Coordinates {
+    const random_x = Math.floor(Math.random() * SECTOR_SIZE - 1) + 1
+    const random_y = Math.floor(Math.random() * SECTOR_SIZE - 1) + 1
+    const random_sector = Math.floor(Math.random() * REGION_SIZE * REGION_SIZE - 1) + 1
+
+    return {
+      x: random_x,
+      y: random_y,
+      sector: random_sector
+    }
   }
 
   private static generateSector({

@@ -1,3 +1,4 @@
+import { AppService } from '#app/service'
 import { GenericCommand } from '#command/generic'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingService } from '#core/building/service'
@@ -7,6 +8,7 @@ import { PlayerEntity } from '#core/player/entity'
 import { PlayerService } from '#core/player/service'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
+import { CellEntity } from '#core/world/entity'
 
 export interface AuthSignupRequest {
   player_name: string
@@ -18,6 +20,7 @@ interface AuthSignupExec {
   does_city_exist: boolean
   player_name: string
   city_name: string
+  city_first_cell: CellEntity
 }
 
 interface AuthSignupSave {
@@ -25,6 +28,7 @@ interface AuthSignupSave {
   city: CityEntity
   buildings: BuildingEntity[]
   technologies: TechnologyEntity[]
+  cell: CellEntity
 }
 
 export interface AuthSignupResponse {
@@ -44,24 +48,28 @@ export class AuthSignupCommand extends GenericCommand<
   }: AuthSignupRequest): Promise<AuthSignupExec> {
     const [
       does_player_exist,
-      does_city_exist
+      does_city_exist,
+      city_first_cell
     ] = await Promise.all([
       this.repository.player.exist(player_name),
-      this.repository.city.exist(city_name)
+      this.repository.city.exist(city_name),
+      AppService.findCityFirstCell()
     ])
 
     return {
       does_city_exist,
       does_player_exist,
       player_name,
-      city_name
+      city_name,
+      city_first_cell
     }
   }
   exec({
     does_city_exist,
     does_player_exist,
     player_name,
-    city_name
+    city_name,
+    city_first_cell
   }: AuthSignupExec): AuthSignupSave {
     const player = PlayerService.init({
       name: player_name,
@@ -74,25 +82,29 @@ export class AuthSignupCommand extends GenericCommand<
     })
     const buildings = BuildingService.init({ city_id: city.id })
     const technologies = TechnologyService.init({ player_id: player.id })
+    const cell = city_first_cell.assign({ city_id: city.id })
 
     return {
       player,
       city,
       buildings,
-      technologies
+      technologies,
+      cell
     }
   }
   async save({
     player,
     city,
     buildings,
-    technologies
+    technologies,
+    cell
   }: AuthSignupSave): Promise<AuthSignupResponse> {
     await Promise.all([
       this.repository.player.create(player),
       this.repository.city.create(city),
       ...buildings.map(building => this.repository.building.create(building)),
-      ...technologies.map(technology => this.repository.technology.create(technology))
+      ...technologies.map(technology => this.repository.technology.create(technology)),
+      this.repository.world.updateOne(cell)
     ])
 
     return {

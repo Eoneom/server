@@ -3,6 +3,8 @@ import { BuildingCode } from '#core/building/constants'
 import { BuildingService } from '#core/building/service'
 import { RequirementService } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constants'
+import { CellEntity } from '#core/world/entity'
+import { WorldService } from '#core/world/service'
 import { Resource } from '#shared/resource'
 
 export class AppService {
@@ -75,6 +77,17 @@ export class AppService {
     return {
       building_levels,
       technology_levels
+    }
+  }
+
+  static async findCityFirstCell(): Promise<CellEntity> {
+    const repository = Factory.getRepository()
+    for (;;) {
+      const random_coordinates = WorldService.getRandomCoordinates()
+      const cell = await repository.world.getCell({ coordinates: random_coordinates })
+      if (!cell.isAssigned()) {
+        return cell
+      }
     }
   }
 }

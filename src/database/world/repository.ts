@@ -5,10 +5,23 @@ import {
 } from '#database/world/document'
 import { MongoGenericRepository } from '#database/generic'
 import { WorldErrors } from '#core/world/errors'
+import { Coordinates } from '#core/world/value/coordinates'
 
 export class MongoWorldRepository
   extends MongoGenericRepository<typeof CellModel, CellDocument, CellEntity>
   implements WorldRepository {
+
+  async getCityCell({ city_id }: { city_id: string }): Promise<CellEntity> {
+    return this.findOneOrThrow({ city_id })
+  }
+
+  async getCell({ coordinates }: { coordinates: Coordinates }): Promise<CellEntity> {
+    return this.findOneOrThrow({
+      'coordinates.x': coordinates.x,
+      'coordinates.y': coordinates.y,
+      'coordinates.sector': coordinates.sector
+    })
+  }
 
   async isInitialized(): Promise<boolean> {
     return this.exists({})
@@ -32,6 +45,7 @@ export class MongoWorldRepository
         sector: document.coordinates.sector,
       },
       type: document.type,
+      city_id: document.city_id?.toString(),
       resource_coefficient: {
         plastic: document.resource_coefficient.plastic,
         mushroom: document.resource_coefficient.mushroom

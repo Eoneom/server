@@ -1,6 +1,6 @@
 import { CellType } from '#core/world/value/cell-type'
 import {
-  getModelForClass, modelOptions, prop
+  getModelForClass, modelOptions, mongoose, prop
 } from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
@@ -35,6 +35,9 @@ class Cell {
 
   @prop({ required: true })
   public resource_coefficient!: Resource
+
+  @prop()
+  public city_id?: mongoose.Types.ObjectId
 }
 
 export type CellDocument = Document & Cell
