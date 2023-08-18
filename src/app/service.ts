@@ -12,7 +12,8 @@ export class AppService {
     const repository = Factory.getRepository()
     const [
       mushroom_farm_level,
-      recycling_plant_level
+      recycling_plant_level,
+      city_cell
     ] = await Promise.all([
       repository.building.getLevel({
         city_id,
@@ -21,12 +22,17 @@ export class AppService {
       repository.building.getLevel({
         city_id,
         code: BuildingCode.RECYCLING_PLANT
-      })
+      }),
+      repository.world.getCityCell({ city_id })
     ])
+
+    const coefficients = city_cell.resource_coefficient
 
     return BuildingService.getEarningsBySecond({
       recycling_plant_level,
-      mushroom_farm_level
+      plastic_coefficient: coefficients.plastic,
+      mushroom_farm_level,
+      mushroom_coefficient: coefficients.mushroom
     })
   }
 

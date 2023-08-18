@@ -47,17 +47,17 @@ export class CityService {
   static gatherResources({
     city,
     gather_at_time,
-    earnings_by_second
+    earnings_per_second
   }: {
     city: CityEntity
     gather_at_time: number
-    earnings_by_second: Resource
+    earnings_per_second: Resource
   }): CityEntity | null {
     const {
       city: updated_city,
       updated
     } = city.gather({
-      earnings_by_second,
+      earnings_per_second,
       gather_at_time
     })
 

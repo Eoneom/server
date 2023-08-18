@@ -60,7 +60,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
-        earnings_by_second: {
+        earnings_per_second: {
           plastic: 0,
           mushroom: 0
         },
@@ -79,7 +79,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
-        earnings_by_second: {
+        earnings_per_second: {
           plastic: 1000,
           mushroom: 1000
         },
@@ -98,7 +98,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
-        earnings_by_second: {
+        earnings_per_second: {
           plastic: 1000,
           mushroom: 1000
         },
@@ -120,7 +120,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
-        earnings_by_second: {
+        earnings_per_second: {
           plastic: plastic_earnings,
           mushroom: mushroom_earnings
         },

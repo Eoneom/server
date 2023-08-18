@@ -95,22 +95,22 @@ export class CityEntity extends BaseEntity {
   }
 
   gather({
-    earnings_by_second,
+    earnings_per_second,
     gather_at_time
   }: {
-    earnings_by_second: Resource,
+    earnings_per_second: Resource,
     gather_at_time: number
   }): {
     city: CityEntity,
     updated: boolean,
   } {
     const plastic_earnings = this.getEarnings({
-      earnings_by_second: earnings_by_second.plastic,
+      earnings_per_second: earnings_per_second.plastic,
       last_gather_time: this.last_plastic_gather,
       gather_at_time
     })
     const mushroom_earnings = this.getEarnings({
-      earnings_by_second: earnings_by_second.mushroom,
+      earnings_per_second: earnings_per_second.mushroom,
       last_gather_time: this.last_mushroom_gather,
       gather_at_time
     })
@@ -178,11 +178,11 @@ export class CityEntity extends BaseEntity {
   }
 
   private getEarnings({
-    earnings_by_second,
+    earnings_per_second,
     last_gather_time,
     gather_at_time
   }: {
-    earnings_by_second: number,
+    earnings_per_second: number,
     last_gather_time: number,
     gather_at_time: number
   }): number {
@@ -196,7 +196,7 @@ export class CityEntity extends BaseEntity {
       return 0
     }
 
-    return Math.floor(seconds_since_last_gather * earnings_by_second)
+    return Math.floor(seconds_since_last_gather * earnings_per_second)
   }
 
   private canGather(last_gather_time: number, gather_at_time: number): boolean {

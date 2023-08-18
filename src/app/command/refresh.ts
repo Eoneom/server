@@ -1,21 +1,19 @@
+import { AppService } from '#app/service'
 import { GenericCommand } from '#command/generic'
-import { BuildingCode } from '#core/building/constants'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingService } from '#core/building/service'
 import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { TechnologyEntity } from '#core/technology/entity'
+import { Resource } from '#shared/resource'
 import { now } from '#shared/time'
 
 export interface RefreshRequest {
   player_id: string
 }
 
-type BuildingLevelsByCity = Record<string, { [BuildingCode.RECYCLING_PLANT]: number, [BuildingCode.MUSHROOM_FARM]: number}>
-
 interface RefreshExec {
   cities: CityEntity[]
-  building_levels_by_city: BuildingLevelsByCity
+  earnings_per_second_by_city: Record<string, Resource>
   buildings_to_finish: Array<BuildingEntity | null>
   technology_to_finish: TechnologyEntity | null
 }
@@ -37,29 +35,20 @@ export class RefreshCommand extends GenericCommand<
       return this.repository.building.getUpgradeDone({ city_id: city.id })
     }))
     const technology_to_finish = await this.repository.technology.getResearchDone({ player_id })
-    const building_levels_with_city_id = await Promise.all(cities.map(async city => {
-      const recycling_plant_level = await this.repository.building.getLevel({
-        city_id: city.id,
-        code: BuildingCode.RECYCLING_PLANT
-      })
-      const mushroom_farm_level = await this.repository.building.getLevel({
-        city_id: city.id,
-        code: BuildingCode.MUSHROOM_FARM
-      })
-
+    const earnings = await Promise.all(cities.map(async city => {
+      const earnings_per_second = await AppService.getCityEarningsBySecond({ city_id: city.id })
       return {
-        [BuildingCode.RECYCLING_PLANT]: recycling_plant_level,
-        [BuildingCode.MUSHROOM_FARM]: mushroom_farm_level,
-        city_id: city.id
+        city_id: city.id,
+        earnings_per_second
       }
     }))
 
-    const building_levels_by_city: BuildingLevelsByCity = building_levels_with_city_id.reduce((acc, current) => {
+    const earnings_per_second_by_city = earnings.reduce((acc, current) => {
       return {
         ...acc,
         [current.city_id]: {
-          [BuildingCode.MUSHROOM_FARM]: current[BuildingCode.MUSHROOM_FARM],
-          [BuildingCode.RECYCLING_PLANT]: current[BuildingCode.RECYCLING_PLANT]
+          plastic: current.earnings_per_second.plastic,
+          mushroom: current.earnings_per_second.mushroom
         }
       }
     }, {})
@@ -68,26 +57,22 @@ export class RefreshCommand extends GenericCommand<
       cities,
       buildings_to_finish,
       technology_to_finish,
-      building_levels_by_city
+      earnings_per_second_by_city,
     }
   }
 
   exec({
     cities,
-    building_levels_by_city,
+    earnings_per_second_by_city,
     buildings_to_finish,
-    technology_to_finish
+    technology_to_finish,
   }: RefreshExec): RefreshSave {
     const updated_cities = cities.map( city => {
-      const earnings_by_second = BuildingService.getEarningsBySecond({
-        recycling_plant_level: building_levels_by_city[city.id][BuildingCode.RECYCLING_PLANT],
-        mushroom_farm_level: building_levels_by_city[city.id][BuildingCode.MUSHROOM_FARM]
-      })
-
+      const earnings_per_second = earnings_per_second_by_city[city.id]
       return CityService.gatherResources({
         city,
         gather_at_time: now(),
-        earnings_by_second
+        earnings_per_second
       })
     })
 
