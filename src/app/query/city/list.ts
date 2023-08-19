@@ -1,22 +1,22 @@
 import { GenericQuery } from '#query/generic'
 import { AppService } from '#app/service'
-import { CityEntity } from '#core/city/entity'
 import { Resource } from '#shared/resource'
-import { CellEntity } from '#core/world/entity'
 import assert from 'assert'
+import { CellEntity } from '#core/world/entity'
+import { CityEntity } from '#core/city/entity'
 
-interface SyncRequest {
+export interface CityListQueryRequest {
   player_id: string
 }
 
-export interface SyncQueryResponse {
+export interface CityListQueryResponse {
   cities: CityEntity[],
   earnings_per_second_by_city: Record<string, Resource>
   cities_cells: Record<string, CellEntity>
 }
 
-export class SyncQuery extends GenericQuery<SyncRequest, SyncQueryResponse> {
-  async get({ player_id }: SyncRequest): Promise<SyncQueryResponse> {
+export class CityListQuery extends GenericQuery<CityListQueryRequest, CityListQueryResponse> {
+  async get({ player_id }: CityListQueryRequest): Promise<CityListQueryResponse> {
     const cities = await this.repository.city.list({ player_id })
 
     const earnings_per_second = await Promise.all(cities.map(async city => {

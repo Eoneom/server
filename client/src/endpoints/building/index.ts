@@ -1,12 +1,15 @@
 import { Fetcher } from '../../fetcher'
 import {
-  BuildingCancelRequest, BuildingCancelResponse
+  BuildingCancelRequest,
+  BuildingCancelResponse
 } from './cancel'
 import {
-  BuildingListRequest, BuildingListResponse
+  BuildingListRequest,
+  BuildingListResponse
 } from './list'
 import {
-  BuildingUpgradeRequest, BuildingUpgradeResponse
+  BuildingUpgradeRequest,
+  BuildingUpgradeResponse
 } from './upgrade'
 
 export class BuildingEndpoint {

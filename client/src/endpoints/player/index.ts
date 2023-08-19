@@ -1,9 +1,11 @@
 import { Fetcher } from '../../fetcher'
 import {
-  LoginRequest, LoginResponse
+  LoginRequest,
+  LoginResponse
 } from './login'
 import {
-  SignupRequest, SignupResponse
+  SignupRequest,
+  SignupResponse
 } from './signup'
 import { SyncResponse } from './sync'
 

@@ -24,7 +24,6 @@ export const worldGetSectorHandler = async (
 
   try {
     const query = new WorldGetSectorQuery()
-    console.log(typeof sector)
     const { cells } = await query.get({ sector: Number.parseInt(`${sector}`) })
 
     const response = response_mapper({ cells })
