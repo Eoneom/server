@@ -1,5 +1,6 @@
 import { Fetcher } from '../../fetcher'
 import { TechnologyCancelResponse } from './cancel'
+import { TechnologyFinishResearchResponse } from './finish-research'
 import {
   TechnologyListRequest, TechnologyListResponse
 } from './list'
@@ -19,6 +20,10 @@ export class TechnologyEndpoint {
       body,
       token
     })
+  }
+
+  public async finishResearch(token: string): Promise<TechnologyFinishResearchResponse> {
+    return this.fetcher.put('/technology/research/finish', { token })
   }
 
   public async list(token: string, body: TechnologyListRequest): Promise<TechnologyListResponse> {
