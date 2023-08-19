@@ -1,4 +1,4 @@
-import { BuildingCode } from '../../../../src/core/building/constants'
+import { BuildingCode } from '../../../../src/core/building/constant'
 import { GenericResponse } from '../../response'
 
 export interface BuildingListRequest {

@@ -1,5 +1,5 @@
 import { CityEntity } from '#core/city/entity'
-import { CityErrors } from '#core/city/errors'
+import { CityError } from '#core/city/error'
 import { Resource } from '#shared/resource'
 
 interface CityPurchaseParams {
@@ -16,7 +16,7 @@ export class CityService {
   }: CityPurchaseParams): CityEntity {
     const is_city_owned_by_player = city.isOwnedBy(player_id)
     if (!is_city_owned_by_player) {
-      throw new Error(CityErrors.NOT_OWNER)
+      throw new Error(CityError.NOT_OWNER)
     }
 
     return city.purchase(cost)
@@ -35,7 +35,7 @@ export class CityService {
   }): CityEntity {
     const is_city_owned_by_player = city.isOwnedBy(player_id)
     if (!is_city_owned_by_player) {
-      throw new Error(CityErrors.NOT_OWNER)
+      throw new Error(CityError.NOT_OWNER)
     }
 
     return city.refund({
@@ -78,7 +78,7 @@ export class CityService {
     does_city_exist: boolean
   }): CityEntity {
     if (does_city_exist) {
-      throw new Error(CityErrors.ALREADY_EXISTS)
+      throw new Error(CityError.ALREADY_EXISTS)
     }
 
     return CityEntity.initCity({

@@ -5,7 +5,7 @@ import {
 } from '#database/technology/document'
 import { MongoGenericRepository } from '#database/generic'
 import { now } from '#shared/time'
-import { TechnologyCode } from '#core/technology/constants'
+import { TechnologyCode } from '#core/technology/constant'
 
 export class MongoTechnologyRepository
   extends MongoGenericRepository<typeof TechnologyModel, TechnologyDocument, TechnologyEntity>

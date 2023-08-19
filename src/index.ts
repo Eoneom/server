@@ -1,6 +1,6 @@
 import { WorldGenerateCommand } from '#app/command/world/generate'
 import { Factory } from '#app/factory'
-import { WorldErrors } from '#core/world/errors'
+import { WorldError } from '#core/world/error'
 import { launchServer } from '#web/http'
 
 (async () => {
@@ -11,7 +11,7 @@ import { launchServer } from '#web/http'
   try {
     await generate_world_command.run()
   } catch (err: any) {
-    if (err.message !== WorldErrors.ALREADY_EXISTS) {
+    if (err.message !== WorldError.ALREADY_EXISTS) {
       console.log(err.message)
     }
   }

@@ -1,6 +1,6 @@
 import { GenericCommand } from '#app/command/generic'
 import { CellEntity } from '#core/world/entity'
-import { WorldErrors } from '#core/world/errors'
+import { WorldError } from '#core/world/error'
 import { WorldService } from '#core/world/service'
 
 interface WorldGenerateExec {
@@ -22,7 +22,7 @@ export class WorldGenerateCommand extends GenericCommand<
   }
   exec({ is_world_initialized }: WorldGenerateExec): WorldGenerateSave {
     if (is_world_initialized) {
-      throw new Error(WorldErrors.ALREADY_EXISTS)
+      throw new Error(WorldError.ALREADY_EXISTS)
     }
     const cells = WorldService.generate()
     return { cells }

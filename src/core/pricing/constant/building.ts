@@ -1,4 +1,4 @@
-import { BuildingCode } from '#core/building/constants'
+import { BuildingCode } from '#core/building/constant'
 import { TotalCost } from '#core/pricing/constant'
 
 export const building_costs: Record<BuildingCode, TotalCost> = {

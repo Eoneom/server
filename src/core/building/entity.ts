@@ -1,4 +1,4 @@
-import { BuildingCode } from '#core/building/constants'
+import { BuildingCode } from '#core/building/constant'
 import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
 import {

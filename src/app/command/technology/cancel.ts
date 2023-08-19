@@ -1,6 +1,6 @@
 import { GenericCommand } from '#command/generic'
 import { TechnologyEntity } from '#core/technology/entity'
-import { TechnologyErrors } from '#core/technology/errors'
+import { TechnologyError } from '#core/technology/error'
 
 interface TechnologyCancelRequest {
   player_id: string
@@ -26,7 +26,7 @@ export class TechnologyCancelCommand extends GenericCommand<
   }
   exec({ technology }: TechnologyCancelExec): TechnologyCancelSave {
     if (!technology) {
-      throw new Error(TechnologyErrors.NOT_IN_PROGRESS)
+      throw new Error(TechnologyError.NOT_IN_PROGRESS)
     }
 
     return { technology: technology.cancel() }

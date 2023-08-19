@@ -1,8 +1,8 @@
 import {
   BuildingCode, building_earnings
-} from '#core/building/constants'
+} from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingErrors } from '#core/building/errors'
+import { BuildingError } from '#core/building/error'
 import { Resource } from '#shared/resource'
 
 export class BuildingService {
@@ -28,7 +28,7 @@ export class BuildingService {
     is_building_in_progress: boolean
   }) {
     if (is_building_in_progress) {
-      throw new Error(BuildingErrors.ALREADY_IN_PROGRESS)
+      throw new Error(BuildingError.ALREADY_IN_PROGRESS)
     }
 
     return building.launchUpgrade(duration)

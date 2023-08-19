@@ -1,3 +1,3 @@
-export enum AuthErrors {
+export enum AuthError {
   NOT_FOUND = 'auth:not-found',
 }

@@ -1,11 +1,11 @@
 import { GenericCommand } from '#command/generic'
 import { AppService } from '#app/service'
-import { BuildingCode } from '#core/building/constants'
+import { BuildingCode } from '#core/building/constant'
 import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 import { RequirementService } from '#core/requirement/service'
-import { TechnologyCode } from '#core/technology/constants'
+import { TechnologyCode } from '#core/technology/constant'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
 import assert from 'assert'
@@ -16,13 +16,13 @@ export interface TechnologyResearchRequest {
   technology_code: TechnologyCode
 }
 
-interface TechnologyResearchExec {
+export interface TechnologyResearchExec {
   player_id: string
   city: CityEntity
   technology: TechnologyEntity
   research_lab_level: number
-  required_building_levels: Record<BuildingCode, number>
-  required_technology_levels: Record<TechnologyCode, number>
+  required_building_levels: Partial<Record<BuildingCode, number>>
+  required_technology_levels: Partial<Record<TechnologyCode, number>>
   is_technology_in_progress: boolean
 }
 

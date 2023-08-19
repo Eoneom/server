@@ -1,6 +1,6 @@
 import { TechnologyEntity } from '#core/technology/entity'
 import { GenericRepository } from '#app/repository/generic'
-import { TechnologyCode } from '#core/technology/constants'
+import { TechnologyCode } from '#core/technology/constant'
 
 export type TechnologyRepository = GenericRepository<TechnologyEntity> & {
   get(query: { player_id: string, code: TechnologyCode }): Promise<TechnologyEntity>

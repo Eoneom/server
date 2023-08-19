@@ -1,8 +1,8 @@
 import { BuildingUpgradeCommand } from '#app/command/building/upgrade'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingErrors } from '#core/building/errors'
+import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
-import { CityErrors } from '#core/city/errors'
+import { CityError } from '#core/city/error'
 import assert from 'assert'
 
 describe('BuildingUpgradeCommand', () => {
@@ -31,7 +31,7 @@ describe('BuildingUpgradeCommand', () => {
       city,
       is_building_in_progress: false,
       player_id: 'another_player_id'
-    }), new RegExp(CityErrors.NOT_OWNER))
+    }), new RegExp(CityError.NOT_OWNER))
   })
 
   it('should prevent a player to upgrade if city does not have enough resources', () => {
@@ -47,7 +47,7 @@ describe('BuildingUpgradeCommand', () => {
       city: city_without_ressources,
       is_building_in_progress: false,
       player_id
-    }), new RegExp(CityErrors.NOT_ENOUGH_RESOURCES))
+    }), new RegExp(CityError.NOT_ENOUGH_RESOURCES))
   })
 
   it('should prevent a player to upgrade if another building is in progress', () => {
@@ -57,7 +57,7 @@ describe('BuildingUpgradeCommand', () => {
       city,
       is_building_in_progress: true,
       player_id
-    }), new RegExp(BuildingErrors.ALREADY_IN_PROGRESS))
+    }), new RegExp(BuildingError.ALREADY_IN_PROGRESS))
   })
 
   it('should purchase the upgrade', () => {

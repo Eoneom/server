@@ -1,5 +1,5 @@
-import { BuildingCode } from '../../../../src/core/building/constants'
-import { TechnologyCode } from '../../../../src/core/technology/constants'
+import { BuildingCode } from '../../../../src/core/building/constant'
+import { TechnologyCode } from '../../../../src/core/technology/constant'
 
 export interface Requirement {
   buildings: {

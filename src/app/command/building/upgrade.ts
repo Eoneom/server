@@ -1,11 +1,11 @@
 import { GenericCommand } from '#command/generic'
-import { BuildingCode } from '#core/building/constants'
+import { BuildingCode } from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingService } from '#core/building/service'
 import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
-import { TechnologyCode } from '#core/technology/constants'
+import { TechnologyCode } from '#core/technology/constant'
 import assert from 'assert'
 
 export interface BuildingUpgradeRequest {

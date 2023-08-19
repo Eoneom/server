@@ -4,8 +4,8 @@ import {
   BuildingDocument, BuildingModel
 } from '#database/building/document'
 import { MongoGenericRepository } from '#database/generic'
-import { BuildingCode } from '#core/building/constants'
-import { BuildingErrors } from '#core/building/errors'
+import { BuildingCode } from '#core/building/constant'
+import { BuildingError } from '#core/building/error'
 import { now } from '#shared/time'
 
 export class MongoBuildingRepository
@@ -47,7 +47,7 @@ export class MongoBuildingRepository
       code
     })
     if (!building) {
-      throw new Error(BuildingErrors.NOT_FOUND)
+      throw new Error(BuildingError.NOT_FOUND)
     }
 
     return this.buildFromModel(building)
@@ -62,7 +62,7 @@ export class MongoBuildingRepository
       code
     }, { level: 1 })
     if (!building) {
-      throw new Error(BuildingErrors.NOT_FOUND)
+      throw new Error(BuildingError.NOT_FOUND)
     }
 
     return building.level

@@ -1,7 +1,7 @@
 import {
   STARTING_MUSHROOM, STARTING_PLASTIC
-} from '#core/city/constants'
-import { CityErrors } from '#core/city/errors'
+} from '#core/city/constant'
+import { CityError } from '#core/city/error'
 import { id } from '#shared/identification'
 import { Resource } from '#shared/resource'
 import { now } from '#shared/time'
@@ -73,7 +73,7 @@ export class CityEntity extends BaseEntity {
       mushroom
     })
     if (!has_resources) {
-      throw new Error(CityErrors.NOT_ENOUGH_RESOURCES)
+      throw new Error(CityError.NOT_ENOUGH_RESOURCES)
     }
 
     return new CityEntity({

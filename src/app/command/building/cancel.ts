@@ -1,8 +1,7 @@
 import { GenericCommand } from '#command/generic'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingErrors } from '#core/building/errors'
+import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
-import { CityErrors } from '#core/city/errors'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 
@@ -51,7 +50,7 @@ export class BuildingCancelCommand extends GenericCommand<
     building
   }: BuildingCancelExec): BuildingCancelSave {
     if (!building) {
-      throw new Error(BuildingErrors.NOT_IN_PROGRESS)
+      throw new Error(BuildingError.NOT_IN_PROGRESS)
     }
 
     const building_costs = PricingService.getBuildingLevelCost({

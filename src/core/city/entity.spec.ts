@@ -1,9 +1,9 @@
 import {
   STARTING_MUSHROOM,
   STARTING_PLASTIC
-} from '#core/city/constants'
+} from '#core/city/constant'
 import { CityEntity } from '#core/city/entity'
-import { CityErrors } from '#core/city/errors'
+import { CityError } from '#core/city/error'
 import assert from 'assert'
 
 describe('CityEntity', () => {
@@ -21,9 +21,9 @@ describe('CityEntity', () => {
   describe('purchase', () => {
     it('should prevent purchase when city does not have required resources', () => {
       assert.throws(() => city.purchase({
-        plastic: 2000,
-        mushroom: 2000
-      }), new RegExp(CityErrors.NOT_ENOUGH_RESOURCES))
+        plastic: 10000,
+        mushroom: 10000
+      }), new RegExp(CityError.NOT_ENOUGH_RESOURCES))
     })
 
     it('should remove cost from city resources when city have enough', () => {

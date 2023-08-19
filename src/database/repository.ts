@@ -1,20 +1,20 @@
-import { AuthErrors } from '#core/auth/errors'
+import { AuthError } from '#core/auth/error'
 import { AuthRepository } from '#app/repository/auth'
 import { AuthModel } from '#database/auth/document'
 import { MongoAuthRepository } from '#database/auth/repository'
-import { BuildingErrors } from '#core/building/errors'
+import { BuildingError } from '#core/building/error'
 import { BuildingRepository } from '#app/repository/building'
 import { BuildingModel } from '#database/building/document'
 import { MongoBuildingRepository } from '#database/building/repository'
-import { CityErrors } from '#core/city/errors'
+import { CityError } from '#core/city/error'
 import { CityRepository } from '#app/repository/city'
 import { CityModel } from '#database/city/document'
 import { MongoCityRepository } from '#database/city/repository'
-import { PlayerErrors } from '#core/player/errors'
+import { PlayerError } from '#core/player/error'
 import { PlayerRepository } from '#app/repository/player'
 import { PlayerModel } from '#database/player/document'
 import { MongoPlayerRepository } from '#database/player/repository'
-import { TechnologyErrors } from '#core/technology/errors'
+import { TechnologyError } from '#core/technology/error'
 import { TechnologyRepository } from '#app/repository/technology'
 import { TechnologyModel } from '#database/technology/document'
 import { MongoTechnologyRepository } from '#database/technology/repository'
@@ -23,7 +23,7 @@ import { mongoose } from '@typegoose/typegoose'
 import { WorldRepository } from '#app/repository/world'
 import { MongoWorldRepository } from '#database/world/repository'
 import { CellModel } from '#database/world/document'
-import { WorldErrors } from '#core/world/errors'
+import { WorldError } from '#core/world/error'
 
 export class MongoRepository implements Repository {
   auth: AuthRepository
@@ -34,12 +34,12 @@ export class MongoRepository implements Repository {
   world: WorldRepository
 
   constructor() {
-    this.auth = new MongoAuthRepository(AuthModel, AuthErrors.NOT_FOUND)
-    this.building = new MongoBuildingRepository(BuildingModel, BuildingErrors.NOT_FOUND)
-    this.city = new MongoCityRepository(CityModel, CityErrors.NOT_FOUND)
-    this.player = new MongoPlayerRepository(PlayerModel, PlayerErrors.NOT_FOUND)
-    this.technology = new MongoTechnologyRepository(TechnologyModel, TechnologyErrors.NOT_FOUND)
-    this.world = new MongoWorldRepository(CellModel, WorldErrors.NOT_FOUND)
+    this.auth = new MongoAuthRepository(AuthModel, AuthError.NOT_FOUND)
+    this.building = new MongoBuildingRepository(BuildingModel, BuildingError.NOT_FOUND)
+    this.city = new MongoCityRepository(CityModel, CityError.NOT_FOUND)
+    this.player = new MongoPlayerRepository(PlayerModel, PlayerError.NOT_FOUND)
+    this.technology = new MongoTechnologyRepository(TechnologyModel, TechnologyError.NOT_FOUND)
+    this.world = new MongoWorldRepository(CellModel, WorldError.NOT_FOUND)
   }
 
   async connect(): Promise<void> {

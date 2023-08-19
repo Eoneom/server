@@ -1,8 +1,8 @@
 import { AuthSignupCommand } from '#app/command/auth/signup'
-import { BuildingCode } from '#core/building/constants'
-import { CityErrors } from '#core/city/errors'
-import { PlayerErrors } from '#core/player/errors'
-import { TechnologyCode } from '#core/technology/constants'
+import { BuildingCode } from '#core/building/constant'
+import { CityError } from '#core/city/error'
+import { PlayerError } from '#core/player/error'
+import { TechnologyCode } from '#core/technology/constant'
 import { CellEntity } from '#core/world/entity'
 import { CellType } from '#core/world/value/cell-type'
 import { FAKE_ID } from '#shared/identification'
@@ -38,7 +38,7 @@ describe('AuthSignupCommand', () => {
       player_name,
       city_name,
       city_first_cell
-    }), new RegExp(PlayerErrors.ALREADY_EXISTS))
+    }), new RegExp(PlayerError.ALREADY_EXISTS))
   })
 
   it('should prevent user from settling a city with an existing name', () => {
@@ -48,7 +48,7 @@ describe('AuthSignupCommand', () => {
       player_name,
       city_name,
       city_first_cell
-    }), new RegExp(CityErrors.ALREADY_EXISTS))
+    }), new RegExp(CityError.ALREADY_EXISTS))
   })
 
   it('should init all city buildings', () => {

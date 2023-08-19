@@ -2,7 +2,7 @@ import { TechnologyCancelCommand } from '#app/command/technology/cancel'
 import { TechnologyEntity } from '#core/technology/entity'
 import { now } from '#shared/time'
 import assert from 'assert'
-import { TechnologyErrors } from '#core/technology/errors'
+import { TechnologyError } from '#core/technology/error'
 
 describe('TechnologyCancelCommand', () => {
   const player_id = 'player_id'
@@ -18,7 +18,7 @@ describe('TechnologyCancelCommand', () => {
   })
 
   it('should assert that there is a building in progress', () => {
-    assert.throws(() => command.exec({ technology: null }), new RegExp(TechnologyErrors.NOT_IN_PROGRESS))
+    assert.throws(() => command.exec({ technology: null }), new RegExp(TechnologyError.NOT_IN_PROGRESS))
   })
 
   it('should cancel technology', () => {

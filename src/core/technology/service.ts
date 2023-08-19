@@ -1,5 +1,5 @@
 import { TechnologyEntity } from '#core/technology/entity'
-import { TechnologyErrors } from '#core/technology/errors'
+import { TechnologyError } from '#core/technology/error'
 
 export class TechnologyService {
   static init({ player_id }: { player_id: string }): TechnologyEntity[] {
@@ -18,7 +18,7 @@ export class TechnologyService {
     is_technology_in_progress: boolean
   }): TechnologyEntity {
     if (is_technology_in_progress) {
-      throw new Error(TechnologyErrors.ALREADY_IN_PROGRESS)
+      throw new Error(TechnologyError.ALREADY_IN_PROGRESS)
     }
 
     return technology.launchResearch(duration)

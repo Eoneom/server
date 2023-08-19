@@ -4,7 +4,7 @@ import {
   CellDocument, CellModel
 } from '#database/world/document'
 import { MongoGenericRepository } from '#database/generic'
-import { WorldErrors } from '#core/world/errors'
+import { WorldError } from '#core/world/error'
 import { Coordinates } from '#core/world/value/coordinates'
 
 export class MongoWorldRepository
@@ -30,7 +30,7 @@ export class MongoWorldRepository
   async getSector({ sector }: { sector: number }): Promise<CellEntity[]> {
     const cells = await this.find({ 'coordinates.sector': sector })
     if (!cells.length) {
-      throw new Error(WorldErrors.SECTOR_NOT_FOUND)
+      throw new Error(WorldError.SECTOR_NOT_FOUND)
     }
 
     return cells

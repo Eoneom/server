@@ -1,4 +1,4 @@
-import { TechnologyCode } from '../../../../src/core/technology/constants'
+import { TechnologyCode } from '../../../../src/core/technology/constant'
 import { GenericResponse } from '../../response'
 import { Requirement } from '../requirement'
 

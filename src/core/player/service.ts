@@ -1,5 +1,5 @@
 import { PlayerEntity } from '#core/player/entity'
-import { PlayerErrors } from '#core/player/errors'
+import { PlayerError } from '#core/player/error'
 
 
 export class PlayerService {
@@ -8,10 +8,10 @@ export class PlayerService {
     does_player_exist
   }: {
     name: string,
-     does_player_exist: boolean
-    }): PlayerEntity {
+    does_player_exist: boolean
+  }): PlayerEntity {
     if (does_player_exist) {
-      throw new Error(PlayerErrors.ALREADY_EXISTS)
+      throw new Error(PlayerError.ALREADY_EXISTS)
     }
 
     return PlayerEntity.initPlayer({ name })

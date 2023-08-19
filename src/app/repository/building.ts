@@ -1,6 +1,6 @@
 import { BuildingEntity } from '#core/building/entity'
 import { GenericRepository } from '#app/repository/generic'
-import { BuildingCode } from '#core/building/constants'
+import { BuildingCode } from '#core/building/constant'
 
 export type BuildingRepository = GenericRepository<BuildingEntity> & {
   list(query: {

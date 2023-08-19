@@ -1,8 +1,8 @@
 import { BuildingCancelCommand } from '#app/command/building/cancel'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingErrors } from '#core/building/errors'
+import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
-import { CityErrors } from '#core/city/errors'
+import { CityError } from '#core/city/error'
 import { now } from '#shared/time'
 import assert from 'assert'
 
@@ -31,7 +31,7 @@ describe('BuildingCancelCommand', () => {
       player_id: another_player_id,
       city,
       building
-    }), new RegExp(CityErrors.NOT_OWNER))
+    }), new RegExp(CityError.NOT_OWNER))
   })
 
   it('should assert that there is a building in progress', () => {
@@ -39,7 +39,7 @@ describe('BuildingCancelCommand', () => {
       player_id,
       city,
       building: null
-    }), new RegExp(BuildingErrors.NOT_IN_PROGRESS))
+    }), new RegExp(BuildingError.NOT_IN_PROGRESS))
   })
 
   it('should refund half of the building price when building is cancelled', () => {

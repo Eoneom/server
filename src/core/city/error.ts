@@ -1,4 +1,4 @@
-export enum CityErrors {
+export enum CityError {
   ALREADY_EXISTS = 'city:already-exists',
   NOT_FOUND = 'city:not-found',
   NOT_ENOUGH_RESOURCES = 'city:not-enough-resources',

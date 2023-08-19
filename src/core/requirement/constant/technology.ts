@@ -1,6 +1,6 @@
-import { BuildingCode } from '#core/building/constants'
+import { BuildingCode } from '#core/building/constant'
 import { RequirementValue } from '#core/requirement/value/requirement'
-import { TechnologyCode } from '#core/technology/constants'
+import { TechnologyCode } from '#core/technology/constant'
 
 export const TechnologyRequirement: Record<TechnologyCode, RequirementValue> = {
   [TechnologyCode.ARCHITECTURE]: {

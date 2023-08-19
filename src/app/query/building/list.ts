@@ -2,7 +2,7 @@ import { GenericQuery } from '#query/generic'
 import { BuildingEntity } from '#core/building/entity'
 import { PricingService } from '#core/pricing/service'
 import { LevelCostValue } from '#core/pricing/value/level'
-import { TechnologyCode } from '#core/technology/constants'
+import { TechnologyCode } from '#core/technology/constant'
 
 export interface ListBuildingRequest {
   city_id: string,
