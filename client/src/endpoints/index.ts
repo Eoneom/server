@@ -1,6 +1,7 @@
 export * from './building/cancel'
 export * from './building/list'
 export * from './building/upgrade'
+export * from './building/finish-upgrade'
 export * from './city/list'
 export * from './player/login'
 export * from './player/signup'

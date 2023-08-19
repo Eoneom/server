@@ -4,6 +4,10 @@ import {
   BuildingCancelResponse
 } from './cancel'
 import {
+  BuildingFinishUpgradeRequest,
+  BuildingFinishUpgradeResponse
+} from './finish-upgrade'
+import {
   BuildingListRequest,
   BuildingListResponse
 } from './list'
@@ -21,6 +25,13 @@ export class BuildingEndpoint {
 
   public async upgrade(token: string, body: BuildingUpgradeRequest): Promise<BuildingUpgradeResponse> {
     return this.fetcher.put('/building/upgrade', {
+      body,
+      token
+    })
+  }
+
+  public async finishUpgrade(token: string, body: BuildingFinishUpgradeRequest): Promise<BuildingFinishUpgradeResponse> {
+    return this.fetcher.put('/building/upgrade/finish', {
       body,
       token
     })
