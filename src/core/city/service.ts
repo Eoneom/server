@@ -46,13 +46,20 @@ export class CityService {
 
   static gatherResources({
     city,
+    player_id,
     gather_at_time,
     earnings_per_second
   }: {
     city: CityEntity
+    player_id: string
     gather_at_time: number
     earnings_per_second: Resource
   }): CityEntity | null {
+    const is_city_owned_by_player = city.isOwnedBy(player_id)
+    if (!is_city_owned_by_player) {
+      throw new Error(CityError.NOT_OWNER)
+    }
+
     const {
       city: updated_city,
       updated

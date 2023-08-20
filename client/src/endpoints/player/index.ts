@@ -7,7 +7,6 @@ import {
   SignupRequest,
   SignupResponse
 } from './signup'
-import { SyncResponse } from './sync'
 
 export class PlayerEndpoint {
   private fetcher: Fetcher
@@ -22,9 +21,5 @@ export class PlayerEndpoint {
 
   signup(body: SignupRequest): Promise<SignupResponse> {
     return this.fetcher.post('/player/signup', { body })
-  }
-
-  sync(token: string): Promise<SyncResponse> {
-    return this.fetcher.post('/player/sync', { token })
   }
 }
