@@ -12,6 +12,7 @@ export interface CityListQueryRequest {
 export interface CityListQueryResponse {
   cities: CityEntity[],
   earnings_per_second_by_city: Record<string, Resource>
+  maximum_building_levels_by_city: Record<string, number>
   cities_cells: Record<string, CellEntity>
 }
 
@@ -47,9 +48,25 @@ export class CityListQuery extends GenericQuery<CityListQueryRequest, CityListQu
       }
     }, {} as Record<string, CellEntity>)
 
+    const maximum_building_levels = await Promise.all(cities.map(async city => {
+      const levels = await AppService.getCityMaximumBuildingLevels({ city_id: city.id })
+      return {
+        city_id: city.id,
+        levels
+      }
+    }))
+
+    const maximum_building_levels_by_city = maximum_building_levels.reduce((acc, current) => {
+      return {
+        ...acc,
+        [current.city_id]: current.levels
+      }
+    }, {} as Record<string, number>)
+
     return {
       cities,
       earnings_per_second_by_city,
+      maximum_building_levels_by_city,
       cities_cells
     }
   }

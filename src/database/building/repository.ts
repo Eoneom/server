@@ -12,6 +12,11 @@ export class MongoBuildingRepository
   extends MongoGenericRepository<typeof BuildingModel, BuildingDocument, BuildingEntity>
   implements BuildingRepository {
 
+  async getTotalLevels({ city_id }: { city_id: string }): Promise<number> {
+    const buildings = await this.model.find({ city_id }, { level: 1 })
+    return buildings.reduce((acc, building) => acc + building.level, 0)
+  }
+
   async list({
     city_id, codes
   }: { city_id: string, codes?: BuildingCode[] }): Promise<BuildingEntity[]> {

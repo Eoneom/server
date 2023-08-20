@@ -5,6 +5,7 @@
   "main": "dist/client/src/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc --pretty",
+    "build:watch": "tsc --watch",
     "publish-minor": "npm version minor && npm publish"
   },
   "keywords": [],

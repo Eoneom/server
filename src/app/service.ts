@@ -1,6 +1,7 @@
 import { Factory } from '#app/factory'
 import { BuildingCode } from '#core/building/constant'
 import { BuildingService } from '#core/building/service'
+import { CityService } from '#core/city/service'
 import { RequirementService } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant'
 import { CellEntity } from '#core/world/entity'
@@ -8,6 +9,12 @@ import { WorldService } from '#core/world/service'
 import { Resource } from '#shared/resource'
 
 export class AppService {
+  static async getCityMaximumBuildingLevels({ city_id }: { city_id: string }): Promise<number> {
+    const repository = Factory.getRepository()
+    const city_cells_count = await repository.world.getCityCellsCount({ city_id })
+    return CityService.getMaximumBuildingLevels({ city_cells_count })
+  }
+
   static async getCityEarningsBySecond({ city_id }: { city_id: string }): Promise<Resource> {
     const repository = Factory.getRepository()
     const [

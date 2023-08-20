@@ -1,3 +1,6 @@
 export const STARTING_PLASTIC = 3000
 export const STARTING_MUSHROOM = 2000
 export const SIZE_PER_CELL = 10
+
+export const MAIN_CITY_CELL_BUILDING_COUNT = 25
+export const AUX_CITY_CELL_BUILDING_COUNT = 15

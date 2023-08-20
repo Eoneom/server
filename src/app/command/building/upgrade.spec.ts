@@ -1,4 +1,7 @@
-import { BuildingUpgradeCommand } from '#app/command/building/upgrade'
+import {
+  BuildingUpgradeCommand,
+  BuildingUpgradeExec
+} from '#app/command/building/upgrade'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
@@ -10,6 +13,7 @@ describe('BuildingUpgradeCommand', () => {
   let command: BuildingUpgradeCommand
   let city: CityEntity
   let building: BuildingEntity
+  let success_params: BuildingUpgradeExec
 
   beforeEach(() => {
     command = new BuildingUpgradeCommand()
@@ -22,14 +26,21 @@ describe('BuildingUpgradeCommand', () => {
       mushroom: 1000
     })
     building = BuildingEntity.initMushroomFarm({ city_id: city.id })
+
+    success_params = {
+      architecture_level: 0,
+      total_building_levels: 1,
+      maximum_building_levels: 2,
+      building,
+      city,
+      is_building_in_progress: false,
+      player_id
+    }
   })
 
   it('should prevent a player to upgrade building in another player city', () => {
     assert.throws(() => command.exec({
-      architecture_level: 0,
-      building,
-      city,
-      is_building_in_progress: false,
+      ...success_params,
       player_id: 'another_player_id'
     }), new RegExp(CityError.NOT_OWNER))
   })
@@ -42,45 +53,35 @@ describe('BuildingUpgradeCommand', () => {
     })
 
     assert.throws(() => command.exec({
-      architecture_level: 0,
-      building,
+      ...success_params,
       city: city_without_ressources,
-      is_building_in_progress: false,
-      player_id
     }), new RegExp(CityError.NOT_ENOUGH_RESOURCES))
   })
 
   it('should prevent a player to upgrade if another building is in progress', () => {
     assert.throws(() => command.exec({
-      architecture_level: 0,
-      building,
-      city,
+      ...success_params,
       is_building_in_progress: true,
-      player_id
     }), new RegExp(BuildingError.ALREADY_IN_PROGRESS))
   })
 
+  it('should prevent a player to upgrade if there is no more space in the city', () => {
+    assert.throws(() => command.exec({
+      ...success_params,
+      total_building_levels: 10,
+      maximum_building_levels: 10
+    }), new RegExp(CityError.NOT_ENOUGH_SPACE))
+  })
+
   it('should purchase the upgrade', () => {
-    const { city: updated_city } = command.exec({
-      architecture_level: 0,
-      building,
-      city,
-      is_building_in_progress: false,
-      player_id
-    })
+    const { city: updated_city } = command.exec(success_params)
 
     assert.ok(updated_city.plastic < city.plastic)
     assert.ok(updated_city.mushroom < city.mushroom)
   })
 
   it('should launch the building upgrade', () => {
-    const { building: updated_building } = command.exec({
-      architecture_level: 0,
-      building,
-      city,
-      is_building_in_progress: false,
-      player_id
-    })
+    const { building: updated_building } = command.exec(success_params)
 
     assert.ok(!building.upgrade_at)
     assert.ok(updated_building.upgrade_at)
@@ -88,19 +89,13 @@ describe('BuildingUpgradeCommand', () => {
 
   it('should take less time to upgrade with an increase architecture level', () => {
     const { building: building_without_architecture_level } = command.exec({
+      ...success_params,
       architecture_level: 0,
-      building,
-      city,
-      is_building_in_progress: false,
-      player_id
     })
 
     const { building: building_with_architecture_level } = command.exec({
+      ...success_params,
       architecture_level: 10,
-      building,
-      city,
-      is_building_in_progress: false,
-      player_id
     })
 
     assert.ok(building_with_architecture_level.upgrade_at)

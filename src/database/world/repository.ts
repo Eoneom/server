@@ -11,6 +11,10 @@ export class MongoWorldRepository
   extends MongoGenericRepository<typeof CellModel, CellDocument, CellEntity>
   implements WorldRepository {
 
+  async getCityCellsCount({ city_id }: { city_id: string }): Promise<number> {
+    return this.model.countDocuments({ city_id })
+  }
+
   async getCityCell({ city_id }: { city_id: string }): Promise<CellEntity> {
     return this.findOneOrThrow({ city_id })
   }

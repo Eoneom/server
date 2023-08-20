@@ -13,5 +13,7 @@ export type BuildingRepository = GenericRepository<BuildingEntity> & {
   getLevel(query: { city_id: string, code: BuildingCode }): Promise<number>
   getUpgradeDone(query: { city_id: string }): Promise<BuildingEntity | null>
 
+  getTotalLevels(query: { city_id: string }): Promise<number>
+
   isInProgress(query: { city_id: string }): Promise<boolean>
 }

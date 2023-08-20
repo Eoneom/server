@@ -35,17 +35,20 @@ export const cityListHandler = async (
 
 const response_mapper = ({
   cities,
+  maximum_building_levels_by_city,
   earnings_per_second_by_city,
   cities_cells
 }: CityListQueryResponse): CityListDataResponse => {
   const cities_response: CityListDataResponse['cities'] = cities.map(city => {
     const earnings_per_second = earnings_per_second_by_city[city.id]
     const cell = cities_cells[city.id]
+    const maximum_building_levels = maximum_building_levels_by_city[city.id]
     return {
       id: city.id,
       name: city.name,
       plastic: city.plastic,
       mushroom: city.mushroom,
+      maximum_building_levels,
       earnings_per_second: {
         plastic: earnings_per_second.plastic,
         mushroom: earnings_per_second.mushroom

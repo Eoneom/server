@@ -6,6 +6,7 @@ export interface CityListDataResponse {
     name: string
     plastic: number
     mushroom: number
+    maximum_building_levels: number
     coordinates: {
       x: number
       y: number
