@@ -4,14 +4,14 @@ import { BuildingService } from '#core/building/service'
 import { CityService } from '#core/city/service'
 import { RequirementService } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant'
-import { CellEntity } from '#core/world/entity'
+import { CellEntity } from '#core/world/cell.entity'
 import { WorldService } from '#core/world/service'
 import { Resource } from '#shared/resource'
 
 export class AppService {
   static async getCityMaximumBuildingLevels({ city_id }: { city_id: string }): Promise<number> {
     const repository = Factory.getRepository()
-    const city_cells_count = await repository.world.getCityCellsCount({ city_id })
+    const city_cells_count = await repository.cell.getCityCellsCount({ city_id })
     return CityService.getMaximumBuildingLevels({ city_cells_count })
   }
 
@@ -30,7 +30,7 @@ export class AppService {
         city_id,
         code: BuildingCode.RECYCLING_PLANT
       }),
-      repository.world.getCityCell({ city_id })
+      repository.cell.getCityCell({ city_id })
     ])
 
     const coefficients = city_cell.resource_coefficient
@@ -93,11 +93,11 @@ export class AppService {
     }
   }
 
-  static async findCityFirstCell(): Promise<CellEntity> {
+  static async selectCityFirstCell(): Promise<CellEntity> {
     const repository = Factory.getRepository()
     for (;;) {
       const random_coordinates = WorldService.getRandomCoordinates()
-      const cell = await repository.world.getCell({ coordinates: random_coordinates })
+      const cell = await repository.cell.getCell({ coordinates: random_coordinates })
       if (!cell.isAssigned()) {
         return cell
       }

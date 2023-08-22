@@ -2,7 +2,7 @@ import { GenericQuery } from '#query/generic'
 import { AppService } from '#app/service'
 import { Resource } from '#shared/resource'
 import assert from 'assert'
-import { CellEntity } from '#core/world/entity'
+import { CellEntity } from '#core/world/cell.entity'
 import { CityEntity } from '#core/city/entity'
 
 export interface CityListQueryRequest {
@@ -38,7 +38,7 @@ export class CityListQuery extends GenericQuery<CityListQueryRequest, CityListQu
       }
     }, {} as Record<string, Resource>)
 
-    const cells = await Promise.all(cities.map(async city => this.repository.world.getCityCell({ city_id: city.id })))
+    const cells = await Promise.all(cities.map(async city => this.repository.cell.getCityCell({ city_id: city.id })))
 
     const cities_cells = cells.reduce((acc, cell) => {
       assert(cell.city_id)

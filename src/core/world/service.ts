@@ -1,7 +1,7 @@
 import {
   REGION_SIZE, SECTOR_SIZE
 } from '#core/world/constant/size'
-import { CellEntity } from '#core/world/entity'
+import { CellEntity } from '#core/world/cell.entity'
 import { PerlinService } from '#core/world/perlin'
 import { CellType } from '#core/world/value/cell-type'
 import { Coordinates } from '#core/world/value/coordinates'

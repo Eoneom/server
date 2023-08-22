@@ -1,5 +1,5 @@
 import { GenericCommand } from '#app/command/generic'
-import { CellEntity } from '#core/world/entity'
+import { CellEntity } from '#core/world/cell.entity'
 import { WorldError } from '#core/world/error'
 import { WorldService } from '#core/world/service'
 
@@ -21,7 +21,7 @@ export class WorldGenerateCommand extends GenericCommand<
   }
 
   async fetch(): Promise<WorldGenerateExec> {
-    const is_world_initialized = await this.repository.world.isInitialized()
+    const is_world_initialized = await this.repository.cell.isInitialized()
     return { is_world_initialized }
   }
 
@@ -34,7 +34,7 @@ export class WorldGenerateCommand extends GenericCommand<
   }
 
   async save({ cells }: WorldGenerateSave): Promise<void> {
-    await Promise.all(cells.map(cell => this.repository.world.create(cell)))
+    await Promise.all(cells.map(cell => this.repository.cell.create(cell)))
   }
 
 }

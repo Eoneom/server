@@ -12,24 +12,24 @@ import { MongoPlayerRepository } from '#adapter/repository/player'
 import { TechnologyRepository } from '#app/port/repository/technology'
 import { MongoTechnologyRepository } from '#adapter/repository/technology'
 import { Repository } from '#app/port/repository/generic'
-import { WorldRepository } from '#app/port/repository/world'
-import { MongoWorldRepository } from '#adapter/repository/world'
+import { CellRepository } from '#app/port/repository/cell'
+import { MongoCellRepository } from '#adapter/repository/cell'
 
 export class MongoRepository implements Repository {
   auth: AuthRepository
   building: BuildingRepository
+  cell: CellRepository
   city: CityRepository
   player: PlayerRepository
   technology: TechnologyRepository
-  world: WorldRepository
 
   constructor() {
     this.auth = new MongoAuthRepository()
     this.building = new MongoBuildingRepository()
+    this.cell = new MongoCellRepository()
     this.city = new MongoCityRepository()
     this.player = new MongoPlayerRepository()
     this.technology = new MongoTechnologyRepository()
-    this.world = new MongoWorldRepository()
   }
 
   async connect(): Promise<void> {

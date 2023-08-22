@@ -3,7 +3,7 @@ export interface Cost {
   multiplier: number
 }
 
-export interface TotalCost {
+export interface Costs {
   plastic: Cost
   mushroom: Cost
   duration: Cost

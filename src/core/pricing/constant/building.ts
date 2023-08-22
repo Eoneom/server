@@ -1,7 +1,7 @@
 import { BuildingCode } from '#core/building/constant'
-import { TotalCost } from '#core/pricing/constant'
+import { Costs } from '#core/pricing/value/cost'
 
-export const building_costs: Record<BuildingCode, TotalCost> = {
+export const building_costs: Record<BuildingCode, Costs> = {
   [BuildingCode.RECYCLING_PLANT]: {
     plastic: {
       base: 400,

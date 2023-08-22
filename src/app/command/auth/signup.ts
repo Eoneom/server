@@ -8,7 +8,7 @@ import { PlayerEntity } from '#core/player/entity'
 import { PlayerService } from '#core/player/service'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
-import { CellEntity } from '#core/world/entity'
+import { CellEntity } from '#core/world/cell.entity'
 
 export interface AuthSignupRequest {
   player_name: string
@@ -57,7 +57,7 @@ export class AuthSignupCommand extends GenericCommand<
     ] = await Promise.all([
       this.repository.player.exist(player_name),
       this.repository.city.exist(city_name),
-      AppService.findCityFirstCell()
+      AppService.selectCityFirstCell()
     ])
 
     return {
@@ -110,7 +110,7 @@ export class AuthSignupCommand extends GenericCommand<
       this.repository.city.create(city),
       ...buildings.map(building => this.repository.building.create(building)),
       ...technologies.map(technology => this.repository.technology.create(technology)),
-      this.repository.world.updateOne(cell)
+      this.repository.cell.updateOne(cell)
     ])
 
     return {

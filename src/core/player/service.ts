@@ -1,7 +1,6 @@
 import { PlayerEntity } from '#core/player/entity'
 import { PlayerError } from '#core/player/error'
 
-
 export class PlayerService {
   static init({
     name,

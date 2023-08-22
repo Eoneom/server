@@ -1,7 +1,7 @@
-import { TotalCost } from '#core/pricing/constant'
+import { Costs } from '#core/pricing/value/cost'
 import { TechnologyCode } from '#core/technology/constant'
 
-export const technology_costs: Record<TechnologyCode, TotalCost> = {
+export const technology_costs: Record<TechnologyCode, Costs> = {
   [TechnologyCode.ARCHITECTURE]: {
     plastic: {
       base: 4000,

@@ -1,5 +1,5 @@
 import { BuildingCode } from '#core/building/constant'
-import { Cost } from '#core/pricing/constant'
+import { Cost } from '#core/pricing/value/cost'
 import { building_costs } from '#core/pricing/constant/building'
 import { technology_costs } from '#core/pricing/constant/technology'
 import { LevelCostValue } from '#core/pricing/value/level'
@@ -22,7 +22,7 @@ export class PricingService {
     } = building_costs[code]
 
     const architecture_bonus = architecture_level / 100
-    return LevelCostValue.create({
+    return {
       code,
       level: level,
       resource: {
@@ -30,7 +30,7 @@ export class PricingService {
         mushroom: this.computeCost(mushroom, level)
       },
       duration: this.computeCost(duration, level, architecture_bonus)
-    })
+    }
   }
 
   static getTechnologyLevelCost({
@@ -49,7 +49,7 @@ export class PricingService {
     } = technology_costs[code]
 
     const research_lab_bonus = research_lab_level / 100
-    return LevelCostValue.create({
+    return {
       code,
       level: level,
       resource: {
@@ -57,7 +57,7 @@ export class PricingService {
         mushroom: this.computeCost(mushroom, level)
       },
       duration: this.computeCost(duration, level, research_lab_bonus)
-    })
+    }
   }
 
   private static computeCost(cost: Cost, level: number, bonus = 0): number {
