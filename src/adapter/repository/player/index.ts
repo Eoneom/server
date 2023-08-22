@@ -1,13 +1,18 @@
 import { PlayerEntity } from '#core/player/entity'
-import { PlayerRepository } from '#app/repository/player'
+import { PlayerRepository } from '#app/port/repository/player'
 import {
   PlayerDocument, PlayerModel
-} from '#database/player/document'
-import { MongoGenericRepository } from '#database/generic'
+} from '#adapter/repository/player/document'
+import { MongoGenericRepository } from '#adapter/repository/generic'
+import { PlayerError } from '#core/player/error'
 
 export class MongoPlayerRepository
   extends MongoGenericRepository<typeof PlayerModel, PlayerDocument, PlayerEntity>
   implements PlayerRepository {
+
+  constructor() {
+    super(PlayerModel, PlayerError.NOT_FOUND)
+  }
 
   get(id: string): Promise<PlayerEntity> {
     return this.findByIdOrThrow(id)

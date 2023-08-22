@@ -29,16 +29,6 @@ npm run build:watch
 npm run start
 ```
 
-## Roadmap
-
-- tech: add resources module
-- feat: add rights on cities and buildings (WIP)
-- feat: create other buildings
-- feat: create units
-- tech: add unit tests
-- tech: add integration tests
-- tech: add a logging system
-
 ## Architecture
 
 ### App

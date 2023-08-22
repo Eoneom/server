@@ -1,4 +1,4 @@
-import { Factory } from '#app/factory'
+import { Factory } from '#adapter/factory'
 import { BuildingCode } from '#core/building/constant'
 import { BuildingService } from '#core/building/service'
 import { CityService } from '#core/city/service'

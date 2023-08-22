@@ -16,10 +16,15 @@ export class WorldGenerateCommand extends GenericCommand<
   WorldGenerateExec,
   WorldGenerateSave
 > {
+  constructor() {
+    super({ name: 'world:generate' })
+  }
+
   async fetch(): Promise<WorldGenerateExec> {
     const is_world_initialized = await this.repository.world.isInitialized()
     return { is_world_initialized }
   }
+
   exec({ is_world_initialized }: WorldGenerateExec): WorldGenerateSave {
     if (is_world_initialized) {
       throw new Error(WorldError.ALREADY_EXISTS)
@@ -27,6 +32,7 @@ export class WorldGenerateCommand extends GenericCommand<
     const cells = WorldService.generate()
     return { cells }
   }
+
   async save({ cells }: WorldGenerateSave): Promise<void> {
     await Promise.all(cells.map(cell => this.repository.world.create(cell)))
   }

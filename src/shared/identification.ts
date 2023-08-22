@@ -1,4 +1,4 @@
-import { generateId } from '#database/helpers'
+import { generateId } from '#adapter/repository/helpers'
 import { v4 as uuidv4 } from 'uuid'
 
 export const id = (): string => generateId()

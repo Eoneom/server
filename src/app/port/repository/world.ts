@@ -1,4 +1,4 @@
-import { GenericRepository } from '#app/repository/generic'
+import { GenericRepository } from '#app/port/repository/generic'
 import { CellEntity } from '#core/world/entity'
 import { Coordinates } from '#core/world/value/coordinates'
 

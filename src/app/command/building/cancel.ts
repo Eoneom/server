@@ -26,6 +26,10 @@ export class BuildingCancelCommand extends GenericCommand<
   BuildingCancelExec,
   BuildingCancelSave
 > {
+  constructor() {
+    super({ name: 'building:cancel' })
+  }
+
   async fetch({
     city_id,
     player_id

@@ -19,6 +19,10 @@ export class TechnologyCancelCommand extends GenericCommand<
   TechnologyCancelExec,
   TechnologyCancelSave
 > {
+  constructor() {
+    super({ name: 'technology:cancel' })
+  }
+
   async fetch({ player_id }: TechnologyCancelRequest): Promise<TechnologyCancelExec> {
     const technology = await this.repository.technology.getInProgress({ player_id })
 

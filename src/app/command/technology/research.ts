@@ -41,6 +41,10 @@ export class TechnologyResearchCommand extends GenericCommand<
   TechnologyResearchSave,
   TechnologyResearchResponse
 > {
+  constructor() {
+    super({ name: 'technology:research' })
+  }
+
   async fetch({
     city_id, player_id, technology_code
   }: TechnologyResearchRequest): Promise<TechnologyResearchExec> {

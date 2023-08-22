@@ -1,14 +1,19 @@
-import { Factory } from '#app/factory'
-import { Repository } from '#app/repository/generic'
+import { Factory } from '#adapter/factory'
+import { AppLogger } from '#app/port/logger'
+import { Repository } from '#app/port/repository/generic'
 
 export abstract class GenericCommand<FetchParam, ExecParam, SaveParam, Response = void> {
   protected repository: Repository
+  protected logger: AppLogger
 
-  constructor() {
+  protected constructor({ name }: { name: string }) {
     this.repository = Factory.getRepository()
+    this.logger = Factory.getLogger(`app:command:${name}`)
   }
 
   async run(param: FetchParam): Promise<Response> {
+    this.logger.debug('run')
+
     const fetched_entities = await this.fetch(param)
     const updated_entities = this.exec(fetched_entities)
     return this.save(updated_entities)

@@ -1,5 +1,5 @@
 import { TechnologyEntity } from '#core/technology/entity'
-import { GenericRepository } from '#app/repository/generic'
+import { GenericRepository } from '#app/port/repository/generic'
 import { TechnologyCode } from '#core/technology/constant'
 
 export type TechnologyRepository = GenericRepository<TechnologyEntity> & {

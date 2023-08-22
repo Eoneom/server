@@ -1,5 +1,5 @@
 import { BuildingEntity } from '#core/building/entity'
-import { GenericRepository } from '#app/repository/generic'
+import { GenericRepository } from '#app/port/repository/generic'
 import { BuildingCode } from '#core/building/constant'
 
 export type BuildingRepository = GenericRepository<BuildingEntity> & {

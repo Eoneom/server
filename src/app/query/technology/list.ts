@@ -1,5 +1,5 @@
 import { TechnologyEntity } from '#core/technology/entity'
-import { Factory } from '#app/factory'
+import { Factory } from '#adapter/factory'
 import { LevelCostValue } from '#core/pricing/value/level'
 import { PricingService } from '#core/pricing/service'
 import { TechnologyCode } from '#core/technology/constant'

@@ -1,5 +1,5 @@
 import { PlayerEntity } from '#core/player/entity'
-import { GenericRepository } from '#app/repository/generic'
+import { GenericRepository } from '#app/port/repository/generic'
 
 export type PlayerRepository = GenericRepository<PlayerEntity> & {
   exist(name: string): Promise<boolean>

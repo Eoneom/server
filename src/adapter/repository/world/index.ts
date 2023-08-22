@@ -1,15 +1,19 @@
 import { CellEntity } from '#core/world/entity'
-import { WorldRepository } from '#app/repository/world'
+import { WorldRepository } from '#app/port/repository/world'
 import {
   CellDocument, CellModel
-} from '#database/world/document'
-import { MongoGenericRepository } from '#database/generic'
+} from '#adapter/repository/world/document'
+import { MongoGenericRepository } from '#adapter/repository/generic'
 import { WorldError } from '#core/world/error'
 import { Coordinates } from '#core/world/value/coordinates'
 
 export class MongoWorldRepository
   extends MongoGenericRepository<typeof CellModel, CellDocument, CellEntity>
   implements WorldRepository {
+
+  constructor() {
+    super(CellModel, WorldError.NOT_FOUND)
+  }
 
   async getCityCellsCount({ city_id }: { city_id: string }): Promise<number> {
     return this.model.countDocuments({ city_id })

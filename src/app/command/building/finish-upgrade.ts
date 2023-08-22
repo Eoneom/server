@@ -24,6 +24,10 @@ export class BuildingFinishUpgradeCommand extends GenericCommand<
   BuildingFinishUpgradeExec,
   BuildingFinishUpgradeSave
 > {
+  constructor() {
+    super({ name: 'building:finish-upgrade' })
+  }
+
   async fetch({
     player_id,
     city_id,

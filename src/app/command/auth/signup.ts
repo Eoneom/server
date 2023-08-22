@@ -42,6 +42,10 @@ export class AuthSignupCommand extends GenericCommand<
   AuthSignupSave,
   AuthSignupResponse
 > {
+  constructor() {
+    super({ name: 'auth:signup' })
+  }
+
   async fetch({
     player_name,
     city_name
@@ -64,6 +68,7 @@ export class AuthSignupCommand extends GenericCommand<
       city_first_cell
     }
   }
+
   exec({
     does_city_exist,
     does_player_exist,
@@ -92,6 +97,7 @@ export class AuthSignupCommand extends GenericCommand<
       cell
     }
   }
+
   async save({
     player,
     city,

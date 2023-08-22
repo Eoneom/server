@@ -32,6 +32,10 @@ export class CityGatherCommand extends GenericCommand<
   CityGatherSave,
   CityGatherResponse
 > {
+  constructor() {
+    super({ name:'city:gather' })
+  }
+
   async fetch({
     city_id,
     player_id

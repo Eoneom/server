@@ -1,5 +1,5 @@
 import { CityEntity } from '#core/city/entity'
-import { GenericRepository } from '#app/repository/generic'
+import { GenericRepository } from '#app/port/repository/generic'
 
 export type CityRepository = GenericRepository<CityEntity> & {
   get(id: string): Promise<CityEntity>

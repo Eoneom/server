@@ -19,6 +19,10 @@ export class TechnologyFinishResearchCommand extends GenericCommand<
   TechnologyFinishResearchExec,
   TechnologyFinishResearchSave
 > {
+  constructor() {
+    super({ name: 'technology:finish-research' })
+  }
+
   async fetch({ player_id }: TechnologyFinishResearchRequest): Promise<TechnologyFinishResearchExec> {
     const technology_to_finish = await this.repository.technology.getResearchDone({ player_id })
 

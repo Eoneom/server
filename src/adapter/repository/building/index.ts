@@ -1,9 +1,9 @@
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingRepository } from '#app/repository/building'
+import { BuildingRepository } from '#app/port/repository/building'
 import {
   BuildingDocument, BuildingModel
-} from '#database/building/document'
-import { MongoGenericRepository } from '#database/generic'
+} from '#adapter/repository/building/document'
+import { MongoGenericRepository } from '#adapter/repository/generic'
 import { BuildingCode } from '#core/building/constant'
 import { BuildingError } from '#core/building/error'
 import { now } from '#shared/time'
@@ -11,6 +11,10 @@ import { now } from '#shared/time'
 export class MongoBuildingRepository
   extends MongoGenericRepository<typeof BuildingModel, BuildingDocument, BuildingEntity>
   implements BuildingRepository {
+
+  constructor() {
+    super(BuildingModel, BuildingError.NOT_FOUND)
+  }
 
   async getTotalLevels({ city_id }: { city_id: string }): Promise<number> {
     const buildings = await this.model.find({ city_id }, { level: 1 })

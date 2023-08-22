@@ -32,11 +32,12 @@
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "pino": "^8.15.0",
     "uuid": "^9.0.0"
   },
   "imports": {
-    "#app": {
-      "default": "./dist/src/app/index.js"
+    "#adapter/*": {
+      "default": "./dist/src/adapter/*.js"
     },
     "#app/*": {
       "default": "./dist/src/app/*.js"
@@ -49,9 +50,6 @@
     },
     "#core/*": {
       "default": "./dist/src/core/*.js"
-    },
-    "#database/*": {
-      "default": "./dist/src/database/*.js"
     },
     "#query/*": {
       "default": "./dist/src/app/query/*.js"

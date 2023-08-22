@@ -1,13 +1,18 @@
 import { CityEntity } from '#core/city/entity'
-import { CityRepository } from '#app/repository/city'
+import { CityRepository } from '#app/port/repository/city'
 import {
   CityDocument, CityModel
-} from '#database/city/document'
-import { MongoGenericRepository } from '#database/generic'
+} from '#adapter/repository/city/document'
+import { MongoGenericRepository } from '#adapter/repository/generic'
+import { CityError } from '#core/city/error'
 
 export class MongoCityRepository
   extends MongoGenericRepository<typeof CityModel, CityDocument, CityEntity>
   implements CityRepository {
+
+  constructor() {
+    super(CityModel, CityError.NOT_FOUND)
+  }
 
   async get(id: string): Promise<CityEntity> {
     return this.findByIdOrThrow(id)

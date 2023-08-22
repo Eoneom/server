@@ -12,14 +12,17 @@ import {
   CityListQuery,
   CityListQueryResponse
 } from '#app/query/city/list'
+import { Factory } from '#adapter/factory'
 
 export const cityListHandler = async (
   req: Request,
   res: Response<CityListResponse>,
   next: NextFunction
 ) => {
+  const logger = Factory.getLogger('web:handler:city:list')
   try {
     const player_id = getPlayerIdFromContext(res)
+    logger.debug('query', { player_id })
     const query = new CityListQuery()
     const result = await query.get({ player_id })
     const response = response_mapper(result)

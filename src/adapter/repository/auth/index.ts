@@ -1,13 +1,18 @@
 import { AuthEntity } from '#core/auth/entity'
-import { AuthRepository } from '#app/repository/auth'
+import { AuthRepository } from '#app/port/repository/auth'
 import {
   AuthDocument, AuthModel
-} from '#database/auth/document'
-import { MongoGenericRepository } from '#database/generic'
+} from '#adapter/repository/auth/document'
+import { MongoGenericRepository } from '#adapter/repository/generic'
+import { AuthError } from '#core/auth/error'
 
 export class MongoAuthRepository
   extends MongoGenericRepository<typeof AuthModel, AuthDocument, AuthEntity>
   implements AuthRepository {
+
+  constructor() {
+    super(AuthModel, AuthError.NOT_FOUND)
+  }
 
   async get(query: { token: string }): Promise<AuthEntity> {
     return this.findOneOrThrow(query)

@@ -7,8 +7,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "#app": [
-        "src/app/query/technology/list.ts"
+      "#adapter/*": [
+        "./src/adapter/*"
       ],
       "#app/*": [
         "./src/app/*"
@@ -21,9 +21,6 @@
       ],
       "#command/*": [
         "./src/app/command/*"
-      ],
-      "#database/*": [
-        "./src/database/*"
       ],
       "#query/*": [
         "./src/app/query/*"

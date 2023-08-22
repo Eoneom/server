@@ -1,5 +1,5 @@
-import { Factory } from '#app/factory'
-import { Repository } from '#app/repository/generic'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
 
 
 export abstract class GenericQuery<Request, Response> {

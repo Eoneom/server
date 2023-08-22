@@ -1,15 +1,20 @@
 import { TechnologyEntity } from '#core/technology/entity'
-import { TechnologyRepository } from '#app/repository/technology'
+import { TechnologyRepository } from '#app/port/repository/technology'
 import {
   TechnologyDocument, TechnologyModel
-} from '#database/technology/document'
-import { MongoGenericRepository } from '#database/generic'
+} from '#adapter/repository/technology/document'
+import { MongoGenericRepository } from '#adapter/repository/generic'
 import { now } from '#shared/time'
 import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyError } from '#core/technology/error'
 
 export class MongoTechnologyRepository
   extends MongoGenericRepository<typeof TechnologyModel, TechnologyDocument, TechnologyEntity>
   implements TechnologyRepository {
+
+  constructor() {
+    super(TechnologyModel, TechnologyError.NOT_FOUND)
+  }
 
   async list({
     player_id,
