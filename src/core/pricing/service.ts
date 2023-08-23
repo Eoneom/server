@@ -1,11 +1,33 @@
 import { BuildingCode } from '#core/building/constant'
-import { Cost } from '#core/pricing/value/cost'
 import { building_costs } from '#core/pricing/constant/building'
 import { technology_costs } from '#core/pricing/constant/technology'
-import { LevelCostValue } from '#core/pricing/value/level'
+import {
+  LevelCost, LevelCostValue
+} from '#core/pricing/value/level'
 import { TechnologyCode } from '#core/technology/constant'
+import { TroupCode } from '#core/troup/constant'
+import { CountCostValue } from '#core/pricing/value/count'
+import { troup_costs } from '#core/pricing/constant/troup'
 
 export class PricingService {
+  static getTroupCost({
+    code,
+    count
+  }: {
+    code: TroupCode
+    count: number
+  }): CountCostValue {
+    const cost = troup_costs[code]
+    return {
+      code,
+      resource: {
+        plastic: cost.plastic * count,
+        mushroom: cost.mushroom * count
+      },
+      duration: cost.duration * count
+    }
+  }
+
   static getBuildingLevelCost({
     code,
     level,
@@ -26,10 +48,10 @@ export class PricingService {
       code,
       level: level,
       resource: {
-        plastic: this.computeCost(plastic, level),
-        mushroom: this.computeCost(mushroom, level)
+        plastic: this.computeLevelCost(plastic, level),
+        mushroom: this.computeLevelCost(mushroom, level)
       },
-      duration: this.computeCost(duration, level, architecture_bonus)
+      duration: this.computeLevelCost(duration, level, architecture_bonus)
     }
   }
 
@@ -53,14 +75,14 @@ export class PricingService {
       code,
       level: level,
       resource: {
-        plastic: this.computeCost(plastic, level),
-        mushroom: this.computeCost(mushroom, level)
+        plastic: this.computeLevelCost(plastic, level),
+        mushroom: this.computeLevelCost(mushroom, level)
       },
-      duration: this.computeCost(duration, level, research_lab_bonus)
+      duration: this.computeLevelCost(duration, level, research_lab_bonus)
     }
   }
 
-  private static computeCost(cost: Cost, level: number, bonus = 0): number {
+  private static computeLevelCost(cost: LevelCost, level: number, bonus = 0): number {
     return Math.ceil(cost.base*Math.pow(cost.multiplier, level - 1)*(1-bonus))
   }
 }

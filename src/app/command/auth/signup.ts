@@ -8,27 +8,30 @@ import { PlayerEntity } from '#core/player/entity'
 import { PlayerService } from '#core/player/service'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
+import { TroupEntity } from '#core/troup/entity'
+import { TroupService } from '#core/troup/service'
 import { CellEntity } from '#core/world/cell.entity'
 
 export interface AuthSignupRequest {
-  player_name: string
   city_name: string
+  player_name: string
 }
 
-interface AuthSignupExec {
-  does_player_exist: boolean
-  does_city_exist: boolean
-  player_name: string
-  city_name: string
+export interface AuthSignupExec {
   city_first_cell: CellEntity
+  city_name: string
+  does_city_exist: boolean
+  does_player_exist: boolean
+  player_name: string
 }
 
 interface AuthSignupSave {
-  player: PlayerEntity
-  city: CityEntity
   buildings: BuildingEntity[]
-  technologies: TechnologyEntity[]
   cell: CellEntity
+  city: CityEntity
+  player: PlayerEntity
+  technologies: TechnologyEntity[]
+  troups: TroupEntity[]
 }
 
 export interface AuthSignupResponse {
@@ -87,6 +90,10 @@ export class AuthSignupCommand extends GenericCommand<
     })
     const buildings = BuildingService.init({ city_id: city.id })
     const technologies = TechnologyService.init({ player_id: player.id })
+    const troups = TroupService.init({
+      player_id: player.id,
+      city_id: city.id
+    })
     const cell = city_first_cell.assign({ city_id: city.id })
 
     return {
@@ -94,7 +101,8 @@ export class AuthSignupCommand extends GenericCommand<
       city,
       buildings,
       technologies,
-      cell
+      cell,
+      troups
     }
   }
 
@@ -103,14 +111,16 @@ export class AuthSignupCommand extends GenericCommand<
     city,
     buildings,
     technologies,
-    cell
+    cell,
+    troups
   }: AuthSignupSave): Promise<AuthSignupResponse> {
     await Promise.all([
       this.repository.player.create(player),
       this.repository.city.create(city),
       ...buildings.map(building => this.repository.building.create(building)),
       ...technologies.map(technology => this.repository.technology.create(technology)),
-      this.repository.cell.updateOne(cell)
+      this.repository.cell.updateOne(cell),
+      ...troups.map(troup => this.repository.troup.create(troup))
     ])
 
     return {

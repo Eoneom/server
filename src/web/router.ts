@@ -13,6 +13,7 @@ import { cityListHandler } from '#web/handler/city/list'
 import { buildingFinishUpgradeHandler } from '#web/handler/building/finish-upgrade'
 import { technologyFinishResearchHandler } from '#web/handler/technology/finish-research'
 import { cityGatherHandler } from '#web/handler/city/gather'
+import { troupRecruitHandler } from '#web/handler/troup/recruit'
 
 export const router = (): Router => {
   const r = Router()
@@ -38,6 +39,8 @@ export const router = (): Router => {
   r.put('/technology/cancel', authMiddleware, technologyCancelHandler)
   r.put('/technology/research', authMiddleware, technologyResearchHandler)
   r.put('/technology/research/finish', authMiddleware, technologyFinishResearchHandler)
+
+  r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
 
   r.get('/sector/:sector', authMiddleware, worldGetSectorHandler)
 
