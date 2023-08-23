@@ -1,6 +1,11 @@
 import { Fetcher } from '../../fetcher'
 import {
-  TroupRecruitRequest, TroupRecruitResponse 
+  TroupListRequest,
+  TroupListResponse
+} from './list'
+import {
+  TroupRecruitRequest,
+  TroupRecruitResponse
 } from './recruit'
 
 export class TroupEndpoint {
@@ -15,5 +20,9 @@ export class TroupEndpoint {
       body,
       token
     })
+  }
+
+  public async list(token: string, { city_id }: TroupListRequest): Promise<TroupListResponse> {
+    return this.fetcher.get(`/city/${city_id}/troup`, { token })
   }
 }

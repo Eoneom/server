@@ -15,6 +15,10 @@ export class MongoTroupRepository
     super(TroupModel, TroupError.NOT_FOUND)
   }
 
+  async listInCity({ city_id }: { city_id: string }): Promise<TroupEntity[]> {
+    return this.find({ city_id })
+  }
+
   async getInCity({
     city_id,
     code

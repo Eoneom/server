@@ -14,6 +14,7 @@ import { buildingFinishUpgradeHandler } from '#web/handler/building/finish-upgra
 import { technologyFinishResearchHandler } from '#web/handler/technology/finish-research'
 import { cityGatherHandler } from '#web/handler/city/gather'
 import { troupRecruitHandler } from '#web/handler/troup/recruit'
+import { troupListHandler } from '#web/handler/troup/list'
 
 export const router = (): Router => {
   const r = Router()
@@ -29,6 +30,7 @@ export const router = (): Router => {
   // Authenticated routes
   r.get('/city', authMiddleware, cityListHandler)
   r.put('/city/gather', authMiddleware, cityGatherHandler)
+  r.get('/city/:city_id/troup', authMiddleware, troupListHandler)
   r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
   r.get('/city/:city_id/technology', authMiddleware, technologyListHandler)
 

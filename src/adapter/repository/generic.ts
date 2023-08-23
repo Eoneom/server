@@ -20,7 +20,7 @@ export abstract class MongoGenericRepository<
   protected constructor(model: ReturnModelType<Model>, not_found_error: string) {
     this.model = model
     this.not_found_error = not_found_error
-    this.logger = Factory.getLogger('database:repository').child({ model: this.model.modelName })
+    this.logger = Factory.getLogger('adapter:repository').child({ model: this.model.modelName })
   }
 
   async exists(query: mongoose.FilterQuery<Entity>): Promise<boolean> {
