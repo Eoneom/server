@@ -1,11 +1,14 @@
+import assert from 'assert'
+
+import { Factory } from '#adapter/factory'
 import { TroupCode } from '#core/troup/constant'
 import { BaseEntity } from '#core/type/entity'
 import { FAKE_ID } from '#shared/identification'
-import { now } from '#shared/time'
 
 interface OngoingRecruitment {
   finish_at: number
   remaining_count: number
+  last_progress: number
 }
 
 type TroupEntityProps = BaseEntity & {
@@ -63,16 +66,55 @@ export class TroupEntity extends BaseEntity {
 
   launchRecruitment({
     duration,
-    count
+    count,
+    recruitment_time
   }: {
     duration: number
     count: number
+    recruitment_time: number
   }) {
     return TroupEntity.create({
       ...this,
       ongoing_recruitment: {
-        finish_at: now() + duration,
-        remaining_count: count
+        finish_at: recruitment_time + duration * 1000,
+        remaining_count: count,
+        last_progress: recruitment_time
+      }
+    })
+  }
+
+  progressRecruitment({ progress_time }: { progress_time: number}): TroupEntity {
+    assert(this.ongoing_recruitment)
+
+    const { ongoing_recruitment } = this
+    if (progress_time >= ongoing_recruitment.finish_at) {
+      return TroupEntity.create({
+        ...this,
+        count: this.count + ongoing_recruitment.remaining_count,
+        ongoing_recruitment: null
+      })
+    }
+
+    const remaining_time = ongoing_recruitment.finish_at - ongoing_recruitment.last_progress
+
+    const count_per_second = ongoing_recruitment.remaining_count / remaining_time
+
+    const time_elapsed = progress_time - ongoing_recruitment.last_progress
+    const count_since_last = Math.floor(count_per_second*time_elapsed)
+    const logger = Factory.getLogger('troup:entity')
+    logger.debug('recruit partially', {
+      time_elapsed,
+      count_since_last,
+      count_per_second
+    })
+
+    return TroupEntity.create({
+      ...this,
+      count: this.count + count_since_last,
+      ongoing_recruitment: {
+        finish_at: ongoing_recruitment.finish_at,
+        remaining_count: ongoing_recruitment.remaining_count - count_since_last,
+        last_progress: count_since_last ? progress_time : ongoing_recruitment.last_progress
       }
     })
   }

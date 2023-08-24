@@ -77,6 +77,7 @@ describe('TroupRecruitCommand', () => {
 
     assert.ok(updated_troup.ongoing_recruitment)
     assert.ok(updated_troup.ongoing_recruitment.finish_at)
+    assert.ok(updated_troup.ongoing_recruitment.last_progress)
     assert.strictEqual(updated_troup.ongoing_recruitment.remaining_count, requested_troup_count)
   })
 })

@@ -11,6 +11,9 @@ class OngoingRecruitment {
 
   @prop({ required: true })
   public remaining_count!: number
+
+  @prop({ required: true })
+  public last_progress!: number
 }
 
 class Troup {

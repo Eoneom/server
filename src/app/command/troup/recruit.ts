@@ -5,6 +5,7 @@ import { PricingService } from '#core/pricing/service'
 import { TroupCode } from '#core/troup/constant'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
+import { now } from '#shared/time'
 import assert from 'assert'
 
 interface TroupRecruitRequest {
@@ -91,7 +92,8 @@ export class TroupRecruitCommand extends GenericCommand<
 
     const updated_troup = troup.launchRecruitment({
       count,
-      duration: troup_cost.duration
+      duration: troup_cost.duration,
+      recruitment_time: now()
     })
 
     return {

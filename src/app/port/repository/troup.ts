@@ -6,5 +6,6 @@ export type TroupRepository = GenericRepository<TroupEntity> & {
   listInCity(query: { city_id: string }): Promise<TroupEntity[]>
   getInCity(query: { city_id: string, code: TroupCode }): Promise<TroupEntity>
 
+  getInProgress(query: { city_id: string }): Promise<TroupEntity | null>
   isInProgress(query: { city_id: string }): Promise<boolean>
 }

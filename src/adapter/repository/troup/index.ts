@@ -15,6 +15,16 @@ export class MongoTroupRepository
     super(TroupModel, TroupError.NOT_FOUND)
   }
 
+  async getInProgress({ city_id }: { city_id: string }): Promise<TroupEntity | null> {
+    return this.findOne({
+      city_id,
+      ongoing_recruitment: {
+        $exists: true,
+        $ne: null
+      }
+    })
+  }
+
   async listInCity({ city_id }: { city_id: string }): Promise<TroupEntity[]> {
     return this.find({ city_id })
   }
@@ -49,9 +59,10 @@ export class MongoTroupRepository
       city_id: document.city_id?.toString() ?? null,
       code: document.code,
       count: document.count,
-      ongoing_recruitment: document.ongoing_recruitment ?{
+      ongoing_recruitment: document.ongoing_recruitment ? {
         remaining_count: document.ongoing_recruitment.remaining_count,
-        finish_at: document.ongoing_recruitment.finish_at
+        finish_at: document.ongoing_recruitment.finish_at,
+        last_progress: document.ongoing_recruitment.last_progress
       } : null
     })
   }

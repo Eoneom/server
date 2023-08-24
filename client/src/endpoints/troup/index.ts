@@ -4,6 +4,10 @@ import {
   TroupListResponse
 } from './list'
 import {
+  TroupProgressRecruitRequest,
+  TroupProgressRecruitResponse
+} from './progress-recruit'
+import {
   TroupRecruitRequest,
   TroupRecruitResponse
 } from './recruit'
@@ -17,6 +21,13 @@ export class TroupEndpoint {
 
   public async recruit(token: string, body: TroupRecruitRequest): Promise<TroupRecruitResponse> {
     return this.fetcher.put('/troup/recruit', {
+      body,
+      token
+    })
+  }
+
+  public async progressRecruit(token: string, body: TroupProgressRecruitRequest): Promise<TroupProgressRecruitResponse> {
+    return this.fetcher.put('/troup/recruit/progress', {
       body,
       token
     })
