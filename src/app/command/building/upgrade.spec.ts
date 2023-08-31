@@ -7,6 +7,8 @@ import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
+import { RequirementError } from '#core/requirement/error'
+import { TechnologyCode } from '#core/technology/constant'
 import assert from 'assert'
 
 describe('BuildingUpgradeCommand', () => {
@@ -23,12 +25,12 @@ describe('BuildingUpgradeCommand', () => {
         name: 'dummy',
         player_id
       }),
-      plastic: 1000,
-      mushroom: 1000
+      plastic: 30000,
+      mushroom: 30000
     })
     building = BuildingEntity.create({
       id: 'building_id',
-      code: BuildingCode.MUSHROOM_FARM,
+      code: BuildingCode.UNIVERSITY,
       level: 0,
       city_id: city.id
     })
@@ -40,6 +42,10 @@ describe('BuildingUpgradeCommand', () => {
       building,
       city,
       is_building_in_progress: false,
+      levels: {
+        building: {},
+        technology: { [TechnologyCode.ARCHITECTURE]: 2 }
+      },
       player_id
     }
   })
@@ -77,6 +83,17 @@ describe('BuildingUpgradeCommand', () => {
       total_building_levels: 10,
       maximum_building_levels: 10
     }), new RegExp(CityError.NOT_ENOUGH_SPACE))
+  })
+
+  it('should prevent player to research if technology requirements are not met', () => {
+    assert.throws(() => command.exec({
+      ...success_params,
+      levels: {
+        ...success_params.levels,
+        building: {},
+        technology: {}
+      }
+    }), new RegExp(RequirementError.TECHNOLOGY_NOT_FULFILLED))
   })
 
   it('should purchase the upgrade', () => {

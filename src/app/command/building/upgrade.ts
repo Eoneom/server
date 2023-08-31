@@ -7,6 +7,10 @@ import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
+import {
+  Levels,
+  RequirementService
+} from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant'
 import assert from 'assert'
 
@@ -24,6 +28,7 @@ export interface BuildingUpgradeExec {
   maximum_building_levels: number
   total_building_levels: number
   building: BuildingEntity
+  levels: Levels
 }
 
 interface BuildingUpgradeSave {
@@ -56,7 +61,8 @@ export class BuildingUpgradeCommand extends GenericCommand<
       building,
       is_building_in_progress,
       maximum_building_levels,
-      total_building_levels
+      total_building_levels,
+      levels
     ] = await Promise.all([
       this.repository.technology.get({
         player_id,
@@ -69,7 +75,12 @@ export class BuildingUpgradeCommand extends GenericCommand<
       }),
       this.repository.building.isInProgress({ city_id }),
       AppService.getCityMaximumBuildingLevels({ city_id }),
-      this.repository.building.getTotalLevels({ city_id })
+      this.repository.building.getTotalLevels({ city_id }),
+      AppService.getBuildingRequirementLevels({
+        city_id,
+        player_id,
+        building_code
+      })
     ])
 
     return {
@@ -79,7 +90,8 @@ export class BuildingUpgradeCommand extends GenericCommand<
       is_building_in_progress,
       player_id,
       maximum_building_levels,
-      total_building_levels
+      total_building_levels,
+      levels
     }
   }
   exec({
@@ -89,11 +101,16 @@ export class BuildingUpgradeCommand extends GenericCommand<
     is_building_in_progress,
     total_building_levels,
     maximum_building_levels,
+    levels,
     player_id
   }: BuildingUpgradeExec): BuildingUpgradeSave {
     if (total_building_levels >= maximum_building_levels) {
       throw new Error(CityError.NOT_ENOUGH_SPACE)
     }
+    RequirementService.checkBuildingRequirement({
+      building_code: building.code,
+      levels
+    })
     const building_costs = PricingService.getBuildingLevelCost({
       level: building.level + 1,
       code: building.code,

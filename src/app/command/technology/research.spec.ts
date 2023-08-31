@@ -28,8 +28,10 @@ describe('TechnologyResearchCommand', () => {
     })
     technology = TechnologyEntity.initArchitecture({ player_id })
     success_params = {
-      required_building_levels: { [BuildingCode.RESEARCH_LAB]: 1 },
-      required_technology_levels: {},
+      levels: {
+        building: { [BuildingCode.RESEARCH_LAB]: 1 },
+        technology: {}
+      },
       technology,
       city,
       is_technology_in_progress: false,
@@ -38,14 +40,14 @@ describe('TechnologyResearchCommand', () => {
     }
   })
 
-  it('should prevent a player to upgrade building in another player city', () => {
+  it('should prevent a player to research technology in another player city', () => {
     assert.throws(() => command.exec({
       ...success_params,
       player_id: 'another_player_id',
     }), new RegExp(CityError.NOT_OWNER))
   })
 
-  it('should prevent a player to upgrade if city does not have enough resources', () => {
+  it('should prevent a player to research if city does not have enough resources', () => {
     const city_without_ressources = CityEntity.create({
       ...city,
       plastic: 0,
@@ -58,17 +60,20 @@ describe('TechnologyResearchCommand', () => {
     }), new RegExp(CityError.NOT_ENOUGH_RESOURCES))
   })
 
-  it('should prevent a player to upgrade if another technology is in progress', () => {
+  it('should prevent a player to research if another technology is in progress', () => {
     assert.throws(() => command.exec({
       ...success_params,
       is_technology_in_progress: true
     }), new RegExp(TechnologyError.ALREADY_IN_PROGRESS))
   })
 
-  it('should prevent player to upgrade if building requirements are not met', () => {
+  it('should prevent player to research if building requirements are not met', () => {
     assert.throws(() => command.exec({
       ...success_params,
-      required_building_levels: {}
+      levels: {
+        ...success_params.levels,
+        building: {}
+      }
     }), new RegExp(RequirementError.BUILDING_NOT_FULFILLED))
   })
 

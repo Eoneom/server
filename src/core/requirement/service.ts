@@ -5,10 +5,32 @@ import { RequirementError } from '#core/requirement/error'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant'
 
+export interface Levels {
+  building: Partial<Record<BuildingCode, number>>
+  technology: Partial<Record<TechnologyCode, number>>
+}
+
 export class RequirementService {
   static listBuildingRequirements(): typeof BuildingRequirement {
     return BuildingRequirement
   }
+  static getBuildingRequirement({ building_code }: { building_code: BuildingCode }): RequirementValue {
+    return BuildingRequirement[building_code]
+  }
+  static checkBuildingRequirement({
+    building_code,
+    levels
+  }: {
+    building_code: BuildingCode
+    levels: Levels
+  }): void {
+    const requirement = this.getBuildingRequirement({ building_code })
+    return this.checkRequirement({
+      requirement,
+      levels
+    })
+  }
+
   static getTechnologyRequirement({ technology_code }: { technology_code: TechnologyCode }): RequirementValue {
     return TechnologyRequirement[technology_code]
   }
@@ -17,23 +39,34 @@ export class RequirementService {
   }
   static checkTechnologyRequirement({
     technology_code,
-    building_levels,
-    technology_levels
+    levels
   }: {
-    technology_code: TechnologyCode,
-    building_levels: Partial<Record<BuildingCode, number>>,
-    technology_levels: Partial<Record<TechnologyCode, number>>
+    technology_code: TechnologyCode
+    levels: Levels
   }): void {
     const requirement = this.getTechnologyRequirement({ technology_code })
+    return this.checkRequirement({
+      requirement,
+      levels
+    })
+  }
+
+  private static checkRequirement({
+    requirement,
+    levels
+  }: {
+    requirement: RequirementValue,
+    levels: Levels
+   }): void {
     requirement.buildings.forEach((requirement) => {
-      const level = building_levels[requirement.code]
+      const level = levels.building[requirement.code]
       if (!level || level < requirement.level) {
         throw new Error(RequirementError.BUILDING_NOT_FULFILLED)
       }
     })
 
     requirement.technologies.forEach((requirement) => {
-      const level = technology_levels[requirement.code]
+      const level = levels.technology[requirement.code]
       if (!level || level < requirement.level) {
         throw new Error(RequirementError.TECHNOLOGY_NOT_FULFILLED)
       }

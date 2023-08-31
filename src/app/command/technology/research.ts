@@ -4,7 +4,9 @@ import { BuildingCode } from '#core/building/constant'
 import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
-import { RequirementService } from '#core/requirement/service'
+import {
+  Levels, RequirementService
+} from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyService } from '#core/technology/service'
@@ -21,8 +23,7 @@ export interface TechnologyResearchExec {
   city: CityEntity
   technology: TechnologyEntity
   research_lab_level: number
-  required_building_levels: Partial<Record<BuildingCode, number>>
-  required_technology_levels: Partial<Record<TechnologyCode, number>>
+  levels: Levels
   is_technology_in_progress: boolean
 }
 
@@ -53,7 +54,7 @@ export class TechnologyResearchCommand extends GenericCommand<
       technology,
       is_technology_in_progress,
       research_lab,
-      requirement
+      levels
     ] = await Promise.all([
       this.repository.city.get(city_id),
       this.repository.technology.get({
@@ -77,8 +78,7 @@ export class TechnologyResearchCommand extends GenericCommand<
       city,
       technology,
       research_lab_level: research_lab.level,
-      required_building_levels: requirement.building_levels,
-      required_technology_levels: requirement.technology_levels,
+      levels,
       is_technology_in_progress,
     }
   }
@@ -87,15 +87,13 @@ export class TechnologyResearchCommand extends GenericCommand<
     city,
     is_technology_in_progress,
     player_id,
-    required_building_levels: required_buildings,
-    required_technology_levels: required_technologies,
+    levels,
     research_lab_level,
     technology,
   }: TechnologyResearchExec): TechnologyResearchSave {
     RequirementService.checkTechnologyRequirement({
       technology_code: technology.code,
-      building_levels: required_buildings,
-      technology_levels: required_technologies
+      levels,
     })
     const technology_costs = PricingService.getTechnologyLevelCost({
       code: technology.code,

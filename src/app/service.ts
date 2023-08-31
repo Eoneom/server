@@ -2,7 +2,11 @@ import { Factory } from '#adapter/factory'
 import { BuildingCode } from '#core/building/constant'
 import { BuildingService } from '#core/building/service'
 import { CityService } from '#core/city/service'
-import { RequirementService } from '#core/requirement/service'
+import {
+  Levels,
+  RequirementService
+} from '#core/requirement/service'
+import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant'
 import { CellEntity } from '#core/world/cell.entity'
 import { WorldService } from '#core/world/service'
@@ -43,6 +47,23 @@ export class AppService {
     })
   }
 
+  static async getBuildingRequirementLevels({
+    city_id,
+    player_id,
+    building_code
+  }: {
+    city_id: string
+    player_id: string
+    building_code: BuildingCode
+  }): Promise<Levels> {
+    const requirement = RequirementService.getBuildingRequirement({ building_code })
+    return this.getRequirementLevels({
+      city_id,
+      player_id,
+      requirement
+    })
+  }
+
   static async getTechnologyRequirementLevels({
     city_id,
     player_id,
@@ -51,12 +72,27 @@ export class AppService {
     city_id: string,
     player_id: string
     technology_code: TechnologyCode
-   }): Promise<{
-    building_levels: Record<BuildingCode, number>,
-    technology_levels: Record<TechnologyCode, number>
-   }> {
-    const repository = Factory.getRepository()
+   }): Promise<Levels> {
     const requirement = RequirementService.getTechnologyRequirement({ technology_code })
+
+    return this.getRequirementLevels({
+      city_id,
+      player_id,
+      requirement
+    })
+  }
+
+  private static async getRequirementLevels({
+    city_id,
+    player_id,
+    requirement
+  }: {
+    city_id: string
+    player_id: string
+    requirement: RequirementValue
+  }): Promise<Levels> {
+    const repository = Factory.getRepository()
+
     const required_building_codes = requirement.buildings.map(req => req.code)
     const required_technology_codes = requirement.technologies.map(req => req.code)
     const [
@@ -88,8 +124,8 @@ export class AppService {
     }, {} as Record<TechnologyCode, number>)
 
     return {
-      building_levels,
-      technology_levels
+      building: building_levels,
+      technology: technology_levels
     }
   }
 
