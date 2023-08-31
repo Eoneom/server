@@ -16,7 +16,7 @@ interface TechnologyListRequest {
 export interface TechnologyListQueryResponse {
   technologies: TechnologyEntity[]
   costs: Record<string, LevelCostValue>
-  requirements: Record<TechnologyCode, RequirementValue>
+  requirement: Record<TechnologyCode, RequirementValue>
 }
 
 export class TechnologyListQuery extends GenericQuery<TechnologyListRequest, TechnologyListQueryResponse> {
@@ -43,12 +43,12 @@ export class TechnologyListQuery extends GenericQuery<TechnologyListRequest, Tec
       }
     }, {} as Record<string, LevelCostValue>)
 
-    const requirements = RequirementService.listTechnologyRequirements()
+    const requirement = RequirementService.listTechnologyRequirements()
 
     return {
       technologies,
       costs,
-      requirements
+      requirement
     }
   }
 }

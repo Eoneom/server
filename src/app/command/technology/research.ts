@@ -53,7 +53,7 @@ export class TechnologyResearchCommand extends GenericCommand<
       technology,
       is_technology_in_progress,
       research_lab,
-      requirements
+      requirement
     ] = await Promise.all([
       this.repository.city.get(city_id),
       this.repository.technology.get({
@@ -77,8 +77,8 @@ export class TechnologyResearchCommand extends GenericCommand<
       city,
       technology,
       research_lab_level: research_lab.level,
-      required_building_levels: requirements.building_levels,
-      required_technology_levels: requirements.technology_levels,
+      required_building_levels: requirement.building_levels,
+      required_technology_levels: requirement.technology_levels,
       is_technology_in_progress,
     }
   }

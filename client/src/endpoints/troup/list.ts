@@ -7,6 +7,7 @@ export interface TroupListRequest {
 
 export interface TroupListDataResponse {
   troups: {
+    id: string
     code: TroupCode
     count: number
     ongoing_recruitment?: {

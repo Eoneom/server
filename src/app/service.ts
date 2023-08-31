@@ -56,9 +56,9 @@ export class AppService {
     technology_levels: Record<TechnologyCode, number>
    }> {
     const repository = Factory.getRepository()
-    const requirements = RequirementService.getTechnologyRequirement({ technology_code })
-    const required_building_codes = requirements.buildings.map(requirement => requirement.code)
-    const required_technology_codes = requirements.technologies.map(requirement => requirement.code)
+    const requirement = RequirementService.getTechnologyRequirement({ technology_code })
+    const required_building_codes = requirement.buildings.map(req => req.code)
+    const required_technology_codes = requirement.technologies.map(req => req.code)
     const [
       buildings,
       technologies

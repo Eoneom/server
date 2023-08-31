@@ -17,7 +17,7 @@ export interface TechnologyListDataResponse {
       duration: number
     }
     research_at?: number
-    requirements: Requirement
+    requirement: Requirement
   }[]
 }
 

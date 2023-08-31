@@ -2,11 +2,13 @@ import { BuildingEndpoint } from './endpoints/building'
 import { CityEndpoint } from './endpoints/city'
 import { PlayerEndpoint } from './endpoints/player'
 import { TechnologyEndpoint } from './endpoints/technology'
+import { TroupEndpoint } from './endpoints/troup'
 import { WorldEndpoint } from './endpoints/world'
 import { Fetcher } from './fetcher'
 export { TechnologyCode } from '../../src/core/technology/constant'
 export { BuildingCode } from '../../src/core/building/constant'
 export { CellType } from '../../src/core/world/value/cell-type'
+export { TroupCode } from '../../src/core/troup/constant'
 
 export * from './endpoints'
 export * from './response'
@@ -17,6 +19,7 @@ export class Client {
   public player: PlayerEndpoint
   public building: BuildingEndpoint
   public technology: TechnologyEndpoint
+  public troup: TroupEndpoint
   public world: WorldEndpoint
 
   constructor({ base_url }: { base_url: string }) {
@@ -26,6 +29,7 @@ export class Client {
     this.player = new PlayerEndpoint({ fetcher: this.fetcher })
     this.building = new BuildingEndpoint({ fetcher: this.fetcher })
     this.technology = new TechnologyEndpoint({ fetcher: this.fetcher })
+    this.troup = new TroupEndpoint({ fetcher: this.fetcher })
     this.world = new WorldEndpoint({ fetcher: this.fetcher })
   }
 }
