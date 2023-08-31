@@ -1,4 +1,5 @@
 import { BuildingCancelCommand } from '#app/command/building/cancel'
+import { BuildingCode } from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
@@ -21,7 +22,10 @@ describe('BuildingCancelCommand', () => {
 
     command = new BuildingCancelCommand()
     building = BuildingEntity.create({
-      ...BuildingEntity.initMushroomFarm({ city_id: city.id }),
+      id: 'building_id',
+      code: BuildingCode.MUSHROOM_FARM,
+      level: 0,
+      city_id: city.id,
       upgrade_at: now() + 1000 * 60
     })
   })

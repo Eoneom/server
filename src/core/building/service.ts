@@ -3,19 +3,19 @@ import {
 } from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
+import { FAKE_ID } from '#shared/identification'
 import { Resource } from '#shared/resource'
 
 export class BuildingService {
   static init({ city_id }: { city_id: string }): BuildingEntity[] {
-    const recycling_plant = BuildingEntity.initRecyclingPlant({ city_id })
-    const mushroom_farm = BuildingEntity.initMushroomFarm({ city_id })
-    const research_lab = BuildingEntity.initResearchLab({ city_id })
-
-    return [
-      recycling_plant,
-      mushroom_farm,
-      research_lab
-    ]
+    return Object.values(BuildingCode).map(code => {
+      return BuildingEntity.create({
+        id: FAKE_ID,
+        code,
+        city_id,
+        level: 0
+      })
+    })
   }
 
   static launchUpgrade({

@@ -44,4 +44,18 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
       multiplier: 1.85
     }
   },
+  [BuildingCode.UNIVERSITY]: {
+    plastic: {
+      base: 15000,
+      multiplier: 1.3
+    },
+    mushroom: {
+      base: 3000,
+      multiplier: 1.2
+    },
+    duration: {
+      base: 3600,
+      multiplier: 1.5
+    }
+  }
 }

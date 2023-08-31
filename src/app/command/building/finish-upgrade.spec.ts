@@ -1,4 +1,5 @@
 import { BuildingFinishUpgradeCommand } from '#app/command/building/finish-upgrade'
+import { BuildingCode } from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
@@ -23,7 +24,10 @@ describe('BuildingFinishUpgradeCommand', () => {
       mushroom: 1000
     })
     building_to_finish = BuildingEntity.create({
-      ...BuildingEntity.initMushroomFarm({ city_id: city.id }),
+      id: 'building_id',
+      level: 0,
+      code: BuildingCode.MUSHROOM_FARM,
+      city_id: city.id,
       upgrade_at: now()
     })
   })

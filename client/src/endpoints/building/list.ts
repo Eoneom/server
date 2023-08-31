@@ -1,5 +1,6 @@
 import { BuildingCode } from '../../../../src/core/building/constant'
 import { GenericResponse } from '../../response'
+import { Requirement } from '../requirement'
 
 export interface BuildingListRequest {
   city_id: string
@@ -17,6 +18,7 @@ export interface BuildingListDataResponse {
       duration: number
     }
     upgrade_at?: number
+    requirement: Requirement
   }[]
 }
 

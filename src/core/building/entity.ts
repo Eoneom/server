@@ -37,33 +37,6 @@ export class BuildingEntity extends BaseEntity {
     return new BuildingEntity(props)
   }
 
-  static initRecyclingPlant({ city_id }: { city_id: string }): BuildingEntity {
-    return new BuildingEntity({
-      id: FAKE_ID,
-      city_id,
-      code: BuildingCode.RECYCLING_PLANT,
-      level: 0
-    })
-  }
-
-  static initMushroomFarm({ city_id }: { city_id: string }): BuildingEntity {
-    return new BuildingEntity({
-      id: FAKE_ID,
-      city_id,
-      code: BuildingCode.MUSHROOM_FARM,
-      level: 0
-    })
-  }
-
-  static initResearchLab({ city_id }: { city_id: string }): BuildingEntity {
-    return new BuildingEntity({
-      id: FAKE_ID,
-      city_id,
-      code: BuildingCode.RESEARCH_LAB,
-      level: 0
-    })
-  }
-
   cancel(): BuildingEntity {
     return new BuildingEntity({
       ...this,

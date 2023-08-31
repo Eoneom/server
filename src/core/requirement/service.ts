@@ -1,10 +1,14 @@
 import { BuildingCode } from '#core/building/constant'
+import { BuildingRequirement } from '#core/requirement/constant/building'
 import { TechnologyRequirement } from '#core/requirement/constant/technology'
 import { RequirementError } from '#core/requirement/error'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant'
 
 export class RequirementService {
+  static listBuildingRequirements(): typeof BuildingRequirement {
+    return BuildingRequirement
+  }
   static getTechnologyRequirement({ technology_code }: { technology_code: TechnologyCode }): RequirementValue {
     return TechnologyRequirement[technology_code]
   }

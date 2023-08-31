@@ -3,6 +3,9 @@ import { BuildingEntity } from '#core/building/entity'
 import { PricingService } from '#core/pricing/service'
 import { LevelCostValue } from '#core/pricing/value/level'
 import { TechnologyCode } from '#core/technology/constant'
+import { BuildingCode } from '#core/building/constant'
+import { RequirementValue } from '#core/requirement/value/requirement'
+import { RequirementService } from '#core/requirement/service'
 
 export interface ListBuildingRequest {
   city_id: string,
@@ -12,6 +15,7 @@ export interface ListBuildingRequest {
 export interface ListBuildingQueryResponse {
   buildings: BuildingEntity[],
   costs: Record<string, LevelCostValue>
+  requirement: Record<BuildingCode, RequirementValue>
 }
 
 export class BuildingListQuery extends GenericQuery<ListBuildingRequest, ListBuildingQueryResponse> {
@@ -36,9 +40,12 @@ export class BuildingListQuery extends GenericQuery<ListBuildingRequest, ListBui
       }
     }, {} as Record<string, LevelCostValue>)
 
+    const requirement = RequirementService.listBuildingRequirements()
+
     return {
       buildings,
-      costs
+      costs,
+      requirement
     }
   }
 }

@@ -2,6 +2,7 @@ import {
   BuildingUpgradeCommand,
   BuildingUpgradeExec
 } from '#app/command/building/upgrade'
+import { BuildingCode } from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
@@ -25,7 +26,12 @@ describe('BuildingUpgradeCommand', () => {
       plastic: 1000,
       mushroom: 1000
     })
-    building = BuildingEntity.initMushroomFarm({ city_id: city.id })
+    building = BuildingEntity.create({
+      id: 'building_id',
+      code: BuildingCode.MUSHROOM_FARM,
+      level: 0,
+      city_id: city.id
+    })
 
     success_params = {
       architecture_level: 0,

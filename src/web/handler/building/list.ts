@@ -1,12 +1,16 @@
 import {
-  NextFunction, Request, Response
+  NextFunction,
+  Request,
+  Response
 } from 'express'
 import {
-  BuildingListResponse, BuildingListDataResponse
+  BuildingListResponse,
+  BuildingListDataResponse
 } from '#client/src/endpoints/building/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
-  BuildingListQuery, ListBuildingQueryResponse
+  BuildingListQuery,
+  ListBuildingQueryResponse
 } from '#query/building/list'
 
 export const buildingListHandler = async (
@@ -41,7 +45,9 @@ export const buildingListHandler = async (
 }
 
 const response_mapper = ({
-  buildings, costs
+  buildings,
+  costs,
+  requirement
 }: ListBuildingQueryResponse): BuildingListDataResponse => {
   const response_buildings: BuildingListDataResponse['buildings'] = buildings.map(building => {
     const cost = costs[building.id]
@@ -55,7 +61,8 @@ const response_mapper = ({
         plastic: cost.resource.plastic,
         mushroom: cost.resource.mushroom,
         duration: cost.duration
-      }
+      },
+      requirement: requirement[building.code]
     }
   })
 
