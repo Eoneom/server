@@ -85,9 +85,10 @@ export class TroupEntity extends BaseEntity {
 
   progressRecruitment({ progress_time }: { progress_time: number}): TroupEntity {
     assert(this.ongoing_recruitment)
-
+    const logger = Factory.getLogger('troup:entity')
     const { ongoing_recruitment } = this
     if (progress_time >= ongoing_recruitment.finish_at) {
+      logger.debug('recruit totally')
       return TroupEntity.create({
         ...this,
         count: this.count + ongoing_recruitment.remaining_count,
@@ -101,7 +102,6 @@ export class TroupEntity extends BaseEntity {
 
     const time_elapsed = progress_time - ongoing_recruitment.last_progress
     const count_since_last = Math.floor(count_per_second*time_elapsed)
-    const logger = Factory.getLogger('troup:entity')
     logger.debug('recruit partially', {
       time_elapsed,
       count_since_last,
@@ -116,6 +116,13 @@ export class TroupEntity extends BaseEntity {
         remaining_count: ongoing_recruitment.remaining_count - count_since_last,
         last_progress: count_since_last ? progress_time : ongoing_recruitment.last_progress
       }
+    })
+  }
+
+  cancel(): TroupEntity {
+    return TroupEntity.create({
+      ...this,
+      ongoing_recruitment: null
     })
   }
 }

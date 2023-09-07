@@ -1,5 +1,9 @@
 import { Fetcher } from '../../fetcher'
 import {
+  TroupCancelRequest,
+  TroupCancelResponse
+} from './cancel'
+import {
   TroupListRequest,
   TroupListResponse
 } from './list'
@@ -35,5 +39,12 @@ export class TroupEndpoint {
 
   public async list(token: string, { city_id }: TroupListRequest): Promise<TroupListResponse> {
     return this.fetcher.get(`/city/${city_id}/troup`, { token })
+  }
+
+  public async cancel(token: string, body: TroupCancelRequest): Promise<TroupCancelResponse> {
+    return this.fetcher.put('/troup/cancel', {
+      body,
+      token
+    })
   }
 }
