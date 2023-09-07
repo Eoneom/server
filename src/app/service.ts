@@ -11,6 +11,7 @@ import { TechnologyCode } from '#core/technology/constant'
 import { TroupCode } from '#core/troup/constant'
 import { CellEntity } from '#core/world/cell.entity'
 import { WorldService } from '#core/world/service'
+import { Coordinates } from '#core/world/value/coordinates'
 import { Resource } from '#shared/resource'
 
 export class AppService {
@@ -156,5 +157,33 @@ export class AppService {
         return cell
       }
     }
+  }
+
+  static async getCellsAround({ coordinates }: { coordinates: Coordinates }): Promise<CellEntity[]> {
+    const repository = Factory.getRepository()
+    const all_coordinates: Coordinates[] = [
+      {
+        x: coordinates.x - 1,
+        y: coordinates.y,
+        sector: coordinates.sector
+      },
+      {
+        x: coordinates.x,
+        y: coordinates.y - 1,
+        sector: coordinates.sector
+      },
+      {
+        x: coordinates.x + 1,
+        y: coordinates.y,
+        sector: coordinates.sector
+      },
+      {
+        x: coordinates.x,
+        y: coordinates.y + 1,
+        sector: coordinates.sector
+      }
+    ]
+
+    return Promise.all(all_coordinates.map(cell_coordinates => repository.cell.getCell({ coordinates: cell_coordinates })))
   }
 }

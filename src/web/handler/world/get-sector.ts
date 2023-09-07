@@ -3,11 +3,14 @@ import {
 } from 'express'
 import {
   WorldGetSectorDataResponse,
-  WorldGetSectorRequest, WorldGetSectorResponse
+  WorldGetSectorRequest,
+  WorldGetSectorResponse
 } from '#client/src/endpoints/world/get-sector'
 import {
   WorldGetSectorQuery, WorldGetSectorQueryResponse
 } from '#app/query/world/get-sector'
+import { getPlayerIdFromContext } from '#web/helpers'
+import { CellEntity } from '#core/world/cell.entity'
 
 export const worldGetSectorHandler = async (
   req: Request<WorldGetSectorRequest>,
@@ -23,10 +26,20 @@ export const worldGetSectorHandler = async (
   }
 
   try {
+    const player_id = getPlayerIdFromContext(res)
     const query = new WorldGetSectorQuery()
-    const { cells } = await query.get({ sector: Number.parseInt(`${sector}`) })
+    const {
+      cells,
+      explored_cell_ids
+    } = await query.get({
+      player_id,
+      sector: Number.parseInt(`${sector}`)
+    })
 
-    const response = response_mapper({ cells })
+    const response = response_mapper({
+      cells,
+      explored_cell_ids
+    })
 
     return res.json({
       status: 'ok',
@@ -37,14 +50,40 @@ export const worldGetSectorHandler = async (
   }
 }
 
-const response_mapper = ({ cells }: WorldGetSectorQueryResponse): WorldGetSectorDataResponse => {
+const response_mapper = ({
+  cells,
+  explored_cell_ids
+}: WorldGetSectorQueryResponse): WorldGetSectorDataResponse => {
+
   return {
-    cells: cells.map(cell => ({
-      coordinates: {
-        x: cell.coordinates.x,
-        y: cell.coordinates.y,
-      },
-      type: cell.type
+    cells: cells.map(cell => cell_mapper({
+      cell,
+      explored_cell_ids
     }))
+  }
+}
+
+const cell_mapper = ({
+  cell,
+  explored_cell_ids
+}: {
+  cell: CellEntity,
+  explored_cell_ids: string[]
+}): WorldGetSectorDataResponse['cells'][number] => {
+  const is_explored = explored_cell_ids.some((explored_cell_id) => explored_cell_id === cell.id)
+  const characteristic: WorldGetSectorDataResponse['cells'][number]['characteristic'] = is_explored ? {
+    type: cell.type,
+    resource_coefficient: {
+      plastic: cell.resource_coefficient.plastic,
+      mushroom: cell.resource_coefficient.mushroom
+    }
+  } : undefined
+
+  return {
+    coordinates: {
+      x: cell.coordinates.x,
+      y: cell.coordinates.y
+    },
+    characteristic
   }
 }

@@ -6,6 +6,7 @@ import { TechnologyRepository } from '#app/port/repository/technology'
 import { CellRepository } from '#app/port/repository/cell'
 import { BaseEntity } from '#core/type/entity'
 import { TroupRepository } from '#app/port/repository/troup'
+import { ExplorationRepository } from '#app/port/repository/exploration'
 
 export interface GenericRepository<Entity extends BaseEntity> {
   create(entity: Entity | Omit<Entity, 'id'>): Promise<string>
@@ -14,10 +15,12 @@ export interface GenericRepository<Entity extends BaseEntity> {
 
 export interface Repository {
   connect(): Promise<void>
+
   auth: AuthRepository
   building: BuildingRepository
   cell: CellRepository
   city: CityRepository
+  exploration: ExplorationRepository
   player: PlayerRepository
   technology: TechnologyRepository
   troup: TroupRepository

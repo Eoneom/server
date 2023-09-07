@@ -14,18 +14,21 @@ import assert from 'assert'
 describe('AuthSignupCommand', () => {
   const player_name = 'player_name'
   const city_name = 'city_name'
-  const city_first_cell = CellEntity.create({
-    id: FAKE_ID,
+  const default_cell_params = {
     type: CellType.FOREST,
+    resource_coefficient: {
+      plastic: 1,
+      mushroom: 1
+    }
+  }
+  const city_first_cell = CellEntity.create({
+    ...default_cell_params,
+    id: FAKE_ID,
     coordinates: {
       x: 1,
       y: 1,
       sector: 1
     },
-    resource_coefficient: {
-      plastic: 1,
-      mushroom: 1
-    }
   })
 
   let command: AuthSignupCommand
@@ -38,7 +41,46 @@ describe('AuthSignupCommand', () => {
       does_player_exist: false,
       player_name,
       city_name,
-      city_first_cell
+      city_first_cell,
+      cells_around_city: [
+        CellEntity.create({
+          ...default_cell_params,
+          id: 'cell_id_1',
+          coordinates: {
+            sector: 1,
+            x: 0,
+            y: 1
+          }
+        }),
+
+        CellEntity.create({
+          ...default_cell_params,
+          id: 'cell_id_2',
+          coordinates: {
+            sector: 1,
+            x: 1,
+            y: 0
+          }
+        }),
+        CellEntity.create({
+          ...default_cell_params,
+          id: 'cell_id_3',
+          coordinates: {
+            sector: 1,
+            x: 2,
+            y: 1
+          }
+        }),
+        CellEntity.create({
+          ...default_cell_params,
+          id: 'cell_id_4',
+          coordinates: {
+            sector: 1,
+            x: 1,
+            y: 2
+          }
+        }),
+      ]
     }
   })
 
@@ -101,5 +143,15 @@ describe('AuthSignupCommand', () => {
     } = command.exec(success_params)
 
     assert.strictEqual(cell.city_id, city.id)
+  })
+
+  it('should init the exploration cells in the world next to the initial city', () => {
+    const {
+      exploration,
+      player
+    } = command.exec(success_params)
+
+    assert.strictEqual(exploration.cell_ids.length, 5)
+    assert.strictEqual(exploration.player_id, player.id)
   })
 })

@@ -12,7 +12,13 @@ export interface WorldGetSectorDataResponse {
       x: number
       y: number
     }
-    type: CellType
+    characteristic?: {
+      type: CellType
+      resource_coefficient: {
+        plastic: number
+        mushroom: number
+      }
+    }
   }[]
 }
 

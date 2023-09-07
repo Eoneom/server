@@ -3,16 +3,25 @@ import { GenericQuery } from '#query/generic'
 
 interface WorldGetSectorQueryRequest {
   sector: number
+  player_id: string
 }
 
 export interface WorldGetSectorQueryResponse {
   cells: CellEntity[]
+  explored_cell_ids: string[]
 }
 
 export class WorldGetSectorQuery extends GenericQuery<WorldGetSectorQueryRequest, WorldGetSectorQueryResponse> {
-  async get({ sector }: WorldGetSectorQueryRequest): Promise<WorldGetSectorQueryResponse> {
+  async get({
+    sector,
+    player_id
+  }: WorldGetSectorQueryRequest): Promise<WorldGetSectorQueryResponse> {
     const cells = await this.repository.cell.getSector({ sector })
+    const exploration = await this.repository.exploration.getCells({ player_id })
 
-    return { cells }
+    return {
+      cells,
+      explored_cell_ids: exploration.cell_ids
+    }
   }
 }

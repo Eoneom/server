@@ -11,6 +11,7 @@ import { TechnologyService } from '#core/technology/service'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupService } from '#core/troup/service'
 import { CellEntity } from '#core/world/cell.entity'
+import { ExplorationEntity } from '#core/world/exploration.entity'
 
 export interface AuthSignupRequest {
   city_name: string
@@ -19,6 +20,7 @@ export interface AuthSignupRequest {
 
 export interface AuthSignupExec {
   city_first_cell: CellEntity
+  cells_around_city: CellEntity[]
   city_name: string
   does_city_exist: boolean
   does_player_exist: boolean
@@ -29,6 +31,7 @@ interface AuthSignupSave {
   buildings: BuildingEntity[]
   cell: CellEntity
   city: CityEntity
+  exploration: ExplorationEntity
   player: PlayerEntity
   technologies: TechnologyEntity[]
   troups: TroupEntity[]
@@ -56,19 +59,22 @@ export class AuthSignupCommand extends GenericCommand<
     const [
       does_player_exist,
       does_city_exist,
-      city_first_cell
+      city_first_cell,
     ] = await Promise.all([
       this.repository.player.exist(player_name),
       this.repository.city.exist(city_name),
-      AppService.selectCityFirstCell()
+      AppService.selectCityFirstCell(),
     ])
 
+    const cells_around_city = await AppService.getCellsAround({ coordinates: city_first_cell.coordinates })
+
     return {
+      cells_around_city,
+      city_first_cell,
+      city_name,
       does_city_exist,
       does_player_exist,
       player_name,
-      city_name,
-      city_first_cell
     }
   }
 
@@ -77,7 +83,8 @@ export class AuthSignupCommand extends GenericCommand<
     does_player_exist,
     player_name,
     city_name,
-    city_first_cell
+    city_first_cell,
+    cells_around_city
   }: AuthSignupExec): AuthSignupSave {
     const player = PlayerService.init({
       name: player_name,
@@ -95,6 +102,13 @@ export class AuthSignupCommand extends GenericCommand<
       city_id: city.id
     })
     const cell = city_first_cell.assign({ city_id: city.id })
+    const exploration = ExplorationEntity.init({
+      player_id: player.id,
+      cell_ids: [
+        ...cells_around_city.map(c => c.id),
+        cell.id
+      ]
+    })
 
     return {
       player,
@@ -102,17 +116,19 @@ export class AuthSignupCommand extends GenericCommand<
       buildings,
       technologies,
       cell,
-      troups
+      troups,
+      exploration
     }
   }
 
   async save({
-    player,
-    city,
     buildings,
-    technologies,
     cell,
-    troups
+    city,
+    exploration,
+    player,
+    technologies,
+    troups,
   }: AuthSignupSave): Promise<AuthSignupResponse> {
     await Promise.all([
       this.repository.player.create(player),
@@ -120,7 +136,8 @@ export class AuthSignupCommand extends GenericCommand<
       ...buildings.map(building => this.repository.building.create(building)),
       ...technologies.map(technology => this.repository.technology.create(technology)),
       this.repository.cell.updateOne(cell),
-      ...troups.map(troup => this.repository.troup.create(troup))
+      ...troups.map(troup => this.repository.troup.create(troup)),
+      this.repository.exploration.create(exploration)
     ])
 
     return {

@@ -16,12 +16,15 @@ import { CellRepository } from '#app/port/repository/cell'
 import { MongoCellRepository } from '#adapter/repository/cell/index'
 import { TroupRepository } from '#app/port/repository/troup'
 import { MongoTroupRepository } from '#adapter/repository/troup/index'
+import { ExplorationRepository } from '#app/port/repository/exploration'
+import { MongoExplorationRepository } from '#adapter/repository/exploration/index'
 
 export class MongoRepository implements Repository {
   auth: AuthRepository
   building: BuildingRepository
   cell: CellRepository
   city: CityRepository
+  exploration: ExplorationRepository
   player: PlayerRepository
   technology: TechnologyRepository
   troup: TroupRepository
@@ -31,6 +34,7 @@ export class MongoRepository implements Repository {
     this.building = new MongoBuildingRepository()
     this.cell = new MongoCellRepository()
     this.city = new MongoCityRepository()
+    this.exploration = new MongoExplorationRepository()
     this.player = new MongoPlayerRepository()
     this.technology = new MongoTechnologyRepository()
     this.troup = new MongoTroupRepository()
