@@ -2,8 +2,10 @@ import {
   TroupRecruitCommand,
   TroupRecruitExec
 } from '#app/command/troup/recruit'
+import { BuildingCode } from '#core/building/constant'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
+import { RequirementError } from '#core/requirement/error'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import assert from 'assert'
@@ -36,7 +38,11 @@ describe('TroupRecruitCommand', () => {
       city,
       count: requested_troup_count,
       troup,
-      is_recruitment_in_progress: false
+      is_recruitment_in_progress: false,
+      levels: {
+        building: { [BuildingCode.UNIVERSITY]: 1 },
+        technology: {}
+      },
     }
   })
 
@@ -64,6 +70,16 @@ describe('TroupRecruitCommand', () => {
       is_recruitment_in_progress: true
     }), new RegExp(TroupError.ALREADY_IN_PROGRESS))
   ))
+
+  it('should prevent player to recruit if building requirements are not met', () => {
+    assert.throws(() => command.exec({
+      ...success_params,
+      levels: {
+        ...success_params.levels,
+        building: {}
+      }
+    }), new RegExp(RequirementError.BUILDING_NOT_FULFILLED))
+  })
 
   it('should purchase the troups in the city', () => {
     const { city: updated_city } = command.exec(success_params)

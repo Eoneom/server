@@ -1,7 +1,11 @@
 import { GenericCommand } from '#app/command/generic'
+import { AppService } from '#app/service'
 import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
+import {
+  Levels, RequirementService
+} from '#core/requirement/service'
 import { TroupCode } from '#core/troup/constant'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
@@ -20,6 +24,7 @@ export interface TroupRecruitExec {
   count: number
   is_recruitment_in_progress: boolean
   player_id: string
+  levels: Levels
   troup: TroupEntity
 }
 
@@ -51,14 +56,20 @@ export class TroupRecruitCommand extends GenericCommand<
     const [
       troup,
       is_recruitment_in_progress,
-      city
+      city,
+      levels
     ] = await Promise.all([
       this.repository.troup.getInCity({
         city_id,
         code: troup_code
       }),
       this.repository.troup.isInProgress({ city_id }),
-      this.repository.city.get(city_id)
+      this.repository.city.get(city_id),
+      AppService.getTroupRequirementLevels({
+        city_id,
+        player_id,
+        troup_code
+      })
     ])
 
     return {
@@ -66,7 +77,8 @@ export class TroupRecruitCommand extends GenericCommand<
       count,
       city,
       is_recruitment_in_progress,
-      player_id
+      player_id,
+      levels
     }
   }
   exec({
@@ -75,10 +87,17 @@ export class TroupRecruitCommand extends GenericCommand<
     is_recruitment_in_progress,
     player_id,
     troup,
+    levels
   }: TroupRecruitExec): TroupRecruitSave {
     if (is_recruitment_in_progress) {
       throw new Error(TroupError.ALREADY_IN_PROGRESS)
     }
+
+    RequirementService.checkTroupRequirement({
+      troup_code: troup.code,
+      levels,
+    })
+
     const troup_cost = PricingService.getTroupCost({
       code: troup.code,
       count

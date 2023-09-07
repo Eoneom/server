@@ -8,6 +8,7 @@ import {
 } from '#core/requirement/service'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant'
+import { TroupCode } from '#core/troup/constant'
 import { CellEntity } from '#core/world/cell.entity'
 import { WorldService } from '#core/world/service'
 import { Resource } from '#shared/resource'
@@ -75,6 +76,23 @@ export class AppService {
    }): Promise<Levels> {
     const requirement = RequirementService.getTechnologyRequirement({ technology_code })
 
+    return this.getRequirementLevels({
+      city_id,
+      player_id,
+      requirement
+    })
+  }
+
+  static async getTroupRequirementLevels({
+    city_id,
+    player_id,
+    troup_code
+  }: {
+    city_id: string
+    player_id: string
+    troup_code: TroupCode
+  }): Promise<Levels> {
+    const requirement = RequirementService.getTroupRequirement({ troup_code })
     return this.getRequirementLevels({
       city_id,
       player_id,

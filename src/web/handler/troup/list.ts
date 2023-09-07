@@ -43,7 +43,8 @@ export const troupListHandler = async (
 
 const response_mapper = ({
   troups,
-  costs
+  costs,
+  requirement
 }: TroupListQueryResponse): TroupListDataResponse => {
   const response_troups: TroupListDataResponse['troups'] = troups.map(troup => {
     const cost = costs[troup.id]
@@ -60,7 +61,8 @@ const response_mapper = ({
         plastic: cost.resource.plastic,
         mushroom: cost.resource.mushroom,
         duration: cost.duration
-      }
+      },
+      requirement: requirement[troup.code]
     }
   })
 

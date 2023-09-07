@@ -1,9 +1,11 @@
 import { BuildingCode } from '#core/building/constant'
 import { BuildingRequirement } from '#core/requirement/constant/building'
 import { TechnologyRequirement } from '#core/requirement/constant/technology'
+import { TroupRequirement } from '#core/requirement/constant/troup'
 import { RequirementError } from '#core/requirement/error'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant'
+import { TroupCode } from '#core/troup/constant'
 
 export interface Levels {
   building: Partial<Record<BuildingCode, number>>
@@ -11,6 +13,26 @@ export interface Levels {
 }
 
 export class RequirementService {
+  static listTroupRequirements(): typeof TroupRequirement {
+    return TroupRequirement
+  }
+  static getTroupRequirement({ troup_code }: { troup_code: TroupCode }): RequirementValue {
+    return TroupRequirement[troup_code]
+  }
+  static checkTroupRequirement({
+    troup_code,
+    levels
+  }: {
+    troup_code: TroupCode,
+    levels: Levels
+  }): void {
+    const requirement = this.getTroupRequirement({ troup_code })
+    return this.checkRequirement({
+      requirement,
+      levels
+    })
+  }
+
   static listBuildingRequirements(): typeof BuildingRequirement {
     return BuildingRequirement
   }

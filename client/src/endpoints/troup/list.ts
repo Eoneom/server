@@ -1,5 +1,6 @@
 import { TroupCode } from '../../../../src/core/troup/constant'
 import { GenericResponse } from '../../response'
+import { Requirement } from '../requirement'
 
 export interface TroupListRequest {
   city_id: string
@@ -19,6 +20,7 @@ export interface TroupListDataResponse {
       mushroom: number
       duration: number
     }
+    requirement: Requirement
   }[]
 }
 

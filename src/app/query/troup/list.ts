@@ -2,6 +2,9 @@ import { GenericQuery } from '#query/generic'
 import { PricingService } from '#core/pricing/service'
 import { TroupEntity } from '#core/troup/entity'
 import { CountCostValue } from '#core/pricing/value/count'
+import { TroupCode } from '#core/troup/constant'
+import { RequirementValue } from '#core/requirement/value/requirement'
+import { RequirementService } from '#core/requirement/service'
 
 export interface TroupListQueryRequest {
   city_id: string,
@@ -11,6 +14,7 @@ export interface TroupListQueryRequest {
 export interface TroupListQueryResponse {
   troups: TroupEntity[],
   costs: Record<string, CountCostValue>
+  requirement: Record<TroupCode, RequirementValue>
 }
 
 export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupListQueryResponse> {
@@ -28,9 +32,12 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
       }
     }, {} as Record<string, CountCostValue>)
 
+    const requirement = RequirementService.listTroupRequirements()
+
     return {
       troups,
-      costs
+      costs,
+      requirement
     }
   }
 }
