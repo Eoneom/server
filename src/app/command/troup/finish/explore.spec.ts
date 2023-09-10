@@ -111,4 +111,11 @@ describe('TroupFinishExploreCommand', () => {
     assert.strictEqual(movement_to_create.action, MovementAction.BASE)
     assert.strictEqual(troup.movement_id, movement_to_create.id)
   })
+
+  it('should create a report describing the explored cell', () => {
+    const { report } = command.exec(success_params)
+
+    assert.strictEqual(report.troups.length, 1)
+    assert.strictEqual(report.troups[0].code, TroupCode.EXPLORER)
+  })
 })

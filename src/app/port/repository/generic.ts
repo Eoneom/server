@@ -8,6 +8,7 @@ import { BaseEntity } from '#core/type/entity'
 import { TroupRepository } from '#app/port/repository/troup'
 import { ExplorationRepository } from '#app/port/repository/exploration'
 import { MovementRepository } from '#app/port/repository/movement'
+import { ReportRepository } from '#app/port/repository/report'
 
 export interface GenericRepository<Entity extends BaseEntity> {
   create(entity: Entity | Omit<Entity, 'id'>): Promise<string>
@@ -25,6 +26,7 @@ export interface Repository {
   exploration: ExplorationRepository
   movement: MovementRepository
   player: PlayerRepository
+  report: ReportRepository
   technology: TechnologyRepository
   troup: TroupRepository
 }
