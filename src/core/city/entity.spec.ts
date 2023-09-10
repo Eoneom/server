@@ -21,8 +21,11 @@ describe('CityEntity', () => {
   describe('purchase', () => {
     it('should prevent purchase when city does not have required resources', () => {
       assert.throws(() => city.purchase({
-        plastic: 10000,
-        mushroom: 10000
+        player_id,
+        resource: {
+          plastic: 10000,
+          mushroom: 10000
+        }
       }), new RegExp(CityError.NOT_ENOUGH_RESOURCES))
     })
 
@@ -31,8 +34,11 @@ describe('CityEntity', () => {
       const mushroom_cost = 20
 
       const updated_city = city.purchase({
-        plastic: plastic_cost,
-        mushroom: mushroom_cost
+        player_id,
+        resource: {
+          plastic: plastic_cost,
+          mushroom: mushroom_cost
+        }
       })
 
       assert.strictEqual(updated_city.plastic, STARTING_PLASTIC - plastic_cost)
@@ -45,8 +51,11 @@ describe('CityEntity', () => {
       const plastic_refund = 10
       const mushroom_refund = 20
       const updated_city = city.refund({
-        plastic: plastic_refund,
-        mushroom: mushroom_refund
+        player_id,
+        resource: {
+          plastic: plastic_refund,
+          mushroom: mushroom_refund
+        }
       })
 
       assert.strictEqual(updated_city.plastic, STARTING_PLASTIC + plastic_refund)
@@ -60,6 +69,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
+        player_id,
         earnings_per_second: {
           plastic: 0,
           mushroom: 0
@@ -79,6 +89,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
+        player_id,
         earnings_per_second: {
           plastic: 1000,
           mushroom: 1000
@@ -98,6 +109,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
+        player_id,
         earnings_per_second: {
           plastic: 1000,
           mushroom: 1000
@@ -120,6 +132,7 @@ describe('CityEntity', () => {
         updated,
         city: updated_city
       } = city.gather({
+        player_id,
         earnings_per_second: {
           plastic: plastic_earnings,
           mushroom: mushroom_earnings

@@ -4,14 +4,11 @@ import {
 } from '#core/world/constant/size'
 import { CellEntity } from '#core/world/cell.entity'
 import { PerlinService } from '#core/world/perlin'
-import { CellType } from '#core/world/value/cell-type'
 import { Coordinates } from '#core/world/value/coordinates'
-import { FAKE_ID } from '#shared/identification'
 import {
   normalizeCoordinate,
   normalizeSector
 } from '#core/world/helper'
-import { ExplorationEntity } from '#core/world/exploration.entity'
 
 export class WorldService {
   static generate () {
@@ -57,24 +54,6 @@ export class WorldService {
     return global_distance * 10000
   }
 
-  static explore({
-    explored_cell_ids,
-    exploration,
-  }: {
-    explored_cell_ids: string[]
-    exploration: ExplorationEntity
-  }): ExplorationEntity {
-    const new_cell_ids = new Set([
-      ...exploration.cell_ids,
-      ...explored_cell_ids
-    ])
-
-    return ExplorationEntity.create({
-      ...exploration,
-      cell_ids: Array.from(new_cell_ids)
-    })
-  }
-
   private static getGlobalCoordinates(local_coordinates: Coordinates): {
     x: number
     y: number
@@ -117,47 +96,25 @@ export class WorldService {
           sector_y
         })
 
-        const type = this.getType({
-          mushroom_coefficient,
-          plastic_coefficient
-        })
-
-        sector.push(CellEntity.create({
-          id: FAKE_ID,
+        const generated_cell = CellEntity.generate({
           coordinates: {
             x,
             y,
             sector: sector_id
           },
-          type,
-          resource_coefficient: {
+          coefficient: {
             plastic: plastic_coefficient,
             mushroom: mushroom_coefficient
           }
-        }))
+        })
+
+        sector.push(generated_cell)
       }
     }
 
     return sector
   }
 
-  private static getType({
-    mushroom_coefficient,
-    plastic_coefficient
-  }: {
-    mushroom_coefficient: number
-    plastic_coefficient: number
-  }): CellType {
-    const threshold = 0.075
-
-    if (plastic_coefficient > mushroom_coefficient && plastic_coefficient - mushroom_coefficient > threshold) {
-      return CellType.RUINS
-    } else if (mushroom_coefficient > plastic_coefficient && mushroom_coefficient - plastic_coefficient > threshold) {
-      return CellType.FOREST
-    }
-
-    return CellType.LAKE
-  }
 
   private static getCoefficient({
     perlin,

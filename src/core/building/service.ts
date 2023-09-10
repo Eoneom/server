@@ -2,7 +2,6 @@ import {
   BuildingCode, building_earnings
 } from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingError } from '#core/building/error'
 import { FAKE_ID } from '#shared/identification'
 import { Resource } from '#shared/resource'
 
@@ -16,22 +15,6 @@ export class BuildingService {
         level: 0
       })
     })
-  }
-
-  static launchUpgrade({
-    is_building_in_progress,
-    duration,
-    building
-  }: {
-    building: BuildingEntity
-    duration: number
-    is_building_in_progress: boolean
-  }) {
-    if (is_building_in_progress) {
-      throw new Error(BuildingError.ALREADY_IN_PROGRESS)
-    }
-
-    return building.launchUpgrade(duration)
   }
 
   static getEarningsBySecond({

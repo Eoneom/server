@@ -63,8 +63,8 @@ describe('CityGatherCommand', () => {
     } = command.exec({
       city: CityEntity.create({
         ...city,
-        last_plastic_gather: now() - 2 * 1000,
-        last_mushroom_gather: now() - 2 * 1000
+        last_plastic_gather: now() - time_elapsed * 1000,
+        last_mushroom_gather: now() - time_elapsed * 1000
       }),
       earnings_per_second: {
         plastic: plastic_earnings,

@@ -1,7 +1,6 @@
 import { GenericCommand } from '#app/command/generic'
 import { AppService } from '#app/service'
 import { CityEntity } from '#core/city/entity'
-import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 import {
   Levels, RequirementService
@@ -98,20 +97,21 @@ export class TroupRecruitCommand extends GenericCommand<
       levels,
     })
 
-    const troup_cost = PricingService.getTroupCost({
+    const {
+      resource, duration
+    } = PricingService.getTroupCost({
       code: troup.code,
       count
     })
 
-    const updated_city = CityService.purchase({
-      city,
+    const updated_city = city.purchase({
       player_id,
-      cost: troup_cost.resource
+      resource
     })
 
     const updated_troup = troup.launchRecruitment({
       count,
-      duration: troup_cost.duration,
+      duration,
       recruitment_time: now()
     })
 

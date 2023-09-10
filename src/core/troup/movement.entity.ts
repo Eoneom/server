@@ -1,5 +1,5 @@
 import { MovementAction } from '#core/troup/constant'
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
 import { Coordinates } from '#core/world/value/coordinates'
 import { now } from '#shared/time'
 

@@ -102,10 +102,7 @@ export class TroupFinishExploreCommand extends GenericCommand<
       distance
     })
 
-    const updated_exploration = WorldService.explore({
-      explored_cell_ids,
-      exploration
-    })
+    const updated_exploration = exploration.exploreCells(explored_cell_ids)
 
     const report = ReportEntity.create({
       id: id(),

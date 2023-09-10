@@ -2,10 +2,8 @@ import { AppService } from '#app/service'
 import { GenericCommand } from '#command/generic'
 import { BuildingCode } from '#core/building/constant'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingService } from '#core/building/service'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
-import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 import {
   Levels,
@@ -111,20 +109,21 @@ export class BuildingUpgradeCommand extends GenericCommand<
       building_code: building.code,
       levels
     })
-    const building_costs = PricingService.getBuildingLevelCost({
+    const {
+      resource,
+      duration
+    } = PricingService.getBuildingLevelCost({
       level: building.level + 1,
       code: building.code,
       architecture_level
     })
-    const updated_city = CityService.purchase({
+    const updated_city = city.purchase({
       player_id,
-      city,
-      cost: building_costs.resource
+      resource
     })
-    const updated_building = BuildingService.launchUpgrade({
-      building,
+    const updated_building = building.launchUpgrade({
       is_building_in_progress,
-      duration: building_costs.duration,
+      duration,
     })
 
     return {

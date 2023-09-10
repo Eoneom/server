@@ -40,5 +40,4 @@ export class AuthLoginCommand extends GenericCommand<
     await this.repository.auth.create(auth)
     return { token: auth.token }
   }
-
 }

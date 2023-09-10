@@ -57,20 +57,14 @@ export class BuildingCancelCommand extends GenericCommand<
       throw new Error(BuildingError.NOT_IN_PROGRESS)
     }
 
-    const building_costs = PricingService.getBuildingLevelCost({
+    const resource_refund = PricingService.getBuildingUpgradeRefund({
       code: building.code,
-      level: building.level,
-      architecture_level: 0
+      level: building.level
     })
 
-    const plastic = Math.round(building_costs.resource.plastic/2)
-    const mushroom = Math.round(building_costs.resource.mushroom/2)
-
-    const updated_city = CityService.refund({
-      plastic,
-      mushroom,
+    const updated_city = city.refund({
       player_id,
-      city
+      resource: resource_refund
     })
 
     return {

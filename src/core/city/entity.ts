@@ -1,13 +1,15 @@
 import {
-  STARTING_MUSHROOM, STARTING_PLASTIC
+  STARTING_MUSHROOM,
+  STARTING_PLASTIC
 } from '#core/city/constant'
 import { CityError } from '#core/city/error'
 import { id } from '#shared/identification'
 import { Resource } from '#shared/resource'
 import { now } from '#shared/time'
 import {
-  BaseEntity, BaseEntityProps
-} from '#core/type/entity'
+  BaseEntity,
+  BaseEntityProps
+} from '#core/type/base.entity'
 
 type CityEntityProps = BaseEntityProps & {
   player_id: string
@@ -50,8 +52,12 @@ export class CityEntity extends BaseEntity {
   }
 
   static initCity({
-    name, player_id
-  }: { name: string, player_id: string }): CityEntity {
+    name,
+    player_id
+  }: {
+    name: string
+    player_id: string
+  }): CityEntity {
     const last_gather = now()
     return new CityEntity({
       id: id(),
@@ -65,45 +71,62 @@ export class CityEntity extends BaseEntity {
   }
 
   purchase({
-    plastic,
-    mushroom
-  }: Resource): CityEntity {
-    const has_resources = this.hasResources({
-      plastic,
-      mushroom
-    })
+    player_id,
+    resource,
+  }: {
+    player_id: string
+    resource: Resource
+  }): CityEntity {
+    if (!this.isOwnedBy(player_id)) {
+      throw new Error(CityError.NOT_OWNER)
+    }
+
+    const has_resources = this.hasResources(resource)
     if (!has_resources) {
       throw new Error(CityError.NOT_ENOUGH_RESOURCES)
     }
 
     return new CityEntity({
       ...this,
-      plastic: this.plastic - plastic,
-      mushroom: this.mushroom - mushroom
+      plastic: this.plastic - resource.plastic,
+      mushroom: this.mushroom - resource.mushroom
     })
   }
 
   refund({
-    plastic,
-    mushroom
-  }: Resource): CityEntity {
+    player_id,
+    resource
+  }: {
+    player_id: string
+    resource: Resource
+  }): CityEntity {
+    if (!this.isOwnedBy(player_id)) {
+      throw new Error(CityError.NOT_OWNER)
+    }
+
     return new CityEntity({
       ...this,
-      plastic: this.plastic + plastic,
-      mushroom: this.mushroom + mushroom
+      plastic: this.plastic + resource.plastic,
+      mushroom: this.mushroom + resource.mushroom
     })
   }
 
   gather({
     earnings_per_second,
-    gather_at_time
+    gather_at_time,
+    player_id
   }: {
-    earnings_per_second: Resource,
+    earnings_per_second: Resource
+    player_id: string
     gather_at_time: number
   }): {
     city: CityEntity,
     updated: boolean,
   } {
+    if (!this.isOwnedBy(player_id)) {
+      throw new Error(CityError.NOT_OWNER)
+    }
+
     const plastic_earnings = this.getEarnings({
       earnings_per_second: earnings_per_second.plastic,
       last_gather_time: this.last_plastic_gather,
@@ -115,7 +138,7 @@ export class CityEntity extends BaseEntity {
       gather_at_time
     })
     const updated = Boolean(plastic_earnings) || Boolean(mushroom_earnings)
-    const city: CityEntity = this
+    const city = this
       .gatherPlastic({
         earnings: plastic_earnings,
         gather_at_time

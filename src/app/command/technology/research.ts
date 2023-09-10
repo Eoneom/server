@@ -2,14 +2,12 @@ import { GenericCommand } from '#command/generic'
 import { AppService } from '#app/service'
 import { BuildingCode } from '#core/building/constant'
 import { CityEntity } from '#core/city/entity'
-import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 import {
   Levels, RequirementService
 } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant'
 import { TechnologyEntity } from '#core/technology/entity'
-import { TechnologyService } from '#core/technology/service'
 import assert from 'assert'
 
 export interface TechnologyResearchRequest {
@@ -95,21 +93,23 @@ export class TechnologyResearchCommand extends GenericCommand<
       technology_code: technology.code,
       levels,
     })
-    const technology_costs = PricingService.getTechnologyLevelCost({
+    const {
+      resource,
+      duration
+    } = PricingService.getTechnologyLevelCost({
       code: technology.code,
       level: technology.level + 1,
       research_lab_level
     })
-    const updated_city = CityService.purchase({
+    const updated_city = city.purchase({
       player_id,
-      city,
-      cost: technology_costs.resource
+      resource
     })
-    const updated_technology = TechnologyService.launchResearch({
+    const updated_technology = technology.launchResearch({
       is_technology_in_progress,
-      technology,
-      duration: technology_costs.duration,
+      duration,
     })
+
     return {
       city: updated_city,
       technology: updated_technology
@@ -117,7 +117,8 @@ export class TechnologyResearchCommand extends GenericCommand<
   }
 
   async save({
-    city, technology
+    city,
+    technology
   }: TechnologyResearchSave): Promise<TechnologyResearchResponse>{
     await Promise.all([
       this.repository.city.updateOne(city),

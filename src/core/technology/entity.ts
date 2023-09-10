@@ -1,7 +1,8 @@
 import { TechnologyCode } from '#core/technology/constant'
 import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
+import { TechnologyError } from '#core/technology/error'
 
 type TechnologyEntityProps = BaseEntity & {
   code: TechnologyCode
@@ -43,10 +44,20 @@ export class TechnologyEntity extends BaseEntity {
     })
   }
 
-  launchResearch(research_duration: number): TechnologyEntity {
+  launchResearch({
+    is_technology_in_progress,
+    duration
+  }: {
+    is_technology_in_progress: boolean,
+    duration: number
+  }): TechnologyEntity {
+    if (is_technology_in_progress) {
+      throw new Error(TechnologyError.ALREADY_IN_PROGRESS)
+    }
+
     return new TechnologyEntity({
       ...this,
-      research_at: now() + research_duration * 1000
+      research_at: now() + duration * 1000
     })
   }
 

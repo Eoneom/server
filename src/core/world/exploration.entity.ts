@@ -1,4 +1,4 @@
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
 import { id } from '#shared/identification'
 
 type ExplorationEntityProps = BaseEntity & {
@@ -30,5 +30,17 @@ export class ExplorationEntity extends BaseEntity {
 
   static create(props: ExplorationEntityProps): ExplorationEntity {
     return new ExplorationEntity(props)
+  }
+
+  exploreCells(cell_ids_to_explore: string[]): ExplorationEntity {
+    const new_cell_ids = new Set([
+      ...this.cell_ids,
+      ...cell_ids_to_explore
+    ])
+
+    return ExplorationEntity.create({
+      ...this,
+      cell_ids: Array.from(new_cell_ids)
+    })
   }
 }

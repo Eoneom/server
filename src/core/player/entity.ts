@@ -1,5 +1,5 @@
 import { id } from '#shared/identification'
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
 
 export type PlayerEntityProps = BaseEntity & {
   name: string

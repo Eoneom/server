@@ -36,7 +36,10 @@ class Report {
   @prop({ required: true })
   public destination!: CoordinatesDocument
 
-  @prop({ required: true })
+  @prop({
+    required: true,
+    type: [ ReportTroup ]
+  })
   public troups!: ReportTroup[]
 
   @prop({ required: true })

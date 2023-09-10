@@ -82,7 +82,6 @@ export class AppService {
     technology_code: TechnologyCode
    }): Promise<Levels> {
     const requirement = RequirementService.getTechnologyRequirement({ technology_code })
-
     return this.getRequirementLevels({
       city_id,
       player_id,
@@ -117,7 +116,6 @@ export class AppService {
     requirement: RequirementValue
   }): Promise<Levels> {
     const repository = Factory.getRepository()
-
     const required_building_codes = requirement.buildings.map(req => req.code)
     const required_technology_codes = requirement.technologies.map(req => req.code)
     const [

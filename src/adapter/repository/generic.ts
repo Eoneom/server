@@ -1,6 +1,6 @@
 import { FAKE_ID } from '#shared/identification'
 import { GenericRepository } from '#app/port/repository/generic'
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
 import {
   AnyParamConstructor, BeAnObject, ReturnModelType
 } from '@typegoose/typegoose/lib/types'

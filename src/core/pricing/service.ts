@@ -8,6 +8,7 @@ import { TechnologyCode } from '#core/technology/constant'
 import { TroupCode } from '#core/troup/constant'
 import { CountCostValue } from '#core/pricing/value/count'
 import { troup_costs } from '#core/pricing/constant/troup'
+import { Resource } from '#shared/resource'
 
 export class PricingService {
   static getTroupCost({
@@ -28,6 +29,24 @@ export class PricingService {
     }
   }
 
+  static getBuildingUpgradeRefund({
+    code,
+    level
+  }: {
+    code: BuildingCode
+    level: number
+  }): Resource {
+    const costs = this.getBuildingLevelCost({
+      code,
+      level
+    })
+
+    return {
+      plastic: Math.round(costs.resource.plastic/2),
+      mushroom: Math.round(costs.resource.mushroom/2)
+    }
+  }
+
   static getBuildingLevelCost({
     code,
     level,
@@ -35,7 +54,7 @@ export class PricingService {
   }: {
     code: BuildingCode
     level: number
-    architecture_level: number
+    architecture_level?: number
   }): LevelCostValue {
     const {
       plastic,
@@ -43,7 +62,7 @@ export class PricingService {
       duration
     } = building_costs[code]
 
-    const architecture_bonus = architecture_level / 100
+    const architecture_bonus = (architecture_level ?? 0) / 100
     return {
       code,
       level: level,

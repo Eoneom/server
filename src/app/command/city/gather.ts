@@ -1,7 +1,6 @@
 import { GenericCommand } from '#app/command/generic'
 import { AppService } from '#app/service'
 import { CityEntity } from '#core/city/entity'
-import { CityService } from '#core/city/service'
 import { Resource } from '#shared/resource'
 import { now } from '#shared/time'
 
@@ -59,16 +58,18 @@ export class CityGatherCommand extends GenericCommand<
     earnings_per_second,
     player_id
   }: CityGatherExec): CityGatherSave {
-    const updated_city = CityService.gatherResources({
-      city,
+    const {
+      city: updated_city,
+      updated
+    } = city.gather({
       player_id,
       gather_at_time: now(),
       earnings_per_second
     })
 
     return {
-      city: updated_city ?? city,
-      updated: Boolean(updated_city)
+      city: updated ? updated_city : city,
+      updated
     }
   }
   async save({

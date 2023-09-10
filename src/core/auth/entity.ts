@@ -1,7 +1,7 @@
 import {
   FAKE_ID, generateToken
 } from '#shared/identification'
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
 
 type AuthEntityProps = BaseEntity & {
   player_id: string

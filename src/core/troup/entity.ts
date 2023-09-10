@@ -2,7 +2,7 @@ import assert from 'assert'
 
 import { Factory } from '#adapter/factory'
 import { TroupCode } from '#core/troup/constant'
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
 import { FAKE_ID } from '#shared/identification'
 
 interface OngoingRecruitment {

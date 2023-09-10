@@ -1,4 +1,4 @@
-import { BaseEntity } from '#core/type/entity'
+import { BaseEntity } from '#core/type/base.entity'
 import { ReportType } from '#core/communication/value/report-type'
 import { Coordinates } from '#core/world/value/coordinates'
 import { Resource } from '#shared/resource'

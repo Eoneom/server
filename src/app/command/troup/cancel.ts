@@ -65,14 +65,9 @@ export class TroupCancelCommand extends GenericCommand<
       count: updated_troup.ongoing_recruitment?.remaining_count ?? 0,
     })
 
-    const plastic = troup_costs.resource.plastic
-    const mushroom = troup_costs.resource.mushroom
-
-    const updated_city = CityService.refund({
-      plastic,
-      mushroom,
+    const updated_city = city.refund({
+      resource: troup_costs.resource,
       player_id,
-      city
     })
 
     return {

@@ -1,7 +1,6 @@
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
 
-
 export abstract class GenericQuery<Request, Response> {
   protected repository: Repository
 

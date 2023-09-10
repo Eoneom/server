@@ -1,8 +1,10 @@
 import { BuildingCode } from '#core/building/constant'
 import { now } from '#shared/time'
 import {
-  BaseEntity, BaseEntityProps
-} from '#core/type/entity'
+  BaseEntity,
+  BaseEntityProps
+} from '#core/type/base.entity'
+import { BuildingError } from '#core/building/error'
 
 type BuildingEntityProps = BaseEntityProps & {
   city_id: string
@@ -43,10 +45,20 @@ export class BuildingEntity extends BaseEntity {
     })
   }
 
-  launchUpgrade(upgrade_time_in_seconds: number): BuildingEntity {
+  launchUpgrade({
+    duration,
+    is_building_in_progress
+  }: {
+    duration: number
+    is_building_in_progress: boolean
+  }): BuildingEntity {
+    if (is_building_in_progress) {
+      throw new Error(BuildingError.ALREADY_IN_PROGRESS)
+    }
+
     return new BuildingEntity({
       ...this,
-      upgrade_at: now() + upgrade_time_in_seconds * 1000
+      upgrade_at: now() + duration * 1000
     })
   }
 
