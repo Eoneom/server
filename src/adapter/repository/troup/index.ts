@@ -26,7 +26,10 @@ export class MongoTroupRepository
   }
 
   async listInCity({ city_id }: { city_id: string }): Promise<TroupEntity[]> {
-    return this.find({ city_id })
+    return this.find({
+      city_id,
+      movement_id: null 
+    })
   }
 
   async getInCity({

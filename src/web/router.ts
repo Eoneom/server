@@ -18,6 +18,7 @@ import { troupListHandler } from '#web/handler/troup/list'
 import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
 import { troupCancelHandler } from '#web/handler/troup/cancel'
 import { troupExploreHandler } from '#web/handler/troup/explore'
+import { troupListMovementHandler } from '#web/handler/troup/list-movement'
 
 export const router = (): Router => {
   const r = Router()
@@ -34,6 +35,7 @@ export const router = (): Router => {
   r.get('/city', authMiddleware, cityListHandler)
   r.put('/city/gather', authMiddleware, cityGatherHandler)
   r.get('/city/:city_id/troup', authMiddleware, troupListHandler)
+  r.get('/city/:city_id/troup/movement', authMiddleware, troupListMovementHandler)
   r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
   r.get('/city/:city_id/technology', authMiddleware, technologyListHandler)
 

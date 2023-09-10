@@ -1,6 +1,6 @@
 import { BuildingCode } from '../../../../src/core/building/constant'
 import { GenericResponse } from '../../response'
-import { Requirement } from '../requirement'
+import { Requirement } from '../shared/requirement'
 
 export interface BuildingListRequest {
   city_id: string

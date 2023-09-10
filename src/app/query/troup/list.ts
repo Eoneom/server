@@ -5,6 +5,7 @@ import { CountCostValue } from '#core/pricing/value/count'
 import { TroupCode } from '#core/troup/constant'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { RequirementService } from '#core/requirement/service'
+import { CityError } from '#core/city/error'
 
 export interface TroupListQueryRequest {
   city_id: string,
@@ -18,7 +19,15 @@ export interface TroupListQueryResponse {
 }
 
 export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupListQueryResponse> {
-  async get({ city_id }: TroupListQueryRequest): Promise<TroupListQueryResponse> {
+  async get({
+    city_id,
+    player_id
+  }: TroupListQueryRequest): Promise<TroupListQueryResponse> {
+    const city = await this.repository.city.get(city_id)
+    if (!city.isOwnedBy(player_id)) {
+      throw new Error(CityError.NOT_OWNER)
+    }
+
     const troups = await this.repository.troup.listInCity({ city_id })
     const costs = troups.reduce((acc, troup) => {
       const cost = PricingService.getTroupCost({

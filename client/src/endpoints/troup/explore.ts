@@ -1,11 +1,8 @@
 import { GenericResponse } from '../../response'
+import { Coordinates } from '../shared/coordinates'
 
 export interface TroupExploreRequest {
-  coordinates: {
-    x: number
-    y: number
-    sector: number
-  }
+  coordinates: Coordinates
   city_id: string
 }
 

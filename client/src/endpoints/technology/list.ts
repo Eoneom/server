@@ -1,6 +1,6 @@
 import { TechnologyCode } from '../../../../src/core/technology/constant'
 import { GenericResponse } from '../../response'
-import { Requirement } from '../requirement'
+import { Requirement } from '../shared/requirement'
 
 export interface TechnologyListRequest {
   city_id: string

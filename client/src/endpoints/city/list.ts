@@ -1,4 +1,5 @@
 import { GenericResponse } from '../../response'
+import { Coordinates } from '../shared/coordinates'
 
 export interface CityListDataResponse {
   cities: {
@@ -7,11 +8,7 @@ export interface CityListDataResponse {
     plastic: number
     mushroom: number
     maximum_building_levels: number
-    coordinates: {
-      x: number
-      y: number
-      sector: number
-    }
+    coordinates: Coordinates
     earnings_per_second: {
       plastic: number
       mushroom: number
