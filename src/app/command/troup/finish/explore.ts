@@ -6,6 +6,8 @@ import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { TroupService } from '#core/troup/service'
 import { WorldService } from '#core/world/service'
+import { ExplorationEntity } from '#core/world/exploration.entity'
+import { AppService } from '#app/service'
 
 interface TroupFinishExploreCommandRequest {
   player_id: string
@@ -14,14 +16,17 @@ interface TroupFinishExploreCommandRequest {
 
 export interface TroupFinishExploreCommandExec {
   player_id: string
+  exploration: ExplorationEntity
   movement: MovementEntity
   troups: TroupEntity[]
+  explored_cell_ids: string[]
 }
 
 interface TroupFinishExploreCommandSave {
   base_movement: MovementEntity
   explore_movement_id: string
   troup: TroupEntity
+  exploration: ExplorationEntity
 }
 
 export class TroupFinishExploreCommand extends GenericCommand<
@@ -39,23 +44,31 @@ export class TroupFinishExploreCommand extends GenericCommand<
   }: TroupFinishExploreCommandRequest): Promise<TroupFinishExploreCommandExec> {
     const [
       troups,
-      movement
+      movement,
+      exploration
     ] = await Promise.all([
       this.repository.troup.listByMovement({ movement_id }),
-      this.repository.movement.get(movement_id)
+      this.repository.movement.get(movement_id),
+      this.repository.exploration.get({ player_id }),
     ])
+
+    const explored_cell_ids = await AppService.getExploredCellIds({ coordinates: movement.destination })
 
     return {
       troups,
       player_id,
-      movement
+      movement,
+      exploration,
+      explored_cell_ids
     }
   }
 
   exec({
     player_id,
     troups,
-    movement
+    exploration,
+    movement,
+    explored_cell_ids
   }: TroupFinishExploreCommandExec): TroupFinishExploreCommandSave {
     const is_player_movement = troups.every(troup => troup.player_id === player_id)
     if (!is_player_movement) {
@@ -84,22 +97,30 @@ export class TroupFinishExploreCommand extends GenericCommand<
       distance
     })
 
+    const updated_exploration = WorldService.explore({
+      explored_cell_ids,
+      exploration
+    })
+
     return {
       explore_movement_id: movement.id,
       base_movement: base_movement,
-      troup: updated_troup
+      troup: updated_troup,
+      exploration: updated_exploration
     }
   }
 
   async save({
     explore_movement_id,
     base_movement,
-    troup
+    troup,
+    exploration
   }: TroupFinishExploreCommandSave): Promise<void> {
     await Promise.all([
       this.repository.movement.delete(explore_movement_id),
       this.repository.movement.create(base_movement),
-      this.repository.troup.updateOne(troup)
+      this.repository.troup.updateOne(troup),
+      this.repository.exploration.updateOne(exploration)
     ])
   }
 }

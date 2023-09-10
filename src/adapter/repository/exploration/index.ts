@@ -15,7 +15,7 @@ export class MongoExplorationRepository
     super(ExplorationModel, WorldError.EXPLORATION_NOT_FOUND)
   }
 
-  async getCells({ player_id }: { player_id: string }): Promise<ExplorationEntity> {
+  async get({ player_id }: { player_id: string }): Promise<ExplorationEntity> {
     return this.findOneOrThrow({ player_id })
   }
 

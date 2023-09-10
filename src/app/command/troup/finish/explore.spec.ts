@@ -11,14 +11,19 @@ import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { now } from '#shared/time'
 import { TroupEntity } from '#core/troup/entity'
+import { ExplorationEntity } from '#core/world/exploration.entity'
 
-describe.only('TroupFinishExploreCommand', () => {
+describe('TroupFinishExploreCommand', () => {
   const player_id = 'player_id'
   const city_id = 'city_id'
   const movement_id = 'movement_id'
   const troup_id = 'troup_id'
+  const exploration_id = 'exploration_id'
+  const already_explored_cell_id = 'already_explored_cell_id'
+  const cell_id = 'cell_id'
   let movement: MovementEntity
   let troup: TroupEntity
+  let exploration: ExplorationEntity
   let command: TroupFinishExploreCommand
   let success_params: TroupFinishExploreCommandExec
 
@@ -51,10 +56,18 @@ describe.only('TroupFinishExploreCommand', () => {
       movement_id: movement.id
     })
 
+    exploration = ExplorationEntity.create({
+      id: exploration_id,
+      player_id,
+      cell_ids: [ already_explored_cell_id ]
+    })
+
     success_params = {
       movement,
       player_id,
-      troups: [ troup ]
+      troups: [ troup ],
+      exploration,
+      explored_cell_ids: [ cell_id ]
     }
   })
 
@@ -78,6 +91,13 @@ describe.only('TroupFinishExploreCommand', () => {
         arrive_at: now() + 10000
       })
     }), new RegExp(TroupError.MOVEMENT_NOT_ARRIVED))
+  })
+
+  it('should mark the cell as explored', () => {
+    const { exploration } = command.exec(success_params)
+
+    assert.strictEqual(exploration.cell_ids.length, 2)
+    assert.ok(exploration.cell_ids.some(cell_id => cell_id ))
   })
 
   it('should send the troup back to base at the origin', () => {

@@ -15,6 +15,12 @@ import { Coordinates } from '#core/world/value/coordinates'
 import { Resource } from '#shared/resource'
 
 export class AppService {
+  static async getExploredCellIds({ coordinates }: { coordinates: Coordinates }): Promise<string[]> {
+    const repository = Factory.getRepository()
+    const cell = await repository.cell.getCell({ coordinates })
+    return [ cell.id ]
+  }
+
   static async getCityMaximumBuildingLevels({ city_id }: { city_id: string }): Promise<number> {
     const repository = Factory.getRepository()
     const city_cells_count = await repository.cell.getCityCellsCount({ city_id })

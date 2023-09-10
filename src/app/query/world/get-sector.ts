@@ -17,7 +17,7 @@ export class WorldGetSectorQuery extends GenericQuery<WorldGetSectorQueryRequest
     player_id
   }: WorldGetSectorQueryRequest): Promise<WorldGetSectorQueryResponse> {
     const cells = await this.repository.cell.getSector({ sector })
-    const exploration = await this.repository.exploration.getCells({ player_id })
+    const exploration = await this.repository.exploration.get({ player_id })
 
     return {
       cells,

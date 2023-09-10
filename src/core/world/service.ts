@@ -11,6 +11,7 @@ import {
   normalizeCoordinate,
   normalizeSector
 } from '#core/world/helper'
+import { ExplorationEntity } from '#core/world/exploration.entity'
 
 export class WorldService {
   static generate () {
@@ -53,6 +54,24 @@ export class WorldService {
     const global_destination = this.getGlobalCoordinates(destination)
 
     return Math.abs(global_origin.x - global_destination.x) + Math.abs(global_origin.y - global_destination.y)
+  }
+
+  static explore({
+    explored_cell_ids,
+    exploration,
+  }: {
+    explored_cell_ids: string[]
+    exploration: ExplorationEntity
+  }): ExplorationEntity {
+    const new_cell_ids = new Set([
+      ...exploration.cell_ids,
+      ...explored_cell_ids
+    ])
+
+    return ExplorationEntity.create({
+      ...exploration,
+      cell_ids: Array.from(new_cell_ids)
+    })
   }
 
   private static getGlobalCoordinates(local_coordinates: Coordinates): {
