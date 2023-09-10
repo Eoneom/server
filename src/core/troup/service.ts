@@ -71,6 +71,28 @@ export class TroupService {
     }
   }
 
+  static finishBaseInCity({
+    troups,
+    city_troups
+  }: {
+    troups: TroupEntity[]
+    city_troups: TroupEntity[]
+  }): {
+    city_troups: TroupEntity[]
+  } {
+    const new_city_troups = city_troups.map(city_troup => {
+      const troup = troups.find(t => t.code === city_troup.code)
+      assert.ok(troup)
+
+      return TroupEntity.create({
+        ...city_troup,
+        count: city_troup.count + troup.count
+      })
+    })
+
+    return { city_troups: new_city_troups }
+  }
+
   static finishExploration({
     troup,
     explore_movement,
@@ -108,6 +130,6 @@ export class TroupService {
   private static getMovementDuration({ distance }: {
     distance: number
   }): number {
-    return Math.ceil(distance / 10)
+    return distance
   }
 }

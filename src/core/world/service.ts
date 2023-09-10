@@ -53,7 +53,8 @@ export class WorldService {
     const global_origin = this.getGlobalCoordinates(origin)
     const global_destination = this.getGlobalCoordinates(destination)
 
-    return Math.abs(global_origin.x - global_destination.x) + Math.abs(global_origin.y - global_destination.y)
+    const global_distance = Math.abs(global_origin.x - global_destination.x) + Math.abs(global_origin.y - global_destination.y)
+    return global_distance * 10000
   }
 
   static explore({

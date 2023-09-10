@@ -10,6 +10,7 @@ import { TroupGetMovementActionQuery } from '#app/query/troup/get-movement-actio
 import { MovementAction } from '#core/troup/constant'
 import { TroupError } from '#core/troup/error'
 import { TroupFinishMovementCommand } from '#app/command/troup/finish'
+import { TroupFinishBaseCommand } from '#app/command/troup/finish/base'
 
 export const troupFinishMovementHandler = async (
   req: Request<TroupFinishMovementRequest>,
@@ -33,6 +34,9 @@ export const troupFinishMovementHandler = async (
     switch (action) {
     case MovementAction.EXPLORE:
       command = new TroupFinishExploreCommand()
+      break
+    case MovementAction.BASE:
+      command = new TroupFinishBaseCommand()
       break
     default:
       throw new Error(TroupError.MOVEMENT_ACTION_NOT_IMPLEMENTED)
