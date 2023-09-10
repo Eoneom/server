@@ -18,6 +18,8 @@ import { TroupRepository } from '#app/port/repository/troup'
 import { MongoTroupRepository } from '#adapter/repository/troup/index'
 import { ExplorationRepository } from '#app/port/repository/exploration'
 import { MongoExplorationRepository } from '#adapter/repository/exploration/index'
+import { MovementRepository } from '#app/port/repository/movement'
+import { MongoMovementRepository } from '#adapter/repository/movement/index'
 
 export class MongoRepository implements Repository {
   auth: AuthRepository
@@ -25,6 +27,7 @@ export class MongoRepository implements Repository {
   cell: CellRepository
   city: CityRepository
   exploration: ExplorationRepository
+  movement: MovementRepository
   player: PlayerRepository
   technology: TechnologyRepository
   troup: TroupRepository
@@ -35,6 +38,7 @@ export class MongoRepository implements Repository {
     this.cell = new MongoCellRepository()
     this.city = new MongoCityRepository()
     this.exploration = new MongoExplorationRepository()
+    this.movement = new MongoMovementRepository()
     this.player = new MongoPlayerRepository()
     this.technology = new MongoTechnologyRepository()
     this.troup = new MongoTroupRepository()

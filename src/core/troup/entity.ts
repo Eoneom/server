@@ -14,17 +14,19 @@ interface OngoingRecruitment {
 type TroupEntityProps = BaseEntity & {
   code: TroupCode
   player_id: string
-  city_id: string | null
+  city_id: string
   count: number
   ongoing_recruitment: OngoingRecruitment | null
+  movement_id: string | null
 }
 
 export class TroupEntity extends BaseEntity {
   readonly code: TroupCode
   readonly count: number
   readonly player_id: string
-  readonly city_id: string | null
+  readonly city_id: string
   readonly ongoing_recruitment: OngoingRecruitment | null
+  readonly movement_id: string | null
 
   private constructor({
     id,
@@ -32,7 +34,8 @@ export class TroupEntity extends BaseEntity {
     player_id,
     code,
     count,
-    ongoing_recruitment
+    ongoing_recruitment,
+    movement_id
   }: TroupEntityProps) {
     super({ id })
 
@@ -41,13 +44,14 @@ export class TroupEntity extends BaseEntity {
     this.code = code
     this.count = count
     this.ongoing_recruitment = ongoing_recruitment
+    this.movement_id = movement_id
   }
 
   static create(props: TroupEntityProps): TroupEntity {
     return new TroupEntity(props)
   }
 
-  static initScout({
+  static initExplorer({
     player_id,
     city_id
   }: {
@@ -56,11 +60,12 @@ export class TroupEntity extends BaseEntity {
   }): TroupEntity {
     return new TroupEntity({
       id: FAKE_ID,
-      code: TroupCode.SCOUT,
+      code: TroupCode.EXPLORER,
       player_id,
       city_id,
       count: 0,
-      ongoing_recruitment: null
+      ongoing_recruitment: null,
+      movement_id: null
     })
   }
 

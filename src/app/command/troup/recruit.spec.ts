@@ -28,7 +28,7 @@ describe('TroupRecruitCommand', () => {
       plastic: 100000,
       mushroom: 100000
     })
-    troup = TroupEntity.initScout({
+    troup = TroupEntity.initExplorer({
       player_id,
       city_id: city.id
     })

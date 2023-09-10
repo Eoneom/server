@@ -56,9 +56,10 @@ export class MongoTroupRepository
     return TroupEntity.create({
       id: document._id.toString(),
       player_id: document.player_id.toString(),
-      city_id: document.city_id?.toString() ?? null,
+      city_id: document.city_id.toString(),
       code: document.code,
       count: document.count,
+      movement_id: document.movement_id ? document.movement_id.toString() : null,
       ongoing_recruitment: document.ongoing_recruitment ? {
         remaining_count: document.ongoing_recruitment.remaining_count,
         finish_at: document.ongoing_recruitment.finish_at,

@@ -29,7 +29,7 @@ describe('TroupRecruitCommand', () => {
     })
     troup_creation_time = now()
     troup = TroupEntity.create({
-      ...TroupEntity.initScout({
+      ...TroupEntity.initExplorer({
         player_id,
         city_id: city.id
       }),

@@ -42,6 +42,29 @@ export class WorldService {
     }
   }
 
+  static getDistance({
+    origin,
+    destination
+  }: {
+    origin: Coordinates
+    destination: Coordinates
+  }): number {
+    const global_origin = this.getGlobalCoordinates(origin)
+    const global_destination = this.getGlobalCoordinates(destination)
+
+    return Math.abs(global_origin.x - global_destination.x) + Math.abs(global_origin.y - global_destination.y)
+  }
+
+  private static getGlobalCoordinates(local_coordinates: Coordinates): {
+    x: number
+    y: number
+  } {
+    return {
+      x: (local_coordinates.sector%REGION_SIZE-1)*SECTOR_SIZE+local_coordinates.x,
+      y: Math.floor(local_coordinates.sector/REGION_SIZE)*SECTOR_SIZE+local_coordinates.y
+    }
+  }
+
   private static generateSector({
     mushroom_perlin_service,
     plastic_perlin_service,

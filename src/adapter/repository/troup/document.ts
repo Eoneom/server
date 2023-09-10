@@ -1,6 +1,8 @@
 import { TroupCode } from '#core/troup/constant'
 import {
-  getModelForClass, mongoose, prop
+  getModelForClass,
+  mongoose,
+  prop
 } from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
@@ -23,8 +25,8 @@ class Troup {
   @prop({ required: true })
   public player_id!: mongoose.Types.ObjectId
 
-  @prop()
-  public city_id?: mongoose.Types.ObjectId
+  @prop({ required: true })
+  public city_id!: mongoose.Types.ObjectId
 
   @prop({
     required: true,
@@ -34,6 +36,9 @@ class Troup {
 
   @prop()
   public ongoing_recruitment?: OngoingRecruitment
+
+  @prop()
+  public movement_id?: mongoose.Types.ObjectId
 }
 
 export type TroupDocument = Document & Troup

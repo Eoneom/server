@@ -11,7 +11,7 @@ import { troup_costs } from '#core/pricing/constant/troup'
 describe('TroupCancelCommand', () => {
   const player_id = 'player_id'
   const another_player_id = 'another_player_id'
-  const code = TroupCode.SCOUT
+  const code = TroupCode.EXPLORER
   let city: CityEntity
   let command: TroupCancelCommand
   let troup: TroupEntity
@@ -32,6 +32,7 @@ describe('TroupCancelCommand', () => {
       count: 0,
       city_id: city.id,
       player_id,
+      movement_id: null,
       ongoing_recruitment: {
         finish_at: last_progress + 1000 * remaining_count * troup_costs[code].duration,
         remaining_count,

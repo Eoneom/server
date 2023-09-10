@@ -3,7 +3,7 @@ import { RequirementValue } from '#core/requirement/value/requirement'
 import { TroupCode } from '#core/troup/constant'
 
 export const TroupRequirement: Record<TroupCode, RequirementValue> = {
-  [TroupCode.SCOUT]: {
+  [TroupCode.EXPLORER]: {
     buildings: [
       {
         code: BuildingCode.UNIVERSITY,

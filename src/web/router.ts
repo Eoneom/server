@@ -17,6 +17,7 @@ import { troupRecruitHandler } from '#web/handler/troup/recruit'
 import { troupListHandler } from '#web/handler/troup/list'
 import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
 import { troupCancelHandler } from '#web/handler/troup/cancel'
+import { troupExploreHandler } from '#web/handler/troup/explore'
 
 export const router = (): Router => {
   const r = Router()
@@ -44,6 +45,7 @@ export const router = (): Router => {
   r.put('/technology/research', authMiddleware, technologyResearchHandler)
   r.put('/technology/research/finish', authMiddleware, technologyFinishResearchHandler)
 
+  r.put('/troup/explore', authMiddleware, troupExploreHandler)
   r.put('/troup/cancel', authMiddleware, troupCancelHandler)
   r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
   r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
