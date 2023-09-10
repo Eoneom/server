@@ -1,8 +1,10 @@
+import { MovementAction } from '#core/troup/constant'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { Coordinates } from '#core/world/value/coordinates'
 import { id } from '#shared/identification'
+import assert from 'assert'
 
 export class TroupService {
   static init({
@@ -26,7 +28,8 @@ export class TroupService {
     count_to_move,
     start_at,
     origin,
-    distance
+    distance,
+    action
   }: {
     troup: TroupEntity,
     origin: Coordinates
@@ -34,6 +37,7 @@ export class TroupService {
     count_to_move: number
     start_at: number
     distance: number
+    action: MovementAction
   }): {
     city_troup: TroupEntity,
     movement_troup: TroupEntity,
@@ -46,9 +50,10 @@ export class TroupService {
     const duration = this.getMovementDuration({ distance })
     const movement = MovementEntity.create({
       id: id(),
+      action,
       origin,
       destination,
-      arrive_at: start_at + duration
+      arrive_at: start_at + duration,
     })
     return {
       city_troup: TroupEntity.create({
@@ -63,6 +68,40 @@ export class TroupService {
         ongoing_recruitment: null
       }),
       movement
+    }
+  }
+
+  static finishExploration({
+    troup,
+    explore_movement,
+    start_at,
+    distance
+  }: {
+    troup: TroupEntity
+    explore_movement: MovementEntity
+    start_at: number
+    distance: number
+   }): {
+    base_movement: MovementEntity,
+    troup: TroupEntity
+  } {
+    assert.strictEqual(explore_movement.action, MovementAction.EXPLORE)
+
+    const duration = this.getMovementDuration({ distance })
+    const base_movement = MovementEntity.create({
+      id: id(),
+      action: MovementAction.BASE,
+      origin: explore_movement.destination,
+      destination: explore_movement.origin,
+      arrive_at: start_at + duration
+    })
+
+    return {
+      base_movement,
+      troup: TroupEntity.create({
+        ...troup,
+        movement_id: base_movement.id
+      })
     }
   }
 

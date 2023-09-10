@@ -19,6 +19,7 @@ import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit
 import { troupCancelHandler } from '#web/handler/troup/cancel'
 import { troupExploreHandler } from '#web/handler/troup/explore'
 import { troupListMovementHandler } from '#web/handler/troup/list-movement'
+import { troupFinishMovementHandler } from '#web/handler/troup/finish-movement'
 
 export const router = (): Router => {
   const r = Router()
@@ -50,6 +51,7 @@ export const router = (): Router => {
   r.put('/troup/explore', authMiddleware, troupExploreHandler)
   r.put('/troup/cancel', authMiddleware, troupCancelHandler)
   r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
+  r.put('/troup/movement/:movement_id/finish', authMiddleware, troupFinishMovementHandler)
   r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
 
   r.get('/sector/:sector', authMiddleware, worldGetSectorHandler)

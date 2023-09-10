@@ -1,7 +1,10 @@
 import { GenericCommand } from '#app/command/generic'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
-import { TroupCode } from '#core/troup/constant'
+import {
+  MovementAction,
+  TroupCode
+} from '#core/troup/constant'
 import { TroupEntity } from '#core/troup/entity'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { TroupService } from '#core/troup/service'
@@ -85,6 +88,7 @@ export class TroupExploreCommand extends GenericCommand<
     })
 
     return TroupService.move({
+      action: MovementAction.EXPLORE,
       troup: city_explorer_troup,
       origin: city_cell.coordinates,
       destination: cell_to_explore.coordinates,

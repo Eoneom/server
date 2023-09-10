@@ -1,4 +1,5 @@
 import { CoordinatesDocument } from '#adapter/repository/shared/coordinates'
+import { MovementAction } from '#core/troup/constant'
 import {
   getModelForClass,
   prop
@@ -7,6 +8,12 @@ import {
 import { Document } from 'mongoose'
 
 class Movement {
+  @prop({
+    required: true,
+    enum: MovementAction
+  })
+  public action!: MovementAction
+
   @prop({ required: true })
   public origin!: CoordinatesDocument
 

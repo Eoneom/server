@@ -8,4 +8,6 @@ export type TroupRepository = GenericRepository<TroupEntity> & {
 
   getInProgress(query: { city_id: string }): Promise<TroupEntity | null>
   isInProgress(query: { city_id: string }): Promise<boolean>
+
+  listByMovement(query: { movement_id: string }): Promise<TroupEntity[]>
 }

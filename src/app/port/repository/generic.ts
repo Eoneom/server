@@ -12,6 +12,7 @@ import { MovementRepository } from '#app/port/repository/movement'
 export interface GenericRepository<Entity extends BaseEntity> {
   create(entity: Entity | Omit<Entity, 'id'>): Promise<string>
   updateOne(entity: Entity): Promise<void>
+  delete(id: string): Promise<void>
 }
 
 export interface Repository {

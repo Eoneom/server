@@ -1,3 +1,4 @@
+import { MovementAction } from '../../../../src/core/troup/constant'
 import { GenericResponse } from '../../response'
 import { Coordinates } from '../shared/coordinates'
 
@@ -8,6 +9,7 @@ export interface TroupListMovementRequest {
 export interface TroupListMovementDataResponse {
   movements: {
     id: string
+    action: MovementAction
     origin: Coordinates
     destination: Coordinates
     arrive_at: number

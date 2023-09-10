@@ -3,5 +3,8 @@ export enum TroupError {
   ALREADY_IN_PROGRESS = 'troup:already-in-progress',
   NOT_IN_PROGRESS = 'troup:not-in-progress',
   NOT_ENOUGH_TROUPS = 'troup:not-enough-troups',
-  MOVEMENT_NOT_FOUND = 'troup:movement-not-found'
+  NOT_OWNER = 'troup:not-owner',
+  MOVEMENT_NOT_FOUND = 'troup:movement:not-found',
+  MOVEMENT_NOT_ARRIVED = 'troup:movement:not-arrived',
+  MOVEMENT_ACTION_NOT_IMPLEMENTED = 'troup:movement:action-not-implemented'
 }

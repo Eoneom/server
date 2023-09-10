@@ -46,6 +46,7 @@ const response_mapper = ({ movements }: TroupListMovementQueryResponse): TroupLi
   const response_movements: TroupListMovementDataResponse['movements'] = movements.map(movement => {
     return {
       id: movement.id,
+      action: movement.action,
       origin: {
         sector: movement.origin.sector,
         x: movement.origin.x,

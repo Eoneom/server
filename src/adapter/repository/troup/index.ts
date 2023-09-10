@@ -1,7 +1,8 @@
 import { TroupEntity } from '#core/troup/entity'
 import { TroupRepository } from '#app/port/repository/troup'
 import {
-  TroupDocument, TroupModel
+  TroupDocument,
+  TroupModel
 } from '#adapter/repository/troup/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
 import { TroupCode } from '#core/troup/constant'
@@ -13,6 +14,10 @@ export class MongoTroupRepository
 
   constructor() {
     super(TroupModel, TroupError.NOT_FOUND)
+  }
+
+  async listByMovement({ movement_id }: { movement_id: string }): Promise<TroupEntity[]> {
+    return this.find({ movement_id })
   }
 
   async getInProgress({ city_id }: { city_id: string }): Promise<TroupEntity | null> {
@@ -28,7 +33,7 @@ export class MongoTroupRepository
   async listInCity({ city_id }: { city_id: string }): Promise<TroupEntity[]> {
     return this.find({
       city_id,
-      movement_id: null 
+      movement_id: null
     })
   }
 

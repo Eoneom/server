@@ -96,5 +96,10 @@ export abstract class MongoGenericRepository<
     await this.model.updateOne({ _id: entity.id }, entity)
   }
 
+  async delete(id: string): Promise<void> {
+    this.logger.debug('delete', { id })
+    await this.model.deleteOne({ _id: id })
+  }
+
   protected abstract buildFromModel(document: Doc): Entity
 }

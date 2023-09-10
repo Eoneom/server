@@ -1,4 +1,4 @@
-# Swarm game server
+# Swarm game server (outdated README)
 
 This project is currently a proof of concept for web strategy game server.
 

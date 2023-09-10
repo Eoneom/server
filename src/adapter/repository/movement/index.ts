@@ -15,6 +15,10 @@ export class MongoMovementRepository
     super(MovementModel, TroupError.MOVEMENT_NOT_FOUND)
   }
 
+  async get(id: string): Promise<MovementEntity> {
+    return this.findByIdOrThrow(id)
+  }
+
   async listInCity({ city_id }: { city_id: string }): Promise<MovementEntity[]> {
     return this.find({ city_id })
   }
@@ -22,6 +26,7 @@ export class MongoMovementRepository
   protected buildFromModel(document: MovementDocument): MovementEntity {
     return MovementEntity.create({
       id: document._id.toString(),
+      action: document.action,
       origin: document.origin,
       destination: document.destination,
       arrive_at: document.arrive_at
