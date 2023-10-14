@@ -1,4 +1,4 @@
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { BuildingRequirement } from '#core/requirement/constant/building'
 import { TechnologyRequirement } from '#core/requirement/constant/technology'
 import { TroupRequirement } from '#core/requirement/constant/troup'

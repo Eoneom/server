@@ -1,4 +1,4 @@
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { LevelCosts } from '#core/pricing/value/level'
 
 export const building_costs: Record<BuildingCode, LevelCosts> = {
@@ -12,8 +12,8 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
       multiplier: 1.3
     },
     duration: {
-      base: 25,
-      multiplier: 1.85
+      base: 1,
+      multiplier: 2
     }
   },
   [BuildingCode.MUSHROOM_FARM]: {
@@ -26,8 +26,8 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
       multiplier: 1.5,
     },
     duration: {
-      base: 25,
-      multiplier: 1.85
+      base: 1.5,
+      multiplier: 2
     }
   },
   [BuildingCode.RESEARCH_LAB]: {

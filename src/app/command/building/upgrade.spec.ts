@@ -2,7 +2,7 @@ import {
   BuildingUpgradeCommand,
   BuildingUpgradeExec
 } from '#app/command/building/upgrade'
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'

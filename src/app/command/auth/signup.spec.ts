@@ -1,7 +1,7 @@
 import {
   AuthSignupCommand, AuthSignupExec
 } from '#app/command/auth/signup'
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { CityError } from '#core/city/error'
 import { PlayerError } from '#core/player/error'
 import { TechnologyCode } from '#core/technology/constant'

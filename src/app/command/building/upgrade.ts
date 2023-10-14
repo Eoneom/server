@@ -1,6 +1,6 @@
 import { AppService } from '#app/service'
 import { GenericCommand } from '#command/generic'
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { BuildingEntity } from '#core/building/entity'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'

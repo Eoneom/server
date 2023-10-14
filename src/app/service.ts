@@ -1,5 +1,5 @@
 import { Factory } from '#adapter/factory'
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { BuildingService } from '#core/building/service'
 import { CityService } from '#core/city/service'
 import {

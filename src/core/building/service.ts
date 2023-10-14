@@ -1,6 +1,5 @@
-import {
-  BuildingCode, building_earnings
-} from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
+import { building_earnings } from '#core/building/constant/earnings'
 import { BuildingEntity } from '#core/building/entity'
 import { FAKE_ID } from '#shared/identification'
 import { Resource } from '#shared/resource'

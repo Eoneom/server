@@ -1,4 +1,4 @@
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { building_costs } from '#core/pricing/constant/building'
 import { technology_costs } from '#core/pricing/constant/technology'
 import {

@@ -1,7 +1,7 @@
 import {
   TechnologyResearchCommand, TechnologyResearchExec
 } from '#app/command/technology/research'
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { RequirementError } from '#core/requirement/error'

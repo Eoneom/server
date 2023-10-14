@@ -1,4 +1,4 @@
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import {
   getModelForClass, mongoose, prop
 } from '@typegoose/typegoose'

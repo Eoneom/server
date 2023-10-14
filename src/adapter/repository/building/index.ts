@@ -4,7 +4,7 @@ import {
   BuildingDocument, BuildingModel
 } from '#adapter/repository/building/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { BuildingError } from '#core/building/error'
 import { now } from '#shared/time'
 

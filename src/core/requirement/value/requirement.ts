@@ -1,4 +1,4 @@
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { TechnologyCode } from '#core/technology/constant'
 
 export interface RequirementValue {

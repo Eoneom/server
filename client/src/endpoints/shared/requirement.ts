@@ -1,4 +1,4 @@
-import { BuildingCode } from '../../../../src/core/building/constant'
+import { BuildingCode } from '../../../../src/core/building/constant/code'
 import { TechnologyCode } from '../../../../src/core/technology/constant'
 
 export interface Requirement {

@@ -1,6 +1,6 @@
 import { GenericCommand } from '#command/generic'
 import { AppService } from '#app/service'
-import { BuildingCode } from '#core/building/constant'
+import { BuildingCode } from '#core/building/constant/code'
 import { CityEntity } from '#core/city/entity'
 import { PricingService } from '#core/pricing/service'
 import {
