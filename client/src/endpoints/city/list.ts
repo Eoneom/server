@@ -13,6 +13,10 @@ export interface CityListDataResponse {
       plastic: number
       mushroom: number
     }
+    warehouses_capacity: {
+      plastic: number
+      mushroom: number
+    }
   }[]
 }
 

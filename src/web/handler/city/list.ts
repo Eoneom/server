@@ -40,12 +40,14 @@ const response_mapper = ({
   cities,
   maximum_building_levels_by_city,
   earnings_per_second_by_city,
-  cities_cells
+  cities_cells,
+  warehouses_capacity_by_city
 }: CityListQueryResponse): CityListDataResponse => {
   const cities_response: CityListDataResponse['cities'] = cities.map(city => {
     const earnings_per_second = earnings_per_second_by_city[city.id]
     const cell = cities_cells[city.id]
     const maximum_building_levels = maximum_building_levels_by_city[city.id]
+    const warehouses_capacity = warehouses_capacity_by_city[city.id]
     return {
       id: city.id,
       name: city.name,
@@ -55,6 +57,10 @@ const response_mapper = ({
       earnings_per_second: {
         plastic: earnings_per_second.plastic,
         mushroom: earnings_per_second.mushroom
+      },
+      warehouses_capacity: {
+        plastic: warehouses_capacity.plastic,
+        mushroom: warehouses_capacity.mushroom
       },
       coordinates: {
         x: cell.coordinates.x,

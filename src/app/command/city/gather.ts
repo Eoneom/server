@@ -13,6 +13,7 @@ interface CityGatherExec {
   city: CityEntity
   earnings_per_second: Resource
   player_id: string
+  warehouses_capacity: Resource
 }
 
 interface CityGatherSave {
@@ -41,22 +42,26 @@ export class CityGatherCommand extends GenericCommand<
   }: CityGatherRequest): Promise<CityGatherExec> {
     const [
       city,
-      earnings_per_second
+      earnings_per_second,
+      warehouses_capacity
     ] = await Promise.all([
       this.repository.city.get(city_id),
-      AppService.getCityEarningsBySecond({ city_id })
+      AppService.getCityEarningsBySecond({ city_id }),
+      AppService.getCityWarehousesCapacity({ city_id })
     ])
 
     return {
       city,
       earnings_per_second,
-      player_id
+      player_id,
+      warehouses_capacity
     }
   }
   exec({
     city,
     earnings_per_second,
-    player_id
+    player_id,
+    warehouses_capacity
   }: CityGatherExec): CityGatherSave {
     const {
       city: updated_city,
@@ -64,7 +69,8 @@ export class CityGatherCommand extends GenericCommand<
     } = city.gather({
       player_id,
       gather_at_time: now(),
-      earnings_per_second
+      earnings_per_second,
+      warehouses_capacity
     })
 
     return {

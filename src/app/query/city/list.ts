@@ -14,6 +14,7 @@ export interface CityListQueryResponse {
   earnings_per_second_by_city: Record<string, Resource>
   maximum_building_levels_by_city: Record<string, number>
   cities_cells: Record<string, CellEntity>
+  warehouses_capacity_by_city: Record<string, Resource>
 }
 
 export class CityListQuery extends GenericQuery<CityListQueryRequest, CityListQueryResponse> {
@@ -63,11 +64,27 @@ export class CityListQuery extends GenericQuery<CityListQueryRequest, CityListQu
       }
     }, {} as Record<string, number>)
 
+    const warehouses_capacities = await Promise.all(cities.map(async city => {
+      const capacity = await AppService.getCityWarehousesCapacity({ city_id: city.id })
+      return {
+        city_id: city.id,
+        capacity
+      }
+    }))
+
+    const warehouses_capacity_by_city = warehouses_capacities.reduce((acc, current) => {
+      return {
+        ...acc,
+        [current.city_id]: current.capacity
+      }
+    }, {} as Record<string, Resource>)
+
     return {
       cities,
       earnings_per_second_by_city,
       maximum_building_levels_by_city,
-      cities_cells
+      cities_cells,
+      warehouses_capacity_by_city
     }
   }
 }

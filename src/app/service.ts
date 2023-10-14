@@ -55,6 +55,34 @@ export class AppService {
     })
   }
 
+  static async getCityWarehousesCapacity({ city_id }: { city_id: string }): Promise<Resource> {
+    const repository = Factory.getRepository()
+    const [
+      mushroom_warehouse_level,
+      plastic_warehouse_level
+    ] = await Promise.all([
+      repository.building.getLevel({
+        city_id,
+        code: BuildingCode.MUSHROOM_WAREHOUSE
+      }),
+      repository.building.getLevel({
+        city_id,
+        code: BuildingCode.PLASTIC_WAREHOUSE
+      })
+    ])
+
+    return {
+      mushroom: BuildingService.getWarehouseCapacity({
+        level: mushroom_warehouse_level,
+        code: BuildingCode.MUSHROOM_WAREHOUSE
+      }),
+      plastic: BuildingService.getWarehouseCapacity({
+        level: plastic_warehouse_level,
+        code: BuildingCode.PLASTIC_WAREHOUSE
+      })
+    }
+  }
+
   static async getBuildingRequirementLevels({
     city_id,
     player_id,

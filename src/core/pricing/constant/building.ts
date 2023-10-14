@@ -16,6 +16,20 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
       multiplier: 2
     }
   },
+  [BuildingCode.PLASTIC_WAREHOUSE]: {
+    plastic: {
+      base: 500,
+      multiplier: 2
+    },
+    mushroom: {
+      base: 500,
+      multiplier: 2
+    },
+    duration: {
+      base: 120,
+      multiplier: 1.7
+    }
+  },
   [BuildingCode.MUSHROOM_FARM]: {
     plastic: {
       base: 200,
@@ -30,13 +44,27 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
       multiplier: 2
     }
   },
+  [BuildingCode.MUSHROOM_WAREHOUSE]: {
+    plastic: {
+      base: 500,
+      multiplier: 2
+    },
+    mushroom: {
+      base: 500,
+      multiplier: 2
+    },
+    duration: {
+      base: 120,
+      multiplier: 1.7
+    }
+  },
   [BuildingCode.RESEARCH_LAB]: {
     plastic: {
-      base: 2000,
+      base: 10000,
       multiplier: 1.4
     },
     mushroom: {
-      base: 2000,
+      base: 10000,
       multiplier: 1.4,
     },
     duration: {
@@ -46,11 +74,11 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
   },
   [BuildingCode.UNIVERSITY]: {
     plastic: {
-      base: 15000,
+      base: 17000,
       multiplier: 1.3
     },
     mushroom: {
-      base: 3000,
+      base: 12000,
       multiplier: 1.2
     },
     duration: {

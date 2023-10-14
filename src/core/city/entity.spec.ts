@@ -74,6 +74,10 @@ describe('CityEntity', () => {
           plastic: 0,
           mushroom: 0
         },
+        warehouses_capacity: {
+          plastic: 100000,
+          mushroom: 100000
+        },
         gather_at_time: city.last_plastic_gather + 1000
       })
 
@@ -94,6 +98,10 @@ describe('CityEntity', () => {
           plastic: 1000,
           mushroom: 1000
         },
+        warehouses_capacity: {
+          plastic: 100000,
+          mushroom: 100000
+        },
         gather_at_time: city.last_plastic_gather - 2000
       })
 
@@ -113,6 +121,10 @@ describe('CityEntity', () => {
         earnings_per_second: {
           plastic: 1000,
           mushroom: 1000
+        },
+        warehouses_capacity: {
+          plastic: 100000,
+          mushroom: 100000
         },
         gather_at_time: city.last_plastic_gather + 1
       })
@@ -136,6 +148,10 @@ describe('CityEntity', () => {
         earnings_per_second: {
           plastic: plastic_earnings,
           mushroom: mushroom_earnings
+        },
+        warehouses_capacity: {
+          plastic: 100000,
+          mushroom: 100000
         },
         gather_at_time: city.last_plastic_gather + seconds_elapsed * 1000
       })

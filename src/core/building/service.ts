@@ -1,5 +1,6 @@
 import { BuildingCode } from '#core/building/constant/code'
 import { building_earnings } from '#core/building/constant/earnings'
+import { warehouses_capacity } from '#core/building/constant/warehouse-capacity'
 import { BuildingEntity } from '#core/building/entity'
 import { FAKE_ID } from '#shared/identification'
 import { Resource } from '#shared/resource'
@@ -45,6 +46,21 @@ export class BuildingService {
       plastic,
       mushroom
     }
+  }
+
+  static getWarehouseCapacity({
+    level,
+    code
+  }: {
+    level: number
+    code: BuildingCode.MUSHROOM_WAREHOUSE | BuildingCode.PLASTIC_WAREHOUSE
+  }): number {
+    const {
+      multiplier,
+      base
+    } = warehouses_capacity[code]
+
+    return Math.pow(multiplier, level)*base
   }
 
   private static getResourceEarnings({

@@ -114,11 +114,13 @@ export class CityEntity extends BaseEntity {
   gather({
     earnings_per_second,
     gather_at_time,
-    player_id
+    player_id,
+    warehouses_capacity
   }: {
     earnings_per_second: Resource
     player_id: string
     gather_at_time: number
+    warehouses_capacity: Resource
   }): {
     city: CityEntity,
     updated: boolean,
@@ -141,9 +143,11 @@ export class CityEntity extends BaseEntity {
     const city = this
       .gatherPlastic({
         earnings: plastic_earnings,
-        gather_at_time
+        gather_at_time,
+        capacity: warehouses_capacity.plastic
       })
       .gatherMushroom({
+        capacity: warehouses_capacity.mushroom,
         earnings: mushroom_earnings,
         gather_at_time
       })
@@ -166,44 +170,72 @@ export class CityEntity extends BaseEntity {
 
   private gatherPlastic({
     earnings,
+    capacity,
     gather_at_time
   }:{
     earnings: number
+    capacity: number
     gather_at_time: number
   }): CityEntity {
     if (!earnings) {
       return this
     }
 
+    const capped_earnings = this.getCappedEarnings({
+      earnings,
+      capacity,
+      current_resource: this.plastic
+    })
+
     return new CityEntity({
       ...this,
       last_plastic_gather: gather_at_time,
-      plastic: this.plastic + earnings
+      plastic: this.plastic + capped_earnings
     })
   }
 
   private gatherMushroom({
     earnings,
+    capacity,
     gather_at_time
   }: {
     earnings: number
+    capacity: number
     gather_at_time: number
   }): CityEntity {
     if (!earnings) {
       return this
     }
 
+    const capped_earnings = this.getCappedEarnings({
+      earnings,
+      capacity,
+      current_resource: this.mushroom
+    })
+
     return new CityEntity({
       ...this,
       last_mushroom_gather: gather_at_time,
-      mushroom: this.mushroom + earnings
+      mushroom: this.mushroom + capped_earnings
     })
+  }
+
+  private getCappedEarnings({
+    earnings,
+    capacity,
+    current_resource
+  }: {
+    earnings: number
+    capacity: number
+    current_resource: number
+  }): number {
+    return earnings + current_resource > capacity ? capacity - current_resource : earnings
   }
 
   private getEarnings({
     earnings_per_second,
     last_gather_time,
-    gather_at_time
+    gather_at_time,
   }: {
     earnings_per_second: number,
     last_gather_time: number,
