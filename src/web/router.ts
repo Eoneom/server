@@ -21,6 +21,7 @@ import { troupExploreHandler } from '#web/handler/troup/explore'
 import { troupListMovementHandler } from '#web/handler/troup/list-movement'
 import { troupFinishMovementHandler } from '#web/handler/troup/finish-movement'
 import { communicationListReportHandler } from '#web/handler/communication/list-report'
+import { cityGetHandler } from '#web/handler/city/get'
 
 export const router = (): Router => {
   const r = Router()
@@ -35,6 +36,7 @@ export const router = (): Router => {
 
   // Authenticated routes
   r.get('/city', authMiddleware, cityListHandler)
+  r.get('/city/:city_id', authMiddleware, cityGetHandler)
   r.put('/city/gather', authMiddleware, cityGatherHandler)
   r.get('/city/:city_id/troup', authMiddleware, troupListHandler)
   r.get('/city/:city_id/troup/movement', authMiddleware, troupListMovementHandler)

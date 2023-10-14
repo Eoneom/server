@@ -3,6 +3,10 @@ import {
   CityGatherRequest,
   CityGatherResponse
 } from './gather'
+import {
+  CityGetRequest,
+  CityGetResponse
+} from './get'
 import { CityListResponse } from './list'
 
 export class CityEndpoint {
@@ -10,6 +14,10 @@ export class CityEndpoint {
 
   constructor({ fetcher }: { fetcher: Fetcher }) {
     this.fetcher = fetcher
+  }
+
+  get(token: string, { city_id }: CityGetRequest): Promise<CityGetResponse> {
+    return this.fetcher.get(`/city/${city_id}`, { token })
   }
 
   list(token: string): Promise<CityListResponse> {
