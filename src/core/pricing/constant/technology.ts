@@ -1,6 +1,8 @@
 import { LevelCosts } from '#core/pricing/value/level'
 import { TechnologyCode } from '#core/technology/constant'
 
+export const RESEARCH_LABEL_REDUCTION_PER_LEVEL = 10
+
 export const technology_costs: Record<TechnologyCode, LevelCosts> = {
   [TechnologyCode.ARCHITECTURE]: {
     plastic: {

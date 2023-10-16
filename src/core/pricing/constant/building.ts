@@ -1,6 +1,8 @@
 import { BuildingCode } from '#core/building/constant/code'
 import { LevelCosts } from '#core/pricing/value/level'
 
+export const ARCHITECTURE_REDUCTION_PER_LEVEL = 10
+
 export const building_costs: Record<BuildingCode, LevelCosts> = {
   [BuildingCode.RECYCLING_PLANT]: {
     plastic: {

@@ -1,6 +1,12 @@
 import { BuildingCode } from '#core/building/constant/code'
-import { building_costs } from '#core/pricing/constant/building'
-import { technology_costs } from '#core/pricing/constant/technology'
+import {
+  ARCHITECTURE_REDUCTION_PER_LEVEL,
+  building_costs
+} from '#core/pricing/constant/building'
+import {
+  RESEARCH_LABEL_REDUCTION_PER_LEVEL,
+  technology_costs
+} from '#core/pricing/constant/technology'
 import {
   LevelCost, LevelCostValue
 } from '#core/pricing/value/level'
@@ -38,7 +44,8 @@ export class PricingService {
   }): Resource {
     const costs = this.getBuildingLevelCost({
       code,
-      level
+      level,
+      architecture_level: 0
     })
 
     return {
@@ -54,7 +61,7 @@ export class PricingService {
   }: {
     code: BuildingCode
     level: number
-    architecture_level?: number
+    architecture_level: number
   }): LevelCostValue {
     const {
       plastic,
@@ -62,7 +69,11 @@ export class PricingService {
       duration
     } = building_costs[code]
 
-    const architecture_bonus = (architecture_level ?? 0) / 100
+    const architecture_reduction = this.getLevelReduction({
+      reduction_percent_per_level: ARCHITECTURE_REDUCTION_PER_LEVEL,
+      level: architecture_level
+    })
+
     return {
       code,
       level: level,
@@ -70,7 +81,7 @@ export class PricingService {
         plastic: this.computeLevelCost(plastic, level),
         mushroom: this.computeLevelCost(mushroom, level)
       },
-      duration: this.computeLevelCost(duration, level, architecture_bonus)
+      duration: this.computeLevelCost(duration, level, architecture_reduction)
     }
   }
 
@@ -89,7 +100,11 @@ export class PricingService {
       duration
     } = technology_costs[code]
 
-    const research_lab_bonus = research_lab_level / 100
+    const research_lab_reduction = this.getLevelReduction({
+      reduction_percent_per_level: RESEARCH_LABEL_REDUCTION_PER_LEVEL,
+      level: research_lab_level
+    })
+
     return {
       code,
       level: level,
@@ -97,11 +112,22 @@ export class PricingService {
         plastic: this.computeLevelCost(plastic, level),
         mushroom: this.computeLevelCost(mushroom, level)
       },
-      duration: this.computeLevelCost(duration, level, research_lab_bonus)
+      duration: this.computeLevelCost(duration, level, research_lab_reduction)
     }
   }
 
-  private static computeLevelCost(cost: LevelCost, level: number, bonus = 0): number {
-    return Math.ceil(cost.base*Math.pow(cost.multiplier, level - 1)*(1-bonus))
+  private static getLevelReduction({
+    reduction_percent_per_level,
+    level,
+  }: {
+    reduction_percent_per_level: number
+    level: number
+  }): number {
+    return Math.pow(1-1/reduction_percent_per_level, level)
+  }
+
+  private static computeLevelCost(cost: LevelCost, level: number, reduction = 1): number {
+    const base_level_cost = cost.base * Math.pow(cost.multiplier, level - 1)
+    return Math.ceil(base_level_cost * reduction)
   }
 }
