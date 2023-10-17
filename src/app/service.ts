@@ -47,12 +47,22 @@ export class AppService {
 
     const coefficients = city_cell.resource_coefficient
 
-    return BuildingService.getEarningsBySecond({
-      recycling_plant_level,
-      plastic_coefficient: coefficients.plastic,
-      mushroom_farm_level,
-      mushroom_coefficient: coefficients.mushroom
+    const plastic = BuildingService.getEarningsBySecond({
+      code: BuildingCode.RECYCLING_PLANT,
+      level: recycling_plant_level,
+      coefficients,
     })
+
+    const mushroom = BuildingService.getEarningsBySecond({
+      level: mushroom_farm_level,
+      code: BuildingCode.MUSHROOM_FARM,
+      coefficients,
+    })
+
+    return {
+      plastic,
+      mushroom
+    }
   }
 
   static async getCityWarehousesCapacity({ city_id }: { city_id: string }): Promise<Resource> {

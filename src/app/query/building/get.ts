@@ -7,7 +7,10 @@ import { BuildingCode } from '#core/building/constant/code'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { RequirementService } from '#core/requirement/service'
 import { CityError } from '#core/city/error'
-import { isWarehouseBuildingCode } from '#core/building/helper'
+import {
+  isProductionBuildingCode,
+  isWarehouseBuildingCode
+} from '#core/building/helper'
 import { BuildingService } from '#core/building/service'
 
 export interface BuildingGetQueryRequest {
@@ -36,7 +39,7 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
 
     const [
       building,
-      architecture
+      architecture,
     ] = await Promise.all([
       this.repository.building.getInCity({
         city_id,
@@ -48,8 +51,8 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
       })
     ])
 
+    const metadata = await this.getMetadata({ building })
     const requirement = RequirementService.getBuildingRequirement({ building_code })
-    const metadata = this.getMetadata({ building })
     const cost = PricingService.getBuildingLevelCost({
       code: building.code,
       level: building.level + 1,
@@ -63,7 +66,7 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
     }
   }
 
-  private getMetadata({ building }: { building: BuildingEntity}): Record<string, unknown> {
+  private async getMetadata({ building }: { building: BuildingEntity}): Promise<Record<string, unknown>> {
     if (isWarehouseBuildingCode(building.code)) {
       const current_capacity = BuildingService.getWarehouseCapacity({
         level: building.level,
@@ -77,6 +80,32 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
       return {
         current_capacity,
         next_capacity
+      }
+    }
+
+    if (isProductionBuildingCode(building.code)) {
+      const level = await this.repository.building.getLevel({
+        city_id: building.city_id,
+        code: building.code
+      })
+      const city_cell = await this.repository.cell.getCityCell({ city_id: building.city_id })
+      const coefficients = city_cell.resource_coefficient
+
+      const current_production = BuildingService.getEarningsBySecond({
+        level,
+        code: building.code,
+        coefficients
+      })
+
+      const next_production = BuildingService.getEarningsBySecond({
+        level: level + 1,
+        code: building.code,
+        coefficients
+      })
+
+      return {
+        current_production,
+        next_production
       }
     }
 
