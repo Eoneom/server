@@ -1,5 +1,6 @@
 export * from './building/cancel'
 export * from './building/finish-upgrade'
+export * from './building/get'
 export * from './building/list'
 export * from './building/upgrade'
 export * from './city/gather'

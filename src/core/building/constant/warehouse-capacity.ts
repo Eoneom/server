@@ -7,11 +7,11 @@ export interface WarehouseCapacity {
 
 export const warehouses_capacity: Record<BuildingCode.MUSHROOM_WAREHOUSE | BuildingCode.PLASTIC_WAREHOUSE, WarehouseCapacity> = {
   [BuildingCode.MUSHROOM_WAREHOUSE]: {
-    base: 2000,
+    base: 3000,
     multiplier: 2
   },
   [BuildingCode.PLASTIC_WAREHOUSE]: {
-    base: 2000,
+    base: 4000,
     multiplier: 2
   }
 }

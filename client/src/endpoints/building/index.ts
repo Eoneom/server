@@ -8,6 +8,10 @@ import {
   BuildingFinishUpgradeResponse
 } from './finish-upgrade'
 import {
+  BuildingGetRequest,
+  BuildingGetResponse
+} from './get'
+import {
   BuildingListRequest,
   BuildingListResponse
 } from './list'
@@ -21,6 +25,13 @@ export class BuildingEndpoint {
 
   constructor({ fetcher }: { fetcher: Fetcher }) {
     this.fetcher = fetcher
+  }
+
+  public async get(token: string, {
+    city_id,
+    building_code
+  }: BuildingGetRequest): Promise<BuildingGetResponse> {
+    return this.fetcher.get(`/city/${city_id}/building/${building_code}`, { token })
   }
 
   public async upgrade(token: string, body: BuildingUpgradeRequest): Promise<BuildingUpgradeResponse> {

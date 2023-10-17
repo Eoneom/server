@@ -44,25 +44,13 @@ export const buildingListHandler = async (
   }
 }
 
-const response_mapper = ({
-  buildings,
-  costs,
-  requirement
-}: ListBuildingQueryResponse): BuildingListDataResponse => {
+const response_mapper = ({ buildings }: ListBuildingQueryResponse): BuildingListDataResponse => {
   const response_buildings: BuildingListDataResponse['buildings'] = buildings.map(building => {
-    const cost = costs[building.id]
     return {
       id: building.id,
-      city_id: building.city_id,
       code: building.code,
       level: building.level,
       upgrade_at: building.upgrade_at ?? undefined,
-      upgrade_cost: {
-        plastic: cost.resource.plastic,
-        mushroom: cost.resource.mushroom,
-        duration: cost.duration
-      },
-      requirement: requirement[building.code]
     }
   })
 

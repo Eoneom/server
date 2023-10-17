@@ -1,27 +1,28 @@
 import { Router } from 'express'
+import { authMiddleware } from '#web/middleware/auth'
+import { buildingCancelHandler } from '#web/handler/building/cancel'
+import { buildingFinishUpgradeHandler } from '#web/handler/building/finish-upgrade'
+import { buildingGetHandler } from '#web/handler/building/get'
+import { buildingListHandler } from '#web/handler/building/list'
 import { buildingUpgradeHandler } from '#web/handler/building/upgrade'
+import { cityGatherHandler } from '#web/handler/city/gather'
+import { cityGetHandler } from '#web/handler/city/get'
+import { cityListHandler } from '#web/handler/city/list'
+import { communicationListReportHandler } from '#web/handler/communication/list-report'
 import { loginHandler } from '#web/handler/player/login'
 import { signupHandler } from '#web/handler/player/signup'
-import { technologyResearchHandler } from '#web/handler/technology/research'
-import { authMiddleware } from '#web/middleware/auth'
-import { buildingListHandler } from '#web/handler/building/list'
-import { technologyListHandler } from '#web/handler/technology/list'
-import { buildingCancelHandler } from '#web/handler/building/cancel'
 import { technologyCancelHandler } from '#web/handler/technology/cancel'
-import { worldGetSectorHandler } from '#web/handler/world/get-sector'
-import { cityListHandler } from '#web/handler/city/list'
-import { buildingFinishUpgradeHandler } from '#web/handler/building/finish-upgrade'
 import { technologyFinishResearchHandler } from '#web/handler/technology/finish-research'
-import { cityGatherHandler } from '#web/handler/city/gather'
-import { troupRecruitHandler } from '#web/handler/troup/recruit'
-import { troupListHandler } from '#web/handler/troup/list'
-import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
+import { technologyListHandler } from '#web/handler/technology/list'
+import { technologyResearchHandler } from '#web/handler/technology/research'
 import { troupCancelHandler } from '#web/handler/troup/cancel'
 import { troupExploreHandler } from '#web/handler/troup/explore'
-import { troupListMovementHandler } from '#web/handler/troup/list-movement'
 import { troupFinishMovementHandler } from '#web/handler/troup/finish-movement'
-import { communicationListReportHandler } from '#web/handler/communication/list-report'
-import { cityGetHandler } from '#web/handler/city/get'
+import { troupListHandler } from '#web/handler/troup/list'
+import { troupListMovementHandler } from '#web/handler/troup/list-movement'
+import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
+import { troupRecruitHandler } from '#web/handler/troup/recruit'
+import { worldGetSectorHandler } from '#web/handler/world/get-sector'
 
 export const router = (): Router => {
   const r = Router()
@@ -40,9 +41,10 @@ export const router = (): Router => {
   r.put('/city/gather', authMiddleware, cityGatherHandler)
   r.get('/city/:city_id/troup', authMiddleware, troupListHandler)
   r.get('/city/:city_id/troup/movement', authMiddleware, troupListMovementHandler)
-  r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
   r.get('/city/:city_id/technology', authMiddleware, technologyListHandler)
 
+  r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
+  r.get('/city/:city_id/building/:building_code', authMiddleware, buildingGetHandler)
   r.put('/building/cancel', authMiddleware, buildingCancelHandler)
   r.put('/building/upgrade', authMiddleware, buildingUpgradeHandler)
   r.put('/building/upgrade/finish', authMiddleware, buildingFinishUpgradeHandler)
