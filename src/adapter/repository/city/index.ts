@@ -1,7 +1,8 @@
 import { CityEntity } from '#core/city/entity'
 import { CityRepository } from '#app/port/repository/city'
 import {
-  CityDocument, CityModel
+  CityDocument,
+  CityModel
 } from '#adapter/repository/city/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
 import { CityError } from '#core/city/error'

@@ -7,7 +7,7 @@ export interface BuildingGetRequest {
   building_code: BuildingCode
 }
 
-export interface BuildingGetDataResponse {
+interface BaseBuilding {
   code: BuildingCode
   level: number
   upgrade_cost: {
@@ -17,6 +17,14 @@ export interface BuildingGetDataResponse {
   }
   upgrade_at?: number
   requirement: Requirement
+  metadata: Record<string, unknown>
 }
+
+export type WarehouseBuilding = BaseBuilding & { metadata: { current_capacity: number, next_capacity: number } }
+export const isWarehouseBuilding = (b: BaseBuilding): b is WarehouseBuilding => {
+  return b.code === BuildingCode.PLASTIC_WAREHOUSE || b.code === BuildingCode.MUSHROOM_WAREHOUSE
+}
+
+export type BuildingGetDataResponse = WarehouseBuilding | BaseBuilding
 
 export type BuildingGetResponse = GenericResponse<BuildingGetDataResponse>

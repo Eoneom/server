@@ -7,6 +7,8 @@ import { BuildingCode } from '#core/building/constant/code'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { RequirementService } from '#core/requirement/service'
 import { CityError } from '#core/city/error'
+import { isWarehouseBuildingCode } from '#core/building/helper'
+import { BuildingService } from '#core/building/service'
 
 export interface BuildingGetQueryRequest {
   city_id: string
@@ -18,6 +20,7 @@ export interface BuildingGetQueryResponse {
   building: BuildingEntity
   cost: LevelCostValue
   requirement: RequirementValue
+  metadata: Record<string, unknown>
 }
 
 export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, BuildingGetQueryResponse> {
@@ -30,27 +33,53 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
     if (!city.isOwnedBy(player_id)) {
       throw new Error(CityError.NOT_OWNER)
     }
-    const building = await this.repository.building.getInCity({
-      city_id,
-      code: building_code
-    })
-    const architecture = await this.repository.technology.get({
-      player_id,
-      code: TechnologyCode.ARCHITECTURE
-    })
 
+    const [
+      building,
+      architecture
+    ] = await Promise.all([
+      this.repository.building.getInCity({
+        city_id,
+        code: building_code
+      }),
+      this.repository.technology.get({
+        player_id,
+        code: TechnologyCode.ARCHITECTURE
+      })
+    ])
+
+    const requirement = RequirementService.getBuildingRequirement({ building_code })
+    const metadata = this.getMetadata({ building })
     const cost = PricingService.getBuildingLevelCost({
       code: building.code,
       level: building.level + 1,
       architecture_level: architecture.level
     })
-
-    const requirement = RequirementService.getBuildingRequirement({ building_code })
-
     return {
       building,
+      requirement,
+      metadata,
       cost,
-      requirement
     }
+  }
+
+  private getMetadata({ building }: { building: BuildingEntity}): Record<string, unknown> {
+    if (isWarehouseBuildingCode(building.code)) {
+      const current_capacity = BuildingService.getWarehouseCapacity({
+        level: building.level,
+        code: building.code
+      })
+      const next_capacity = BuildingService.getWarehouseCapacity({
+        level: building.level + 1,
+        code: building.code
+      })
+
+      return {
+        current_capacity,
+        next_capacity
+      }
+    }
+
+    return {}
   }
 }

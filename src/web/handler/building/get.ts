@@ -57,7 +57,8 @@ export const buildingGetHandler = async (
 const response_mapper = ({
   building,
   cost,
-  requirement
+  requirement,
+  metadata
 }: BuildingGetQueryResponse): BuildingGetDataResponse => {
   return {
     code: building.code,
@@ -71,6 +72,7 @@ const response_mapper = ({
     requirement: {
       buildings: requirement.buildings,
       technologies: requirement.technologies
-    }
+    },
+    metadata
   }
 }
