@@ -6,6 +6,4 @@ export interface BuildingUpgradeRequest {
   building_code: BuildingCode
 }
 
-export type BuildingUpgradeResponse = GenericResponse<{
-  upgrade_at: number
-}>
+export type BuildingUpgradeResponse = GenericResponse<void>

@@ -5,7 +5,7 @@ import {
   BuildingUpgradeRequest, BuildingUpgradeResponse
 } from '#client/src/endpoints/building/upgrade'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { BuildingUpgradeCommand } from '#command/building/upgrade'
+import { sagaUpgradeBuilding } from '#app/saga/upgrade-building'
 
 export const buildingUpgradeHandler = async (
   req: Request<BuildingUpgradeRequest>,
@@ -30,17 +30,13 @@ export const buildingUpgradeHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new BuildingUpgradeCommand()
-    const { upgrade_at } = await command.run({
+    await sagaUpgradeBuilding({
       player_id,
       city_id,
       building_code
     })
 
-    const response: BuildingUpgradeResponse = {
-      status: 'ok',
-      data: { upgrade_at }
-    }
+    const response: BuildingUpgradeResponse = { status: 'ok' }
 
     return res.json(response)
   } catch (err) {

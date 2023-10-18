@@ -10,7 +10,6 @@ import {
   RequirementService
 } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant'
-import assert from 'assert'
 
 export interface BuildingUpgradeRequest {
   player_id: string
@@ -34,15 +33,10 @@ interface BuildingUpgradeSave {
   building: BuildingEntity
 }
 
-export interface BuildingUpgradeResponse {
-  upgrade_at: number
-}
-
 export class BuildingUpgradeCommand extends GenericCommand<
   BuildingUpgradeRequest,
   BuildingUpgradeExec,
-  BuildingUpgradeSave,
-  BuildingUpgradeResponse
+  BuildingUpgradeSave
 > {
   constructor() {
     super({ name: 'building:upgrade' })
@@ -134,14 +128,11 @@ export class BuildingUpgradeCommand extends GenericCommand<
   async save({
     city,
     building
-  }: BuildingUpgradeSave): Promise<BuildingUpgradeResponse> {
+  }: BuildingUpgradeSave): Promise<void> {
     await Promise.all([
       this.repository.city.updateOne(city),
       this.repository.building.updateOne(building)
     ])
-
-    assert(building.upgrade_at)
-    return { upgrade_at: building.upgrade_at }
   }
 
 }

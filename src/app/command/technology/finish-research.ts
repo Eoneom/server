@@ -1,6 +1,5 @@
 import { GenericCommand } from '#command/generic'
 import { TechnologyEntity } from '#core/technology/entity'
-import { TechnologyError } from '#core/technology/error'
 
 export interface TechnologyFinishResearchRequest {
   player_id: string
@@ -11,7 +10,7 @@ interface TechnologyFinishResearchExec {
 }
 
 interface TechnologyFinishResearchSave {
-  technology: TechnologyEntity
+  technology: TechnologyEntity | null
 }
 
 export class TechnologyFinishResearchCommand extends GenericCommand<
@@ -31,13 +30,17 @@ export class TechnologyFinishResearchCommand extends GenericCommand<
 
   exec({ technology_to_finish }: TechnologyFinishResearchExec): TechnologyFinishResearchSave {
     if (!technology_to_finish) {
-      throw new Error(TechnologyError.NOT_IN_PROGRESS)
+      return { technology: null }
     }
 
     return { technology: technology_to_finish.finishResearch() }
   }
 
   async save({ technology }: TechnologyFinishResearchSave) {
+    if (!technology) {
+      return
+    }
+
     await this.repository.technology.updateOne(technology)
   }
 }
