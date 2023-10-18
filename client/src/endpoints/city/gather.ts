@@ -4,9 +4,4 @@ export interface CityGatherRequest {
   city_id: string
 }
 
-export interface CityGatherDataResponse {
-  plastic: number
-  mushroom: number
-}
-
-export type CityGatherResponse = GenericResponse<CityGatherDataResponse>
+export type CityGatherResponse = GenericResponse<void>

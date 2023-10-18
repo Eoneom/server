@@ -7,7 +7,7 @@ import {
   CityGatherRequest, CityGatherResponse
 } from '#client/src/endpoints/city/gather'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { CityGatherCommand } from '#app/command/city/gather'
+import { sagaGather } from '#app/saga/gather'
 
 export const cityGatherHandler = async (
   req: Request<CityGatherRequest>,
@@ -24,16 +24,12 @@ export const cityGatherHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new CityGatherCommand()
-    const result = await command.run({
-      player_id,
-      city_id
+    await sagaGather({
+      city_id,
+      player_id
     })
 
-    return res.json({
-      status: 'ok',
-      data: result
-    })
+    return res.json({ status: 'ok' })
   } catch (err) {
     next(err)
   }

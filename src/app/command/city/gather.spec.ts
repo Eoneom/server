@@ -23,6 +23,7 @@ describe('CityGatherCommand', () => {
   })
 
   it('should prevent player to gather resource in another player city', () => {
+    const gather_at_time = now()
     assert.throws(() => command.exec({
       city,
       earnings_per_second: {
@@ -33,19 +34,21 @@ describe('CityGatherCommand', () => {
         plastic: 30000,
         mushroom: 30000
       },
+      gather_at_time,
       player_id: 'another_player_id'
     }), new RegExp(CityError.NOT_OWNER))
   })
 
   it('should prevent gather if not enough time has passed', () => {
+    const gather_at_time = now()
     const {
       city: updated_city,
       updated
     } = command.exec({
       city: CityEntity.create({
         ...city,
-        last_plastic_gather: now() + 10 * 1000,
-        last_mushroom_gather: now() + 10 * 1000
+        last_plastic_gather: gather_at_time + 10 * 1000,
+        last_mushroom_gather: gather_at_time + 10 * 1000
       }),
       warehouses_capacity: {
         plastic: 30000,
@@ -55,6 +58,7 @@ describe('CityGatherCommand', () => {
         plastic: 100,
         mushroom: 100
       },
+      gather_at_time,
       player_id
     })
 
@@ -69,15 +73,15 @@ describe('CityGatherCommand', () => {
     const mushroom_earnings = 150
     const plastic_warehouse_capacity = STARTING_PLASTIC+2
     const mushroom_warehouse_capacity = STARTING_MUSHROOM+2
-
+    const gather_at_time = now()
     const {
       city: updated_city,
       updated
     } = command.exec({
       city: CityEntity.create({
         ...city,
-        last_plastic_gather: now() - time_elapsed * 1000,
-        last_mushroom_gather: now() - time_elapsed * 1000
+        last_plastic_gather: gather_at_time - time_elapsed * 1000,
+        last_mushroom_gather: gather_at_time - time_elapsed * 1000
       }),
       warehouses_capacity: {
         plastic: plastic_warehouse_capacity,
@@ -87,6 +91,7 @@ describe('CityGatherCommand', () => {
         plastic: plastic_earnings,
         mushroom: mushroom_earnings
       },
+      gather_at_time,
       player_id
     })
 
@@ -100,14 +105,16 @@ describe('CityGatherCommand', () => {
     const plastic_earnings = 100
     const mushroom_earnings = 150
 
+    const gather_at_time = now()
+
     const {
       city: updated_city,
       updated
     } = command.exec({
       city: CityEntity.create({
         ...city,
-        last_plastic_gather: now() - time_elapsed * 1000,
-        last_mushroom_gather: now() - time_elapsed * 1000
+        last_plastic_gather: gather_at_time - time_elapsed * 1000,
+        last_mushroom_gather: gather_at_time - time_elapsed * 1000
       }),
       warehouses_capacity: {
         plastic: 30000,
@@ -117,6 +124,7 @@ describe('CityGatherCommand', () => {
         plastic: plastic_earnings,
         mushroom: mushroom_earnings
       },
+      gather_at_time,
       player_id
     })
 

@@ -1,8 +1,9 @@
 import { GenericCommand } from '#command/generic'
+import { BuildingCode } from '#core/building/constant/code'
 import { BuildingEntity } from '#core/building/entity'
-import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
+import assert from 'assert'
 
 export interface BuildingFinishUpgradeRequest {
   player_id: string
@@ -16,13 +17,20 @@ interface BuildingFinishUpgradeExec {
 }
 
 interface BuildingFinishUpgradeSave {
-  building: BuildingEntity
+  building: BuildingEntity | null
+  upgraded_at: number
 }
+
+export type BuildingFinishUpgradeCommandResponse = {
+  code: BuildingCode
+  upgraded_at: number
+} | null
 
 export class BuildingFinishUpgradeCommand extends GenericCommand<
   BuildingFinishUpgradeRequest,
   BuildingFinishUpgradeExec,
-  BuildingFinishUpgradeSave
+  BuildingFinishUpgradeSave,
+  BuildingFinishUpgradeCommandResponse
 > {
   constructor() {
     super({ name: 'building:finish-upgrade' })
@@ -57,13 +65,32 @@ export class BuildingFinishUpgradeCommand extends GenericCommand<
     }
 
     if (!building_to_finish) {
-      throw new Error(BuildingError.NOT_IN_PROGRESS)
+      return {
+        upgraded_at: 0,
+        building: null
+      }
     }
 
-    return { building: building_to_finish.finishUpgrade() }
+    assert(building_to_finish.upgrade_at)
+
+    return {
+      upgraded_at: building_to_finish.upgrade_at,
+      building: building_to_finish.finishUpgrade()
+    }
   }
 
-  async save({ building }: BuildingFinishUpgradeSave) {
+  async save({
+    building, upgraded_at
+  }: BuildingFinishUpgradeSave): Promise<BuildingFinishUpgradeCommandResponse> {
+    if (!building) {
+      return null
+    }
+
     await this.repository.building.updateOne(building)
+
+    return {
+      code: building.code,
+      upgraded_at
+    }
   }
 }

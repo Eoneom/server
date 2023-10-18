@@ -40,15 +40,17 @@ describe('BuildingFinishUpgradeCommand', () => {
     }), new RegExp(CityError.NOT_OWNER))
   })
 
-  it('should prevent a upgrade if there is no building in progress', () => {
-    assert.throws(() => command.exec({
+  it('should not return any update if there is no building in progress', () => {
+    const { building: updated_building } = command.exec({
       city,
       building_to_finish: null,
       player_id
-    }), new RegExp(BuildingError.NOT_IN_PROGRESS))
+    })
+
+    assert.ok(!updated_building)
   })
 
-  it('should finish the  building upgrade', () => {
+  it('should finish the building upgrade', () => {
     const { building: updated_building } = command.exec({
       city,
       building_to_finish,
@@ -56,6 +58,7 @@ describe('BuildingFinishUpgradeCommand', () => {
     })
 
     assert.ok(building_to_finish.upgrade_at)
+    assert.ok(updated_building)
     assert.ok(!updated_building.upgrade_at)
   })
 })
