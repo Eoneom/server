@@ -6,7 +6,7 @@ import {
   BuildingFinishUpgradeResponse
 } from '#client/src/endpoints/building/finish-upgrade'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { BuildingFinishUpgradeCommand } from '#app/command/building/finish-upgrade'
+import { sagaFinishUpgrade } from '#app/saga/finish-upgrade'
 
 export const buildingFinishUpgradeHandler = async (
   req: Request<BuildingFinishUpgradeRequest>,
@@ -23,10 +23,9 @@ export const buildingFinishUpgradeHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new BuildingFinishUpgradeCommand()
-    await command.run({
+    await sagaFinishUpgrade({
       player_id,
-      city_id,
+      city_id
     })
 
     return res.json({ status: 'ok' })
