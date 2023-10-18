@@ -6,8 +6,4 @@ export interface TechnologyResearchRequest {
   technology_code: TechnologyCode
 }
 
-interface TechnologyResearchDataResponse {
-  research_at: number
-}
-
-export type TechnologyResearchResponse = GenericResponse<TechnologyResearchDataResponse>
+export type TechnologyResearchResponse = GenericResponse<void>

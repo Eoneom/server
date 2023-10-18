@@ -6,6 +6,7 @@ import {
 } from '#client/src/endpoints/technology/research'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { TechnologyResearchCommand } from '#command/technology/research'
+import { sagaResearchTechnology } from '#app/saga/research-technology'
 
 export const technologyResearchHandler = async (
   req: Request<TechnologyResearchRequest>,
@@ -30,16 +31,12 @@ export const technologyResearchHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new TechnologyResearchCommand()
-    const { research_at } = await command.run({
+    await sagaResearchTechnology({
       city_id,
-      technology_code,
-      player_id
+      player_id,
+      technology_code
     })
-    const response: TechnologyResearchResponse = {
-      status: 'ok',
-      data: { research_at }
-    }
+    const response: TechnologyResearchResponse = { status: 'ok' }
     return res.status(200).json(response)
   } catch (err) {
     next(err)

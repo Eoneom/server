@@ -4,11 +4,11 @@ import { BuildingCode } from '#core/building/constant/code'
 import { CityEntity } from '#core/city/entity'
 import { PricingService } from '#core/pricing/service'
 import {
-  Levels, RequirementService
+  Levels,
+  RequirementService
 } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant'
 import { TechnologyEntity } from '#core/technology/entity'
-import assert from 'assert'
 
 export interface TechnologyResearchRequest {
   player_id: string
@@ -30,15 +30,10 @@ interface TechnologyResearchSave {
   technology: TechnologyEntity
 }
 
-export interface TechnologyResearchResponse {
-  research_at: number
-}
-
 export class TechnologyResearchCommand extends GenericCommand<
   TechnologyResearchRequest,
   TechnologyResearchExec,
-  TechnologyResearchSave,
-  TechnologyResearchResponse
+  TechnologyResearchSave
 > {
   constructor() {
     super({ name: 'technology:research' })
@@ -119,14 +114,10 @@ export class TechnologyResearchCommand extends GenericCommand<
   async save({
     city,
     technology
-  }: TechnologyResearchSave): Promise<TechnologyResearchResponse>{
+  }: TechnologyResearchSave): Promise<void>{
     await Promise.all([
       this.repository.city.updateOne(city),
       this.repository.technology.updateOne(technology)
     ])
-
-    assert(technology.research_at)
-
-    return { research_at: technology.research_at }
   }
 }
