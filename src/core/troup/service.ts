@@ -1,4 +1,5 @@
 import { MovementAction } from '#core/troup/constant'
+import { troup_order } from '#core/troup/constant/order'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
@@ -125,6 +126,10 @@ export class TroupService {
         movement_id: base_movement.id
       })
     }
+  }
+
+  static sortTroups({ troups } : {troups: TroupEntity[]}): TroupEntity[] {
+    return troups.sort((a, b) => troup_order[a.code] - troup_order[b.code])
   }
 
   private static getMovementDuration({ distance }: {

@@ -7,6 +7,7 @@ import { BuildingCode } from '#core/building/constant/code'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { RequirementService } from '#core/requirement/service'
 import { GenericQuery } from '#query/generic'
+import { TechnologyService } from '#core/technology/service'
 
 interface TechnologyListRequest {
   player_id: string
@@ -46,7 +47,7 @@ export class TechnologyListQuery extends GenericQuery<TechnologyListRequest, Tec
     const requirement = RequirementService.listTechnologyRequirements()
 
     return {
-      technologies,
+      technologies: TechnologyService.sortTechnologies({ technologies }),
       costs,
       requirement
     }

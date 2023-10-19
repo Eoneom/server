@@ -6,6 +6,7 @@ import { TroupCode } from '#core/troup/constant'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { RequirementService } from '#core/requirement/service'
 import { CityError } from '#core/city/error'
+import { TroupService } from '#core/troup/service'
 
 export interface TroupListQueryRequest {
   city_id: string,
@@ -44,7 +45,7 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
     const requirement = RequirementService.listTroupRequirements()
 
     return {
-      troups,
+      troups: TroupService.sortTroups({ troups }),
       costs,
       requirement
     }

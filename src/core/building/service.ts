@@ -1,5 +1,6 @@
 import { BuildingCode } from '#core/building/constant/code'
 import { building_earnings } from '#core/building/constant/earnings'
+import { building_order } from '#core/building/constant/order'
 import { warehouses_capacity } from '#core/building/constant/warehouse-capacity'
 import { BuildingEntity } from '#core/building/entity'
 import { FAKE_ID } from '#shared/identification'
@@ -55,5 +56,9 @@ export class BuildingService {
     } = warehouses_capacity[code]
 
     return Math.pow(multiplier, level)*base
+  }
+
+  static sortBuildings({ buildings }: { buildings: BuildingEntity[] }): BuildingEntity[] {
+    return buildings.sort((a, b) => building_order[a.code] - building_order[b.code])
   }
 }
