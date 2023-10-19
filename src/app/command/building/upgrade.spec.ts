@@ -30,7 +30,7 @@ describe('BuildingUpgradeCommand', () => {
     })
     building = BuildingEntity.create({
       id: 'building_id',
-      code: BuildingCode.UNIVERSITY,
+      code: BuildingCode.CLONING_FACTORY,
       level: 0,
       city_id: city.id
     })

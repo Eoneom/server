@@ -40,7 +40,7 @@ describe('TroupRecruitCommand', () => {
       troup,
       is_recruitment_in_progress: false,
       levels: {
-        building: { [BuildingCode.UNIVERSITY]: 1 },
+        building: { [BuildingCode.CLONING_FACTORY]: 1 },
         technology: {}
       },
     }

@@ -6,7 +6,7 @@ export const TroupRequirement: Record<TroupCode, RequirementValue> = {
   [TroupCode.EXPLORER]: {
     buildings: [
       {
-        code: BuildingCode.UNIVERSITY,
+        code: BuildingCode.CLONING_FACTORY,
         level: 1
       }
     ],

@@ -6,5 +6,5 @@ export const building_order: Record<BuildingCode, number> = {
   [BuildingCode.RECYCLING_PLANT]: 3,
   [BuildingCode.PLASTIC_WAREHOUSE]: 4,
   [BuildingCode.RESEARCH_LAB]: 5,
-  [BuildingCode.UNIVERSITY]: 6
+  [BuildingCode.CLONING_FACTORY]: 6
 }

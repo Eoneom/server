@@ -74,7 +74,7 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
       multiplier: 1.85
     }
   },
-  [BuildingCode.UNIVERSITY]: {
+  [BuildingCode.CLONING_FACTORY]: {
     plastic: {
       base: 14000,
       multiplier: 1.3

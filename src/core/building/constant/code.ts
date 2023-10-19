@@ -4,5 +4,5 @@ export enum BuildingCode {
   MUSHROOM_FARM = 'mushroom_farm',
   MUSHROOM_WAREHOUSE = 'mushroom_warehouse',
   RESEARCH_LAB = 'research_lab',
-  UNIVERSITY = 'university',
+  CLONING_FACTORY = 'cloning_factory',
 }

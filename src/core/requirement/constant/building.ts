@@ -23,7 +23,7 @@ export const BuildingRequirement: Record<BuildingCode, RequirementValue> = {
     buildings: [],
     technologies: []
   },
-  [BuildingCode.UNIVERSITY]: {
+  [BuildingCode.CLONING_FACTORY]: {
     buildings: [],
     technologies: [
       {
