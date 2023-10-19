@@ -5,7 +5,7 @@ import {
   TroupModel
 } from '#adapter/repository/troup/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
-import { TroupCode } from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
 import { TroupError } from '#core/troup/error'
 
 export class MongoTroupRepository

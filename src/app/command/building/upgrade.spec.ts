@@ -8,7 +8,7 @@ import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { RequirementError } from '#core/requirement/error'
-import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
 import assert from 'assert'
 
 describe('BuildingUpgradeCommand', () => {

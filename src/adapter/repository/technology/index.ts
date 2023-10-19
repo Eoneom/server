@@ -5,7 +5,7 @@ import {
 } from '#adapter/repository/technology/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
 import { now } from '#shared/time'
-import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
 import { TechnologyError } from '#core/technology/error'
 
 export class MongoTechnologyRepository

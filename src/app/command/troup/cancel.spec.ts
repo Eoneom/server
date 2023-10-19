@@ -1,5 +1,5 @@
 import { TroupCancelCommand } from '#app/command/troup/cancel'
-import { TroupCode } from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { CityEntity } from '#core/city/entity'

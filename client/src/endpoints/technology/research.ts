@@ -1,4 +1,4 @@
-import { TechnologyCode } from '../../../../src/core/technology/constant'
+import { TechnologyCode } from '../../../../src/core/technology/constant/code'
 import { GenericResponse } from '../../response'
 
 export interface TechnologyResearchRequest {

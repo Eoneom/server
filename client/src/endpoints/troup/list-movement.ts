@@ -1,4 +1,4 @@
-import { MovementAction } from '../../../../src/core/troup/constant'
+import { MovementAction } from '../../../../src/core/troup/constant/movement-action'
 import { GenericResponse } from '../../response'
 import { Coordinates } from '../shared/coordinates'
 

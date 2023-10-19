@@ -1,7 +1,7 @@
 import assert from 'assert'
 
 import { Factory } from '#adapter/factory'
-import { TroupCode } from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
 import { BaseEntity } from '#core/type/base.entity'
 import { FAKE_ID } from '#shared/identification'
 

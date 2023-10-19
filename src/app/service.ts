@@ -7,8 +7,8 @@ import {
   RequirementService
 } from '#core/requirement/service'
 import { RequirementValue } from '#core/requirement/value/requirement'
-import { TechnologyCode } from '#core/technology/constant'
-import { TroupCode } from '#core/troup/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
+import { TroupCode } from '#core/troup/constant/code'
 import { CellEntity } from '#core/world/cell.entity'
 import { WorldService } from '#core/world/service'
 import { Coordinates } from '#core/world/value/coordinates'

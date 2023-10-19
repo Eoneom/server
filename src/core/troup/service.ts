@@ -1,4 +1,4 @@
-import { MovementAction } from '#core/troup/constant'
+import { MovementAction } from './constant/movement-action'
 import { troup_order } from '#core/troup/constant/order'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'

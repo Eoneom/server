@@ -1,8 +1,6 @@
 import assert from 'assert'
-import {
-  MovementAction,
-  TroupCode
-} from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
+import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { now } from '#shared/time'

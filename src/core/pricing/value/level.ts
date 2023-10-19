@@ -1,5 +1,5 @@
 import { BuildingCode } from '#core/building/constant/code'
-import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
 import { Resource } from '#shared/resource'
 
 export interface LevelCost {

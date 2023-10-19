@@ -5,7 +5,7 @@ import { PricingService } from '#core/pricing/service'
 import {
   Levels, RequirementService
 } from '#core/requirement/service'
-import { TroupCode } from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { now } from '#shared/time'

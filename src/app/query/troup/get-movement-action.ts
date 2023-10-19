@@ -1,5 +1,5 @@
 import { GenericQuery } from '#query/generic'
-import { MovementAction } from '#core/troup/constant'
+import { MovementAction } from '#core/troup/constant/movement-action'
 
 export interface TroupGetMovementActionQueryRequest {
   movement_id: string,

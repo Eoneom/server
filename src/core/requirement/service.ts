@@ -4,8 +4,8 @@ import { TechnologyRequirement } from '#core/requirement/constant/technology'
 import { TroupRequirement } from '#core/requirement/constant/troup'
 import { RequirementError } from '#core/requirement/error'
 import { RequirementValue } from '#core/requirement/value/requirement'
-import { TechnologyCode } from '#core/technology/constant'
-import { TroupCode } from '#core/troup/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
+import { TroupCode } from '#core/troup/constant/code'
 
 export interface Levels {
   building: Partial<Record<BuildingCode, number>>

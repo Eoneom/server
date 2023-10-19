@@ -1,6 +1,6 @@
 import { BuildingFinishUpgradeCommand } from '#app/command/building/finish-upgrade'
 import { TechnologyResearchCommand } from '#app/command/technology/research'
-import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
 
 export const sagaResearchTechnology = async ({
   player_id,

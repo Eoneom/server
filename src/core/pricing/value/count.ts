@@ -1,4 +1,4 @@
-import { TroupCode } from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
 import { Resource } from '#shared/resource'
 
 export interface CountCosts {

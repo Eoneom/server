@@ -1,4 +1,4 @@
-import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
 import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
 import { BaseEntity } from '#core/type/base.entity'

@@ -1,5 +1,5 @@
 import { LevelCosts } from '#core/pricing/value/level'
-import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
 
 export const RESEARCH_LABEL_REDUCTION_PER_LEVEL = 10
 

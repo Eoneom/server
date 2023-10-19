@@ -1,5 +1,5 @@
 import { CoordinatesDocument } from '#adapter/repository/shared/coordinates'
-import { MovementAction } from '#core/troup/constant'
+import { MovementAction } from '#core/troup/constant/movement-action'
 import {
   getModelForClass,
   prop

@@ -7,7 +7,7 @@ import {
   Levels,
   RequirementService
 } from '#core/requirement/service'
-import { TechnologyCode } from '#core/technology/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
 import { TechnologyEntity } from '#core/technology/entity'
 
 export interface TechnologyResearchRequest {

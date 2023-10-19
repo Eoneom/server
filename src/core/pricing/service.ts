@@ -10,8 +10,8 @@ import {
 import {
   LevelCost, LevelCostValue
 } from '#core/pricing/value/level'
-import { TechnologyCode } from '#core/technology/constant'
-import { TroupCode } from '#core/troup/constant'
+import { TechnologyCode } from '#core/technology/constant/code'
+import { TroupCode } from '#core/troup/constant/code'
 import { CountCostValue } from '#core/pricing/value/count'
 import { troup_costs } from '#core/pricing/constant/troup'
 import { Resource } from '#shared/resource'

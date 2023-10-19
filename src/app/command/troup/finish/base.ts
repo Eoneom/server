@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { GenericCommand } from '#app/command/generic'
-import { MovementAction } from '#core/troup/constant'
+import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'

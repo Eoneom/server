@@ -1,10 +1,8 @@
 import { GenericCommand } from '#app/command/generic'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
-import {
-  MovementAction,
-  TroupCode
-} from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
+import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupEntity } from '#core/troup/entity'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { TroupService } from '#core/troup/service'

@@ -1,6 +1,6 @@
 import { CoordinatesDocument } from '#adapter/repository/shared/coordinates'
 import { ReportType } from '#core/communication/value/report-type'
-import { TroupCode } from '#core/troup/constant'
+import { TroupCode } from '#core/troup/constant/code'
 import {
   getModelForClass,
   mongoose,
