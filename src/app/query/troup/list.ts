@@ -7,6 +7,7 @@ import { RequirementValue } from '#core/requirement/value/requirement'
 import { RequirementService } from '#core/requirement/service'
 import { CityError } from '#core/city/error'
 import { TroupService } from '#core/troup/service'
+import { BuildingCode } from '#core/building/constant/code'
 
 export interface TroupListQueryRequest {
   city_id: string,
@@ -30,10 +31,15 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
     }
 
     const troups = await this.repository.troup.listInCity({ city_id })
+    const cloning_factory_level = await this.repository.building.getLevel({
+      city_id,
+      code: BuildingCode.CLONING_FACTORY
+    })
     const costs = troups.reduce((acc, troup) => {
       const cost = PricingService.getTroupCost({
         code: troup.code,
         count: 1,
+        cloning_factory_level
       })
 
       return {

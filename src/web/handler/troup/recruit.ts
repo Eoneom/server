@@ -6,6 +6,7 @@ import {
 } from '#client/src/endpoints/troup/recruit'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { TroupRecruitCommand } from '#app/command/troup/recruit'
+import { sagaRecruitTroup } from '#app/saga/troup-recruit'
 
 export const troupRecruitHandler = async (
   req: Request<TroupRecruitRequest>,
@@ -38,17 +39,13 @@ export const troupRecruitHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new TroupRecruitCommand()
-    const { recruit_at } = await command.run({
+    await sagaRecruitTroup({
       city_id,
       count,
       player_id,
-      troup_code,
+      troup_code
     })
-    const response: TroupRecruitResponse = {
-      status: 'ok',
-      data: { recruit_at }
-    }
+    const response: TroupRecruitResponse = { status: 'ok' }
     return res.status(200).json(response)
   } catch (err) {
     next(err)

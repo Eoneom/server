@@ -13,44 +13,35 @@ import {
 import { TechnologyCode } from '#core/technology/constant/code'
 import { TroupCode } from '#core/troup/constant/code'
 import { CountCostValue } from '#core/pricing/value/count'
-import { troup_costs } from '#core/pricing/constant/troup'
+import {
+  CLONING_FACTORY_REDUCTION_PER_LEVEL, troup_costs
+} from '#core/pricing/constant/troup'
 import { Resource } from '#shared/resource'
 
 export class PricingService {
   static getTroupCost({
     code,
-    count
+    count,
+    cloning_factory_level
   }: {
     code: TroupCode
     count: number
+    cloning_factory_level: number
   }): CountCostValue {
     const cost = troup_costs[code]
+
+    const cloning_factory_reduction = this.getLevelReduction({
+      reduction_percent_per_level: CLONING_FACTORY_REDUCTION_PER_LEVEL,
+      level: cloning_factory_level
+    })
+
     return {
       code,
       resource: {
         plastic: cost.plastic * count,
         mushroom: cost.mushroom * count
       },
-      duration: cost.duration * count
-    }
-  }
-
-  static getBuildingUpgradeRefund({
-    code,
-    level
-  }: {
-    code: BuildingCode
-    level: number
-  }): Resource {
-    const costs = this.getBuildingLevelCost({
-      code,
-      level,
-      architecture_level: 0
-    })
-
-    return {
-      plastic: Math.round(costs.resource.plastic/2),
-      mushroom: Math.round(costs.resource.mushroom/2)
+      duration: Math.ceil(cost.duration * count * cloning_factory_reduction)
     }
   }
 
@@ -82,6 +73,25 @@ export class PricingService {
         mushroom: this.computeLevelCost(mushroom, level)
       },
       duration: this.computeLevelCost(duration, level, architecture_reduction)
+    }
+  }
+
+  static getBuildingUpgradeRefund({
+    code,
+    level
+  }: {
+    code: BuildingCode
+    level: number
+  }): Resource {
+    const costs = this.getBuildingLevelCost({
+      code,
+      level,
+      architecture_level: 0
+    })
+
+    return {
+      plastic: Math.round(costs.resource.plastic/2),
+      mushroom: Math.round(costs.resource.mushroom/2)
     }
   }
 

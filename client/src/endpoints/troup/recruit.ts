@@ -7,8 +7,4 @@ export interface TroupRecruitRequest {
   count: number
 }
 
-interface TroupRecruitDataResponse {
-  recruit_at: number
-}
-
-export type TroupRecruitResponse = GenericResponse<TroupRecruitDataResponse>
+export type TroupRecruitResponse = GenericResponse<void>

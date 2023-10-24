@@ -39,6 +39,7 @@ describe('TroupRecruitCommand', () => {
       count: requested_troup_count,
       troup,
       is_recruitment_in_progress: false,
+      cloning_factory_level: 0,
       levels: {
         building: { [BuildingCode.CLONING_FACTORY]: 1 },
         technology: {}

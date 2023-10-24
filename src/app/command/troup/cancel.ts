@@ -2,7 +2,6 @@ import { GenericCommand } from '#command/generic'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { CityEntity } from '#core/city/entity'
-import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 import { now } from '#shared/time'
 
@@ -63,6 +62,7 @@ export class TroupCancelCommand extends GenericCommand<
     const troup_costs = PricingService.getTroupCost({
       code: troup.code,
       count: updated_troup.ongoing_recruitment?.remaining_count ?? 0,
+      cloning_factory_level: 0
     })
 
     const updated_city = city.refund({

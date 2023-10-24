@@ -1,5 +1,6 @@
 import { GenericCommand } from '#app/command/generic'
 import { AppService } from '#app/service'
+import { BuildingCode } from '#core/building/constant/code'
 import { CityEntity } from '#core/city/entity'
 import { PricingService } from '#core/pricing/service'
 import {
@@ -20,10 +21,11 @@ interface TroupRecruitRequest {
 
 export interface TroupRecruitExec {
   city: CityEntity
+  cloning_factory_level: number
   count: number
   is_recruitment_in_progress: boolean
-  player_id: string
   levels: Levels
+  player_id: string
   troup: TroupEntity
 }
 
@@ -56,6 +58,7 @@ export class TroupRecruitCommand extends GenericCommand<
       troup,
       is_recruitment_in_progress,
       city,
+      cloning_factory_level,
       levels
     ] = await Promise.all([
       this.repository.troup.getInCity({
@@ -64,6 +67,10 @@ export class TroupRecruitCommand extends GenericCommand<
       }),
       this.repository.troup.isInProgress({ city_id }),
       this.repository.city.get(city_id),
+      this.repository.building.getLevel({
+        city_id,
+        code: BuildingCode.CLONING_FACTORY
+      }),
       AppService.getTroupRequirementLevels({
         city_id,
         player_id,
@@ -72,12 +79,13 @@ export class TroupRecruitCommand extends GenericCommand<
     ])
 
     return {
-      troup,
-      count,
       city,
+      cloning_factory_level,
+      count,
       is_recruitment_in_progress,
+      levels,
       player_id,
-      levels
+      troup,
     }
   }
   exec({
@@ -86,6 +94,7 @@ export class TroupRecruitCommand extends GenericCommand<
     is_recruitment_in_progress,
     player_id,
     troup,
+    cloning_factory_level,
     levels
   }: TroupRecruitExec): TroupRecruitSave {
     if (is_recruitment_in_progress) {
@@ -101,7 +110,8 @@ export class TroupRecruitCommand extends GenericCommand<
       resource, duration
     } = PricingService.getTroupCost({
       code: troup.code,
-      count
+      count,
+      cloning_factory_level
     })
 
     const updated_city = city.purchase({
