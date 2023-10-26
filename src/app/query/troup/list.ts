@@ -8,6 +8,7 @@ import { RequirementService } from '#core/requirement/service'
 import { CityError } from '#core/city/error'
 import { TroupService } from '#core/troup/service'
 import { BuildingCode } from '#core/building/constant/code'
+import { TechnologyCode } from '#core/technology/constant/code'
 
 export interface TroupListQueryRequest {
   city_id: string,
@@ -30,16 +31,28 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
       throw new Error(CityError.NOT_OWNER)
     }
 
-    const troups = await this.repository.troup.listInCity({ city_id })
-    const cloning_factory_level = await this.repository.building.getLevel({
-      city_id,
-      code: BuildingCode.CLONING_FACTORY
-    })
+    const [
+      troups,
+      cloning_factory_level,
+      replication_catalyst_level
+    ] = await Promise.all([
+      this.repository.troup.listInCity({ city_id }),
+      this.repository.building.getLevel({
+        city_id,
+        code: BuildingCode.CLONING_FACTORY
+      }),
+      this.repository.technology.getLevel({
+        player_id,
+        code: TechnologyCode.REPLICATION_CATALYST
+      })
+    ])
+
     const costs = troups.reduce((acc, troup) => {
       const cost = PricingService.getTroupCost({
         code: troup.code,
         count: 1,
-        cloning_factory_level
+        cloning_factory_level,
+        replication_catalyst_level
       })
 
       return {

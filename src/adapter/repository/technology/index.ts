@@ -36,6 +36,21 @@ export class MongoTechnologyRepository
     return this.findOneOrThrow(query)
   }
 
+  async getLevel({
+    player_id, code
+  }: { player_id: string; code: TechnologyCode }): Promise<number> {
+    const technology = await this.model.findOne<{ level: number }>({
+      player_id,
+      code
+    }, { level: 1 })
+
+    if (!technology) {
+      throw new Error(TechnologyError.NOT_FOUND)
+    }
+
+    return technology.level
+  }
+
   async isInProgress({ player_id }: { player_id: string }): Promise<boolean> {
     return this.exists({
       player_id,

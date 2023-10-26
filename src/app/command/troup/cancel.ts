@@ -62,7 +62,8 @@ export class TroupCancelCommand extends GenericCommand<
     const troup_costs = PricingService.getTroupCost({
       code: troup.code,
       count: updated_troup.ongoing_recruitment?.remaining_count ?? 0,
-      cloning_factory_level: 0
+      cloning_factory_level: 0,
+      replication_catalyst_level: 0
     })
 
     const updated_city = city.refund({

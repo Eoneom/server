@@ -17,5 +17,19 @@ export const technology_costs: Record<TechnologyCode, LevelCosts> = {
       base: 60,
       multiplier: 2
     }
+  },
+  [TechnologyCode.REPLICATION_CATALYST]: {
+    mushroom: {
+      base: 20000,
+      multiplier: 1.4
+    },
+    plastic: {
+      base: 40000,
+      multiplier: 1.4
+    },
+    duration: {
+      base: 300,
+      multiplier: 2.2
+    }
   }
 }

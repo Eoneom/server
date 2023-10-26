@@ -6,6 +6,7 @@ import { PricingService } from '#core/pricing/service'
 import {
   Levels, RequirementService
 } from '#core/requirement/service'
+import { TechnologyCode } from '#core/technology/constant/code'
 import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
@@ -22,6 +23,7 @@ interface TroupRecruitRequest {
 export interface TroupRecruitExec {
   city: CityEntity
   cloning_factory_level: number
+  replication_catalyst_level: number
   count: number
   is_recruitment_in_progress: boolean
   levels: Levels
@@ -59,6 +61,7 @@ export class TroupRecruitCommand extends GenericCommand<
       is_recruitment_in_progress,
       city,
       cloning_factory_level,
+      replication_catalyst_level,
       levels
     ] = await Promise.all([
       this.repository.troup.getInCity({
@@ -70,6 +73,10 @@ export class TroupRecruitCommand extends GenericCommand<
       this.repository.building.getLevel({
         city_id,
         code: BuildingCode.CLONING_FACTORY
+      }),
+      this.repository.technology.getLevel({
+        player_id,
+        code: TechnologyCode.REPLICATION_CATALYST
       }),
       AppService.getTroupRequirementLevels({
         city_id,
@@ -85,6 +92,7 @@ export class TroupRecruitCommand extends GenericCommand<
       is_recruitment_in_progress,
       levels,
       player_id,
+      replication_catalyst_level,
       troup,
     }
   }
@@ -95,6 +103,7 @@ export class TroupRecruitCommand extends GenericCommand<
     player_id,
     troup,
     cloning_factory_level,
+    replication_catalyst_level,
     levels
   }: TroupRecruitExec): TroupRecruitSave {
     if (is_recruitment_in_progress) {
@@ -111,7 +120,8 @@ export class TroupRecruitCommand extends GenericCommand<
     } = PricingService.getTroupCost({
       code: troup.code,
       count,
-      cloning_factory_level
+      cloning_factory_level,
+      replication_catalyst_level
     })
 
     const updated_city = city.purchase({

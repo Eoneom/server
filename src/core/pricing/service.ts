@@ -14,7 +14,9 @@ import { TechnologyCode } from '#core/technology/constant/code'
 import { TroupCode } from '#core/troup/constant/code'
 import { CountCostValue } from '#core/pricing/value/count'
 import {
-  CLONING_FACTORY_REDUCTION_PER_LEVEL, troup_costs
+  CLONING_FACTORY_REDUCTION_PER_LEVEL,
+  REPLICATION_CATALYST_REDUCTION_PER_LEVEL,
+  troup_costs
 } from '#core/pricing/constant/troup'
 import { Resource } from '#shared/resource'
 
@@ -22,11 +24,13 @@ export class PricingService {
   static getTroupCost({
     code,
     count,
-    cloning_factory_level
+    cloning_factory_level,
+    replication_catalyst_level
   }: {
     code: TroupCode
     count: number
     cloning_factory_level: number
+    replication_catalyst_level: number
   }): CountCostValue {
     const cost = troup_costs[code]
 
@@ -35,13 +39,22 @@ export class PricingService {
       level: cloning_factory_level
     })
 
+    const replication_catalyst_reduction = this.getLevelReduction({
+      reduction_percent_per_level: REPLICATION_CATALYST_REDUCTION_PER_LEVEL,
+      level: replication_catalyst_level
+    })
+
+    const base_duration = cost.duration * count
+    const total_reduction = cloning_factory_reduction * replication_catalyst_reduction
+    const reduced_duration = Math.ceil(base_duration * total_reduction)
+
     return {
       code,
       resource: {
         plastic: cost.plastic * count,
         mushroom: cost.mushroom * count
       },
-      duration: Math.ceil(cost.duration * count * cloning_factory_reduction)
+      duration: reduced_duration
     }
   }
 

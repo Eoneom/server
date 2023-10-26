@@ -11,5 +11,14 @@ export const TechnologyRequirement: Record<TechnologyCode, RequirementValue> = {
       }
     ],
     technologies: []
+  },
+  [TechnologyCode.REPLICATION_CATALYST]: {
+    buildings: [
+      {
+        code: BuildingCode.RESEARCH_LAB,
+        level: 5
+      }
+    ],
+    technologies: []
   }
 }
