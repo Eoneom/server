@@ -23,6 +23,7 @@ import { troupListMovementHandler } from '#web/handler/troup/list-movement'
 import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
 import { troupRecruitHandler } from '#web/handler/troup/recruit'
 import { worldGetSectorHandler } from '#web/handler/world/get-sector'
+import { technologyGetHandler } from '#web/handler/technology/get'
 
 export const router = (): Router => {
   const r = Router()
@@ -39,9 +40,6 @@ export const router = (): Router => {
   r.get('/city', authMiddleware, cityListHandler)
   r.get('/city/:city_id', authMiddleware, cityGetHandler)
   r.put('/city/gather', authMiddleware, cityGatherHandler)
-  r.get('/city/:city_id/troup', authMiddleware, troupListHandler)
-  r.get('/city/:city_id/troup/movement', authMiddleware, troupListMovementHandler)
-  r.get('/city/:city_id/technology', authMiddleware, technologyListHandler)
 
   r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
   r.get('/city/:city_id/building/:building_code', authMiddleware, buildingGetHandler)
@@ -49,10 +47,14 @@ export const router = (): Router => {
   r.put('/building/upgrade', authMiddleware, buildingUpgradeHandler)
   r.put('/building/upgrade/finish', authMiddleware, buildingFinishUpgradeHandler)
 
+  r.get('/technology', authMiddleware, technologyListHandler)
+  r.get('/city/:city_id/technology/:technology_code', authMiddleware, technologyGetHandler)
   r.put('/technology/cancel', authMiddleware, technologyCancelHandler)
   r.put('/technology/research', authMiddleware, technologyResearchHandler)
   r.put('/technology/research/finish', authMiddleware, technologyFinishResearchHandler)
 
+  r.get('/city/:city_id/troup', authMiddleware, troupListHandler)
+  r.get('/city/:city_id/troup/movement', authMiddleware, troupListMovementHandler)
   r.put('/troup/explore', authMiddleware, troupExploreHandler)
   r.put('/troup/cancel', authMiddleware, troupCancelHandler)
   r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
