@@ -33,8 +33,7 @@ export const troupExploreHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new TroupExploreCommand()
-    await command.run({
+    await new TroupExploreCommand().run({
       city_id,
       player_id,
       coordinates

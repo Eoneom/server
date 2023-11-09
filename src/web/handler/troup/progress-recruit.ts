@@ -23,8 +23,7 @@ export const troupProgressRecruitHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new TroupProgressRecruitCommand()
-    const { recruit_count } = await command.run({
+    const { recruit_count } = await new TroupProgressRecruitCommand().run({
       city_id,
       player_id,
     })

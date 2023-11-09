@@ -12,8 +12,7 @@ export const technologyFinishResearchHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new TechnologyFinishResearchCommand()
-    await command.run({ player_id })
+    await new TechnologyFinishResearchCommand().run({ player_id })
 
     return res.json({ status: 'ok' })
   } catch (err) {

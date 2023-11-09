@@ -13,8 +13,7 @@ export const sagaGather = async ({
   player_id: string
   city_id: string
 }) => {
-  const finish_upgrade_command = new BuildingFinishUpgradeCommand()
-  const upgrade_result = await finish_upgrade_command.run({
+  const upgrade_result = await new BuildingFinishUpgradeCommand().run({
     player_id,
     city_id
   })

@@ -12,8 +12,7 @@ export const authMiddleware = async (req: Request<unknown>, res: Response<unknow
     })
   }
   try {
-    const query = new AuthorizeQuery()
-    const { player_id } = await query.get({ token })
+    const { player_id } = await new AuthorizeQuery().get({ token })
     res.locals.player_id = player_id
     next()
 

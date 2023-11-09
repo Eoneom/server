@@ -14,8 +14,7 @@ export const communicationListReportHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const query = new CommunicationListReportQuery()
-    const { reports } = await query.get({ player_id })
+    const { reports } = await new CommunicationListReportQuery().get({ player_id })
 
     return res.json({
       status: 'ok',

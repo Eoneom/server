@@ -20,8 +20,7 @@ export const cityListHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const query = new CityListQuery()
-    const result = await query.get({ player_id })
+    const result = await new CityListQuery().get({ player_id })
     const response = response_mapper(result)
 
     return res.json({

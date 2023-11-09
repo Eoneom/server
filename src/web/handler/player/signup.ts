@@ -28,10 +28,10 @@ export const signupHandler = async (
   }
 
   try {
-    const command = new AuthSignupCommand()
     const {
-      player_id, city_id
-    } = await command.run({
+      player_id,
+      city_id
+    } = await new AuthSignupCommand().run({
       player_name,
       city_name
     })

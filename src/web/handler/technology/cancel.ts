@@ -12,8 +12,7 @@ export const technologyCancelHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new TechnologyCancelCommand()
-    await command.run({ player_id })
+    await new TechnologyCancelCommand().run({ player_id })
 
     const response: TechnologyCancelResponse = { status: 'ok' }
 

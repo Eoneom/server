@@ -20,8 +20,7 @@ export const loginHandler = async (
   }
 
   try {
-    const command = new AuthLoginCommand()
-    const { token } = await command.run({ player_name })
+    const { token } = await new AuthLoginCommand().run({ player_name })
 
     return res.status(200).send({
       status: 'ok',

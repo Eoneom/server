@@ -27,11 +27,10 @@ export const worldGetSectorHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const query = new WorldGetSectorQuery()
     const {
       cells,
       explored_cell_ids
-    } = await query.get({
+    } = await new WorldGetSectorQuery().get({
       player_id,
       sector: Number.parseInt(`${sector}`)
     })

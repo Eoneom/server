@@ -22,8 +22,7 @@ export const troupCancelHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new TroupCancelCommand()
-    await command.run({
+    await new TroupCancelCommand().run({
       player_id,
       city_id,
     })

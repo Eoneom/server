@@ -22,8 +22,7 @@ export const buildingCancelHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const command = new BuildingCancelCommand()
-    await command.run({
+    await new BuildingCancelCommand().run({
       player_id,
       city_id,
     })

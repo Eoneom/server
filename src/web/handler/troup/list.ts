@@ -25,8 +25,7 @@ export const troupListHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const query = new TroupListQuery()
-    const result = await query.get({
+    const result = await new TroupListQuery().get({
       city_id,
       player_id
     })
