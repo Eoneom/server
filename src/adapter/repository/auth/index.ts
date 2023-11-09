@@ -1,7 +1,8 @@
 import { AuthEntity } from '#core/auth/entity'
 import { AuthRepository } from '#app/port/repository/auth'
 import {
-  AuthDocument, AuthModel
+  AuthDocument,
+  AuthModel
 } from '#adapter/repository/auth/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
 import { AuthError } from '#core/auth/error'
@@ -22,7 +23,8 @@ export class MongoAuthRepository
     return AuthEntity.create({
       id: document._id.toString(),
       player_id: document.player_id.toString(),
-      token: document.token
+      token: document.token,
+      last_action_at: document.last_action_at
     })
   }
 }

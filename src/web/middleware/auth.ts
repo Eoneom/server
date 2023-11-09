@@ -1,4 +1,5 @@
-import { AuthorizeQuery } from '#query/authorize'
+import { AuthAuthorizeCommand } from '#app/command/auth/authorize'
+import { now } from '#shared/time'
 import {
   NextFunction, Request, Response
 } from 'express'
@@ -12,10 +13,14 @@ export const authMiddleware = async (req: Request<unknown>, res: Response<unknow
     })
   }
   try {
-    const { player_id } = await new AuthorizeQuery().get({ token })
-    res.locals.player_id = player_id
-    next()
+    const { player_id } = await new AuthAuthorizeCommand().run({
+      token,
+      action_at: now()
+    })
 
+    res.locals.player_id = player_id
+
+    next()
   } catch (err) {
     next(err)
   }

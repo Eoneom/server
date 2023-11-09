@@ -1,5 +1,5 @@
 import {
-  getModelForClass, mongoose, prop 
+  getModelForClass, mongoose, prop
 } from '@typegoose/typegoose'
 
 import { Document } from 'mongoose'
@@ -10,6 +10,9 @@ class Auth {
 
   @prop({ required: true })
   public token!: string
+
+  @prop({ required: true })
+  public last_action_at!: number
 }
 
 export type AuthDocument = Document & Auth

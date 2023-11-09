@@ -12,7 +12,7 @@ export abstract class GenericCommand<FetchParam, ExecParam, SaveParam, Response 
   }
 
   async run(param: FetchParam): Promise<Response> {
-    this.logger.debug('run')
+    this.logger.info('run')
 
     const fetched_entities = await this.fetch(param)
     const updated_entities = this.exec(fetched_entities)
