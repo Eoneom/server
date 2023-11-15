@@ -1,3 +1,4 @@
 export enum TroupCode {
-  EXPLORER = 'explorer'
+  EXPLORER = 'explorer',
+  SETTLER = 'settler'
 }

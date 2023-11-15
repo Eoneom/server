@@ -12,4 +12,13 @@ export const TroupRequirement: Record<TroupCode, RequirementValue> = {
     ],
     technologies: []
   },
+  [TroupCode.SETTLER]: {
+    buildings: [
+      {
+        code: BuildingCode.CLONING_FACTORY,
+        level: 9
+      }
+    ],
+    technologies: []
+  }
 }

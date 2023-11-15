@@ -9,5 +9,10 @@ export const troup_costs: Record<TroupCode, CountCosts> = {
     plastic: 10,
     mushroom: 15,
     duration: 60
+  },
+  [TroupCode.SETTLER]: {
+    plastic: 20000,
+    mushroom: 40000,
+    duration: 3600
   }
 }
