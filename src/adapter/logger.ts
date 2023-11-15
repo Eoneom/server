@@ -24,5 +24,5 @@ export const loggerAdapter = (pino_logger?: Logger): AppLogger => {
 }
 
 const default_logger = () => {
-  return pino({ level: 'debug' })
+  return pino({ level: 'info' })
 }

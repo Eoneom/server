@@ -1,4 +1,4 @@
-import { MovementAction } from './constant/movement-action'
+import { MovementAction } from '#core/troup/constant/movement-action'
 import { BaseEntity } from '#core/type/base.entity'
 import { Coordinates } from '#core/world/value/coordinates'
 import { now } from '#shared/time'

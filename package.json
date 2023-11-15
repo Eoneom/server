@@ -20,6 +20,7 @@
     "@types/express": "^4.17.16",
     "@types/jest": "^29.5.3",
     "@types/node": "^18.7.13",
+    "@types/node-cron": "^3.0.11",
     "@types/uuid": "^9.0.2",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
@@ -33,6 +34,7 @@
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "node-cron": "^3.0.3",
     "pino": "^8.15.0",
     "uuid": "^9.0.0"
   },
@@ -51,6 +53,9 @@
     },
     "#core/*": {
       "default": "./dist/src/core/*.js"
+    },
+    "#cron/*": {
+      "default": "./dist/src/cron/*.js"
     },
     "#query/*": {
       "default": "./dist/src/app/query/*.js"
