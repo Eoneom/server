@@ -1,3 +1,4 @@
 export enum ReportType {
-  EXPLORATION = 'exploration'
+  EXPLORATION = 'exploration',
+  BASE = 'base'
 }

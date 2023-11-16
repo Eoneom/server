@@ -16,7 +16,8 @@ export class MongoReportRepository
   }
 
   async list({ player_id }: { player_id: string }): Promise<ReportEntity[]> {
-    return this.find({ player_id })
+    const reports = await this.model.find({ player_id }).sort({ recorded_at: -1 })
+    return reports.map(report => this.buildFromModel(report))
   }
 
   protected buildFromModel(document: ReportDocument): ReportEntity {

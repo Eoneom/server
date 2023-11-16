@@ -5,6 +5,9 @@ import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { TroupService } from '#core/troup/service'
+import { ReportEntity } from '#core/communication/report.entity'
+import { id } from '#shared/identification'
+import { ReportType } from '#core/communication/value/report-type'
 
 interface TroupFinishBaseCommandRequest {
   player_id: string
@@ -23,6 +26,7 @@ interface TroupFinishBaseCommandSave {
   base_movement_id: string
   updated_troups: TroupEntity[]
   delete_troup_ids: string[]
+  report: ReportEntity
 }
 
 export class TroupFinishBaseCommand extends GenericCommand<
@@ -85,22 +89,38 @@ export class TroupFinishBaseCommand extends GenericCommand<
       destination_cell_id
     })
 
+    const report = ReportEntity.create({
+      id: id(),
+      player_id,
+      type: ReportType.BASE,
+      origin: movement.origin,
+      destination: movement.destination,
+      recorded_at: movement.arrive_at,
+      troups: movement_troups.map(movement_troup => ({
+        code: movement_troup.code,
+        count: movement_troup.count
+      })),
+    })
+
     return {
       base_movement_id: movement.id,
       delete_troup_ids: movement_troups.map(troup => troup.id),
-      updated_troups: merged_troups
+      updated_troups: merged_troups,
+      report
     }
   }
 
   async save({
     base_movement_id,
     updated_troups,
-    delete_troup_ids
+    delete_troup_ids,
+    report
   }: TroupFinishBaseCommandSave): Promise<void> {
     await Promise.all([
       this.repository.movement.delete(base_movement_id),
       ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
       ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
+      this.repository.report.create(report)
     ])
   }
 }

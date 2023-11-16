@@ -51,7 +51,7 @@ describe('TroupFinishBaseCommand', () => {
       code: TroupCode.EXPLORER,
       player_id,
       cell_id: origin_cell_id,
-      count: 1,
+      count: 2,
       ongoing_recruitment: null,
       movement_id: movement.id
     })
@@ -109,5 +109,13 @@ describe('TroupFinishBaseCommand', () => {
     assert.strictEqual(updated_troups[0].count, destination_troup.count + movement_troup.count)
 
     assert.strictEqual(base_movement_id, movement.id)
+  })
+
+  it('should create a report describing the explored cell', () => {
+    const { report } = command.exec(success_params)
+
+    assert.strictEqual(report.troups.length, 1)
+    assert.strictEqual(report.troups[0].code, TroupCode.EXPLORER)
+    assert.strictEqual(report.troups[0].count, movement_troup.count)
   })
 })
