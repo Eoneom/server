@@ -40,12 +40,14 @@ export class TroupProgressRecruitCommand extends GenericCommand<
     player_id,
   }: TroupProgressRecruitRequest): Promise<TroupProgressRecruitExec> {
     const [
-      troup,
+      city_cell,
       city
     ] = await Promise.all([
-      this.repository.troup.getInProgress({ city_id }),
+      this.repository.cell.getCityCell({ city_id }),
       this.repository.city.get(city_id)
     ])
+
+    const troup = await this.repository.troup.getInProgress({ cell_id: city_cell.id })
 
     return {
       troup,

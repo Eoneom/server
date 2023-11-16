@@ -35,14 +35,18 @@ export class TechnologyEntity extends BaseEntity {
     return new TechnologyEntity(props)
   }
 
-  static initArchitecture({ player_id }: { player_id: string }): TechnologyEntity {
+  static init({
+    player_id,
+    code
+  }: { player_id: string, code: TechnologyCode }): TechnologyEntity {
     return new TechnologyEntity({
       id: FAKE_ID,
-      code: TechnologyCode.ARCHITECTURE,
+      code,
       player_id,
       level: 0,
     })
   }
+
 
   launchResearch({
     is_technology_in_progress,

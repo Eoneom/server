@@ -57,18 +57,13 @@ export class TroupRecruitCommand extends GenericCommand<
     count
   }: TroupRecruitRequest): Promise<TroupRecruitExec> {
     const [
-      troup,
-      is_recruitment_in_progress,
+      city_cell,
       city,
       cloning_factory_level,
       replication_catalyst_level,
       levels
     ] = await Promise.all([
-      this.repository.troup.getInCity({
-        city_id,
-        code: troup_code
-      }),
-      this.repository.troup.isInProgress({ city_id }),
+      this.repository.cell.getCityCell({ city_id }),
       this.repository.city.get(city_id),
       this.repository.building.getLevel({
         city_id,
@@ -83,6 +78,17 @@ export class TroupRecruitCommand extends GenericCommand<
         player_id,
         troup_code
       })
+    ])
+
+    const [
+      troup,
+      is_recruitment_in_progress
+    ] = await Promise.all([
+      this.repository.troup.getInCell({
+        cell_id: city_cell.id,
+        code: troup_code
+      }),
+      this.repository.troup.isInProgress({ cell_id: city_cell.id })
     ])
 
     return {

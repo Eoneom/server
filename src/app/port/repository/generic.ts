@@ -12,7 +12,7 @@ import { ReportRepository } from '#app/port/repository/report'
 
 export interface GenericRepository<Entity extends BaseEntity> {
   create(entity: Entity | Omit<Entity, 'id'>): Promise<string>
-  updateOne(entity: Entity): Promise<void>
+  updateOne(entity: Entity, options?: { upsert: boolean}): Promise<void>
   delete(id: string): Promise<void>
 }
 

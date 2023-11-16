@@ -3,6 +3,7 @@ import { TechnologyEntity } from '#core/technology/entity'
 import { now } from '#shared/time'
 import assert from 'assert'
 import { TechnologyError } from '#core/technology/error'
+import { TechnologyCode } from '#core/technology/constant/code'
 
 describe('TechnologyCancelCommand', () => {
   const player_id = 'player_id'
@@ -12,7 +13,10 @@ describe('TechnologyCancelCommand', () => {
   beforeEach(() => {
     command = new TechnologyCancelCommand()
     technology = TechnologyEntity.create({
-      ...TechnologyEntity.initArchitecture({ player_id }),
+      ...TechnologyEntity.init({
+        player_id,
+        code: TechnologyCode.ARCHITECTURE
+      }),
       research_at: now() + 1000 * 60
     })
   })

@@ -12,6 +12,7 @@ describe('TroupCancelCommand', () => {
   const player_id = 'player_id'
   const another_player_id = 'another_player_id'
   const code = TroupCode.EXPLORER
+  const cell_id = 'cell_id'
   let city: CityEntity
   let command: TroupCancelCommand
   let troup: TroupEntity
@@ -30,7 +31,7 @@ describe('TroupCancelCommand', () => {
       id: 'troup_id',
       code,
       count: 0,
-      city_id: city.id,
+      cell_id,
       player_id,
       movement_id: null,
       ongoing_recruitment: {
@@ -41,7 +42,7 @@ describe('TroupCancelCommand', () => {
     })
   })
 
-  it('should prevent player from cancelling other player buildings', () => {
+  it('should prevent player from cancelling other player troups', () => {
     assert.throws(() => command.exec({
       player_id: another_player_id,
       city,

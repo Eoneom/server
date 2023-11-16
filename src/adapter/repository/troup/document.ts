@@ -25,8 +25,8 @@ class Troup {
   @prop({ required: true })
   public player_id!: mongoose.Types.ObjectId
 
-  @prop({ required: true })
-  public city_id!: mongoose.Types.ObjectId
+  @prop()
+  public cell_id?: mongoose.Types.ObjectId
 
   @prop({
     required: true,

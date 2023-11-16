@@ -20,9 +20,9 @@ export class MongoTroupRepository
     return this.find({ movement_id })
   }
 
-  async getInProgress({ city_id }: { city_id: string }): Promise<TroupEntity | null> {
+  async getInProgress({ cell_id }: { cell_id: string }): Promise<TroupEntity | null> {
     return this.findOne({
-      city_id,
+      cell_id,
       ongoing_recruitment: {
         $exists: true,
         $ne: null
@@ -30,29 +30,30 @@ export class MongoTroupRepository
     })
   }
 
-  async listInCity({ city_id }: { city_id: string }): Promise<TroupEntity[]> {
+  async listInCell({
+    cell_id,
+    player_id
+  }: { cell_id: string; player_id: string }): Promise<TroupEntity[]> {
     return this.find({
-      city_id,
-      movement_id: null
+      cell_id,
+      player_id
     })
   }
 
-  async getInCity({
-    city_id,
+
+  async getInCell({
+    cell_id,
     code
-  }: {
-    city_id: string;
-    code: TroupCode
-  }): Promise<TroupEntity> {
+  }: { cell_id: string; code: TroupCode }): Promise<TroupEntity> {
     return this.findOneOrThrow({
-      city_id,
+      cell_id,
       code
     })
   }
 
-  async isInProgress({ city_id }: { city_id: string }): Promise<boolean> {
+  async isInProgress({ cell_id }: { cell_id: string }): Promise<boolean> {
     return this.exists({
-      city_id,
+      cell_id,
       ongoing_recruitment: {
         $exists: true,
         $ne: null
@@ -64,7 +65,7 @@ export class MongoTroupRepository
     return TroupEntity.create({
       id: document._id.toString(),
       player_id: document.player_id.toString(),
-      city_id: document.city_id.toString(),
+      cell_id: document.cell_id ? document.cell_id.toString() : null,
       code: document.code,
       count: document.count,
       movement_id: document.movement_id ? document.movement_id.toString() : null,

@@ -4,6 +4,7 @@ import {
 } from '#app/command/troup/progress-recruit'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
+import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { now } from '#shared/time'
@@ -11,6 +12,7 @@ import assert from 'assert'
 
 describe('TroupRecruitCommand', () => {
   const player_id = 'player_id'
+  const cell_id = 'cell_id'
   let city: CityEntity
   let troup: TroupEntity
   let command: TroupProgressRecruitCommand
@@ -29,9 +31,10 @@ describe('TroupRecruitCommand', () => {
     })
     troup_creation_time = now()
     troup = TroupEntity.create({
-      ...TroupEntity.initExplorer({
+      ...TroupEntity.init({
         player_id,
-        city_id: city.id
+        cell_id,
+        code: TroupCode.EXPLORER
       }),
       ongoing_recruitment: {
         remaining_count: 1000,

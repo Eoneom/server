@@ -6,6 +6,7 @@ import { BuildingCode } from '#core/building/constant/code'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { RequirementError } from '#core/requirement/error'
+import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import assert from 'assert'
@@ -13,6 +14,7 @@ import assert from 'assert'
 describe('TroupRecruitCommand', () => {
   const player_id = 'player_id'
   const requested_troup_count = 10
+  const cell_id = 'cell_id'
   let city: CityEntity
   let troup: TroupEntity
   let command: TroupRecruitCommand
@@ -28,9 +30,10 @@ describe('TroupRecruitCommand', () => {
       plastic: 100000,
       mushroom: 100000
     })
-    troup = TroupEntity.initExplorer({
+    troup = TroupEntity.init({
       player_id,
-      city_id: city.id
+      cell_id,
+      code: TroupCode.EXPLORER
     })
 
     success_params = {

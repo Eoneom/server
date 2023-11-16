@@ -14,7 +14,7 @@ interface OngoingRecruitment {
 type TroupEntityProps = BaseEntity & {
   code: TroupCode
   player_id: string
-  city_id: string
+  cell_id: string | null
   count: number
   ongoing_recruitment: OngoingRecruitment | null
   movement_id: string | null
@@ -24,13 +24,13 @@ export class TroupEntity extends BaseEntity {
   readonly code: TroupCode
   readonly count: number
   readonly player_id: string
-  readonly city_id: string
+  readonly cell_id: string | null
   readonly ongoing_recruitment: OngoingRecruitment | null
   readonly movement_id: string | null
 
   private constructor({
     id,
-    city_id,
+    cell_id,
     player_id,
     code,
     count,
@@ -40,7 +40,7 @@ export class TroupEntity extends BaseEntity {
     super({ id })
 
     this.player_id = player_id
-    this.city_id = city_id
+    this.cell_id = cell_id
     this.code = code
     this.count = count
     this.ongoing_recruitment = ongoing_recruitment
@@ -51,28 +51,46 @@ export class TroupEntity extends BaseEntity {
     return new TroupEntity(props)
   }
 
-  static initExplorer({
+  static init({
     player_id,
-    city_id
+    cell_id,
+    code
   }: {
     player_id: string
-    city_id: string
+    cell_id: string
+    code: TroupCode
   }): TroupEntity {
     return new TroupEntity({
       id: FAKE_ID,
-      code: TroupCode.EXPLORER,
+      code,
       player_id,
-      city_id,
+      cell_id,
       count: 0,
       ongoing_recruitment: null,
       movement_id: null
     })
   }
 
+  assignToCell({ cell_id }: {cell_id: string}): TroupEntity {
+    return TroupEntity.create({
+      ...this,
+      cell_id,
+      movement_id: null
+    })
+  }
+
+  assignToMovement({ movement_id }: { movement_id: string }): TroupEntity {
+    return TroupEntity.create({
+      ...this,
+      movement_id,
+      cell_id: null
+    })
+  }
+
   launchRecruitment({
     duration,
     count,
-    recruitment_time
+    recruitment_time,
   }: {
     duration: number
     count: number

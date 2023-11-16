@@ -4,6 +4,7 @@ import {
 } from '#app/command/troup/explore'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
+import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { CellEntity } from '#core/world/cell.entity'
@@ -13,13 +14,12 @@ import assert from 'assert'
 
 describe('TroupExploreCommand', () => {
   const player_id = 'player_id'
-  const city_id = 'city_id'
+  const city_cell_id = 'city_cell_id'
   let success_params: TroupExploreCommandExec
   let command: TroupExploreCommand
 
   beforeEach(() => {
     command = new TroupExploreCommand()
-
     success_params = {
       player_id,
       city: CityEntity.initCity({
@@ -27,7 +27,7 @@ describe('TroupExploreCommand', () => {
         player_id
       }),
       city_cell: CellEntity.create({
-        id: 'city_cell_id',
+        id: city_cell_id,
         type: CellType.FOREST,
         resource_coefficient: {
           plastic: 1,
@@ -53,9 +53,10 @@ describe('TroupExploreCommand', () => {
         }
       }),
       city_explorer_troup: TroupEntity.create({
-        ...TroupEntity.initExplorer({
+        ...TroupEntity.init({
           player_id,
-          city_id
+          cell_id: city_cell_id,
+          code: TroupCode.EXPLORER
         }),
         count: 1
       })
@@ -84,14 +85,17 @@ describe('TroupExploreCommand', () => {
 
   it('should send the explorer in exploration to the cell', () => {
     const {
-      city_troup,
-      movement_troup,
+      origin_troups,
+      movement_troups,
       movement
     } = command.exec(success_params)
 
-    assert.strictEqual(city_troup.count, 0)
-    assert.strictEqual(movement_troup.count, 1)
-    assert.ok(movement_troup.movement_id, movement.id)
+    assert.strictEqual(origin_troups.length, 1)
+    assert.strictEqual(origin_troups[0].count, 0)
+
+    assert.strictEqual(movement_troups.length, 1)
+    assert.strictEqual(movement_troups[0].count, 1)
+    assert.strictEqual(movement_troups[0].movement_id, movement.id)
     assert.strictEqual(movement.origin, success_params.city_cell.coordinates)
     assert.strictEqual(movement.destination, success_params.cell_to_explore.coordinates)
     assert.ok(movement.arrive_at)

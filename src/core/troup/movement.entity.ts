@@ -4,6 +4,7 @@ import { Coordinates } from '#core/world/value/coordinates'
 import { now } from '#shared/time'
 
 type MovementEntityProps = BaseEntity & {
+  player_id: string
   action: MovementAction
   origin: Coordinates
   destination: Coordinates
@@ -11,6 +12,7 @@ type MovementEntityProps = BaseEntity & {
 }
 
 export class MovementEntity extends BaseEntity {
+  readonly player_id: string
   readonly action: MovementAction
   readonly origin: Coordinates
   readonly destination: Coordinates
@@ -18,6 +20,7 @@ export class MovementEntity extends BaseEntity {
 
   private constructor({
     id,
+    player_id,
     action,
     origin,
     destination,
@@ -25,6 +28,7 @@ export class MovementEntity extends BaseEntity {
   }: MovementEntityProps) {
     super({ id })
 
+    this.player_id = player_id
     this.action = action
     this.origin = origin
     this.destination = destination

@@ -1,3 +1,4 @@
+import { TroupCode } from '#core/troup/constant/code'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { troup_order } from '#core/troup/constant/order'
 import { TroupEntity } from '#core/troup/entity'
@@ -10,88 +11,116 @@ import assert from 'assert'
 export class TroupService {
   static init({
     player_id,
-    city_id
+    cell_id
   }: {
     player_id: string
-    city_id: string
+    cell_id: string
   }): TroupEntity[] {
-    const explorer = TroupEntity.initExplorer({
-      city_id,
-      player_id
-    })
+    const troups = Object.values(TroupCode).map(code => TroupEntity.init({
+      cell_id,
+      player_id,
+      code
+    }))
 
-    return [ explorer ]
+    return troups
   }
 
   static move({
-    troup,
+    origin_troups,
     destination,
-    count_to_move,
+    troups_to_move,
     start_at,
     origin,
     distance,
     action
   }: {
-    troup: TroupEntity,
+    action: MovementAction
+    distance: number
+    start_at: number
     origin: Coordinates
     destination: Coordinates
-    count_to_move: number
-    start_at: number
-    distance: number
-    action: MovementAction
+    origin_troups: TroupEntity[],
+    troups_to_move: {
+      code: TroupCode
+      count: number
+    }[]
   }): {
-    city_troup: TroupEntity,
-    movement_troup: TroupEntity,
+    origin_troups: TroupEntity[],
+    movement_troups: TroupEntity[],
     movement: MovementEntity
   } {
-    if (troup.count < count_to_move) {
-      throw new Error(TroupError.NOT_ENOUGH_TROUPS)
-    }
+    troups_to_move.forEach(troup_to_move => {
+      const origin_troup = origin_troups.find(t => t.code === troup_to_move.code)
+      if (!origin_troup || origin_troup.count < troup_to_move.count) {
+        throw new Error(TroupError.NOT_ENOUGH_TROUPS)
+      }
+    })
 
     const duration = this.getMovementDuration({ distance })
     const movement = MovementEntity.create({
       id: id(),
+      player_id: origin_troups[0].player_id,
       action,
       origin,
       destination,
       arrive_at: start_at + duration,
     })
     return {
-      city_troup: TroupEntity.create({
-        ...troup,
-        count: troup.count - count_to_move
+      origin_troups: origin_troups.map(origin_troup => {
+        const troup_to_move = troups_to_move.find(t => t.code === origin_troup.code)
+        if (!troup_to_move) {
+          return origin_troup
+        }
+
+        return TroupEntity.create({
+          ...origin_troup,
+          count: origin_troup.count - troup_to_move.count
+        })
       }),
-      movement_troup: TroupEntity.create({
-        ...troup,
-        id: id(),
-        count: count_to_move,
-        movement_id: movement.id,
-        ongoing_recruitment: null
+      movement_troups: troups_to_move.map(troup_to_move => {
+        const origin_troup = origin_troups.find(t => t.code === troup_to_move.code)
+        assert(origin_troup)
+        return TroupEntity.create({
+          ...origin_troup,
+          id: id(),
+          count: troup_to_move.count,
+          movement_id: movement.id,
+          ongoing_recruitment: null,
+          cell_id: null
+        })
       }),
       movement
     }
   }
 
-  static finishBaseInCity({
-    troups,
-    city_troups
+  static mergeTroupsInDestination({
+    movement_troups,
+    destination_troups,
+    destination_cell_id
   }: {
-    troups: TroupEntity[]
-    city_troups: TroupEntity[]
+    movement_troups: TroupEntity[]
+    destination_troups: TroupEntity[]
+    destination_cell_id: string
   }): {
-    city_troups: TroupEntity[]
+    merged_troups: TroupEntity[]
   } {
-    const new_city_troups = city_troups.map(city_troup => {
-      const troup = troups.find(t => t.code === city_troup.code)
-      assert.ok(troup)
+    const merged_troups = destination_troups
+    movement_troups.forEach(movement_troup => {
+      const destination_troup_index = merged_troups.findIndex(merged_troup => merged_troup.code === movement_troup.code)
+      if (destination_troup_index === -1) {
+        const movement_troup_assigned_to_destination = movement_troup.assignToCell({ cell_id: destination_cell_id })
+        merged_troups.push(movement_troup_assigned_to_destination)
+      } else {
+        const merged_troup_in_destination = TroupEntity.create({
+          ...merged_troups[destination_troup_index],
+          count: merged_troups[destination_troup_index].count + movement_troup.count,
+        })
 
-      return TroupEntity.create({
-        ...city_troup,
-        count: city_troup.count + troup.count
-      })
+        merged_troups[destination_troup_index] = merged_troup_in_destination
+      }
     })
 
-    return { city_troups: new_city_troups }
+    return { merged_troups }
   }
 
   static finishExploration({
@@ -113,6 +142,7 @@ export class TroupService {
     const duration = this.getMovementDuration({ distance })
     const base_movement = MovementEntity.create({
       id: id(),
+      player_id: troup.player_id,
       action: MovementAction.BASE,
       origin: explore_movement.destination,
       destination: explore_movement.origin,
@@ -121,10 +151,7 @@ export class TroupService {
 
     return {
       base_movement,
-      troup: TroupEntity.create({
-        ...troup,
-        movement_id: base_movement.id
-      })
+      troup: troup.assignToMovement({ movement_id: base_movement.id })
     }
   }
 

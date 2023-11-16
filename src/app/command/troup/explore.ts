@@ -26,8 +26,8 @@ export interface TroupExploreCommandExec {
 }
 
 interface TroupExploreCommandSave {
-  city_troup: TroupEntity
-  movement_troup: TroupEntity
+  origin_troups: TroupEntity[],
+  movement_troups: TroupEntity[],
   movement: MovementEntity
 }
 
@@ -48,17 +48,17 @@ export class TroupExploreCommand extends GenericCommand<
     const [
       city,
       city_cell,
-      cell_to_explore,
-      city_explorer_troup
+      cell_to_explore
     ] = await Promise.all([
       this.repository.city.get(city_id),
       this.repository.cell.getCityCell({ city_id }),
       this.repository.cell.getCell({ coordinates }),
-      this.repository.troup.getInCity({
-        city_id,
-        code: TroupCode.EXPLORER
-      })
     ])
+
+    const city_explorer_troup = await this.repository.troup.getInCell({
+      cell_id: city_cell.id,
+      code: TroupCode.EXPLORER
+    })
 
     return {
       cell_to_explore,
@@ -87,23 +87,28 @@ export class TroupExploreCommand extends GenericCommand<
 
     return TroupService.move({
       action: MovementAction.EXPLORE,
-      troup: city_explorer_troup,
+      origin_troups: [ city_explorer_troup ],
+      troups_to_move: [
+        {
+          code: TroupCode.EXPLORER,
+          count: 1
+        }
+      ],
       origin: city_cell.coordinates,
       destination: cell_to_explore.coordinates,
-      count_to_move: 1,
       distance,
       start_at: now(),
     })
   }
 
   async save({
-    city_troup,
-    movement_troup,
+    origin_troups,
+    movement_troups,
     movement
   }: TroupExploreCommandSave): Promise<void> {
     await Promise.all([
-      this.repository.troup.updateOne(city_troup),
-      this.repository.troup.create(movement_troup),
+      ...origin_troups.map(origin_troup => this.repository.troup.updateOne(origin_troup)),
+      ...movement_troups.map(movement_troup => this.repository.troup.create(movement_troup)),
       this.repository.movement.create(movement)
     ])
   }

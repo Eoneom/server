@@ -1,11 +1,15 @@
+import { TechnologyCode } from '#core/technology/constant/code'
 import { technology_order } from '#core/technology/constant/order'
 import { TechnologyEntity } from '#core/technology/entity'
 
 export class TechnologyService {
   static init({ player_id }: { player_id: string }): TechnologyEntity[] {
-    const architecture = TechnologyEntity.initArchitecture({ player_id })
+    const technologies = Object.values(TechnologyCode).map(code => TechnologyEntity.init({
+      player_id,
+      code
+    }))
 
-    return [ architecture ]
+    return technologies
   }
 
   static sortTechnologies({ technologies }: {technologies: TechnologyEntity[]}): TechnologyEntity[] {

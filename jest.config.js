@@ -2,5 +2,6 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  modulePathIgnorePatterns: [ 'dist' ]
+  modulePathIgnorePatterns: [ 'dist' ],
+  coveragePathIgnorePatterns: [ 'src/adapter' ]
 }

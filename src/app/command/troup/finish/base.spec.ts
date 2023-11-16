@@ -9,16 +9,28 @@ import {
   TroupFinishBaseCommand,
   TroupFinishBaseCommandExec
 } from '#app/command/troup/finish/base'
+import { Coordinates } from '#core/world/value/coordinates'
 
 describe('TroupFinishBaseCommand', () => {
   const player_id = 'player_id'
-  const city_id = 'city_id'
   const movement_id = 'movement_id'
   const movement_troup_id = 'movement_troup_id'
   const city_troup_id = 'city_troup_id'
+  const origin_cell_id = 'origin_cell_id'
+  const origin: Coordinates = {
+    sector: 1,
+    x: 2,
+    y: 3
+  }
+  const destination_cell_id = 'destination_cell_id'
+  const destination: Coordinates = {
+    sector: 4,
+    x: 5,
+    y: 6
+  }
   let movement: MovementEntity
   let movement_troup: TroupEntity
-  let city_troup: TroupEntity
+  let destination_troup: TroupEntity
   let command: TroupFinishBaseCommand
   let success_params: TroupFinishBaseCommandExec
 
@@ -26,18 +38,11 @@ describe('TroupFinishBaseCommand', () => {
     command = new TroupFinishBaseCommand()
 
     movement = MovementEntity.create({
-      action: MovementAction.BASE,
       id: movement_id,
-      origin: {
-        sector: 1,
-        x: 2,
-        y: 3
-      },
-      destination: {
-        sector: 4,
-        x: 5,
-        y: 6
-      },
+      player_id,
+      action: MovementAction.BASE,
+      origin,
+      destination,
       arrive_at: now() - 5000
     })
 
@@ -45,17 +50,17 @@ describe('TroupFinishBaseCommand', () => {
       id: movement_troup_id,
       code: TroupCode.EXPLORER,
       player_id,
-      city_id,
+      cell_id: origin_cell_id,
       count: 1,
       ongoing_recruitment: null,
       movement_id: movement.id
     })
 
-    city_troup = TroupEntity.create({
+    destination_troup = TroupEntity.create({
       id: city_troup_id,
       code: TroupCode.EXPLORER,
       player_id,
-      city_id,
+      cell_id: destination_cell_id,
       count: 1,
       ongoing_recruitment: null,
       movement_id: null
@@ -64,20 +69,19 @@ describe('TroupFinishBaseCommand', () => {
     success_params = {
       movement,
       player_id,
-      troups: [ movement_troup ],
-      city_troups: [ city_troup ]
+      movement_troups: [ movement_troup ],
+      destination_troups: [ destination_troup ],
+      destination_cell_id
     }
   })
 
   it('should prevent a player for finishing a movement of another player', () => {
     assert.throws(() => command.exec({
       ...success_params,
-      troups: [
-        TroupEntity.create({
-          ...movement_troup,
-          player_id: 'another_player_id'
-        })
-      ]
+      movement: MovementEntity.create({
+        ...movement,
+        player_id: 'another_player_id'
+      })
     }), new RegExp(TroupError.NOT_OWNER))
   })
 
@@ -91,18 +95,18 @@ describe('TroupFinishBaseCommand', () => {
     }), new RegExp(TroupError.MOVEMENT_NOT_ARRIVED))
   })
 
-  it('should move troups to the city', () => {
+  it('should move troups to the destination', () => {
     const {
       base_movement_id,
-      city_troups,
+      updated_troups,
       delete_troup_ids
     } = command.exec(success_params)
 
     assert.strictEqual(delete_troup_ids.length, 1)
     assert.strictEqual(delete_troup_ids[0], movement_troup_id)
 
-    assert.strictEqual(city_troups.length, 1)
-    assert.strictEqual(city_troups[0].count, city_troup.count + movement_troup.count)
+    assert.strictEqual(updated_troups.length, 1)
+    assert.strictEqual(updated_troups[0].count, destination_troup.count + movement_troup.count)
 
     assert.strictEqual(base_movement_id, movement.id)
   })

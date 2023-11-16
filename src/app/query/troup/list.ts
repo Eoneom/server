@@ -31,12 +31,17 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
       throw new Error(CityError.NOT_OWNER)
     }
 
+    const cell = await this.repository.cell.getCityCell({ city_id })
+
     const [
       troups,
       cloning_factory_level,
       replication_catalyst_level
     ] = await Promise.all([
-      this.repository.troup.listInCity({ city_id }),
+      this.repository.troup.listInCell({
+        cell_id: cell.id,
+        player_id
+      }),
       this.repository.building.getLevel({
         city_id,
         code: BuildingCode.CLONING_FACTORY

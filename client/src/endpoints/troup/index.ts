@@ -1,5 +1,9 @@
 import { Fetcher } from '../../fetcher'
 import {
+  TroupBaseRequest,
+  TroupBaseResponse
+} from './base'
+import {
   TroupCancelRequest,
   TroupCancelResponse
 } from './cancel'
@@ -70,6 +74,13 @@ export class TroupEndpoint {
 
   public async explore(token: string, body: TroupExploreRequest): Promise<TroupExploreResponse> {
     return this.fetcher.put('/troup/explore', {
+      body,
+      token
+    })
+  }
+
+  public async base(token: string, body: TroupBaseRequest): Promise<TroupBaseResponse> {
+    return this.fetcher.put('/troup/base', {
       body,
       token
     })

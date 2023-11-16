@@ -8,6 +8,9 @@ import {
 import { Document } from 'mongoose'
 
 class Movement {
+  @prop({ required: true })
+  public player_id!: string
+
   @prop({
     required: true,
     enum: MovementAction

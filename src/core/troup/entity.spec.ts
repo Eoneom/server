@@ -1,16 +1,18 @@
+import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 import assert from 'assert'
 
 describe('TroupEntity', () => {
-  const city_id = 'city_id'
+  const cell_id = 'cell_id'
   const player_id = 'player_id'
 
   describe('progressRecruitment', () => {
     it('should finish recruitment when progress time is greater than finish time', () => {
       const troup = TroupEntity.create({
-        ...TroupEntity.initExplorer({
-          city_id,
-          player_id
+        ...TroupEntity.init({
+          cell_id,
+          player_id,
+          code: TroupCode.EXPLORER
         }),
         ongoing_recruitment: {
           finish_at: 10,
@@ -28,9 +30,10 @@ describe('TroupEntity', () => {
     describe('partial progress', () => {
       it('should progress a bit based on progress time, remaining troups and finish time', () => {
         const troup = TroupEntity.create({
-          ...TroupEntity.initExplorer({
-            city_id,
-            player_id
+          ...TroupEntity.init({
+            cell_id,
+            player_id,
+            code: TroupCode.EXPLORER
           }),
           ongoing_recruitment: {
             finish_at: 20,
@@ -52,9 +55,10 @@ describe('TroupEntity', () => {
 
       it('should not recruit troup before finish time', () => {
         const troup = TroupEntity.create({
-          ...TroupEntity.initExplorer({
-            city_id,
-            player_id
+          ...TroupEntity.init({
+            cell_id,
+            player_id,
+            code: TroupCode.EXPLORER
           }),
           ongoing_recruitment: {
             finish_at: 3000,

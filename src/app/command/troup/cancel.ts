@@ -34,12 +34,13 @@ export class TroupCancelCommand extends GenericCommand<
     city_id,
     player_id
   }: TroupCancelRequest): Promise<TroupCancelExec> {
+    const city_cell = await this.repository.cell.getCityCell({ city_id })
     const [
       city,
       troup
     ] = await Promise.all([
       this.repository.city.get(city_id),
-      this.repository.troup.getInProgress({ city_id })
+      this.repository.troup.getInProgress({ cell_id: city_cell.id })
     ])
 
     return {

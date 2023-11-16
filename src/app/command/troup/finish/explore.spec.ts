@@ -13,12 +13,12 @@ import { ExplorationEntity } from '#core/world/exploration.entity'
 
 describe('TroupFinishExploreCommand', () => {
   const player_id = 'player_id'
-  const city_id = 'city_id'
   const movement_id = 'movement_id'
   const troup_id = 'troup_id'
   const exploration_id = 'exploration_id'
   const already_explored_cell_id = 'already_explored_cell_id'
   const cell_id = 'cell_id'
+  const city_cell_id = 'city_cell_id'
   let movement: MovementEntity
   let troup: TroupEntity
   let exploration: ExplorationEntity
@@ -29,8 +29,9 @@ describe('TroupFinishExploreCommand', () => {
     command = new TroupFinishExploreCommand()
 
     movement = MovementEntity.create({
-      action: MovementAction.EXPLORE,
       id: movement_id,
+      player_id,
+      action: MovementAction.EXPLORE,
       origin: {
         sector: 1,
         x: 2,
@@ -48,7 +49,7 @@ describe('TroupFinishExploreCommand', () => {
       id: troup_id,
       code: TroupCode.EXPLORER,
       player_id,
-      city_id,
+      cell_id: city_cell_id,
       count: 1,
       ongoing_recruitment: null,
       movement_id: movement.id

@@ -97,11 +97,11 @@ export class AuthSignupCommand extends GenericCommand<
     })
     const buildings = BuildingService.init({ city_id: city.id })
     const technologies = TechnologyService.init({ player_id: player.id })
+    const cell = city_first_cell.assign({ city_id: city.id })
     const troups = TroupService.init({
       player_id: player.id,
-      city_id: city.id
+      cell_id: cell.id
     })
-    const cell = city_first_cell.assign({ city_id: city.id })
     const exploration = ExplorationEntity.init({
       player_id: player.id,
       cell_ids: [

@@ -91,9 +91,9 @@ export abstract class MongoGenericRepository<
     return document._id.toString()
   }
 
-  async updateOne(entity: Entity): Promise<void> {
+  async updateOne(entity: Entity, options?: { upsert: boolean }): Promise<void> {
     this.logger.debug('updateOne', { id: entity.id })
-    await this.model.updateOne({ _id: entity.id }, entity)
+    await this.model.updateOne({ _id: entity.id }, entity, options)
   }
 
   async delete(id: string): Promise<void> {

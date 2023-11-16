@@ -11,7 +11,6 @@ import { AppService } from '#app/service'
 import { ReportEntity } from '#core/communication/report.entity'
 import { id } from '#shared/identification'
 import { ReportType } from '#core/communication/value/report-type'
-import { now } from '#shared/time'
 
 interface TroupFinishExploreCommandRequest {
   player_id: string

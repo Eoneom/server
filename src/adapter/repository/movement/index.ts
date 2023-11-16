@@ -26,6 +26,7 @@ export class MongoMovementRepository
   protected buildFromModel(document: MovementDocument): MovementEntity {
     return MovementEntity.create({
       id: document._id.toString(),
+      player_id: document.player_id.toString(),
       action: document.action,
       origin: document.origin,
       destination: document.destination,

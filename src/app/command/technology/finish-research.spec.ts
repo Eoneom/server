@@ -1,4 +1,5 @@
 import { TechnologyFinishResearchCommand } from '#app/command/technology/finish-research'
+import { TechnologyCode } from '#core/technology/constant/code'
 import { TechnologyEntity } from '#core/technology/entity'
 import { now } from '#shared/time'
 import assert from 'assert'
@@ -11,7 +12,10 @@ describe('TechnologyFinishResearchCommand', () => {
   beforeEach(() => {
     command = new TechnologyFinishResearchCommand()
     technology_to_finish = TechnologyEntity.create({
-      ...TechnologyEntity.initArchitecture({ player_id }),
+      ...TechnologyEntity.init({
+        player_id,
+        code: TechnologyCode.ARCHITECTURE 
+      }),
       research_at: now()
     })
   })

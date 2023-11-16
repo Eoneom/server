@@ -12,15 +12,16 @@ interface TroupFinishBaseCommandRequest {
 }
 
 export interface TroupFinishBaseCommandExec {
-  city_troups: TroupEntity[]
+  destination_troups: TroupEntity[]
   movement: MovementEntity
   player_id: string
-  troups: TroupEntity[]
+  movement_troups: TroupEntity[]
+  destination_cell_id: string
 }
 
 interface TroupFinishBaseCommandSave {
   base_movement_id: string
-  city_troups: TroupEntity[]
+  updated_troups: TroupEntity[]
   delete_troup_ids: string[]
 }
 
@@ -38,7 +39,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
     movement_id
   }: TroupFinishBaseCommandRequest): Promise<TroupFinishBaseCommandExec> {
     const [
-      troups,
+      movement_troups,
       movement,
     ] = await Promise.all([
       this.repository.troup.listByMovement({ movement_id }),
@@ -46,29 +47,31 @@ export class TroupFinishBaseCommand extends GenericCommand<
     ])
 
     const destination_cell = await this.repository.cell.getCell({ coordinates: movement.destination })
-    assert.ok(destination_cell.city_id)
 
-    const city_troups = await this.repository.troup.listInCity({ city_id: destination_cell.city_id })
-    assert.ok(city_troups.length)
+    const destination_troups = await this.repository.troup.listInCell({
+      cell_id: destination_cell.id,
+      player_id
+    })
 
     return {
-      troups,
+      movement_troups,
       player_id,
-      city_troups,
+      destination_troups,
       movement,
+      destination_cell_id: destination_cell.id,
     }
   }
 
   exec({
     player_id,
-    troups,
+    movement_troups,
     movement,
-    city_troups
+    destination_troups,
+    destination_cell_id
   }: TroupFinishBaseCommandExec): TroupFinishBaseCommandSave {
     assert.strictEqual(movement.action, MovementAction.BASE)
 
-    const is_player_movement = troups.every(troup => troup.player_id === player_id)
-    if (!is_player_movement) {
+    if (movement.player_id !== player_id) {
       throw new Error(TroupError.NOT_OWNER)
     }
 
@@ -76,27 +79,28 @@ export class TroupFinishBaseCommand extends GenericCommand<
       throw new Error(TroupError.MOVEMENT_NOT_ARRIVED)
     }
 
-    const { city_troups: updated_troups } = TroupService.finishBaseInCity({
-      troups,
-      city_troups
+    const { merged_troups } = TroupService.mergeTroupsInDestination({
+      movement_troups,
+      destination_troups,
+      destination_cell_id
     })
 
     return {
       base_movement_id: movement.id,
-      delete_troup_ids: troups.map(troup => troup.id),
-      city_troups: updated_troups
+      delete_troup_ids: movement_troups.map(troup => troup.id),
+      updated_troups: merged_troups
     }
   }
 
   async save({
     base_movement_id,
-    city_troups,
+    updated_troups,
     delete_troup_ids
   }: TroupFinishBaseCommandSave): Promise<void> {
     await Promise.all([
       this.repository.movement.delete(base_movement_id),
       ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
-      ...city_troups.map(troup => this.repository.troup.updateOne(troup)),
+      ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
     ])
   }
 }

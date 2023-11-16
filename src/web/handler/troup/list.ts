@@ -2,7 +2,8 @@ import {
   NextFunction, Request, Response
 } from 'express'
 import {
-  TroupListResponse, TroupListDataResponse
+  TroupListResponse,
+  TroupListDataResponse
 } from '#client/src/endpoints/Troup/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
@@ -49,7 +50,6 @@ const response_mapper = ({
     const cost = costs[troup.id]
     return {
       id: troup.id,
-      city_id: troup.city_id,
       code: troup.code,
       count: troup.count,
       ongoing_recruitment: troup.ongoing_recruitment ? {

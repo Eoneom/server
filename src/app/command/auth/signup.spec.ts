@@ -124,15 +124,17 @@ describe('AuthSignupCommand', () => {
 
   it('should init all city troups', () => {
     const {
-      city,
-      troups
+      troups,
+      player
     } = command.exec(success_params)
 
     assert.strictEqual(troups.length, Object.keys(TroupCode).length)
     troups.forEach(troup => {
       assert.strictEqual(troup.count, 0)
+      assert.strictEqual(troup.player_id, player.id)
+      assert.strictEqual(troup.cell_id, city_first_cell.id)
       assert.strictEqual(troup.ongoing_recruitment, null)
-      assert.strictEqual(troup.city_id, city.id)
+      assert.strictEqual(troup.movement_id, null)
     })
   })
 

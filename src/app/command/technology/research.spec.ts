@@ -5,6 +5,7 @@ import { BuildingCode } from '#core/building/constant/code'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { RequirementError } from '#core/requirement/error'
+import { TechnologyCode } from '#core/technology/constant/code'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyError } from '#core/technology/error'
 import assert from 'assert'
@@ -26,7 +27,10 @@ describe('TechnologyResearchCommand', () => {
       plastic: 100000,
       mushroom: 100000
     })
-    technology = TechnologyEntity.initArchitecture({ player_id })
+    technology = TechnologyEntity.init({
+      player_id,
+      code: TechnologyCode.ARCHITECTURE
+    })
     success_params = {
       levels: {
         building: { [BuildingCode.RESEARCH_LAB]: 1 },
