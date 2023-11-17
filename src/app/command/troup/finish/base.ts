@@ -8,6 +8,8 @@ import { TroupService } from '#core/troup/service'
 import { ReportEntity } from '#core/communication/report.entity'
 import { id } from '#shared/identification'
 import { ReportType } from '#core/communication/value/report-type'
+import { OutpostEntity } from '#core/outpost/entity'
+import { OutpostType } from '#core/outpost/constant/type'
 
 interface TroupFinishBaseCommandRequest {
   player_id: string
@@ -20,6 +22,8 @@ export interface TroupFinishBaseCommandExec {
   player_id: string
   movement_troups: TroupEntity[]
   destination_cell_id: string
+  city_exists: boolean
+  outpost_exists: boolean
 }
 
 interface TroupFinishBaseCommandSave {
@@ -27,6 +31,7 @@ interface TroupFinishBaseCommandSave {
   updated_troups: TroupEntity[]
   delete_troup_ids: string[]
   report: ReportEntity
+  outpost: OutpostEntity | null
 }
 
 export class TroupFinishBaseCommand extends GenericCommand<
@@ -57,12 +62,17 @@ export class TroupFinishBaseCommand extends GenericCommand<
       player_id
     })
 
+    const city_exists = Boolean(destination_cell.city_id)
+    const outpost_exists = await this.repository.outpost.existsOnCell({ cell_id: destination_cell.id })
+
     return {
       movement_troups,
       player_id,
       destination_troups,
       movement,
       destination_cell_id: destination_cell.id,
+      city_exists,
+      outpost_exists
     }
   }
 
@@ -71,7 +81,9 @@ export class TroupFinishBaseCommand extends GenericCommand<
     movement_troups,
     movement,
     destination_troups,
-    destination_cell_id
+    destination_cell_id,
+    city_exists,
+    outpost_exists
   }: TroupFinishBaseCommandExec): TroupFinishBaseCommandSave {
     assert.strictEqual(movement.action, MovementAction.BASE)
 
@@ -102,11 +114,19 @@ export class TroupFinishBaseCommand extends GenericCommand<
       })),
     })
 
+    const outpost = !city_exists && !outpost_exists ? OutpostEntity.create({
+      id: id(),
+      player_id,
+      cell_id: destination_cell_id,
+      type: OutpostType.TEMPORARY
+    }) : null
+
     return {
       base_movement_id: movement.id,
       delete_troup_ids: movement_troups.map(troup => troup.id),
       updated_troups: merged_troups,
-      report
+      report,
+      outpost
     }
   }
 
@@ -114,13 +134,15 @@ export class TroupFinishBaseCommand extends GenericCommand<
     base_movement_id,
     updated_troups,
     delete_troup_ids,
-    report
+    report,
+    outpost
   }: TroupFinishBaseCommandSave): Promise<void> {
     await Promise.all([
       this.repository.movement.delete(base_movement_id),
       ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
       ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
-      this.repository.report.create(report)
+      this.repository.report.create(report),
+      outpost && this.repository.outpost.create(outpost)
     ])
   }
 }

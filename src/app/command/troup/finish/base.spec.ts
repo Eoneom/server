@@ -10,6 +10,7 @@ import {
   TroupFinishBaseCommandExec
 } from '#app/command/troup/finish/base'
 import { Coordinates } from '#core/world/value/coordinates'
+import { OutpostType } from '#core/outpost/constant/type'
 
 describe('TroupFinishBaseCommand', () => {
   const player_id = 'player_id'
@@ -71,7 +72,9 @@ describe('TroupFinishBaseCommand', () => {
       player_id,
       movement_troups: [ movement_troup ],
       destination_troups: [ destination_troup ],
-      destination_cell_id
+      destination_cell_id,
+      city_exists: false,
+      outpost_exists: false
     }
   })
 
@@ -93,6 +96,31 @@ describe('TroupFinishBaseCommand', () => {
         arrive_at: now() + 10000
       })
     }), new RegExp(TroupError.MOVEMENT_NOT_ARRIVED))
+  })
+
+  it('should not create a temporary outpost if there is an existing city', () => {
+    const { outpost } = command.exec({
+      ...success_params,
+      city_exists: true
+    })
+    assert.strictEqual(outpost, null)
+  })
+
+  it('should not create a temporary outpost if there is an existing city', () => {
+    const { outpost } = command.exec({
+      ...success_params,
+      outpost_exists: true
+    })
+    assert.strictEqual(outpost, null)
+  })
+
+  it('should create a temporary outpost if there is no city or outpost', () => {
+    const { outpost } = command.exec(success_params)
+
+    assert.ok(outpost)
+    assert.strictEqual(outpost.type, OutpostType.TEMPORARY)
+    assert.strictEqual(outpost.player_id, player_id)
+    assert.strictEqual(outpost.cell_id, destination_cell_id)
   })
 
   it('should move troups to the destination', () => {

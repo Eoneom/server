@@ -25,6 +25,7 @@ import { troupRecruitHandler } from '#web/handler/troup/recruit'
 import { worldGetSectorHandler } from '#web/handler/world/get-sector'
 import { technologyGetHandler } from '#web/handler/technology/get'
 import { troupBaseHandler } from '#web/handler/troup/base'
+import { outpostListHandler } from '#web/handler/outpost/list'
 
 export const router = (): Router => {
   const r = Router()
@@ -62,6 +63,8 @@ export const router = (): Router => {
   r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
   r.put('/troup/movement/:movement_id/finish', authMiddleware, troupFinishMovementHandler)
   r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
+
+  r.get('/outpost', authMiddleware, outpostListHandler)
 
   r.get('/sector/:sector', authMiddleware, worldGetSectorHandler)
 

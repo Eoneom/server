@@ -15,6 +15,10 @@ export class MongoCellRepository
     super(CellModel, WorldError.CELL_NOT_FOUND)
   }
 
+  async getById(id: string): Promise<CellEntity> {
+    return this.findByIdOrThrow(id)
+  }
+
   async getCityCellsCount({ city_id }: { city_id: string }): Promise<number> {
     return this.model.countDocuments({ city_id })
   }
