@@ -31,4 +31,8 @@ export class OutpostEntity extends BaseEntity {
   static create(props: OutpostEntityProps): OutpostEntity {
     return new OutpostEntity(props)
   }
+
+  isOwnedBy(player_id: string): boolean {
+    return this.player_id === player_id
+  }
 }

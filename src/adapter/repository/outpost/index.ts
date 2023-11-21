@@ -5,7 +5,7 @@ import {
   OutpostModel
 } from '#adapter/repository/outpost/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
-import { OutpostError } from '#adapter/repository/outpost/error'
+import { OutpostError } from '#core/outpost/error'
 
 export class MongoOutpostRepository
   extends MongoGenericRepository<typeof OutpostModel, OutpostDocument, OutpostEntity>
@@ -13,6 +13,10 @@ export class MongoOutpostRepository
 
   constructor() {
     super(OutpostModel, OutpostError.NOT_FOUND)
+  }
+
+  async getById(id: string): Promise<OutpostEntity> {
+    return this.findByIdOrThrow(id)
   }
 
   async existsOnCell({ cell_id }: { cell_id: string }): Promise<boolean> {

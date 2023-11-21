@@ -14,6 +14,7 @@ export { TroupCode } from '../../src/core/troup/constant/code'
 export { ReportType } from '../../src/core/communication/value/report-type'
 export { OutpostType } from '../../src/core/outpost/constant/type'
 
+export * from './endpoints/shared/coordinates'
 export * from './endpoints'
 export * from './response'
 

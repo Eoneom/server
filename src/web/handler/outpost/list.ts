@@ -1,3 +1,4 @@
+import assert from 'assert'
 import {
   NextFunction,
   Request,
@@ -32,11 +33,17 @@ export const outpostListHandler = async (
   }
 }
 
-const response_mapper = ({ outposts }: OutpostListQueryResponse): OutpostListDataResponse => {
+const response_mapper = ({
+  outposts,
+  cells
+}: OutpostListQueryResponse): OutpostListDataResponse => {
   const outposts_response: OutpostListDataResponse['outposts'] = outposts.map(outpost => {
+    const cell = cells.find(c => c.id === outpost.cell_id)
+    assert(cell)
+
     return {
       id: outpost.id,
-      coordinates: outpost.coordinates,
+      coordinates: cell.coordinates,
       type: outpost.type
     }
   })
