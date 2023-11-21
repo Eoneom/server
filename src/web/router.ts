@@ -8,7 +8,7 @@ import { buildingUpgradeHandler } from '#web/handler/building/upgrade'
 import { cityGatherHandler } from '#web/handler/city/gather'
 import { cityGetHandler } from '#web/handler/city/get'
 import { cityListHandler } from '#web/handler/city/list'
-import { communicationListReportHandler } from '#web/handler/communication/list-report'
+import { communicationListReportHandler } from '#web/handler/communication/report/list'
 import { loginHandler } from '#web/handler/player/login'
 import { signupHandler } from '#web/handler/player/signup'
 import { technologyCancelHandler } from '#web/handler/technology/cancel'
@@ -27,6 +27,7 @@ import { technologyGetHandler } from '#web/handler/technology/get'
 import { troupBaseHandler } from '#web/handler/troup/base'
 import { outpostListHandler } from '#web/handler/outpost/list'
 import { outpostGetHandler } from '#web/handler/outpost/get'
+import { communicationGetReportHandler } from '#web/handler/communication/report/get'
 
 export const router = (): Router => {
   const r = Router()
@@ -71,6 +72,7 @@ export const router = (): Router => {
   r.get('/sector/:sector', authMiddleware, worldGetSectorHandler)
 
   r.get('/communication/report', authMiddleware, communicationListReportHandler)
+  r.get('/communication/report/:report_id', authMiddleware, communicationGetReportHandler)
 
   return r
 }

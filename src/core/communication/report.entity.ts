@@ -52,4 +52,8 @@ export class ReportEntity extends BaseEntity {
   static create(props: ReportEntityProps): ReportEntity {
     return new ReportEntity(props)
   }
+
+  isOwnedBy(player_id: string): boolean {
+    return this.player_id === player_id
+  }
 }

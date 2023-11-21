@@ -15,6 +15,10 @@ export class MongoReportRepository
     super(ReportModel, CommunicationError.REPORT_NOT_FOUND)
   }
 
+  async getById(id: string): Promise<ReportEntity> {
+    return this.findByIdOrThrow(id)
+  }
+
   async list({ player_id }: { player_id: string }): Promise<ReportEntity[]> {
     const reports = await this.model.find({ player_id }).sort({ recorded_at: -1 })
     return reports.map(report => this.buildFromModel(report))

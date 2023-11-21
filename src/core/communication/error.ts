@@ -1,1 +1,4 @@
-export const CommunicationError = { REPORT_NOT_FOUND: 'communication:report-not-found' }
+export const CommunicationError = {
+  REPORT_NOT_FOUND: 'communication:report-not-found',
+  REPORT_NOT_OWNER: 'communication:report-not-owner'
+}
