@@ -10,7 +10,11 @@ export interface TroupGetMovementActionQueryResponse {
 }
 
 export class TroupGetMovementActionQuery extends GenericQuery<TroupGetMovementActionQueryRequest, TroupGetMovementActionQueryResponse> {
-  async get({ movement_id }: TroupGetMovementActionQueryRequest): Promise<TroupGetMovementActionQueryResponse> {
+  constructor() {
+    super({ name: 'troup:movement:get-action' })
+  }
+
+  protected async get({ movement_id }: TroupGetMovementActionQueryRequest): Promise<TroupGetMovementActionQueryResponse> {
     const movement = await this.repository.movement.get(movement_id)
 
     return { action: movement.action }

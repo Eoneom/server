@@ -28,6 +28,7 @@ import { troupBaseHandler } from '#web/handler/troup/base'
 import { outpostListHandler } from '#web/handler/outpost/list'
 import { outpostGetHandler } from '#web/handler/outpost/get'
 import { communicationGetReportHandler } from '#web/handler/communication/report/get'
+import { communicationCountUnreadReportHandler } from '#web/handler/communication/report/count-unread'
 
 export const router = (): Router => {
   const r = Router()
@@ -71,6 +72,7 @@ export const router = (): Router => {
 
   r.get('/sector/:sector', authMiddleware, worldGetSectorHandler)
 
+  r.get('/communication/report/unread/count', authMiddleware, communicationCountUnreadReportHandler)
   r.get('/communication/report', authMiddleware, communicationListReportHandler)
   r.get('/communication/report/:report_id', authMiddleware, communicationGetReportHandler)
 

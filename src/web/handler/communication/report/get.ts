@@ -28,7 +28,7 @@ export const communicationGetReportHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new CommunicationGetReportQuery().get({
+    const result = await new CommunicationGetReportQuery().run({
       player_id,
       report_id
     })

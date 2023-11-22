@@ -27,7 +27,7 @@ export const troupFinishMovementHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const { action } = await new TroupGetMovementActionQuery().get({ movement_id })
+    const { action } = await new TroupGetMovementActionQuery().run({ movement_id })
     let command: TroupFinishMovementCommand
 
     switch (action) {

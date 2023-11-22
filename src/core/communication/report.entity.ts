@@ -17,6 +17,7 @@ type ReportEntityProps = BaseEntity & {
   troups: ReportTroup[]
   type: ReportType
   recorded_at: number
+  was_read: boolean
 }
 
 export class ReportEntity extends BaseEntity {
@@ -27,6 +28,7 @@ export class ReportEntity extends BaseEntity {
   readonly troups: ReportTroup[]
   readonly type: ReportType
   readonly recorded_at: number
+  readonly was_read: boolean
 
   private constructor({
     id,
@@ -36,7 +38,8 @@ export class ReportEntity extends BaseEntity {
     resource_coefficient,
     troups,
     type,
-    recorded_at
+    recorded_at,
+    was_read
   }: ReportEntityProps) {
     super({ id })
 
@@ -47,6 +50,7 @@ export class ReportEntity extends BaseEntity {
     this.troups = troups
     this.type = type
     this.recorded_at = recorded_at
+    this.was_read = was_read
   }
 
   static create(props: ReportEntityProps): ReportEntity {

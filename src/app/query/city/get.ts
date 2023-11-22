@@ -19,7 +19,11 @@ export interface CityGetQueryResponse {
 }
 
 export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'city:get' })
+  }
+
+  protected async get({
     city_id,
     player_id
   }: CityGetQueryRequest): Promise<CityGetQueryResponse> {

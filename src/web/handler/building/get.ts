@@ -37,7 +37,7 @@ export const buildingGetHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new BuildingGetQuery().get({
+    const result = await new BuildingGetQuery().run({
       city_id,
       building_code,
       player_id

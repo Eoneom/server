@@ -112,6 +112,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
         code: movement_troup.code,
         count: movement_troup.count
       })),
+      was_read: false
     })
 
     const outpost = !city_exists && !outpost_exists ? OutpostEntity.create({

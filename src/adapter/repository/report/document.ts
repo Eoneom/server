@@ -44,6 +44,12 @@ class Report {
 
   @prop({ required: true })
   public recorded_at!: number
+
+  @prop({
+    required: true,
+    default: false
+  })
+  public was_read!: boolean
 }
 
 export type ReportDocument = Document & Report

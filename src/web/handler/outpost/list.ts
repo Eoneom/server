@@ -21,7 +21,7 @@ export const outpostListHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new OutpostListQuery().get({ player_id })
+    const result = await new OutpostListQuery().run({ player_id })
     const response = response_mapper(result)
 
     return res.json({

@@ -29,7 +29,7 @@ export const outpostGetHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new OutpostGetQuery().get({
+    const result = await new OutpostGetQuery().run({
       outpost_id,
       player_id
     })

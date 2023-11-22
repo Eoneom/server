@@ -12,7 +12,11 @@ export interface TroupListMovementQueryResponse {
 }
 
 export class TroupListMovementQuery extends GenericQuery<TroupListMovementQueryRequest, TroupListMovementQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'troup:movement:list' })
+  }
+
+  protected async get({
     city_id,
     player_id
   }: TroupListMovementQueryRequest): Promise<TroupListMovementQueryResponse> {

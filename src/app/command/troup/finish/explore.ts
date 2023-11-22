@@ -116,6 +116,7 @@ export class TroupFinishExploreCommand extends GenericCommand<
           count: troup.count
         }
       ],
+      was_read: false
     })
 
     return {

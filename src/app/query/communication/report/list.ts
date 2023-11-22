@@ -10,7 +10,11 @@ export interface CommunicationListReportQueryResponse {
 }
 
 export class CommunicationListReportQuery extends GenericQuery<CommunicationListReportQueryRequest, CommunicationListReportQueryResponse> {
-  async get({ player_id }: CommunicationListReportQueryRequest): Promise<CommunicationListReportQueryResponse> {
+  constructor() {
+    super({ name: 'communication:report:list' })
+  }
+
+  protected async get({ player_id }: CommunicationListReportQueryRequest): Promise<CommunicationListReportQueryResponse> {
     const reports = await this.repository.report.list({ player_id })
     return { reports }
   }

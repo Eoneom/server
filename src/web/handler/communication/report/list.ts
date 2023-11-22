@@ -20,7 +20,7 @@ export const communicationListReportHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new CommunicationListReportQuery().get({ player_id })
+    const result = await new CommunicationListReportQuery().run({ player_id })
     const response = response_mapper(result)
 
     return res.json({

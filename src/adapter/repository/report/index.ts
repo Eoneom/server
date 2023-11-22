@@ -15,6 +15,19 @@ export class MongoReportRepository
     super(ReportModel, CommunicationError.REPORT_NOT_FOUND)
   }
 
+  async count({
+    player_id,
+    was_read
+  }: {
+    player_id: string
+    was_read: boolean
+  }): Promise<number> {
+    return this.model.countDocuments({
+      player_id,
+      was_read
+    })
+  }
+
   async getById(id: string): Promise<ReportEntity> {
     return this.findByIdOrThrow(id)
   }
@@ -32,7 +45,8 @@ export class MongoReportRepository
       troups: document.troups,
       origin: document.origin,
       destination: document.destination,
-      recorded_at: document.recorded_at
+      recorded_at: document.recorded_at,
+      was_read: document.was_read
     })
   }
 }

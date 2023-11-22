@@ -14,7 +14,11 @@ export interface OutpostGetQueryResponse {
 }
 
 export class OutpostGetQuery extends GenericQuery<OutpostGetQueryRequest, OutpostGetQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'outpost:get' })
+  }
+
+  protected async get({
     player_id,
     outpost_id
   }: OutpostGetQueryRequest): Promise<OutpostGetQueryResponse> {

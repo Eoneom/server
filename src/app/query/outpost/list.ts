@@ -12,7 +12,11 @@ export interface OutpostListQueryResponse {
 }
 
 export class OutpostListQuery extends GenericQuery<OutpostListQueryRequest, OutpostListQueryResponse> {
-  async get({ player_id }: OutpostListQueryRequest): Promise<OutpostListQueryResponse> {
+  constructor() {
+    super({ name: 'outpost:list' })
+  }
+
+  protected async get({ player_id }: OutpostListQueryRequest): Promise<OutpostListQueryResponse> {
     const outposts = await this.repository.outpost.list({ player_id })
     const cells = await Promise.all(outposts.map(outpost => this.repository.cell.getById(outpost.cell_id)))
     return {

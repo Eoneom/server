@@ -13,7 +13,11 @@ export interface ListBuildingQueryResponse {
 }
 
 export class BuildingListQuery extends GenericQuery<ListBuildingRequest, ListBuildingQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'building:list' })
+  }
+
+  protected async get({
     city_id,
     player_id
   }: ListBuildingRequest): Promise<ListBuildingQueryResponse> {

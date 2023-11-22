@@ -115,6 +115,7 @@ describe('TroupFinishExploreCommand', () => {
     const { report } = command.exec(success_params)
 
     assert.strictEqual(report.troups.length, 1)
+    assert.strictEqual(report.was_read, false)
     assert.strictEqual(report.troups[0].code, TroupCode.EXPLORER)
   })
 })

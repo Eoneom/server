@@ -27,7 +27,11 @@ export interface BuildingGetQueryResponse {
 }
 
 export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, BuildingGetQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'building:get' })
+  }
+
+  protected async get({
     building_code,
     city_id,
     player_id

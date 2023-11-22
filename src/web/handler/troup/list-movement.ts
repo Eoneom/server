@@ -26,7 +26,7 @@ export const troupListMovementHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new TroupListMovementQuery().get({
+    const result = await new TroupListMovementQuery().run({
       city_id,
       player_id
     })

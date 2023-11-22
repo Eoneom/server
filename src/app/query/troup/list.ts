@@ -22,7 +22,11 @@ export interface TroupListQueryResponse {
 }
 
 export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupListQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'troup:list' })
+  }
+
+  protected async get({
     city_id,
     player_id
   }: TroupListQueryRequest): Promise<TroupListQueryResponse> {

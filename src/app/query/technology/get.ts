@@ -21,7 +21,11 @@ export interface TechnologyGetQueryResponse {
 }
 
 export class TechnologyGetQuery extends GenericQuery<TechnologyGetQueryRequest, TechnologyGetQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'technology:get' })
+  }
+
+  protected async get({
     technology_code,
     city_id,
     player_id

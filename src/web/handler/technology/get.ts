@@ -34,7 +34,7 @@ export const technologyGetHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new TechnologyGetQuery().get({
+    const result = await new TechnologyGetQuery().run({
       player_id,
       city_id,
       technology_code

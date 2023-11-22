@@ -12,7 +12,11 @@ export interface WorldGetSectorQueryResponse {
 }
 
 export class WorldGetSectorQuery extends GenericQuery<WorldGetSectorQueryRequest, WorldGetSectorQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'world:sector:get' })
+  }
+
+  protected async get({
     sector,
     player_id
   }: WorldGetSectorQueryRequest): Promise<WorldGetSectorQueryResponse> {

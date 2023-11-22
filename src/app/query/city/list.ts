@@ -10,7 +10,11 @@ export interface CityListQueryResponse {
 }
 
 export class CityListQuery extends GenericQuery<CityListQueryRequest, CityListQueryResponse> {
-  async get({ player_id }: CityListQueryRequest): Promise<CityListQueryResponse> {
+  constructor() {
+    super({ name: 'building:list' })
+  }
+
+  protected async get({ player_id }: CityListQueryRequest): Promise<CityListQueryResponse> {
     const cities = await this.repository.city.list({ player_id })
 
     return { cities }

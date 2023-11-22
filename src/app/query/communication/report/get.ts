@@ -12,7 +12,11 @@ export interface CommunicationGetReportQueryResponse {
 }
 
 export class CommunicationGetReportQuery extends GenericQuery<CommunicationGetReportQueryRequest, CommunicationGetReportQueryResponse> {
-  async get({
+  constructor() {
+    super({ name: 'communication:report:get' })
+  }
+
+  protected async get({
     player_id,
     report_id
   }: CommunicationGetReportQueryRequest): Promise<CommunicationGetReportQueryResponse> {
