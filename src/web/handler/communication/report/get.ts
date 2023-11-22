@@ -50,6 +50,7 @@ const response_mapper = ({ report }: CommunicationGetReportQueryResponse): Commu
     destination: report.destination,
     origin: report.origin,
     recorded_at: report.recorded_at,
+    was_read: report.was_read,
     troups: report.troups.map(troup => ({
       code:troup.code,
       count: troup.count

@@ -6,6 +6,7 @@ export interface CommunicationListReportDataResponse {
     id: string
     type: ReportType
     recorded_at: number
+    was_read: boolean
   }[]
 }
 

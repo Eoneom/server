@@ -36,7 +36,8 @@ const response_mapper = ({ reports }: CommunicationListReportQueryResponse): Com
   const reports_response: CommunicationListReportDataResponse['reports'] = reports.map(report => ({
     id: report.id,
     type: report.type,
-    recorded_at: report.recorded_at
+    recorded_at: report.recorded_at,
+    was_read: report.was_read
   }))
 
   return { reports: reports_response }

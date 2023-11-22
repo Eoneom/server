@@ -5,6 +5,9 @@ import {
   CommunicationGetReportResponse
 } from './report/get'
 import { CommunicationListReportResponse } from './report/list'
+import {
+  CommunicationMarkReportRequest, CommunicationMarkReportResponse
+} from './report/mark'
 
 export class CommunicationEndpoint {
   private fetcher: Fetcher
@@ -23,5 +26,12 @@ export class CommunicationEndpoint {
 
   public countUnread(token: string): Promise<CommunicationCountUnreadReportResponse> {
     return this.fetcher.get('/communication/report/unread/count', { token })
+  }
+
+  public markReport(token: string, body: CommunicationMarkReportRequest): Promise<CommunicationMarkReportResponse> {
+    return this.fetcher.put('/communication/report/mark', {
+      body,
+      token
+    })
   }
 }

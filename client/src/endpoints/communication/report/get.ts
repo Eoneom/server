@@ -13,6 +13,7 @@ export interface CommunicationGetReportDataResponse {
   recorded_at: number
   destination: Coordinates
   origin: Coordinates
+  was_read: boolean
   troups: {
     code: TroupCode
     count: number

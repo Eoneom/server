@@ -57,6 +57,13 @@ export class ReportEntity extends BaseEntity {
     return new ReportEntity(props)
   }
 
+  markAs(read: boolean): ReportEntity {
+    return ReportEntity.create({
+      ...this,
+      was_read: read
+    })
+  }
+
   isOwnedBy(player_id: string): boolean {
     return this.player_id === player_id
   }
