@@ -97,8 +97,12 @@ export class TroupFinishBaseCommand extends GenericCommand<
 
     const { merged_troups } = TroupService.mergeTroupsInDestination({
       movement_troups,
-      destination_troups,
-      destination_cell_id
+      destination_troups
+    })
+
+    const assigned_troups = TroupService.assignToCell({
+      troups: merged_troups,
+      cell_id: destination_cell_id
     })
 
     const report = ReportEntity.create({
@@ -125,7 +129,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
     return {
       base_movement_id: movement.id,
       delete_troup_ids: movement_troups.map(troup => troup.id),
-      updated_troups: merged_troups,
+      updated_troups: assigned_troups,
       report,
       outpost
     }

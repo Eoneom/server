@@ -93,14 +93,22 @@ export class TroupService {
     }
   }
 
+  static assignToCell({
+    troups,
+    cell_id
+  }: {
+    troups: TroupEntity[]
+    cell_id: string
+  }): TroupEntity[] {
+    return troups.map(troup => troup.assignToCell({ cell_id }))
+  }
+
   static mergeTroupsInDestination({
     movement_troups,
     destination_troups,
-    destination_cell_id
   }: {
     movement_troups: TroupEntity[]
     destination_troups: TroupEntity[]
-    destination_cell_id: string
   }): {
     merged_troups: TroupEntity[]
   } {
@@ -108,8 +116,7 @@ export class TroupService {
     movement_troups.forEach(movement_troup => {
       const destination_troup_index = merged_troups.findIndex(merged_troup => merged_troup.code === movement_troup.code)
       if (destination_troup_index === -1) {
-        const movement_troup_assigned_to_destination = movement_troup.assignToCell({ cell_id: destination_cell_id })
-        merged_troups.push(movement_troup_assigned_to_destination)
+        merged_troups.push(movement_troup)
       } else {
         const merged_troup_in_destination = TroupEntity.create({
           ...merged_troups[destination_troup_index],

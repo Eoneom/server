@@ -52,7 +52,7 @@ describe('TroupFinishExploreCommand', () => {
       cell_id: city_cell_id,
       count: 1,
       ongoing_recruitment: null,
-      movement_id: movement.id
+      movement_id: null
     })
 
     exploration = ExplorationEntity.create({

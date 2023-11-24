@@ -148,7 +148,6 @@ describe('TroupService', () => {
       const { merged_troups } = TroupService.mergeTroupsInDestination({
         movement_troups: [ movement_troup ],
         destination_troups: [ destination_troup ],
-        destination_cell_id
       })
 
       assert.strictEqual(merged_troups.length, 1)
@@ -156,7 +155,6 @@ describe('TroupService', () => {
       assert.strictEqual(merged_troup.id, destination_troup.id)
       assert.strictEqual(merged_troup.code, destination_troup.code)
       assert.strictEqual(merged_troup.count, movement_troup.count + destination_troup.count)
-      assert.strictEqual(merged_troup.cell_id, destination_cell_id)
     })
 
     it('should set the cell id to movement troups if there is no destination troups', () => {
@@ -173,14 +171,12 @@ describe('TroupService', () => {
       const { merged_troups } = TroupService.mergeTroupsInDestination({
         movement_troups: [ movement_troup ],
         destination_troups: [],
-        destination_cell_id
       })
 
       assert.strictEqual(merged_troups.length, 1)
       const merged_troup = merged_troups[0]
       assert.strictEqual(merged_troup.code, movement_troup.code)
       assert.strictEqual(merged_troup.count, movement_troup.count)
-      assert.strictEqual(merged_troup.cell_id, destination_cell_id)
     })
   })
 })

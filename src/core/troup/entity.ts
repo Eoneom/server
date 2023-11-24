@@ -48,6 +48,7 @@ export class TroupEntity extends BaseEntity {
   }
 
   static create(props: TroupEntityProps): TroupEntity {
+    assert(Boolean(props.cell_id) !== Boolean(props.movement_id))
     return new TroupEntity(props)
   }
 

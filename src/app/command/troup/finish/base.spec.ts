@@ -17,7 +17,6 @@ describe('TroupFinishBaseCommand', () => {
   const movement_id = 'movement_id'
   const movement_troup_id = 'movement_troup_id'
   const city_troup_id = 'city_troup_id'
-  const origin_cell_id = 'origin_cell_id'
   const origin: Coordinates = {
     sector: 1,
     x: 2,
@@ -30,8 +29,9 @@ describe('TroupFinishBaseCommand', () => {
     y: 6
   }
   let movement: MovementEntity
-  let movement_troup: TroupEntity
-  let destination_troup: TroupEntity
+  let movement_troup_explorer: TroupEntity
+  let movement_troup_settler: TroupEntity
+  let destination_troup_explorer: TroupEntity
   let command: TroupFinishBaseCommand
   let success_params: TroupFinishBaseCommandExec
 
@@ -47,17 +47,27 @@ describe('TroupFinishBaseCommand', () => {
       arrive_at: now() - 5000
     })
 
-    movement_troup = TroupEntity.create({
+    movement_troup_settler = TroupEntity.create({
+      id: movement_troup_id,
+      code: TroupCode.SETTLER,
+      player_id,
+      cell_id: null,
+      count: 1,
+      ongoing_recruitment: null,
+      movement_id: movement.id
+    })
+
+    movement_troup_explorer = TroupEntity.create({
       id: movement_troup_id,
       code: TroupCode.EXPLORER,
       player_id,
-      cell_id: origin_cell_id,
+      cell_id: null,
       count: 2,
       ongoing_recruitment: null,
       movement_id: movement.id
     })
 
-    destination_troup = TroupEntity.create({
+    destination_troup_explorer = TroupEntity.create({
       id: city_troup_id,
       code: TroupCode.EXPLORER,
       player_id,
@@ -70,8 +80,11 @@ describe('TroupFinishBaseCommand', () => {
     success_params = {
       movement,
       player_id,
-      movement_troups: [ movement_troup ],
-      destination_troups: [ destination_troup ],
+      movement_troups: [
+        movement_troup_explorer,
+        movement_troup_settler
+      ],
+      destination_troups: [ destination_troup_explorer ],
       destination_cell_id,
       city_exists: false,
       outpost_exists: false
@@ -130,11 +143,21 @@ describe('TroupFinishBaseCommand', () => {
       delete_troup_ids
     } = command.exec(success_params)
 
-    assert.strictEqual(delete_troup_ids.length, 1)
+    assert.strictEqual(delete_troup_ids.length, 2)
     assert.strictEqual(delete_troup_ids[0], movement_troup_id)
 
-    assert.strictEqual(updated_troups.length, 1)
-    assert.strictEqual(updated_troups[0].count, destination_troup.count + movement_troup.count)
+    assert.strictEqual(updated_troups.length, 2)
+
+    const updated_explorer = updated_troups.find(t => t.code === TroupCode.EXPLORER)
+    const updated_settler = updated_troups.find(t => t.code === TroupCode.SETTLER)
+    assert.ok(updated_explorer)
+    assert.ok(updated_settler)
+
+    assert.strictEqual(updated_explorer.count, destination_troup_explorer.count + movement_troup_explorer.count)
+    assert.strictEqual(updated_settler.count, movement_troup_settler.count)
+    updated_troups.forEach(troup => {
+      assert.strictEqual(troup.cell_id, destination_cell_id)
+    })
 
     assert.strictEqual(base_movement_id, movement.id)
   })
@@ -142,9 +165,15 @@ describe('TroupFinishBaseCommand', () => {
   it('should create a report describing the explored cell', () => {
     const { report } = command.exec(success_params)
 
-    assert.strictEqual(report.troups.length, 1)
+    assert.strictEqual(report.troups.length, 2)
     assert.strictEqual(report.was_read, false)
-    assert.strictEqual(report.troups[0].code, TroupCode.EXPLORER)
-    assert.strictEqual(report.troups[0].count, movement_troup.count)
+
+    const report_explorer = report.troups.find(t => t.code === TroupCode.EXPLORER)
+    const report_settler = report.troups.find(t => t.code === TroupCode.SETTLER)
+    assert.ok(report_explorer)
+    assert.ok(report_settler)
+
+    assert.strictEqual(report_explorer.count, movement_troup_explorer.count)
+    assert.strictEqual(report_settler.count, report_settler.count)
   })
 })
