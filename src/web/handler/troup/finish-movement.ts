@@ -9,8 +9,7 @@ import { TroupFinishExploreCommand } from '#app/command/troup/finish/explore'
 import { TroupGetMovementActionQuery } from '#app/query/troup/get-movement-action'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupError } from '#core/troup/error'
-import { TroupFinishMovementCommand } from '#app/command/troup/finish'
-import { TroupFinishBaseCommand } from '#app/command/troup/finish/base'
+import { sagaFinishBase } from '#app/saga/finish-base'
 
 export const troupFinishMovementHandler = async (
   req: Request<TroupFinishMovementRequest>,
@@ -28,23 +27,23 @@ export const troupFinishMovementHandler = async (
   try {
     const player_id = getPlayerIdFromContext(res)
     const { action } = await new TroupGetMovementActionQuery().run({ movement_id })
-    let command: TroupFinishMovementCommand
 
     switch (action) {
     case MovementAction.EXPLORE:
-      command = new TroupFinishExploreCommand()
+      await new TroupFinishExploreCommand().run({
+        player_id,
+        movement_id
+      })
       break
     case MovementAction.BASE:
-      command = new TroupFinishBaseCommand()
+      await sagaFinishBase({
+        player_id,
+        movement_id
+      })
       break
     default:
       throw new Error(TroupError.MOVEMENT_ACTION_NOT_IMPLEMENTED)
     }
-
-    await command.run({
-      player_id,
-      movement_id,
-    })
 
     const response: TroupFinishMovementResponse = { status: 'ok' }
 

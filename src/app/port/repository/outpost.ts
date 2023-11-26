@@ -6,5 +6,7 @@ export type OutpostRepository = GenericRepository<OutpostEntity> & {
 
   existsOnCell(query: { cell_id: string }): Promise<boolean>
 
+  countForPlayer(query: { player_id: string }): Promise<number>
+
   list(query: { player_id: string }): Promise<OutpostEntity[]>
 }

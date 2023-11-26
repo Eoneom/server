@@ -11,6 +11,7 @@ import {
 } from '#app/command/troup/finish/base'
 import { Coordinates } from '#core/world/value/coordinates'
 import { OutpostType } from '#core/outpost/constant/type'
+import { OutpostError } from '#core/outpost/error'
 
 describe('TroupFinishBaseCommand', () => {
   const player_id = 'player_id'
@@ -87,7 +88,8 @@ describe('TroupFinishBaseCommand', () => {
       destination_troups: [ destination_troup_explorer ],
       destination_cell_id,
       city_exists: false,
-      outpost_exists: false
+      outpost_exists: false,
+      existing_outposts_count: 0
     }
   })
 
@@ -125,6 +127,13 @@ describe('TroupFinishBaseCommand', () => {
       outpost_exists: true
     })
     assert.strictEqual(outpost, null)
+  })
+
+  it('should throw an error when we should create temporary outpost and limit is reached', () => {
+    assert.throws(() => command.exec({
+      ...success_params,
+      existing_outposts_count: 1000
+    }), new RegExp(OutpostError.LIMIT_REACHED))
   })
 
   it('should create a temporary outpost if there is no city or outpost', () => {

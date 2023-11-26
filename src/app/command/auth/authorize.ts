@@ -38,6 +38,7 @@ export class AuthAuthorizeCommand extends GenericCommand<
       action_at
     }
   }
+
   exec({
     auth,
     action_at

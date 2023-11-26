@@ -1,4 +1,5 @@
 export enum ReportType {
   EXPLORATION = 'exploration',
-  BASE = 'base'
+  BASE = 'base',
+  REBASE = 'rebase'
 }

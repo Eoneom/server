@@ -10,6 +10,9 @@ import { id } from '#shared/identification'
 import { ReportType } from '#core/communication/value/report-type'
 import { OutpostEntity } from '#core/outpost/entity'
 import { OutpostType } from '#core/outpost/constant/type'
+import { OutpostService } from '#core/outpost/service'
+import { OutpostError } from '#core/outpost/error'
+import { ReportFactory } from '#core/communication/report.factory'
 
 interface TroupFinishBaseCommandRequest {
   player_id: string
@@ -24,6 +27,7 @@ export interface TroupFinishBaseCommandExec {
   destination_cell_id: string
   city_exists: boolean
   outpost_exists: boolean
+  existing_outposts_count: number
 }
 
 interface TroupFinishBaseCommandSave {
@@ -64,6 +68,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
 
     const city_exists = Boolean(destination_cell.city_id)
     const outpost_exists = await this.repository.outpost.existsOnCell({ cell_id: destination_cell.id })
+    const existing_outposts_count = await this.repository.outpost.countForPlayer({ player_id })
 
     return {
       movement_troups,
@@ -72,7 +77,8 @@ export class TroupFinishBaseCommand extends GenericCommand<
       movement,
       destination_cell_id: destination_cell.id,
       city_exists,
-      outpost_exists
+      outpost_exists,
+      existing_outposts_count
     }
   }
 
@@ -83,7 +89,8 @@ export class TroupFinishBaseCommand extends GenericCommand<
     destination_troups,
     destination_cell_id,
     city_exists,
-    outpost_exists
+    outpost_exists,
+    existing_outposts_count
   }: TroupFinishBaseCommandExec): TroupFinishBaseCommandSave {
     assert.strictEqual(movement.action, MovementAction.BASE)
 
@@ -93,6 +100,15 @@ export class TroupFinishBaseCommand extends GenericCommand<
 
     if (!movement.isArrived()) {
       throw new Error(TroupError.MOVEMENT_NOT_ARRIVED)
+    }
+
+    const should_build_temporary_outpost = OutpostService.shouldBuildTemporaryOutpost({
+      city_exists,
+      outpost_exists
+    })
+    const is_limit_reached = OutpostService.isLimitReached({ existing_outposts_count })
+    if (should_build_temporary_outpost && is_limit_reached) {
+      throw new Error(OutpostError.LIMIT_REACHED)
     }
 
     const { merged_troups } = TroupService.mergeTroupsInDestination({
@@ -105,21 +121,13 @@ export class TroupFinishBaseCommand extends GenericCommand<
       cell_id: destination_cell_id
     })
 
-    const report = ReportEntity.create({
-      id: id(),
-      player_id,
+    const report = ReportFactory.generateUnread({
       type: ReportType.BASE,
-      origin: movement.origin,
-      destination: movement.destination,
-      recorded_at: movement.arrive_at,
-      troups: movement_troups.map(movement_troup => ({
-        code: movement_troup.code,
-        count: movement_troup.count
-      })),
-      was_read: false
+      movement,
+      troups: movement_troups
     })
 
-    const outpost = !city_exists && !outpost_exists ? OutpostEntity.create({
+    const outpost = should_build_temporary_outpost ? OutpostEntity.create({
       id: id(),
       player_id,
       cell_id: destination_cell_id,

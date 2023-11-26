@@ -15,6 +15,10 @@ export class MongoOutpostRepository
     super(OutpostModel, OutpostError.NOT_FOUND)
   }
 
+  async countForPlayer({ player_id }: { player_id: string }): Promise<number> {
+    return this.model.countDocuments({ player_id })
+  }
+
   async getById(id: string): Promise<OutpostEntity> {
     return this.findByIdOrThrow(id)
   }

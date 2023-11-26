@@ -32,7 +32,7 @@ export class TroupProgressRecruitCommand extends GenericCommand<
   TroupProgressRecruitCommandResponse
 > {
   constructor() {
-    super({ name: 'app:command:troup:recruit' })
+    super({ name: 'troup:recruit' })
   }
 
   async fetch({

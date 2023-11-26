@@ -42,4 +42,8 @@ export class MovementEntity extends BaseEntity {
   isArrived(): boolean {
     return this.arrive_at < now()
   }
+
+  isOwnedBy(player_id: string): boolean {
+    return this.player_id === player_id
+  }
 }

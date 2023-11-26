@@ -47,7 +47,7 @@ export class TroupRecruitCommand extends GenericCommand<
   TroupRecruitResponse
 > {
   constructor() {
-    super({ name: 'app:command:troup:recruit' })
+    super({ name: 'troup:recruit' })
   }
 
   async fetch({

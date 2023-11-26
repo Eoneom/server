@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "build:watch": "tsc --watch",
-    "start": "node dist/src/index.js | pino-pretty-min",
+    "start": "node --enable-source-maps dist/src/index.js | pino-pretty-min",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
     "test": "jest",

@@ -9,8 +9,8 @@ import { WorldService } from '#core/world/service'
 import { ExplorationEntity } from '#core/world/exploration.entity'
 import { AppService } from '#app/service'
 import { ReportEntity } from '#core/communication/report.entity'
-import { id } from '#shared/identification'
 import { ReportType } from '#core/communication/value/report-type'
+import { ReportFactory } from '#core/communication/report.factory'
 
 interface TroupFinishExploreCommandRequest {
   player_id: string
@@ -103,20 +103,10 @@ export class TroupFinishExploreCommand extends GenericCommand<
 
     const updated_exploration = exploration.exploreCells(explored_cell_ids)
 
-    const report = ReportEntity.create({
-      id: id(),
-      player_id,
+    const report = ReportFactory.generateUnread({
       type: ReportType.EXPLORATION,
-      origin: movement.origin,
-      destination: movement.destination,
-      recorded_at: movement.arrive_at,
-      troups: [
-        {
-          code: troup.code,
-          count: troup.count
-        }
-      ],
-      was_read: false
+      movement,
+      troups: [ troup ]
     })
 
     return {

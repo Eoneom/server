@@ -2,6 +2,7 @@ import { CoordinatesDocument } from '#adapter/repository/shared/coordinates'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import {
   getModelForClass,
+  mongoose,
   prop
 } from '@typegoose/typegoose'
 
@@ -9,7 +10,7 @@ import { Document } from 'mongoose'
 
 class Movement {
   @prop({ required: true })
-  public player_id!: string
+  public player_id!: mongoose.Types.ObjectId
 
   @prop({
     required: true,
