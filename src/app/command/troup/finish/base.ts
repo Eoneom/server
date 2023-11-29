@@ -116,10 +116,27 @@ export class TroupFinishBaseCommand extends GenericCommand<
       destination_troups
     })
 
-    const assigned_troups = TroupService.assignToCell({
-      troups: merged_troups,
-      cell_id: destination_cell_id
-    })
+    const assigned_troups = TroupService
+      .assignToCell({
+        troups: merged_troups,
+        cell_id: destination_cell_id
+      })
+      .map(troup => {
+        const troup_in_destination = destination_troups.find(destination_troup => destination_troup.code === troup.code)
+        if (troup_in_destination) {
+          this.logger.info(`troup ${troup.code} found in destination`)
+          return TroupEntity.create({
+            ...troup,
+            id: troup_in_destination.id
+          })
+        }
+
+        this.logger.info(`troup ${troup.code} not found in destination`)
+        return TroupEntity.create({
+          ...troup,
+          id: id()
+        })
+      })
 
     const report = ReportFactory.generateUnread({
       type: ReportType.BASE,
@@ -151,11 +168,11 @@ export class TroupFinishBaseCommand extends GenericCommand<
     outpost
   }: TroupFinishBaseCommandSave): Promise<void> {
     await Promise.all([
-      this.repository.movement.delete(base_movement_id),
-      ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
-      ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
+      outpost && this.repository.outpost.create(outpost),
       this.repository.report.create(report),
-      outpost && this.repository.outpost.create(outpost)
+      this.repository.movement.delete(base_movement_id),
+      ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
+      ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
     ])
   }
 }

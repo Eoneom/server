@@ -112,7 +112,7 @@ export class TroupService {
   }): {
     merged_troups: TroupEntity[]
   } {
-    const merged_troups = destination_troups
+    const merged_troups = [ ...destination_troups ]
     movement_troups.forEach(movement_troup => {
       const destination_troup_index = merged_troups.findIndex(merged_troup => merged_troup.code === movement_troup.code)
       if (destination_troup_index === -1) {

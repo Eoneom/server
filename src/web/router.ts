@@ -18,7 +18,8 @@ import { technologyResearchHandler } from '#web/handler/technology/research'
 import { troupCancelHandler } from '#web/handler/troup/cancel'
 import { troupExploreHandler } from '#web/handler/troup/explore'
 import { troupFinishMovementHandler } from '#web/handler/troup/finish-movement'
-import { troupListHandler } from '#web/handler/troup/list'
+import { troupListCityHandler } from '#web/handler/troup/list/city'
+import { troupListOutpostHandler } from '#web/handler/troup/list/outpost'
 import { troupListMovementHandler } from '#web/handler/troup/list-movement'
 import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
 import { troupRecruitHandler } from '#web/handler/troup/recruit'
@@ -47,26 +48,27 @@ export const router = (): Router => {
   r.get('/city/:city_id', authMiddleware, cityGetHandler)
   r.put('/city/gather', authMiddleware, cityGatherHandler)
 
-  r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
-  r.get('/city/:city_id/building/:building_code', authMiddleware, buildingGetHandler)
   r.put('/building/cancel', authMiddleware, buildingCancelHandler)
   r.put('/building/upgrade', authMiddleware, buildingUpgradeHandler)
   r.put('/building/upgrade/finish', authMiddleware, buildingFinishUpgradeHandler)
+  r.get('/city/:city_id/building', authMiddleware, buildingListHandler)
+  r.get('/city/:city_id/building/:building_code', authMiddleware, buildingGetHandler)
 
   r.get('/technology', authMiddleware, technologyListHandler)
-  r.get('/city/:city_id/technology/:technology_code', authMiddleware, technologyGetHandler)
   r.put('/technology/cancel', authMiddleware, technologyCancelHandler)
   r.put('/technology/research', authMiddleware, technologyResearchHandler)
   r.put('/technology/research/finish', authMiddleware, technologyFinishResearchHandler)
+  r.get('/city/:city_id/technology/:technology_code', authMiddleware, technologyGetHandler)
 
-  r.get('/city/:city_id/troup', authMiddleware, troupListHandler)
-  r.get('/city/:city_id/troup/movement', authMiddleware, troupListMovementHandler)
+  r.get('/troup/movement', authMiddleware, troupListMovementHandler)
   r.put('/troup/base', authMiddleware, troupBaseHandler)
-  r.put('/troup/explore', authMiddleware, troupExploreHandler)
   r.put('/troup/cancel', authMiddleware, troupCancelHandler)
-  r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
+  r.put('/troup/explore', authMiddleware, troupExploreHandler)
   r.put('/troup/movement/:movement_id/finish', authMiddleware, troupFinishMovementHandler)
   r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
+  r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
+  r.get('/city/:city_id/troup', authMiddleware, troupListCityHandler)
+  r.get('/outpost/:outpost_id/troup', authMiddleware, troupListOutpostHandler)
 
   r.get('/outpost', authMiddleware, outpostListHandler)
   r.get('/outpost/:outpost_id', authMiddleware, outpostGetHandler)

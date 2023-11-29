@@ -2,10 +2,6 @@ import { MovementAction } from '../../../../src/core/troup/constant/movement-act
 import { GenericResponse } from '../../response'
 import { Coordinates } from '../shared/coordinates'
 
-export interface TroupListMovementRequest {
-  city_id: string
-}
-
 export interface TroupListMovementDataResponse {
   movements: {
     id: string

@@ -16,20 +16,9 @@ export const troupListMovementHandler = async (
   res: Response<TroupListMovementResponse>,
   next: NextFunction
 ) => {
-  const city_id = req.params.city_id
-  if (!city_id) {
-    return res.status(400).json({
-      status: 'nok',
-      error_code: 'city_id:not-found'
-    })
-  }
-
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new TroupListMovementQuery().run({
-      city_id,
-      player_id
-    })
+    const result = await new TroupListMovementQuery().run({ player_id })
     const response = response_mapper(result)
 
     return res.json({

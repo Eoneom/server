@@ -15,14 +15,8 @@ import {
   TroupFinishMovementRequest,
   TroupFinishMovementResponse
 } from './finish-movement'
-import {
-  TroupListRequest,
-  TroupListResponse
-} from './list'
-import {
-  TroupListMovementRequest,
-  TroupListMovementResponse
-} from './list-movement'
+import { TroupListCityRequest } from './list/city'
+import { TroupListMovementResponse } from './list-movement'
 import {
   TroupProgressRecruitRequest,
   TroupProgressRecruitResponse
@@ -31,6 +25,8 @@ import {
   TroupRecruitRequest,
   TroupRecruitResponse
 } from './recruit'
+import { TroupListOutpostRequest } from './list/outpost'
+import { TroupListResponse } from './list/shared'
 
 export class TroupEndpoint {
   private fetcher: Fetcher
@@ -53,12 +49,16 @@ export class TroupEndpoint {
     })
   }
 
-  public async list(token: string, { city_id }: TroupListRequest): Promise<TroupListResponse> {
+  public async listCity(token: string, { city_id }: TroupListCityRequest): Promise<TroupListResponse> {
     return this.fetcher.get(`/city/${city_id}/troup`, { token })
   }
 
-  public async listMovement(token: string, { city_id }: TroupListMovementRequest): Promise<TroupListMovementResponse> {
-    return this.fetcher.get(`/city/${city_id}/troup/movement`, { token })
+  public async listOutpost(token: string, { outpost_id }: TroupListOutpostRequest): Promise<TroupListResponse> {
+    return this.fetcher.get(`/outpost/${outpost_id}/troup`, { token })
+  }
+
+  public async listMovement(token: string): Promise<TroupListMovementResponse> {
+    return this.fetcher.get('/troup/movement', { token })
   }
 
   public async finishMovement(token: string, { movement_id }: TroupFinishMovementRequest): Promise<TroupFinishMovementResponse> {

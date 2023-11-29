@@ -19,8 +19,8 @@ export class MongoMovementRepository
     return this.findByIdOrThrow(id)
   }
 
-  async listInCity({ city_id }: { city_id: string }): Promise<MovementEntity[]> {
-    return this.find({ city_id })
+  async list({ player_id }: { player_id: string }): Promise<MovementEntity[]> {
+    return this.find({ player_id })
   }
 
   protected buildFromModel(document: MovementDocument): MovementEntity {

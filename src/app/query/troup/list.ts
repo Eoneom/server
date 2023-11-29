@@ -9,9 +9,13 @@ import { CityError } from '#core/city/error'
 import { TroupService } from '#core/troup/service'
 import { BuildingCode } from '#core/building/constant/code'
 import { TechnologyCode } from '#core/technology/constant/code'
+import { CellEntity } from '#core/world/cell.entity'
+import { OutpostError } from '#core/outpost/error'
+
+type Location = { type: 'city', city_id: string} | { type: 'outpost', outpost_id: string }
 
 export interface TroupListQueryRequest {
-  city_id: string,
+  location: Location
   player_id: string
 }
 
@@ -27,15 +31,15 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
   }
 
   protected async get({
-    city_id,
+    location,
     player_id
   }: TroupListQueryRequest): Promise<TroupListQueryResponse> {
-    const city = await this.repository.city.get(city_id)
-    if (!city.isOwnedBy(player_id)) {
-      throw new Error(CityError.NOT_OWNER)
-    }
+    const cell = await this.getCellOfLocation({
+      player_id,
+      location
+    })
 
-    const cell = await this.repository.cell.getCityCell({ city_id })
+    this.logger.info(JSON.stringify(cell))
 
     const [
       troups,
@@ -46,10 +50,10 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
         cell_id: cell.id,
         player_id
       }),
-      this.repository.building.getLevel({
-        city_id,
+      location.type === 'city' ? this.repository.building.getLevel({
+        city_id: location.city_id,
         code: BuildingCode.CLONING_FACTORY
-      }),
+      }): 0,
       this.repository.technology.getLevel({
         player_id,
         code: TechnologyCode.REPLICATION_CATALYST
@@ -77,5 +81,31 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
       costs,
       requirement
     }
+  }
+
+  private async getCellOfLocation({
+    player_id,
+    location
+  }: {
+    player_id: string
+    location: Location
+  }): Promise<CellEntity> {
+    if (location.type === 'city') {
+      this.logger.info('get city troups')
+      const city = await this.repository.city.get(location.city_id)
+      if (!city.isOwnedBy(player_id)) {
+        throw new Error(CityError.NOT_OWNER)
+      }
+
+      return this.repository.cell.getCityCell({ city_id: city.id })
+    }
+
+    this.logger.info('get outpost troups')
+    const outpost = await this.repository.outpost.getById(location.outpost_id)
+    if (!outpost.isOwnedBy(player_id)) {
+      throw new Error(OutpostError.NOT_OWNER)
+    }
+
+    return this.repository.cell.getById(outpost.cell_id)
   }
 }

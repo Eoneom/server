@@ -1,10 +1,6 @@
-import { TroupCode } from '../../../../src/core/troup/constant/code'
-import { GenericResponse } from '../../response'
-import { Requirement } from '../shared/requirement'
-
-export interface TroupListRequest {
-  city_id: string
-}
+import { TroupCode } from '../../../../../src/core/troup/constant/code'
+import { GenericResponse } from '../../../response'
+import { Requirement } from '../../shared/requirement'
 
 export interface TroupListDataResponse {
   troups: {
