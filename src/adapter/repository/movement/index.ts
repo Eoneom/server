@@ -6,6 +6,7 @@ import {
 } from '#adapter/repository/movement/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
 import { TroupError } from '#core/troup/error'
+import { now } from '#shared/time'
 
 export class MongoMovementRepository
   extends MongoGenericRepository<typeof MovementModel, MovementDocument, MovementEntity>
@@ -16,7 +17,14 @@ export class MongoMovementRepository
   }
 
   async listFinishedIds({ player_id }: { player_id: string }): Promise<string[]> {
-    return this.model.find({ player_id }, { _id: 1 }, { $sort: { arrive_at: 1 } })
+    return this.model.find(
+      {
+        player_id,
+        arrive_at: { $lt: now() }
+      },
+      { _id: 1 },
+      { $sort: { arrive_at: 1 } }
+    )
   }
 
   async get(id: string): Promise<MovementEntity> {

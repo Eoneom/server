@@ -1,12 +1,14 @@
+import assert from 'assert'
+
 import { TroupCode } from '#core/troup/constant/code'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { troup_order } from '#core/troup/constant/order'
+import { troup_base_speed } from '#core/troup/constant/speed'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { Coordinates } from '#core/world/value/coordinates'
 import { id } from '#shared/identification'
-import assert from 'assert'
 
 export class TroupService {
   static init({
@@ -56,7 +58,10 @@ export class TroupService {
       }
     })
 
-    const duration = this.getMovementDuration({ distance })
+    const duration = this.getMovementDuration({
+      distance,
+      troup_codes: troups_to_move.map(({ code }) => code)
+    })
     const movement = MovementEntity.create({
       id: id(),
       player_id: origin_troups[0].player_id,
@@ -146,7 +151,10 @@ export class TroupService {
   } {
     assert.strictEqual(explore_movement.action, MovementAction.EXPLORE)
 
-    const duration = this.getMovementDuration({ distance })
+    const duration = this.getMovementDuration({
+      distance,
+      troup_codes: [ troup.code ]
+    })
     const base_movement = MovementEntity.create({
       id: id(),
       player_id: troup.player_id,
@@ -162,13 +170,26 @@ export class TroupService {
     }
   }
 
-  static sortTroups({ troups } : {troups: TroupEntity[]}): TroupEntity[] {
+  static sortTroups({ troups } : { troups: TroupEntity[] }): TroupEntity[] {
     return troups.sort((a, b) => troup_order[a.code] - troup_order[b.code])
   }
 
-  private static getMovementDuration({ distance }: {
+  private static getMovementDuration({
+    distance,
+    troup_codes
+  }: {
     distance: number
+    troup_codes: TroupCode[]
   }): number {
-    return distance
+    const slowest_speed = troup_codes.reduce((acc, code) => {
+      const speed = troup_base_speed[code]
+      if (speed < acc) {
+        return speed
+      }
+
+      return acc
+    }, Infinity)
+
+    return distance / slowest_speed
   }
 }
