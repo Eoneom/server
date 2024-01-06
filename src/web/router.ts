@@ -63,7 +63,7 @@ export const router = (): Router => {
   r.get('/city/:city_id/technology/:technology_code', authMiddleware, technologyGetHandler)
 
   r.get('/troup/movement', authMiddleware, troupListMovementHandler)
-  r.put('/troup/movement/:movement_id/finish', authMiddleware, troupFinishMovementHandler)
+  r.put('/troup/movement/finish', authMiddleware, troupFinishMovementHandler)
   r.put('/troup/base', authMiddleware, troupBaseHandler)
   r.put('/troup/explore', authMiddleware, troupExploreHandler)
 

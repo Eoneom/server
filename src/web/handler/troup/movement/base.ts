@@ -6,7 +6,7 @@ import {
 import {
   TroupBaseRequest,
   TroupBaseResponse
-} from '#client/src/endpoints/troup/base'
+} from '#client/src/endpoints/troup/movement/base'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { TroupBaseCommand } from '#app/command/troup/movement/base'
 

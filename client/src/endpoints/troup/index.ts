@@ -11,10 +11,7 @@ import {
   TroupExploreRequest,
   TroupExploreResponse
 } from './movement/explore'
-import {
-  TroupFinishMovementRequest,
-  TroupFinishMovementResponse
-} from './movement/finish'
+import { TroupFinishMovementResponse } from './movement/finish'
 import { TroupListCityRequest } from './list/city'
 import { TroupListMovementResponse } from './movement/list'
 import {
@@ -61,8 +58,8 @@ export class TroupEndpoint {
     return this.fetcher.get('/troup/movement', { token })
   }
 
-  public async finishMovement(token: string, { movement_id }: TroupFinishMovementRequest): Promise<TroupFinishMovementResponse> {
-    return this.fetcher.put(`/troup/movement/${movement_id}/finish`, { token })
+  public async finishMovement(token: string): Promise<TroupFinishMovementResponse> {
+    return this.fetcher.put('/troup/movement/finish', { token })
   }
 
   public async cancel(token: string, body: TroupCancelRequest): Promise<TroupCancelResponse> {

@@ -6,7 +6,7 @@ import {
 import {
   TroupExploreRequest,
   TroupExploreResponse
-} from '#client/src/endpoints/troup/explore'
+} from '#client/src/endpoints/troup/movement/explore'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { TroupExploreCommand } from '#app/command/troup/movement/explore'
 

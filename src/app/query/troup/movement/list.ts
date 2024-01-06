@@ -1,20 +1,20 @@
 import { GenericQuery } from '#query/generic'
 import { MovementEntity } from '#core/troup/movement.entity'
 
-export interface TroupListMovementQueryRequest {
+export interface TroupMovementListQueryRequest {
   player_id: string
 }
 
-export interface TroupListMovementQueryResponse {
+export interface TroupMovementListQueryResponse {
   movements: MovementEntity[],
 }
 
-export class TroupListMovementQuery extends GenericQuery<TroupListMovementQueryRequest, TroupListMovementQueryResponse> {
+export class TroupMovementListQuery extends GenericQuery<TroupMovementListQueryRequest, TroupMovementListQueryResponse> {
   constructor() {
     super({ name: 'troup:movement:list' })
   }
 
-  protected async get({ player_id }: TroupListMovementQueryRequest): Promise<TroupListMovementQueryResponse> {
+  protected async get({ player_id }: TroupMovementListQueryRequest): Promise<TroupMovementListQueryResponse> {
     const movements = await this.repository.movement.list({ player_id })
     return { movements }
   }

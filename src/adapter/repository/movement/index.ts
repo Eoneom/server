@@ -15,6 +15,10 @@ export class MongoMovementRepository
     super(MovementModel, TroupError.MOVEMENT_NOT_FOUND)
   }
 
+  async listFinishedIds({ player_id }: { player_id: string }): Promise<string[]> {
+    return this.model.find({ player_id }, { _id: 1 }, { $sort: { arrive_at: 1 } })
+  }
+
   async get(id: string): Promise<MovementEntity> {
     return this.findByIdOrThrow(id)
   }

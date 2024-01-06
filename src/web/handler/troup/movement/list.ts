@@ -7,9 +7,9 @@ import {
 } from '#client/src/endpoints/troup/movement/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
-  TroupListMovementQuery,
-  TroupListMovementQueryResponse
-} from '#query/troup/list-movement'
+  TroupMovementListQuery,
+  TroupMovementListQueryResponse
+} from '#app/query/troup/movement/list'
 
 export const troupListMovementHandler = async (
   req: Request,
@@ -18,7 +18,7 @@ export const troupListMovementHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    const result = await new TroupListMovementQuery().run({ player_id })
+    const result = await new TroupMovementListQuery().run({ player_id })
     const response = response_mapper(result)
 
     return res.json({
@@ -30,7 +30,7 @@ export const troupListMovementHandler = async (
   }
 }
 
-const response_mapper = ({ movements }: TroupListMovementQueryResponse): TroupListMovementDataResponse => {
+const response_mapper = ({ movements }: TroupMovementListQueryResponse): TroupListMovementDataResponse => {
   const response_movements: TroupListMovementDataResponse['movements'] = movements.map(movement => {
     return {
       id: movement.id,
