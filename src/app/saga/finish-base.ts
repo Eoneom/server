@@ -1,5 +1,5 @@
-import { TroupFinishBaseCommand } from '#app/command/troup/finish/base'
-import { TroupRebaseCommand } from '#app/command/troup/rebase'
+import { TroupFinishBaseCommand } from '#app/command/troup/movement/finish/base'
+import { TroupRebaseCommand } from '#app/command/troup/movement/rebase'
 import { OutpostError } from '#core/outpost/error'
 
 export const sagaFinishBase = async ({

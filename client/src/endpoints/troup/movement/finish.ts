@@ -1,4 +1,4 @@
-import { GenericResponse } from '../../response'
+import { GenericResponse } from '../../../response'
 
 export interface TroupFinishMovementRequest {
   movement_id: string

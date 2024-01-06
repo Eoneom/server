@@ -1,6 +1,6 @@
 import {
   TroupRebaseCommand, TroupRebaseCommandExec
-} from '#app/command/troup/rebase'
+} from '#app/command/troup/movement/rebase'
 import { ReportType } from '#core/communication/value/report-type'
 import { TroupCode } from '#core/troup/constant/code'
 import { MovementAction } from '#core/troup/constant/movement-action'

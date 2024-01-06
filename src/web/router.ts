@@ -16,16 +16,16 @@ import { technologyFinishResearchHandler } from '#web/handler/technology/finish-
 import { technologyListHandler } from '#web/handler/technology/list'
 import { technologyResearchHandler } from '#web/handler/technology/research'
 import { troupCancelHandler } from '#web/handler/troup/cancel'
-import { troupExploreHandler } from '#web/handler/troup/explore'
-import { troupFinishMovementHandler } from '#web/handler/troup/finish-movement'
+import { troupExploreHandler } from '#web/handler/troup/movement/explore'
+import { troupFinishMovementHandler } from '#web/handler/troup/movement/finish'
 import { troupListCityHandler } from '#web/handler/troup/list/city'
 import { troupListOutpostHandler } from '#web/handler/troup/list/outpost'
-import { troupListMovementHandler } from '#web/handler/troup/list-movement'
+import { troupListMovementHandler } from '#web/handler/troup/movement/list'
 import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
 import { troupRecruitHandler } from '#web/handler/troup/recruit'
 import { worldGetSectorHandler } from '#web/handler/world/get-sector'
 import { technologyGetHandler } from '#web/handler/technology/get'
-import { troupBaseHandler } from '#web/handler/troup/base'
+import { troupBaseHandler } from '#web/handler/troup/movement/base'
 import { outpostListHandler } from '#web/handler/outpost/list'
 import { outpostGetHandler } from '#web/handler/outpost/get'
 import { communicationGetReportHandler } from '#web/handler/communication/report/get'
@@ -63,10 +63,11 @@ export const router = (): Router => {
   r.get('/city/:city_id/technology/:technology_code', authMiddleware, technologyGetHandler)
 
   r.get('/troup/movement', authMiddleware, troupListMovementHandler)
-  r.put('/troup/base', authMiddleware, troupBaseHandler)
-  r.put('/troup/cancel', authMiddleware, troupCancelHandler)
-  r.put('/troup/explore', authMiddleware, troupExploreHandler)
   r.put('/troup/movement/:movement_id/finish', authMiddleware, troupFinishMovementHandler)
+  r.put('/troup/base', authMiddleware, troupBaseHandler)
+  r.put('/troup/explore', authMiddleware, troupExploreHandler)
+
+  r.put('/troup/cancel', authMiddleware, troupCancelHandler)
   r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
   r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
   r.get('/city/:city_id/troup', authMiddleware, troupListCityHandler)

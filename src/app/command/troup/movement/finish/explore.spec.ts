@@ -2,7 +2,7 @@ import assert from 'assert'
 import {
   TroupFinishExploreCommand,
   TroupFinishExploreCommandExec
-} from '#app/command/troup/finish/explore'
+} from '#app/command/troup/movement/finish/explore'
 import { TroupCode } from '#core/troup/constant/code'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupError } from '#core/troup/error'

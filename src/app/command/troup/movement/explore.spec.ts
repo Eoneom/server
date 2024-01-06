@@ -1,7 +1,7 @@
 import {
   TroupExploreCommand,
   TroupExploreCommandExec
-} from '#app/command/troup/explore'
+} from '#app/command/troup/movement/explore'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { TroupCode } from '#core/troup/constant/code'

@@ -1,5 +1,5 @@
-import { GenericResponse } from '../../response'
-import { Coordinates } from '../shared/coordinates'
+import { GenericResponse } from '../../../response'
+import { Coordinates } from '../../shared/coordinates'
 
 export interface TroupExploreRequest {
   coordinates: Coordinates

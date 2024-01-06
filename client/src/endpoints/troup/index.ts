@@ -2,7 +2,7 @@ import { Fetcher } from '../../fetcher'
 import {
   TroupBaseRequest,
   TroupBaseResponse
-} from './base'
+} from './movement/base'
 import {
   TroupCancelRequest,
   TroupCancelResponse
@@ -10,13 +10,13 @@ import {
 import {
   TroupExploreRequest,
   TroupExploreResponse
-} from './explore'
+} from './movement/explore'
 import {
   TroupFinishMovementRequest,
   TroupFinishMovementResponse
-} from './finish-movement'
+} from './movement/finish'
 import { TroupListCityRequest } from './list/city'
-import { TroupListMovementResponse } from './list-movement'
+import { TroupListMovementResponse } from './movement/list'
 import {
   TroupProgressRecruitRequest,
   TroupProgressRecruitResponse

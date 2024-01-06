@@ -8,7 +8,7 @@ import {
   TroupExploreResponse
 } from '#client/src/endpoints/troup/explore'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TroupExploreCommand } from '#app/command/troup/explore'
+import { TroupExploreCommand } from '#app/command/troup/movement/explore'
 
 export const troupExploreHandler = async (
   req: Request<TroupExploreRequest>,

@@ -1,6 +1,6 @@
-import { TroupCode } from '../../../../src/core/troup/constant/code'
-import { GenericResponse } from '../../response'
-import { Coordinates } from '../shared/coordinates'
+import { TroupCode } from '../../../../../src/core/troup/constant/code'
+import { GenericResponse } from '../../../response'
+import { Coordinates } from '../../shared/coordinates'
 
 export interface TroupBaseRequest {
   origin: Coordinates

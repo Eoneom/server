@@ -8,7 +8,7 @@ import { TroupEntity } from '#core/troup/entity'
 import {
   TroupFinishBaseCommand,
   TroupFinishBaseCommandExec
-} from '#app/command/troup/finish/base'
+} from '#app/command/troup/movement/finish/base'
 import { Coordinates } from '#core/world/value/coordinates'
 import { OutpostType } from '#core/outpost/constant/type'
 import { OutpostError } from '#core/outpost/error'

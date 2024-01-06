@@ -3,9 +3,9 @@ import {
 } from 'express'
 import {
   TroupFinishMovementRequest, TroupFinishMovementResponse
-} from '#client/src/endpoints/troup/finish-movement'
+} from '#client/src/endpoints/troup/movement/finish'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TroupFinishExploreCommand } from '#app/command/troup/finish/explore'
+import { TroupFinishExploreCommand } from '#app/command/troup/movement/finish/explore'
 import { TroupGetMovementActionQuery } from '#app/query/troup/get-movement-action'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupError } from '#core/troup/error'

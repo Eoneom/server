@@ -8,7 +8,7 @@ import {
   TroupBaseResponse
 } from '#client/src/endpoints/troup/base'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TroupBaseCommand } from '#app/command/troup/base'
+import { TroupBaseCommand } from '#app/command/troup/movement/base'
 
 export const troupBaseHandler = async (
   req: Request<TroupBaseRequest>,

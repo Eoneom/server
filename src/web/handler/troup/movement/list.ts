@@ -4,7 +4,7 @@ import {
 import {
   TroupListMovementResponse,
   TroupListMovementDataResponse
-} from '#client/src/endpoints/troup/list-movement'
+} from '#client/src/endpoints/troup/movement/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   TroupListMovementQuery,
