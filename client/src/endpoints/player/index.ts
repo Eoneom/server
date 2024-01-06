@@ -3,6 +3,7 @@ import {
   LoginRequest,
   LoginResponse
 } from './login'
+import { LogoutResponse } from './logout'
 import {
   SignupRequest,
   SignupResponse
@@ -21,5 +22,9 @@ export class PlayerEndpoint {
 
   signup(body: SignupRequest): Promise<SignupResponse> {
     return this.fetcher.post('/player/signup', { body })
+  }
+
+  logout(token: string): Promise<LogoutResponse> {
+    return this.fetcher.post('/player/logout', { token })
   }
 }

@@ -31,6 +31,7 @@ import { outpostGetHandler } from '#web/handler/outpost/get'
 import { communicationGetReportHandler } from '#web/handler/communication/report/get'
 import { communicationCountUnreadReportHandler } from '#web/handler/communication/report/count-unread'
 import { communicationMarkReportHandler } from '#web/handler/communication/report/mark'
+import { logoutHandler } from '#web/handler/player/logout'
 
 export const router = (): Router => {
   const r = Router()
@@ -42,6 +43,7 @@ export const router = (): Router => {
   // Unauthenticated routes
   r.post('/player/login', loginHandler)
   r.post('/player/signup', signupHandler)
+  r.post('/player/logout', authMiddleware, logoutHandler)
 
   // Authenticated routes
   r.get('/city', authMiddleware, cityListHandler)
