@@ -28,6 +28,10 @@ import {
   TroupGetMovementRequest,
   TroupGetMovementResponse
 } from './movement/get'
+import {
+  TroupMovementEstimateRequest,
+  TroupMovementEstimateResponse
+} from './movement/estimate'
 
 export class TroupEndpoint {
   private fetcher: Fetcher
@@ -68,6 +72,13 @@ export class TroupEndpoint {
 
   public async finishMovement(token: string): Promise<TroupFinishMovementResponse> {
     return this.fetcher.put('/troup/movement/finish', { token })
+  }
+
+  public async estimateMovement(token: string, body: TroupMovementEstimateRequest): Promise<TroupMovementEstimateResponse> {
+    return this.fetcher.post('/troup/movement/estimate', {
+      token,
+      body
+    })
   }
 
   public async cancel(token: string, body: TroupCancelRequest): Promise<TroupCancelResponse> {

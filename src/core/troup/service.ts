@@ -174,14 +174,19 @@ export class TroupService {
     return troups.sort((a, b) => troup_order[a.code] - troup_order[b.code])
   }
 
-  private static getMovementDuration({
+  static getMovementDuration({
     distance,
     troup_codes
   }: {
     distance: number
     troup_codes: TroupCode[]
   }): number {
-    const slowest_speed = troup_codes.reduce((acc, code) => {
+    const slowest_speed = this.getSlowestSpeed({ troup_codes })
+    return distance / slowest_speed
+  }
+
+  static getSlowestSpeed({ troup_codes }: { troup_codes: TroupCode[] }): number {
+    return troup_codes.reduce((acc, code) => {
       const speed = troup_base_speed[code]
       if (speed < acc) {
         return speed
@@ -189,7 +194,5 @@ export class TroupService {
 
       return acc
     }, Infinity)
-
-    return distance / slowest_speed
   }
 }
