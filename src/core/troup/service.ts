@@ -9,6 +9,7 @@ import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { Coordinates } from '#core/world/value/coordinates'
 import { id } from '#shared/identification'
+import { TroupCount } from '#core/troup/type'
 
 export class TroupService {
   static init({
@@ -27,6 +28,93 @@ export class TroupService {
     return troups
   }
 
+  static haveEnoughTroups({
+    origin_troups,
+    move_troups
+  }: {
+    origin_troups: TroupCount[]
+    move_troups: TroupCount[]
+  }): boolean {
+    const is_missing_troup = move_troups.some(move_troup => {
+      const origin_troup = origin_troups.find(troup => troup.code === move_troup.code)
+      return (origin_troup?.count ?? 0) < move_troup.count
+    })
+
+    return !is_missing_troup
+  }
+
+  static removeTroups({
+    origin_troups,
+    remove_troups
+  }: {
+    origin_troups: TroupEntity[]
+    remove_troups: TroupCount[]
+  }): TroupEntity[] {
+    return origin_troups.map(origin_troup => {
+      const troup_to_move = remove_troups.find(t => t.code === origin_troup.code)
+      if (!troup_to_move) {
+        return origin_troup
+      }
+
+      return TroupEntity.create({
+        ...origin_troup,
+        count: origin_troup.count - troup_to_move.count
+      })
+    })
+  }
+
+  static createMovementWithTroups({
+    move_troups,
+    player_id,
+    action,
+    origin,
+    destination,
+    start_at,
+    distance
+  }: {
+    player_id: string
+    move_troups: TroupCount[]
+    action: MovementAction
+    distance: number
+    start_at: number
+    origin: Coordinates
+    destination: Coordinates
+   }): {
+    movement: MovementEntity
+    troups: TroupEntity[]
+  } {
+    const duration = this.getMovementDuration({
+      distance,
+      troup_codes: move_troups.map(({ code }) => code)
+    })
+
+    const movement = MovementEntity.create({
+      id: id(),
+      player_id: player_id,
+      action,
+      origin,
+      destination,
+      arrive_at: Math.ceil(start_at + duration),
+    })
+
+    const troups = move_troups.map(move_troup => {
+      return TroupEntity.create({
+        id: id(),
+        code: move_troup.code,
+        player_id,
+        count: move_troup.count,
+        movement_id: movement.id,
+        ongoing_recruitment: null,
+        cell_id: null
+      })
+    })
+
+    return {
+      movement,
+      troups
+    }
+  }
+
   static move({
     origin_troups,
     destination,
@@ -42,10 +130,7 @@ export class TroupService {
     origin: Coordinates
     destination: Coordinates
     origin_troups: TroupEntity[],
-    troups_to_move: {
-      code: TroupCode
-      count: number
-    }[]
+    troups_to_move: TroupCount[]
   }): {
     origin_troups: TroupEntity[],
     movement_troups: TroupEntity[],

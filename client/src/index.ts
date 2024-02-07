@@ -13,6 +13,7 @@ export { CellType } from '../../src/core/world/value/cell-type'
 export { TroupCode } from '../../src/core/troup/constant/code'
 export { ReportType } from '../../src/core/communication/value/report-type'
 export { OutpostType } from '../../src/core/outpost/constant/type'
+export { MovementAction } from '../../src/core/troup/constant/movement-action'
 
 export * from './endpoints/shared/coordinates'
 export * from './endpoints'

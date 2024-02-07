@@ -53,8 +53,8 @@ describe('BuildingCancelCommand', () => {
       building
     })
 
-    assert.strictEqual(updated_city.plastic, city.plastic + 77)
-    assert.strictEqual(updated_city.mushroom, city.mushroom + 134)
+    assert.strictEqual(updated_city.plastic, city.plastic + 39)
+    assert.strictEqual(updated_city.mushroom, city.mushroom + 67)
   })
 
   it('should cancel building', () => {

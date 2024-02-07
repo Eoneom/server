@@ -84,7 +84,7 @@ export const building_costs: Record<BuildingCode, LevelCosts> = {
       multiplier: 1.2
     },
     duration: {
-      base: 900,
+      base: 150,
       multiplier: 1.5
     }
   }

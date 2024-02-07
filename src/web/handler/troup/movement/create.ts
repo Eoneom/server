@@ -3,16 +3,16 @@ import {
   Request,
   Response
 } from 'express'
-import {
-  TroupBaseRequest,
-  TroupBaseResponse
-} from '#client/src/endpoints/troup/movement/base'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TroupBaseCommand } from '#app/command/troup/movement/base'
+import {
+  TroupMovementCreateRequest,
+  TroupMovementCreateResponse
+} from '#client/src/endpoints/troup/movement/create'
+import { TroupMoveCommand } from '#app/command/troup/movement/move'
 
-export const troupBaseHandler = async (
-  req: Request<TroupBaseRequest>,
-  res: Response<TroupBaseResponse>,
+export const troupCreateMovementHandler = async (
+  req: Request<TroupMovementCreateRequest>,
+  res: Response<TroupMovementCreateResponse>,
   next: NextFunction
 ) => {
   const origin = req.body.origin
@@ -39,15 +39,24 @@ export const troupBaseHandler = async (
     })
   }
 
+  const action = req.body.action
+  if (!action) {
+    return res.status(400).json({
+      status: 'nok',
+      error_code: 'action:not-found'
+    })
+  }
+
   try {
     const player_id = getPlayerIdFromContext(res)
-    await new TroupBaseCommand().run({
+    await new TroupMoveCommand().run({
       player_id,
+      action,
       origin,
       destination,
-      troups_to_move: troups
+      move_troups: troups
     })
-    const response: TroupBaseResponse = { status: 'ok' }
+    const response: TroupMovementCreateResponse = { status: 'ok' }
 
     return res.status(200).json(response)
   } catch (err) {

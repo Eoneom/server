@@ -1,16 +1,8 @@
 import { Fetcher } from '../../fetcher'
 import {
-  TroupBaseRequest,
-  TroupBaseResponse
-} from './movement/base'
-import {
   TroupCancelRequest,
   TroupCancelResponse
 } from './cancel'
-import {
-  TroupExploreRequest,
-  TroupExploreResponse
-} from './movement/explore'
 import { TroupFinishMovementResponse } from './movement/finish'
 import { TroupListCityRequest } from './list/city'
 import { TroupListMovementResponse } from './movement/list'
@@ -32,6 +24,10 @@ import {
   TroupMovementEstimateRequest,
   TroupMovementEstimateResponse
 } from './movement/estimate'
+import {
+  TroupMovementCreateResponse,
+  TroupMovementCreateRequest
+} from './movement/create'
 
 export class TroupEndpoint {
   private fetcher: Fetcher
@@ -62,6 +58,13 @@ export class TroupEndpoint {
     return this.fetcher.get(`/outpost/${outpost_id}/troup`, { token })
   }
 
+  public async createMovement(token: string, body: TroupMovementCreateRequest): Promise<TroupMovementCreateResponse> {
+    return this.fetcher.post('/troup/movement', {
+      token,
+      body
+    })
+  }
+
   public async listMovement(token: string): Promise<TroupListMovementResponse> {
     return this.fetcher.get('/troup/movement', { token })
   }
@@ -83,20 +86,6 @@ export class TroupEndpoint {
 
   public async cancel(token: string, body: TroupCancelRequest): Promise<TroupCancelResponse> {
     return this.fetcher.put('/troup/cancel', {
-      body,
-      token
-    })
-  }
-
-  public async explore(token: string, body: TroupExploreRequest): Promise<TroupExploreResponse> {
-    return this.fetcher.put('/troup/explore', {
-      body,
-      token
-    })
-  }
-
-  public async base(token: string, body: TroupBaseRequest): Promise<TroupBaseResponse> {
-    return this.fetcher.put('/troup/base', {
       body,
       token
     })

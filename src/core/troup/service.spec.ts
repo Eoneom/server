@@ -3,12 +3,194 @@ import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { TroupService } from '#core/troup/service'
+import { TroupCount } from '#core/troup/type'
 import { Coordinates } from '#core/world/value/coordinates'
 import { now } from '#shared/time'
 import assert from 'assert'
 
 describe('TroupService', () => {
   const player_id = 'player_id'
+
+  describe('createMovementWithTroups', () => {
+    it('should return the movement with the assigned troups', () => {
+      const move_troups: TroupCount[] = [
+        {
+          code: TroupCode.EXPLORER,
+          count: 1
+        }
+      ]
+      const start_at = now()
+      const action = MovementAction.BASE
+      const origin: Coordinates = {
+        sector: 1,
+        x: 2,
+        y: 3
+      }
+      const destination: Coordinates = {
+        sector: 4,
+        x: 5,
+        y: 6
+      }
+      const {
+        movement,
+        troups
+      } = TroupService.createMovementWithTroups({
+        move_troups,
+        action,
+        player_id,
+        start_at,
+        origin,
+        destination,
+        distance: 10000
+      })
+
+      assert.strictEqual(movement.action, action)
+      assert.strict(movement.player_id, player_id)
+      assert.deepStrictEqual(movement.origin, origin)
+      assert.deepStrictEqual(movement.destination, destination)
+      assert.ok(movement.arrive_at > start_at)
+
+      assert.strictEqual(troups.length, 1)
+      const troup = troups[0]
+      assert.strictEqual(troup.code, TroupCode.EXPLORER)
+      assert.strictEqual(troup.count, 1)
+      assert.strictEqual(troup.player_id, player_id)
+      assert.strictEqual(troup.movement_id, movement.id)
+      assert.strictEqual(troup.ongoing_recruitment, null)
+      assert.strictEqual(troup.cell_id, null)
+    })
+  })
+
+  describe('removeTroups', () => {
+    it('should remove troups from the origin troups', () => {
+      const origin_troups = [
+        TroupEntity.create({
+          id: 'settler',
+          player_id,
+          code: TroupCode.SETTLER,
+          count: 10,
+          ongoing_recruitment: null,
+          movement_id: null,
+          cell_id: 'cell_id'
+        }),
+        TroupEntity.create({
+          id: 'explorer',
+          player_id,
+          code: TroupCode.EXPLORER,
+          count: 20,
+          ongoing_recruitment: null,
+          movement_id: null,
+          cell_id: 'cell_id'
+        })
+      ]
+
+      const remove_troups = [
+        {
+          code: TroupCode.EXPLORER,
+          count: 2
+        }
+      ]
+
+      const result = TroupService.removeTroups({
+        origin_troups,
+        remove_troups
+      })
+
+      assert.strictEqual(result[0].count, 10)
+      assert.strictEqual(result[1].count, 18)
+    })
+  })
+
+  describe('haveEnoughTroups', () => {
+    it('should return false when there is a missing troup in origin', () => {
+      const origin_troups = [
+        {
+          code: TroupCode.SETTLER,
+          count: 1
+        },
+      ]
+
+      const move_troups = [
+        {
+          code: TroupCode.SETTLER,
+          count: 1
+        },
+        {
+          code: TroupCode.EXPLORER,
+          count: 1
+        }
+      ]
+
+      const result = TroupService.haveEnoughTroups({
+        origin_troups,
+        move_troups
+      })
+
+      assert.strictEqual(result, false)
+    })
+
+    it('should return false when the origin troup is not above the move troups', () => {
+      const origin_troups = [
+        {
+          code: TroupCode.SETTLER,
+          count: 1
+        },
+        {
+          code: TroupCode.EXPLORER,
+          count: 1
+        },
+      ]
+
+      const move_troups = [
+        {
+          code: TroupCode.SETTLER,
+          count: 1
+        },
+        {
+          code: TroupCode.EXPLORER,
+          count: 2
+        }
+      ]
+
+      const result = TroupService.haveEnoughTroups({
+        origin_troups,
+        move_troups
+      })
+
+      assert.strictEqual(result, false)
+    })
+
+    it('should return true when there is enough origin troups for the move troups', () => {
+      const origin_troups = [
+        {
+          code: TroupCode.SETTLER,
+          count: 1
+        },
+        {
+          code: TroupCode.EXPLORER,
+          count: 1
+        },
+      ]
+
+      const move_troups = [
+        {
+          code: TroupCode.SETTLER,
+          count: 1
+        },
+        {
+          code: TroupCode.EXPLORER,
+          count: 1
+        }
+      ]
+
+      const result = TroupService.haveEnoughTroups({
+        origin_troups,
+        move_troups
+      })
+
+      assert.strictEqual(result, true)
+    })
+  })
 
   describe('move', () => {
     const origin_cell_id = 'origin_cell_id'
