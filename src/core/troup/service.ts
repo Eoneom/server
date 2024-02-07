@@ -68,7 +68,7 @@ export class TroupService {
       action,
       origin,
       destination,
-      arrive_at: start_at + duration,
+      arrive_at: Math.ceil(start_at + duration),
     })
     return {
       origin_troups: origin_troups.map(origin_troup => {

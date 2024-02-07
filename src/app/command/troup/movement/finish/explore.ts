@@ -52,7 +52,7 @@ export class TroupFinishExploreCommand extends GenericCommand<
       exploration
     ] = await Promise.all([
       this.repository.troup.listByMovement({ movement_id }),
-      this.repository.movement.get(movement_id),
+      this.repository.movement.getById(movement_id),
       this.repository.exploration.get({ player_id }),
     ])
 

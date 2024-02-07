@@ -15,7 +15,7 @@ export class TroupMovementGetActionQuery extends GenericQuery<TroupMovementGetAc
   }
 
   protected async get({ movement_id }: TroupMovementGetActionQueryRequest): Promise<TroupMovementGetActionQueryResponse> {
-    const movement = await this.repository.movement.get(movement_id)
+    const movement = await this.repository.movement.getById(movement_id)
 
     return { action: movement.action }
   }

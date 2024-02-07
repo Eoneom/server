@@ -4,7 +4,7 @@ services:
     image: 'mongo'
     container_name: 'database'
     environment:
-      - MONGO_INITDB_DATABASE=swarm
+      - MONGO_INITDB_DATABASE=eoneom
     volumes:
       - ./data:/data/db
     ports:

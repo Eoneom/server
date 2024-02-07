@@ -48,7 +48,7 @@ export class TroupRebaseCommand extends GenericCommand<
       movement
     ] = await Promise.all([
       this.repository.troup.listByMovement({ movement_id }),
-      this.repository.movement.get(movement_id)
+      this.repository.movement.getById(movement_id)
     ])
 
     return {

@@ -32,6 +32,7 @@ import { communicationGetReportHandler } from '#web/handler/communication/report
 import { communicationCountUnreadReportHandler } from '#web/handler/communication/report/count-unread'
 import { communicationMarkReportHandler } from '#web/handler/communication/report/mark'
 import { logoutHandler } from '#web/handler/player/logout'
+import { troupGetMovementHandler } from '#web/handler/troup/movement/get'
 
 export const router = (): Router => {
   const r = Router()
@@ -43,7 +44,7 @@ export const router = (): Router => {
   // Unauthenticated routes
   r.post('/player/login', loginHandler)
   r.post('/player/signup', signupHandler)
-  r.post('/player/logout', authMiddleware, logoutHandler)
+  r.post('/player/logout', logoutHandler)
 
   // Authenticated routes
   r.get('/city', authMiddleware, cityListHandler)
@@ -63,6 +64,7 @@ export const router = (): Router => {
   r.get('/city/:city_id/technology/:technology_code', authMiddleware, technologyGetHandler)
 
   r.get('/troup/movement', authMiddleware, troupListMovementHandler)
+  r.get('/troup/movement/:movement_id', authMiddleware, troupGetMovementHandler)
   r.put('/troup/movement/finish', authMiddleware, troupFinishMovementHandler)
   r.put('/troup/base', authMiddleware, troupBaseHandler)
   r.put('/troup/explore', authMiddleware, troupExploreHandler)

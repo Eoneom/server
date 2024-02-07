@@ -27,7 +27,7 @@ export class MongoMovementRepository
     )
   }
 
-  async get(id: string): Promise<MovementEntity> {
+  async getById(id: string): Promise<MovementEntity> {
     return this.findByIdOrThrow(id)
   }
 

@@ -23,8 +23,12 @@ export class AuthLogoutCommand extends GenericCommand<
   }
 
   async fetch({ token }: AuthLogoutRequest): Promise<AuthLogoutExec> {
-    const auth = await this.repository.auth.get({ token })
-    return { auth }
+    try {
+      const auth = await this.repository.auth.get({ token })
+      return { auth }
+    } catch (err) {
+      return { }
+    }
   }
 
   exec({ auth }: AuthLogoutExec): AuthLogoutSave {

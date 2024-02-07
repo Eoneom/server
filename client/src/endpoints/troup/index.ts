@@ -24,6 +24,10 @@ import {
 } from './recruit'
 import { TroupListOutpostRequest } from './list/outpost'
 import { TroupListResponse } from './list/shared'
+import {
+  TroupGetMovementRequest,
+  TroupGetMovementResponse
+} from './movement/get'
 
 export class TroupEndpoint {
   private fetcher: Fetcher
@@ -56,6 +60,10 @@ export class TroupEndpoint {
 
   public async listMovement(token: string): Promise<TroupListMovementResponse> {
     return this.fetcher.get('/troup/movement', { token })
+  }
+
+  public async getMovement(token: string, { movement_id }: TroupGetMovementRequest): Promise<TroupGetMovementResponse> {
+    return this.fetcher.get(`/troup/movement/${movement_id}`, { token })
   }
 
   public async finishMovement(token: string): Promise<TroupFinishMovementResponse> {

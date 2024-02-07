@@ -55,7 +55,7 @@ export class MongoRepository implements Repository {
   async connect(): Promise<void> {
     const logger = Factory.getLogger('adapter:repository')
     logger.info('connecting to database...')
-    await mongoose.connect('mongodb://localhost:27017/', { dbName: 'swarm' })
+    await mongoose.connect('mongodb://localhost:27017/', { dbName: 'eoneom' })
     logger.info('connected to database')
   }
 }

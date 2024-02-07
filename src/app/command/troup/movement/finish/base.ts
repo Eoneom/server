@@ -56,7 +56,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
       movement,
     ] = await Promise.all([
       this.repository.troup.listByMovement({ movement_id }),
-      this.repository.movement.get(movement_id),
+      this.repository.movement.getById(movement_id),
     ])
 
     const destination_cell = await this.repository.cell.getCell({ coordinates: movement.destination })
