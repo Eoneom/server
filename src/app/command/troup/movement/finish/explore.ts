@@ -1,6 +1,4 @@
-import assert from 'assert'
 import { GenericCommand } from '#app/command/generic'
-import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
@@ -28,7 +26,7 @@ export interface TroupFinishExploreCommandExec {
 interface TroupFinishExploreCommandSave {
   base_movement: MovementEntity
   explore_movement_id: string
-  troup: TroupEntity
+  troups: TroupEntity[]
   exploration: ExplorationEntity
   report: ReportEntity
 }
@@ -74,28 +72,24 @@ export class TroupFinishExploreCommand extends GenericCommand<
     movement,
     explored_cell_ids
   }: TroupFinishExploreCommandExec): TroupFinishExploreCommandSave {
-    const is_player_movement = troups.every(troup => troup.player_id === player_id)
-    if (!is_player_movement) {
-      throw new Error(TroupError.NOT_OWNER)
+    if (!movement.isOwnedBy(player_id)) {
+      throw new Error(TroupError.MOVEMENT_NOT_OWNER)
     }
 
     if (!movement.isArrived()) {
       throw new Error(TroupError.MOVEMENT_NOT_ARRIVED)
     }
 
-    assert.strictEqual(movement.action, MovementAction.EXPLORE)
-
-    const [ troup ] = troups
     const distance = WorldService.getDistance({
       origin: movement.destination,
       destination: movement.origin,
     })
 
     const {
-      troup: updated_troup,
+      troups: updated_troups,
       base_movement
     } = TroupService.finishExploration({
-      troup,
+      troups,
       explore_movement: movement,
       start_at: movement.arrive_at,
       distance
@@ -106,13 +100,13 @@ export class TroupFinishExploreCommand extends GenericCommand<
     const report = ReportFactory.generateUnread({
       type: ReportType.EXPLORATION,
       movement,
-      troups: [ troup ]
+      troups
     })
 
     return {
       explore_movement_id: movement.id,
       base_movement: base_movement,
-      troup: updated_troup,
+      troups: updated_troups,
       exploration: updated_exploration,
       report
     }
@@ -121,14 +115,14 @@ export class TroupFinishExploreCommand extends GenericCommand<
   async save({
     explore_movement_id,
     base_movement,
-    troup,
+    troups,
     exploration,
     report
   }: TroupFinishExploreCommandSave): Promise<void> {
     await Promise.all([
       this.repository.movement.delete(explore_movement_id),
       this.repository.movement.create(base_movement),
-      this.repository.troup.updateOne(troup),
+      ...troups.map(troup => this.repository.troup.updateOne(troup)),
       this.repository.exploration.updateOne(exploration),
       this.repository.report.create(report)
     ])

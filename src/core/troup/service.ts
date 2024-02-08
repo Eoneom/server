@@ -193,6 +193,16 @@ export class TroupService {
     return troups.map(troup => troup.assignToCell({ cell_id }))
   }
 
+  static assignToMovement({
+    troups,
+    movement_id
+  }: {
+    troups: TroupEntity[]
+    movement_id: string
+  }): TroupEntity[] {
+    return troups.map(troup => troup.assignToMovement({ movement_id }))
+  }
+
   static mergeTroupsInDestination({
     movement_troups,
     destination_troups,
@@ -221,28 +231,28 @@ export class TroupService {
   }
 
   static finishExploration({
-    troup,
+    troups,
     explore_movement,
     start_at,
     distance
   }: {
-    troup: TroupEntity
+    troups: TroupEntity[]
     explore_movement: MovementEntity
     start_at: number
     distance: number
    }): {
     base_movement: MovementEntity,
-    troup: TroupEntity
+    troups: TroupEntity[]
   } {
     assert.strictEqual(explore_movement.action, MovementAction.EXPLORE)
 
     const duration = this.getMovementDuration({
       distance,
-      troup_codes: [ troup.code ]
+      troup_codes: troups.map(troup => troup.code)
     })
     const base_movement = MovementEntity.create({
       id: id(),
-      player_id: troup.player_id,
+      player_id: troups[0].player_id,
       action: MovementAction.BASE,
       origin: explore_movement.destination,
       destination: explore_movement.origin,
@@ -251,7 +261,10 @@ export class TroupService {
 
     return {
       base_movement,
-      troup: troup.assignToMovement({ movement_id: base_movement.id })
+      troups: this.assignToMovement({
+        troups,
+        movement_id: base_movement.id
+      })
     }
   }
 

@@ -18,10 +18,12 @@ export const sagaFinishMovement = async ({ player_id }: {
   lock.set(key)
 
   const { movement_ids } = await new TroupMovementListFinishedQuery().run({ player_id })
-  await Promise.all(movement_ids.map(movement_id => finishMovement({
-    player_id,
-    movement_id
-  })))
+  for (const movement_id of movement_ids) {
+    await finishMovement({
+      player_id,
+      movement_id
+    })
+  }
 
   lock.delete(key)
 }
