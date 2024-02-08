@@ -32,10 +32,15 @@ interface TroupFinishExploreCommandSave {
   report: ReportEntity
 }
 
+interface TroupFinishExploreCommandResponse {
+  base_movement: MovementEntity
+}
+
 export class TroupFinishExploreCommand extends GenericCommand<
   TroupFinishExploreCommandRequest,
   TroupFinishExploreCommandExec,
-  TroupFinishExploreCommandSave
+  TroupFinishExploreCommandSave,
+  TroupFinishExploreCommandResponse
 > {
   constructor() {
     super({ name: 'troup:finish:explore' })
@@ -124,7 +129,7 @@ export class TroupFinishExploreCommand extends GenericCommand<
     troups,
     exploration,
     report
-  }: TroupFinishExploreCommandSave): Promise<void> {
+  }: TroupFinishExploreCommandSave): Promise<TroupFinishExploreCommandResponse> {
     await Promise.all([
       this.repository.movement.delete(explore_movement_id),
       this.repository.movement.create(base_movement),
@@ -132,5 +137,7 @@ export class TroupFinishExploreCommand extends GenericCommand<
       this.repository.exploration.updateOne(exploration),
       this.repository.report.create(report)
     ])
+
+    return { base_movement }
   }
 }
