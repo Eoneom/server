@@ -73,13 +73,11 @@ describe('TroupFinishExploreCommand', () => {
   it('should prevent a player for finishing a movement of another player', () => {
     assert.throws(() => command.exec({
       ...success_params,
-      troups: [
-        TroupEntity.create({
-          ...troup,
-          player_id: 'another_player_id'
-        })
-      ]
-    }), new RegExp(TroupError.NOT_OWNER))
+      movement: MovementEntity.create({
+        ...movement,
+        player_id: 'another_player_id'
+      })
+    }), new RegExp(TroupError.MOVEMENT_NOT_OWNER))
   })
 
   it('should prevent a player from finishing a movement when arrive at date is in the future', () => {
@@ -103,12 +101,13 @@ describe('TroupFinishExploreCommand', () => {
     const {
       base_movement: movement_to_create,
       explore_movement_id: movement_id_to_delete,
-      troup
+      troups
     } = command.exec(success_params)
 
     assert.strictEqual(movement_id_to_delete, movement.id)
     assert.strictEqual(movement_to_create.action, MovementAction.BASE)
-    assert.strictEqual(troup.movement_id, movement_to_create.id)
+    assert.strictEqual(troups.length, 1)
+    assert.strictEqual(troups[0].movement_id, movement_to_create.id)
   })
 
   it('should create a report describing the explored cell', () => {

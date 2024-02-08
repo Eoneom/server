@@ -63,32 +63,28 @@ describe('TroupRebaseCommand', () => {
     }), new RegExp(TroupError.NOT_OWNER))
   })
 
-  it('should remove old movement and its troups', () => {
-    const {
-      movement_to_remove_id,
-      troup_to_remove_ids
-    } = new TroupRebaseCommand().exec(success_params)
+  it('should remove old movement', () => {
+    const { movement_to_remove } = new TroupRebaseCommand().exec(success_params)
 
-    assert.strictEqual(movement_to_remove_id, initial_base_movement.id)
-    initial_movement_troups.forEach(troup => assert.ok(troup_to_remove_ids.find(id => id === troup.id)))
+    assert.strictEqual(movement_to_remove.id, initial_base_movement.id)
   })
 
   it('should create a new movement with same troups and reversed trip', () => {
     const {
-      movement,
-      movement_troups
+      movement_to_create,
+      troups_to_update
     } = new TroupRebaseCommand().exec(success_params)
 
-    assert.deepStrictEqual(movement.origin, initial_base_movement.destination)
-    assert.deepStrictEqual(movement.destination, initial_base_movement.origin)
-    assert.ok(movement.arrive_at > initial_base_movement.arrive_at)
+    assert.deepStrictEqual(movement_to_create.origin, initial_base_movement.destination)
+    assert.deepStrictEqual(movement_to_create.destination, initial_base_movement.origin)
+    assert.ok(movement_to_create.arrive_at > initial_base_movement.arrive_at)
 
-    movement_troups.forEach(movement_troup => {
-      const initial_troup = initial_movement_troups.find(troup => troup.code === movement_troup.code)
+    troups_to_update.forEach(troup_to_update => {
+      const initial_troup = initial_movement_troups.find(troup => troup.code === troup_to_update.code)
 
       assert.ok(initial_troup)
-      assert.ok(movement_troup.id !== initial_troup.id)
-      assert.strictEqual(movement_troup.count, initial_troup.count)
+      assert.strictEqual(troup_to_update.id, initial_troup.id)
+      assert.strictEqual(troup_to_update.count, initial_troup.count)
     })
   })
 

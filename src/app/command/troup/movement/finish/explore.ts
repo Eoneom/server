@@ -9,6 +9,7 @@ import { AppService } from '#app/service'
 import { ReportEntity } from '#core/communication/report.entity'
 import { ReportType } from '#core/communication/value/report-type'
 import { ReportFactory } from '#core/communication/report.factory'
+import { MovementAction } from '#core/troup/constant/movement-action'
 
 interface TroupFinishExploreCommandRequest {
   player_id: string
@@ -85,14 +86,19 @@ export class TroupFinishExploreCommand extends GenericCommand<
       destination: movement.origin,
     })
 
-    const {
-      troups: updated_troups,
-      base_movement
-    } = TroupService.finishExploration({
+    const base_movement = TroupService.createMovement({
       troups,
-      explore_movement: movement,
       start_at: movement.arrive_at,
-      distance
+      distance,
+      origin: movement.destination,
+      destination: movement.origin,
+      player_id,
+      action: MovementAction.BASE
+    })
+
+    const base_troups = TroupService.assignToMovement({
+      troups,
+      movement_id: base_movement.id
     })
 
     const updated_exploration = exploration.exploreCells(explored_cell_ids)
@@ -106,7 +112,7 @@ export class TroupFinishExploreCommand extends GenericCommand<
     return {
       explore_movement_id: movement.id,
       base_movement: base_movement,
-      troups: updated_troups,
+      troups: base_troups,
       exploration: updated_exploration,
       report
     }

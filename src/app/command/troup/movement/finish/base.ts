@@ -111,7 +111,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
       throw new Error(OutpostError.LIMIT_REACHED)
     }
 
-    const { merged_troups } = TroupService.mergeTroupsInDestination({
+    const merged_troups = TroupService.mergeTroups({
       movement_troups,
       destination_troups
     })

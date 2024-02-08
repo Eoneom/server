@@ -93,26 +93,31 @@ export class TroupMoveCommand extends GenericCommand<
       destination,
     })
 
-    const new_origin_troups = TroupService.removeTroups({
-      origin_troups,
-      remove_troups: move_troups
+    const {
+      updated_origin_troups,
+      splitted_troups
+    } = TroupService.splitTroups({
+      origin_troups: origin_troups,
+      troups_to_split: move_troups
     })
 
-    const {
-      movement,
-      troups: movement_troups
-    } = TroupService.createMovementWithTroups({
+    const movement = TroupService.createMovement({
       player_id,
-      move_troups,
-      action,
-      distance,
       origin,
       destination,
-      start_at: now()
+      action,
+      distance,
+      troups: splitted_troups,
+      start_at: now(),
+    })
+
+    const movement_troups = TroupService.assignToMovement({
+      troups: splitted_troups,
+      movement_id: movement.id
     })
 
     return {
-      troups_to_update: new_origin_troups,
+      troups_to_update: updated_origin_troups,
       troups_to_create: movement_troups,
       movement_to_create: movement
     }
