@@ -1,4 +1,6 @@
 import { GenericCommand } from '#app/command/generic'
+import { OutpostType } from '#core/outpost/constant/type'
+import { OutpostEntity } from '#core/outpost/entity'
 import { TroupCode } from '#core/troup/constant/code'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupEntity } from '#core/troup/entity'
@@ -10,7 +12,7 @@ import { WorldService } from '#core/world/service'
 import { Coordinates } from '#core/world/value/coordinates'
 import { now } from '#shared/time'
 
-interface TroupMoveCommandRequest {
+interface TroupCreateMovementCommandRequest {
   player_id: string
   origin: Coordinates
   destination: Coordinates
@@ -18,7 +20,7 @@ interface TroupMoveCommandRequest {
   move_troups: TroupCount[]
 }
 
-export interface TroupMoveCommandExec {
+export interface TroupCreateMovementCommandExec {
   player_id: string
   origin: Coordinates
   destination: Coordinates
@@ -28,18 +30,30 @@ export interface TroupMoveCommandExec {
     code: TroupCode,
     count: number
   }[]
+  outpost: OutpostEntity | null
 }
 
-interface TroupMoveCommandSave {
-  troups_to_update: TroupEntity[]
+interface TroupCreateMovementCommandResponse {
+  deleted_outpost_id?: string
+}
+
+type TroupCreateMovementCommandSave = {
   troups_to_create: TroupEntity[]
   movement_to_create: MovementEntity
-}
+} & ({
+  type: 'update'
+  troups_to_update: TroupEntity[]
+} | {
+  type: 'delete'
+  outpost_to_delete: OutpostEntity
+  troups_to_delete: TroupEntity[]
+})
 
-export class TroupMoveCommand extends GenericCommand<
-  TroupMoveCommandRequest,
-  TroupMoveCommandExec,
-  TroupMoveCommandSave
+export class TroupCreateMovementCommand extends GenericCommand<
+  TroupCreateMovementCommandRequest,
+  TroupCreateMovementCommandExec,
+  TroupCreateMovementCommandSave,
+  TroupCreateMovementCommandResponse
 > {
   constructor() {
     super({ name: 'troup:move' })
@@ -51,7 +65,7 @@ export class TroupMoveCommand extends GenericCommand<
     origin,
     destination,
     move_troups
-  }: TroupMoveCommandRequest): Promise<TroupMoveCommandExec> {
+  }: TroupCreateMovementCommandRequest): Promise<TroupCreateMovementCommandExec> {
     const [ origin_cell ] = await Promise.all([
       this.repository.cell.getCell({ coordinates: origin }),
       this.repository.cell.getCell({ coordinates: destination })
@@ -62,13 +76,16 @@ export class TroupMoveCommand extends GenericCommand<
       player_id
     })
 
+    const outpost = await this.repository.outpost.searchByCell({ cell_id: origin_cell.id })
+
     return {
       player_id,
       action,
       origin,
       destination,
       origin_troups,
-      move_troups
+      move_troups,
+      outpost
     }
   }
 
@@ -78,8 +95,9 @@ export class TroupMoveCommand extends GenericCommand<
     player_id,
     action,
     origin,
-    destination
-  }: TroupMoveCommandExec): TroupMoveCommandSave {
+    destination,
+    outpost
+  }: TroupCreateMovementCommandExec): TroupCreateMovementCommandSave {
     const have_enough_troups = TroupService.haveEnoughTroups({
       origin_troups,
       move_troups
@@ -116,7 +134,18 @@ export class TroupMoveCommand extends GenericCommand<
       movement_id: movement.id
     })
 
+    if (outpost?.type === OutpostType.TEMPORARY && TroupService.areTroupsEmpty({ troups: updated_origin_troups })) {
+      return {
+        type: 'delete',
+        troups_to_create: movement_troups,
+        movement_to_create: movement,
+        outpost_to_delete: outpost,
+        troups_to_delete: updated_origin_troups
+      }
+    }
+
     return {
+      type: 'update',
       troups_to_update: updated_origin_troups,
       troups_to_create: movement_troups,
       movement_to_create: movement
@@ -125,13 +154,29 @@ export class TroupMoveCommand extends GenericCommand<
 
   async save({
     troups_to_create,
-    troups_to_update,
-    movement_to_create
-  }: TroupMoveCommandSave): Promise<void> {
-    await Promise.all([
+    movement_to_create,
+    ...params
+  }: TroupCreateMovementCommandSave): Promise<TroupCreateMovementCommandResponse> {
+    const promises: Promise<void | string>[] = [
       ...troups_to_create.map(troup => this.repository.troup.create(troup)),
-      ...troups_to_update.map(troup => this.repository.troup.updateOne(troup)),
-      this.repository.movement.create(movement_to_create)
-    ])
+      this.repository.movement.create(movement_to_create),
+    ]
+
+    let deleted_outpost_id: string | undefined = undefined
+
+    switch (params.type) {
+    case 'update':
+      promises.push(...params.troups_to_update.map(troup => this.repository.troup.updateOne(troup)))
+      break
+
+    case 'delete':
+      promises.push(this.repository.outpost.delete(params.outpost_to_delete.id))
+      promises.push(...params.troups_to_delete.map(troup => this.repository.troup.delete(troup.id)))
+      deleted_outpost_id = params.outpost_to_delete.id
+    }
+
+    await Promise.all(promises)
+
+    return { deleted_outpost_id }
   }
 }

@@ -8,7 +8,7 @@ import {
   TroupMovementCreateRequest,
   TroupMovementCreateResponse
 } from '#client/src/endpoints/troup/movement/create'
-import { TroupMoveCommand } from '#app/command/troup/movement/move'
+import { TroupCreateMovementCommand } from '#app/command/troup/movement/create'
 
 export const troupCreateMovementHandler = async (
   req: Request<TroupMovementCreateRequest>,
@@ -49,14 +49,17 @@ export const troupCreateMovementHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await new TroupMoveCommand().run({
+    const { deleted_outpost_id } = await new TroupCreateMovementCommand().run({
       player_id,
       action,
       origin,
       destination,
       move_troups: troups
     })
-    const response: TroupMovementCreateResponse = { status: 'ok' }
+    const response: TroupMovementCreateResponse = {
+      status: 'ok',
+      data: { deleted_outpost_id }
+    }
 
     return res.status(200).json(response)
   } catch (err) {

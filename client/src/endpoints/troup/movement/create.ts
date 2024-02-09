@@ -13,4 +13,8 @@ export interface TroupMovementCreateRequest {
   }[]
 }
 
-export type TroupMovementCreateResponse = GenericResponse<void>
+interface TroupMovementCreateDataResponse {
+  deleted_outpost_id?: string
+}
+
+export type TroupMovementCreateResponse = GenericResponse<TroupMovementCreateDataResponse>

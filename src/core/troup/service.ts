@@ -185,4 +185,10 @@ export class TroupService {
   }): TroupEntity[] {
     return troups.map(troup => troup.assignToMovement({ movement_id }))
   }
+
+  static areTroupsEmpty({ troups }: {
+    troups: TroupEntity[]
+  }): boolean {
+    return !troups.some(troup => troup.count)
+  }
 }
