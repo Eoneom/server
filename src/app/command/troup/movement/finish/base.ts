@@ -20,7 +20,7 @@ interface TroupFinishBaseCommandRequest {
 }
 
 export interface TroupFinishBaseCommandExec {
-  destination_troups: TroupEntity[]
+  existing_destination_troups: TroupEntity[]
   movement: MovementEntity
   player_id: string
   movement_troups: TroupEntity[]
@@ -61,7 +61,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
 
     const destination_cell = await this.repository.cell.getCell({ coordinates: movement.destination })
 
-    const destination_troups = await this.repository.troup.listInCell({
+    const existing_destination_troups = await this.repository.troup.listInCell({
       cell_id: destination_cell.id,
       player_id
     })
@@ -73,7 +73,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
     return {
       movement_troups,
       player_id,
-      destination_troups,
+      existing_destination_troups,
       movement,
       destination_cell_id: destination_cell.id,
       city_exists,
@@ -86,7 +86,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
     player_id,
     movement_troups,
     movement,
-    destination_troups,
+    existing_destination_troups,
     destination_cell_id,
     city_exists,
     outpost_exists,
@@ -111,32 +111,20 @@ export class TroupFinishBaseCommand extends GenericCommand<
       throw new Error(OutpostError.LIMIT_REACHED)
     }
 
+    const destination_troups = should_build_temporary_outpost ? TroupService.init({
+      player_id,
+      cell_id: destination_cell_id
+    }) : existing_destination_troups
+
     const merged_troups = TroupService.mergeTroups({
       movement_troups,
       destination_troups
     })
 
-    const assigned_troups = TroupService
-      .assignToCell({
-        troups: merged_troups,
-        cell_id: destination_cell_id
-      })
-      .map(troup => {
-        const troup_in_destination = destination_troups.find(destination_troup => destination_troup.code === troup.code)
-        if (troup_in_destination) {
-          this.logger.info(`troup ${troup.code} found in destination`)
-          return TroupEntity.create({
-            ...troup,
-            id: troup_in_destination.id
-          })
-        }
-
-        this.logger.info(`troup ${troup.code} not found in destination`)
-        return TroupEntity.create({
-          ...troup,
-          id: id()
-        })
-      })
+    const assigned_troups = TroupService.assignToCell({
+      troups: merged_troups,
+      cell_id: destination_cell_id
+    })
 
     const report = ReportFactory.generateUnread({
       type: ReportType.BASE,

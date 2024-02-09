@@ -3,7 +3,7 @@ import assert from 'assert'
 import { Factory } from '#adapter/factory'
 import { TroupCode } from '#core/troup/constant/code'
 import { BaseEntity } from '#core/type/base.entity'
-import { FAKE_ID } from '#shared/identification'
+import { id } from '#shared/identification'
 
 interface OngoingRecruitment {
   finish_at: number
@@ -62,7 +62,7 @@ export class TroupEntity extends BaseEntity {
     code: TroupCode
   }): TroupEntity {
     return new TroupEntity({
-      id: FAKE_ID,
+      id: id(),
       code,
       player_id,
       cell_id,

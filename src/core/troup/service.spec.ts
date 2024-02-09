@@ -175,6 +175,7 @@ describe('TroupService', () => {
     const movement_troup_id = 'movement_troup_id'
     const destination_troup_id = 'destination_troup_id'
     const movement_id = 'movement_id'
+
     it('should add the movement troups to the destination troups', () => {
       const movement_troup = TroupEntity.create({
         id: movement_troup_id,

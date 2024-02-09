@@ -85,7 +85,7 @@ describe('TroupFinishBaseCommand', () => {
         movement_troup_explorer,
         movement_troup_settler
       ],
-      destination_troups: [ destination_troup_explorer ],
+      existing_destination_troups: [ destination_troup_explorer ],
       destination_cell_id,
       city_exists: false,
       outpost_exists: false,
@@ -145,12 +145,71 @@ describe('TroupFinishBaseCommand', () => {
     assert.strictEqual(outpost.cell_id, destination_cell_id)
   })
 
-  it('should move troups to the destination', () => {
+  it('should create all troups of the temporary outpost if there is not city or outpost', () => {
     const {
       base_movement_id,
       updated_troups,
       delete_troup_ids
-    } = command.exec(success_params)
+    } = command.exec({ ...success_params })
+
+    assert.strictEqual(delete_troup_ids.length, 2)
+    assert.strictEqual(delete_troup_ids[0], movement_troup_id)
+
+    assert.strictEqual(updated_troups.length, 2)
+
+    const updated_explorer = updated_troups.find(t => t.code === TroupCode.EXPLORER)
+    const updated_settler = updated_troups.find(t => t.code === TroupCode.SETTLER)
+    assert.ok(updated_explorer)
+    assert.ok(updated_settler)
+
+    assert.strictEqual(updated_explorer.count, movement_troup_explorer.count)
+    assert.strictEqual(updated_settler.count, movement_troup_settler.count)
+    updated_troups.forEach(troup => {
+      assert.strictEqual(troup.cell_id, destination_cell_id)
+    })
+
+    assert.strictEqual(base_movement_id, movement.id)
+  })
+
+  it('should move troups to the destination when there is a city', () => {
+    const {
+      base_movement_id,
+      updated_troups,
+      delete_troup_ids
+    } = command.exec({
+      ...success_params,
+      city_exists: true
+    })
+
+    assert.strictEqual(delete_troup_ids.length, 2)
+    assert.strictEqual(delete_troup_ids[0], movement_troup_id)
+
+    assert.strictEqual(updated_troups.length, 2)
+
+    const updated_explorer = updated_troups.find(t => t.code === TroupCode.EXPLORER)
+    const updated_settler = updated_troups.find(t => t.code === TroupCode.SETTLER)
+    assert.ok(updated_explorer)
+    assert.ok(updated_settler)
+
+    assert.strictEqual(updated_explorer.count, destination_troup_explorer.count + movement_troup_explorer.count)
+    assert.strictEqual(updated_settler.count, movement_troup_settler.count)
+    updated_troups.forEach(troup => {
+      assert.strictEqual(troup.cell_id, destination_cell_id)
+    })
+
+    assert.strictEqual(base_movement_id, movement.id)
+  })
+
+
+  it('should move troups to the destination when there is an outpost', () => {
+    const {
+      base_movement_id,
+      updated_troups,
+      delete_troup_ids
+    } = command.exec({
+      ...success_params,
+      outpost_exists: true
+    })
 
     assert.strictEqual(delete_troup_ids.length, 2)
     assert.strictEqual(delete_troup_ids[0], movement_troup_id)

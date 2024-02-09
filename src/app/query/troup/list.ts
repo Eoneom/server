@@ -39,8 +39,6 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
       location
     })
 
-    this.logger.info(JSON.stringify(cell))
-
     const [
       troups,
       cloning_factory_level,
@@ -91,7 +89,6 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
     location: Location
   }): Promise<CellEntity> {
     if (location.type === 'city') {
-      this.logger.info('get city troups')
       const city = await this.repository.city.get(location.city_id)
       if (!city.isOwnedBy(player_id)) {
         throw new Error(CityError.NOT_OWNER)
@@ -100,7 +97,6 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
       return this.repository.cell.getCityCell({ city_id: city.id })
     }
 
-    this.logger.info('get outpost troups')
     const outpost = await this.repository.outpost.getById(location.outpost_id)
     if (!outpost.isOwnedBy(player_id)) {
       throw new Error(OutpostError.NOT_OWNER)
