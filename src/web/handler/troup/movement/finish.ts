@@ -15,9 +15,12 @@ export const troupFinishMovementHandler = async (
   try {
     const player_id = getPlayerIdFromContext(res)
 
-    await sagaFinishMovement({ player_id })
+    const { is_outpost_created } = await sagaFinishMovement({ player_id })
 
-    const response: TroupFinishMovementResponse = { status: 'ok' }
+    const response: TroupFinishMovementResponse = {
+      status: 'ok',
+      data: { is_outpost_created } 
+    }
 
     return res.json(response)
   } catch (err) {

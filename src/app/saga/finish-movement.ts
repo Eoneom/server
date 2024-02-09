@@ -8,24 +8,28 @@ import { TroupError } from '#core/troup/error'
 
 export const sagaFinishMovement = async ({ player_id }: {
   player_id: string
-}) => {
+}): Promise<{ is_outpost_created: boolean }> => {
   const key = `finish-movement-${player_id}`
   const lock = Factory.getLock()
   if (lock.has(key)) {
-    return
+    return { is_outpost_created: false }
   }
 
   lock.set(key)
 
+  let is_outpost_created = false
   const { movement_ids } = await new TroupMovementListFinishedQuery().run({ player_id })
   for (const movement_id of movement_ids) {
-    await finishMovement({
+    const result = await finishMovement({
       player_id,
       movement_id
     })
+    is_outpost_created ||= result.is_outpost_created
   }
 
   lock.delete(key)
+
+  return { is_outpost_created }
 }
 
 const finishMovement = async ({
@@ -34,7 +38,7 @@ const finishMovement = async ({
 }: {
   player_id: string
   movement_id: string
-}) => {
+}): Promise<{ is_outpost_created: boolean }> => {
   const { action } = await new TroupMovementGetActionQuery().run({ movement_id })
 
   switch (action) {
@@ -43,13 +47,12 @@ const finishMovement = async ({
       player_id,
       movement_id
     })
-    break
+    return { is_outpost_created: false }
   case MovementAction.BASE:
-    await sagaFinishBase({
+    return sagaFinishBase({
       player_id,
       movement_id
     })
-    break
   default:
     throw new Error(TroupError.MOVEMENT_ACTION_NOT_IMPLEMENTED)
   }

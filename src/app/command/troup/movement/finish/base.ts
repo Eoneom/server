@@ -38,10 +38,15 @@ interface TroupFinishBaseCommandSave {
   outpost: OutpostEntity | null
 }
 
+interface TroupFinishBaseCommandResponse {
+  is_outpost_created: boolean
+}
+
 export class TroupFinishBaseCommand extends GenericCommand<
   TroupFinishBaseCommandRequest,
   TroupFinishBaseCommandExec,
-  TroupFinishBaseCommandSave
+  TroupFinishBaseCommandSave,
+  TroupFinishBaseCommandResponse
 > {
   constructor() {
     super({ name: 'troup:finish:base' })
@@ -154,7 +159,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
     delete_troup_ids,
     report,
     outpost
-  }: TroupFinishBaseCommandSave): Promise<void> {
+  }: TroupFinishBaseCommandSave): Promise<TroupFinishBaseCommandResponse> {
     await Promise.all([
       outpost && this.repository.outpost.create(outpost),
       this.repository.report.create(report),
@@ -162,5 +167,7 @@ export class TroupFinishBaseCommand extends GenericCommand<
       ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
       ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
     ])
+
+    return { is_outpost_created: Boolean(outpost) }
   }
 }

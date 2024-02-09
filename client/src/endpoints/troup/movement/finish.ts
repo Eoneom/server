@@ -1,3 +1,7 @@
 import { GenericResponse } from '../../../response'
 
-export type TroupFinishMovementResponse = GenericResponse<void>
+interface TroupFinishMovementDataResponse {
+  is_outpost_created: boolean
+}
+
+export type TroupFinishMovementResponse = GenericResponse<TroupFinishMovementDataResponse>

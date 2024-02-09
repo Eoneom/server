@@ -7,9 +7,9 @@ export const sagaFinishBase = async ({
 }: {
   player_id: string
   movement_id: string
-}) => {
+}): Promise<{ is_outpost_created: boolean }> => {
   try {
-    await new TroupFinishBaseCommand().run({
+    return await new TroupFinishBaseCommand().run({
       player_id,
       movement_id,
     })
@@ -19,7 +19,7 @@ export const sagaFinishBase = async ({
         player_id,
         movement_id
       })
-      return
+      return { is_outpost_created: false }
     }
 
     throw err
