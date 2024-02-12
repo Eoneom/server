@@ -118,15 +118,15 @@ describe('TroupFinishBaseCommand', () => {
       ...success_params,
       city_exists: true
     })
-    assert.strictEqual(outpost, null)
+    assert.strictEqual(outpost, undefined)
   })
 
-  it('should not create a temporary outpost if there is an existing city', () => {
+  it('should not create a temporary outpost if there is an existing outpost', () => {
     const { outpost } = command.exec({
       ...success_params,
       outpost_exists: true
     })
-    assert.strictEqual(outpost, null)
+    assert.strictEqual(outpost, undefined)
   })
 
   it('should throw an error when we should create temporary outpost and limit is reached', () => {
@@ -147,7 +147,7 @@ describe('TroupFinishBaseCommand', () => {
 
   it('should create all troups of the temporary outpost if there is not city or outpost', () => {
     const {
-      base_movement_id,
+      delete_movement_id,
       updated_troups,
       delete_troup_ids
     } = command.exec({ ...success_params })
@@ -168,12 +168,12 @@ describe('TroupFinishBaseCommand', () => {
       assert.strictEqual(troup.cell_id, destination_cell_id)
     })
 
-    assert.strictEqual(base_movement_id, movement.id)
+    assert.strictEqual(delete_movement_id, movement.id)
   })
 
   it('should move troups to the destination when there is a city', () => {
     const {
-      base_movement_id,
+      delete_movement_id,
       updated_troups,
       delete_troup_ids
     } = command.exec({
@@ -197,13 +197,13 @@ describe('TroupFinishBaseCommand', () => {
       assert.strictEqual(troup.cell_id, destination_cell_id)
     })
 
-    assert.strictEqual(base_movement_id, movement.id)
+    assert.strictEqual(delete_movement_id, movement.id)
   })
 
 
   it('should move troups to the destination when there is an outpost', () => {
     const {
-      base_movement_id,
+      delete_movement_id,
       updated_troups,
       delete_troup_ids
     } = command.exec({
@@ -227,7 +227,7 @@ describe('TroupFinishBaseCommand', () => {
       assert.strictEqual(troup.cell_id, destination_cell_id)
     })
 
-    assert.strictEqual(base_movement_id, movement.id)
+    assert.strictEqual(delete_movement_id, movement.id)
   })
 
   it('should create a report describing the explored cell', () => {

@@ -31,11 +31,11 @@ export interface TroupFinishBaseCommandExec {
 }
 
 interface TroupFinishBaseCommandSave {
-  base_movement_id: string
+  delete_movement_id: string
   updated_troups: TroupEntity[]
   delete_troup_ids: string[]
   report: ReportEntity
-  outpost: OutpostEntity | null
+  outpost?: OutpostEntity
 }
 
 interface TroupFinishBaseCommandResponse {
@@ -107,27 +107,57 @@ export class TroupFinishBaseCommand extends GenericCommand<
       throw new Error(TroupError.MOVEMENT_NOT_ARRIVED)
     }
 
-    const should_build_temporary_outpost = OutpostService.shouldBuildTemporaryOutpost({
-      city_exists,
-      outpost_exists
-    })
-    const is_limit_reached = OutpostService.isLimitReached({ existing_outposts_count })
-    if (should_build_temporary_outpost && is_limit_reached) {
-      throw new Error(OutpostError.LIMIT_REACHED)
+    const does_location_exist = city_exists || outpost_exists
+    if (does_location_exist) {
+      return this.finishBaseMovementInLocation({
+        movement,
+        movement_troups,
+        destination_cell_id,
+        existing_destination_troups
+      })
     }
 
-    const destination_troups = should_build_temporary_outpost ? TroupService.init({
-      player_id,
-      cell_id: destination_cell_id
-    }) : existing_destination_troups
-
-    const merged_troups = TroupService.mergeTroups({
+    return this.finishBaseMovementInTemporaryOutpost({
+      destination_cell_id,
+      movement,
+      existing_outposts_count,
       movement_troups,
-      destination_troups
+      player_id
     })
+  }
 
-    const assigned_troups = TroupService.assignToCell({
-      troups: merged_troups,
+  async save({
+    delete_movement_id,
+    updated_troups,
+    delete_troup_ids,
+    report,
+    outpost
+  }: TroupFinishBaseCommandSave): Promise<TroupFinishBaseCommandResponse> {
+    await Promise.all([
+      outpost && this.repository.outpost.create(outpost),
+      this.repository.report.create(report),
+      this.repository.movement.delete(delete_movement_id),
+      ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
+      ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
+    ])
+
+    return { is_outpost_created: Boolean(outpost) }
+  }
+
+  private finishBaseMovementInLocation({
+    movement,
+    movement_troups,
+    destination_cell_id,
+    existing_destination_troups
+  }: {
+    movement: MovementEntity
+    movement_troups: TroupEntity[]
+    existing_destination_troups: TroupEntity[]
+    destination_cell_id: string
+  }): TroupFinishBaseCommandSave {
+    const updated_troups = TroupService.mergeTroupsInCell({
+      movement_troups,
+      destination_troups: existing_destination_troups,
       cell_id: destination_cell_id
     })
 
@@ -137,37 +167,62 @@ export class TroupFinishBaseCommand extends GenericCommand<
       troups: movement_troups
     })
 
-    const outpost = should_build_temporary_outpost ? OutpostEntity.create({
+    return {
+      delete_movement_id: movement.id,
+      delete_troup_ids: movement_troups.map(troup => troup.id),
+      updated_troups,
+      report
+    }
+  }
+
+  private finishBaseMovementInTemporaryOutpost({
+    destination_cell_id,
+    movement,
+    existing_outposts_count,
+    player_id,
+    movement_troups
+  }: {
+    destination_cell_id: string
+    movement: MovementEntity
+    existing_outposts_count: number
+    player_id: string
+    movement_troups: TroupEntity[]
+  }): TroupFinishBaseCommandSave {
+    const is_limit_reached = OutpostService.isLimitReached({ existing_outposts_count })
+    if (is_limit_reached) {
+      throw new Error(OutpostError.LIMIT_REACHED)
+    }
+
+    const destination_troups = TroupService.init({
+      player_id,
+      cell_id: destination_cell_id
+    })
+
+    const updated_troups = TroupService.mergeTroupsInCell({
+      movement_troups,
+      destination_troups,
+      cell_id: destination_cell_id
+    })
+
+    const report = ReportFactory.generateUnread({
+      type: ReportType.BASE,
+      movement,
+      troups: movement_troups
+    })
+
+    const outpost = OutpostEntity.create({
       id: id(),
       player_id,
       cell_id: destination_cell_id,
       type: OutpostType.TEMPORARY
-    }) : null
+    })
 
     return {
-      base_movement_id: movement.id,
+      delete_movement_id: movement.id,
       delete_troup_ids: movement_troups.map(troup => troup.id),
-      updated_troups: assigned_troups,
+      updated_troups,
       report,
       outpost
     }
-  }
-
-  async save({
-    base_movement_id,
-    updated_troups,
-    delete_troup_ids,
-    report,
-    outpost
-  }: TroupFinishBaseCommandSave): Promise<TroupFinishBaseCommandResponse> {
-    await Promise.all([
-      outpost && this.repository.outpost.create(outpost),
-      this.repository.report.create(report),
-      this.repository.movement.delete(base_movement_id),
-      ...updated_troups.map(troup => this.repository.troup.updateOne(troup, { upsert: true })),
-      ...delete_troup_ids.map(troup_id => this.repository.troup.delete(troup_id)),
-    ])
-
-    return { is_outpost_created: Boolean(outpost) }
   }
 }

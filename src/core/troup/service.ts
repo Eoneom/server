@@ -108,6 +108,26 @@ export class TroupService {
     return merged_troups
   }
 
+  static mergeTroupsInCell({
+    movement_troups,
+    destination_troups,
+    cell_id
+  }: {
+    movement_troups: TroupEntity[]
+    destination_troups: TroupEntity[]
+    cell_id: string
+  }) {
+    const merged_troups = this.mergeTroups({
+      movement_troups,
+      destination_troups
+    })
+
+    return this.assignToCell({
+      troups: merged_troups,
+      cell_id
+    })
+  }
+
   static createMovement({
     troups,
     start_at,

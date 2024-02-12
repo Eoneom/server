@@ -2,7 +2,6 @@ import { GenericCommand } from '#command/generic'
 import { BuildingEntity } from '#core/building/entity'
 import { BuildingError } from '#core/building/error'
 import { CityEntity } from '#core/city/entity'
-import { CityService } from '#core/city/service'
 import { PricingService } from '#core/pricing/service'
 
 interface BuildingCancelRequest {
