@@ -1,4 +1,4 @@
-# Swarm game server (outdated README)
+# Eoneom game server
 
 This project is currently a proof of concept for web strategy game server.
 
@@ -29,65 +29,82 @@ npm run build:watch
 npm run start
 ```
 
+## Interact with the server
+
+Once launched, the app is listening on port `3000` and accept HTTP requests for commands and queries.
+You can find every possible endpoints in the `router.ts` file.
+
 ## Architecture
 
-### App
+### Adapter
 
-Contains all the app features, divided into commands and queries
+Contains implementation of the app required ports. It includes database connection and queries, logger and lock mechanism.
 
-### Core
+#### Database
 
-Contains domain logic with mostly pure functions.
-
-The app is built with every module declared in core.
-The factory is here to help creating these modules, and handle dependencies between queries and commands.
-
-### Principles
-
-#### Application service
-
-The commands and queries that interact with the app have the following role:
-
-- retrieve entities from the repository (storage)
-- call business logic methods on entities itself or with domain services
-- save the changes if any
-
-### Modules
-
-There is a similar architecture for every module:
-
-- `domain`: business logic only
-  - `constants`: store every constants needed by the domain
-  - `entity`: declare entities used by the domain
-  - `errors`: declare all errors thrown by the domain
-  - `service`: implement business logic to handle commands and queries
-- `model`: related to data storage and repository
-- `commands`: interact with the application to update things
-- `module`: group queries and commands
-- `queries`: ask the application for some data
-
-The current modules are:
-
-- `building`: upgrade buildings
-- `city`: gather resources
-- `migration`: create initial data and update existing one
-- `player`: init account and store player name
-- `pricing`: handle costs for building, technologies and units
-- `technology`: research technologies
-
-### Database
-
-MongoDB implementation for repository methods. Simple adapter to call mongoDB, and define collections.
-Each document type and model is specified in their own module, inside the `core` folder.
-
-- `generic`: implement CRUD calls to MongoDB
-- `repository`: group several repositories together
+MongoDB implementation for repository port methods. Simple adapter to call mongoDB, and define collections.
 
 Every model is built on the same pattern:
 
 - `document`: declare document classes and export Typegoose model
 - `repository`: extends the generic repository and implement specific methods
 
-## Interact with the server
+### App
 
-Once launched, the app is listening on port `3000` and accept HTTP requests for commands and queries.
+Contains all the app features, divided into commands and queries.
+
+#### Command
+
+It is designed to follow a `fetch -> exec -> save` pattern to prevent persisting stuff when an error occurs.
+
+- fetch necessary data for application service
+- calls application service
+- persist updates on entities
+
+#### Port
+
+Describes necessary external methods for the application to work. It includes repository queries, logger and lock mechanism interfaces.
+
+#### Query
+
+Calls the application service or the repository directly to read data.
+
+#### Saga
+
+Orchestrate multiple commands when a serie of use cases needs to be called.
+
+#### Service
+
+Implement high level use cases to respond to player's needs.
+
+### Core
+
+Contains domain logic with mostly pure functions.
+
+Core modules represent the different contexts of the application.
+
+There is a similar architecture for every module:
+
+- `constant`: store every constants needed by the domain
+- `value`: contains value objects needed by the domain
+- `entity`: declare entities used by the domain
+- `error`: declare all errors thrown by the domain
+- `service`: implement business logic when multiple entities are needed
+- `type`: declare additional useful types used in entities
+
+### Cron
+
+Contains scheduled tasks that call commands and queries of the app.
+
+### Shared
+
+Contains useful helpers and types that does not fit directly in the model, or call simple external libraries. Prevent from using heavy interfacing with the ports and adapters.
+
+### Web
+
+`http` file launches a simple HTTP server using middlewares and router.
+The router declares all possible endpoints and link it to their corresponding handler.
+
+#### Handler
+
+Defines how the server will respond for every type of request

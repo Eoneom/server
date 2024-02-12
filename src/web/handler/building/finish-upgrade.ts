@@ -6,7 +6,7 @@ import {
   BuildingFinishUpgradeResponse
 } from '#client/src/endpoints/building/finish-upgrade'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { sagaFinishUpgrade } from '#app/saga/finish-upgrade'
+import { sagaFinishUpgrade } from '#app/saga/finish/upgrade'
 
 export const buildingFinishUpgradeHandler = async (
   req: Request<BuildingFinishUpgradeRequest>,

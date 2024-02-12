@@ -5,7 +5,7 @@ import {
 } from 'express'
 import { TroupFinishMovementResponse } from '#client/src/endpoints/troup/movement/finish'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { sagaFinishMovement } from '#app/saga/finish-movement'
+import { sagaFinishMovement } from '#app/saga/finish/movement'
 
 export const troupFinishMovementHandler = async (
   req: Request,
@@ -19,7 +19,7 @@ export const troupFinishMovementHandler = async (
 
     const response: TroupFinishMovementResponse = {
       status: 'ok',
-      data: { is_outpost_created } 
+      data: { is_outpost_created }
     }
 
     return res.json(response)
