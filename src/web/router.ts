@@ -34,6 +34,7 @@ import { troupGetMovementHandler } from '#web/handler/troup/movement/get'
 import { troupEstimateMovementHandler } from '#web/handler/troup/movement/estimate'
 import { troupCreateMovementHandler } from '#web/handler/troup/movement/create'
 import { troupGetHandler } from '#web/handler/troup/get'
+import { citySettleHandler } from '#web/handler/city/settle'
 
 export const router = (): Router => {
   const r = Router()
@@ -50,6 +51,7 @@ export const router = (): Router => {
   // Authenticated routes
   r.get('/city', authMiddleware, cityListHandler)
   r.get('/city/:city_id', authMiddleware, cityGetHandler)
+  r.post('/city', authMiddleware, citySettleHandler)
   r.put('/city/gather', authMiddleware, cityGatherHandler)
 
   r.put('/building/cancel', authMiddleware, buildingCancelHandler)

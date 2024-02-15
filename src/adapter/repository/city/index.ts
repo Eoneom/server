@@ -15,6 +15,10 @@ export class MongoCityRepository
     super(CityModel, CityError.NOT_FOUND)
   }
 
+  async count({ player_id }: { player_id: string }): Promise<number> {
+    return this.model.countDocuments({ player_id })
+  }
+
   async get(id: string): Promise<CityEntity> {
     return this.findByIdOrThrow(id)
   }

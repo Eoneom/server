@@ -150,6 +150,15 @@ export class TroupEntity extends BaseEntity {
     })
   }
 
+  removeCount(count_to_remove: number): TroupEntity {
+    assert(count_to_remove <= this.count)
+
+    return TroupEntity.create({
+      ...this,
+      count: this.count - count_to_remove
+    })
+  }
+
   isOwnedBy(player_id: string): boolean {
     return this.player_id === player_id
   }

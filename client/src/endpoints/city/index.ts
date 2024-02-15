@@ -8,6 +8,10 @@ import {
   CityGetResponse
 } from './get'
 import { CityListResponse } from './list'
+import {
+  CitySettleRequest,
+  CitySettleResponse
+} from './settle'
 
 export class CityEndpoint {
   private fetcher: Fetcher
@@ -26,6 +30,13 @@ export class CityEndpoint {
 
   gather(token: string, body: CityGatherRequest): Promise<CityGatherResponse> {
     return this.fetcher.put('/city/gather', {
+      token,
+      body
+    })
+  }
+
+  settle(token: string, body: CitySettleRequest): Promise<CitySettleResponse> {
+    return this.fetcher.post('/city', {
       token,
       body
     })
