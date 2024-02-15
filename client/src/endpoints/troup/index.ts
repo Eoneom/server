@@ -28,6 +28,10 @@ import {
   TroupMovementCreateResponse,
   TroupMovementCreateRequest
 } from './movement/create'
+import {
+  TroupGetRequest,
+  TroupGetResponse
+} from './get'
 
 export class TroupEndpoint {
   private fetcher: Fetcher
@@ -56,6 +60,10 @@ export class TroupEndpoint {
 
   public async listOutpost(token: string, { outpost_id }: TroupListOutpostRequest): Promise<TroupListResponse> {
     return this.fetcher.get(`/outpost/${outpost_id}/troup`, { token })
+  }
+
+  public async get(token: string, { troup_id }: TroupGetRequest): Promise<TroupGetResponse> {
+    return this.fetcher.get(`/troup/${troup_id}`, { token })
   }
 
   public async createMovement(token: string, body: TroupMovementCreateRequest): Promise<TroupMovementCreateResponse> {

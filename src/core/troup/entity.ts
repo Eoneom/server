@@ -149,4 +149,8 @@ export class TroupEntity extends BaseEntity {
       ongoing_recruitment: null
     })
   }
+
+  isOwnedBy(player_id: string): boolean {
+    return this.player_id === player_id
+  }
 }

@@ -16,6 +16,10 @@ export class MongoTroupRepository
     super(TroupModel, TroupError.NOT_FOUND)
   }
 
+  async getById(id: string): Promise<TroupEntity> {
+    return this.findByIdOrThrow(id)
+  }
+
   async listByMovement({ movement_id }: { movement_id: string }): Promise<TroupEntity[]> {
     return this.find({ movement_id })
   }

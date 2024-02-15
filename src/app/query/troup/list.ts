@@ -1,16 +1,14 @@
 import { GenericQuery } from '#query/generic'
-import { PricingService } from '#core/pricing/service'
 import { TroupEntity } from '#core/troup/entity'
-import { CountCostValue } from '#core/pricing/value/count'
-import { TroupCode } from '#core/troup/constant/code'
-import { RequirementValue } from '#core/requirement/value/requirement'
-import { RequirementService } from '#core/requirement/service'
 import { CityError } from '#core/city/error'
 import { TroupService } from '#core/troup/service'
-import { BuildingCode } from '#core/building/constant/code'
-import { TechnologyCode } from '#core/technology/constant/code'
 import { CellEntity } from '#core/world/cell.entity'
 import { OutpostError } from '#core/outpost/error'
+import { CountCostValue } from '#core/pricing/value/count'
+import { TroupCode } from '#core/troup/constant/code'
+import { TechnologyCode } from '#core/technology/constant/code'
+import { BuildingCode } from '#core/building/constant/code'
+import { PricingService } from '#core/pricing/service'
 
 type Location = { type: 'city', city_id: string} | { type: 'outpost', outpost_id: string }
 
@@ -20,9 +18,8 @@ export interface TroupListQueryRequest {
 }
 
 export interface TroupListQueryResponse {
-  troups: TroupEntity[],
-  costs: Record<string, CountCostValue>
-  requirement: Record<TroupCode, RequirementValue>
+  troups: TroupEntity[]
+  costs: Record<TroupCode, CountCostValue>
 }
 
 export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupListQueryResponse> {
@@ -68,16 +65,13 @@ export class TroupListQuery extends GenericQuery<TroupListQueryRequest, TroupLis
 
       return {
         ...acc,
-        [troup.id]: cost
+        [troup.code]: cost
       }
-    }, {} as Record<string, CountCostValue>)
-
-    const requirement = RequirementService.listTroupRequirements()
+    }, {} as Record<TroupCode, CountCostValue>)
 
     return {
       troups: TroupService.sortTroups({ troups }),
-      costs,
-      requirement
+      costs
     }
   }
 

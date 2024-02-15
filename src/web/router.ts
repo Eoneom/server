@@ -33,6 +33,7 @@ import { logoutHandler } from '#web/handler/player/logout'
 import { troupGetMovementHandler } from '#web/handler/troup/movement/get'
 import { troupEstimateMovementHandler } from '#web/handler/troup/movement/estimate'
 import { troupCreateMovementHandler } from '#web/handler/troup/movement/create'
+import { troupGetHandler } from '#web/handler/troup/get'
 
 export const router = (): Router => {
   const r = Router()
@@ -69,6 +70,7 @@ export const router = (): Router => {
   r.put('/troup/movement/finish', authMiddleware, troupFinishMovementHandler)
   r.post('/troup/movement/estimate', authMiddleware, troupEstimateMovementHandler)
 
+  r.get('/troup/:troup_id', authMiddleware, troupGetHandler)
   r.put('/troup/cancel', authMiddleware, troupCancelHandler)
   r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
   r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)

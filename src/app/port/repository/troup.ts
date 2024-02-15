@@ -3,6 +3,8 @@ import { TroupCode } from '#core/troup/constant/code'
 import { TroupEntity } from '#core/troup/entity'
 
 export type TroupRepository = GenericRepository<TroupEntity> & {
+  getById(id: string): Promise<TroupEntity>
+
   listInCell(query: { cell_id: string, player_id: string }): Promise<TroupEntity[]>
   getInCell(query: { cell_id: string, code: TroupCode }): Promise<TroupEntity>
 
