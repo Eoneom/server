@@ -14,5 +14,10 @@ export const troup_costs: Record<TroupCode, CountCosts> = {
     plastic: 20000,
     mushroom: 40000,
     duration: 3600
+  },
+  [TroupCode.LIGHT_TRANSPORTER]: {
+    plastic: 3000,
+    mushroom: 2000,
+    duration: 240
   }
 }

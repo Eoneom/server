@@ -20,5 +20,14 @@ export const TroupRequirement: Record<TroupCode, RequirementValue> = {
       }
     ],
     technologies: []
+  },
+  [TroupCode.LIGHT_TRANSPORTER]: {
+    buildings: [
+      {
+        code: BuildingCode.CLONING_FACTORY,
+        level: 5
+      }
+    ],
+    technologies: []
   }
 }
