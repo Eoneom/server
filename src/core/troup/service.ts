@@ -1,7 +1,7 @@
 import { TroupCode } from '#core/troup/constant/code'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { troup_order } from '#core/troup/constant/order'
-import { troup_base_speed } from '#core/troup/constant/speed'
+import { troup_characteristics } from '#core/troup/constant/characteristic'
 import { TroupEntity } from '#core/troup/entity'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { Coordinates } from '#core/world/value/coordinates'
@@ -161,7 +161,7 @@ export class TroupService {
   }
 
   static sortTroups({ troups } : { troups: TroupEntity[] }): TroupEntity[] {
-    return troups.sort((a, b) => troup_order[a.code] - troup_order[b.code])
+    return troups.sort((a, b) => this.getOrder(a.code) - this.getOrder(b.code))
   }
 
   static getMovementDuration({
@@ -177,7 +177,7 @@ export class TroupService {
 
   static getSlowestSpeed({ troup_codes }: { troup_codes: TroupCode[] }): number {
     return troup_codes.reduce((acc, code) => {
-      const speed = troup_base_speed[code]
+      const speed = this.getSpeed(code)
       if (speed < acc) {
         return speed
       }
@@ -210,5 +210,17 @@ export class TroupService {
     troups: TroupEntity[]
   }): boolean {
     return !troups.some(troup => troup.count)
+  }
+
+  static getTransportCapacity(code: TroupCode): number {
+    return troup_characteristics[code].transport_capacity
+  }
+
+  static getSpeed(code: TroupCode): number {
+    return troup_characteristics[code].speed
+  }
+
+  static getOrder(code: TroupCode): number {
+    return troup_order[code]
   }
 }
