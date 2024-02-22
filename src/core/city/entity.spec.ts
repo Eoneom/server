@@ -66,10 +66,9 @@ describe('CityEntity', () => {
   describe('gather', () => {
     it('should no gather resources when there no earnings at all', () => {
       const {
-        updated,
+        is_updated,
         city: updated_city
       } = city.gather({
-        player_id,
         earnings_per_second: {
           plastic: 0,
           mushroom: 0
@@ -81,7 +80,7 @@ describe('CityEntity', () => {
         gather_at_time: city.last_plastic_gather + 1000
       })
 
-      assert.strictEqual(updated, false)
+      assert.strictEqual(is_updated, false)
       assert.strictEqual(updated_city.plastic, city.plastic)
       assert.strictEqual(updated_city.last_plastic_gather, city.last_plastic_gather)
       assert.strictEqual(updated_city.mushroom, city.mushroom)
@@ -90,10 +89,9 @@ describe('CityEntity', () => {
 
     it('should not gather resources when we try to gather at a time before last gather', () => {
       const {
-        updated,
+        is_updated,
         city: updated_city
       } = city.gather({
-        player_id,
         earnings_per_second: {
           plastic: 1000,
           mushroom: 1000
@@ -105,7 +103,7 @@ describe('CityEntity', () => {
         gather_at_time: city.last_plastic_gather - 2000
       })
 
-      assert.strictEqual(updated, false)
+      assert.strictEqual(is_updated, false)
       assert.strictEqual(updated_city.plastic, city.plastic)
       assert.strictEqual(updated_city.last_plastic_gather, city.last_plastic_gather)
       assert.strictEqual(updated_city.mushroom, city.mushroom)
@@ -114,10 +112,9 @@ describe('CityEntity', () => {
 
     it('should not gather resources when not enough time passed', () => {
       const {
-        updated,
+        is_updated,
         city: updated_city
       } = city.gather({
-        player_id,
         earnings_per_second: {
           plastic: 1000,
           mushroom: 1000
@@ -129,7 +126,7 @@ describe('CityEntity', () => {
         gather_at_time: city.last_plastic_gather + 1
       })
 
-      assert.strictEqual(updated, false)
+      assert.strictEqual(is_updated, false)
       assert.strictEqual(updated_city.plastic, city.plastic)
       assert.strictEqual(updated_city.last_plastic_gather, city.last_plastic_gather)
       assert.strictEqual(updated_city.mushroom, city.mushroom)
@@ -141,10 +138,9 @@ describe('CityEntity', () => {
       const mushroom_earnings = 2000
       const seconds_elapsed = 2
       const {
-        updated,
+        is_updated,
         city: updated_city
       } = city.gather({
-        player_id,
         earnings_per_second: {
           plastic: plastic_earnings,
           mushroom: mushroom_earnings
@@ -156,7 +152,7 @@ describe('CityEntity', () => {
         gather_at_time: city.last_plastic_gather + seconds_elapsed * 1000
       })
 
-      assert.strictEqual(updated, true)
+      assert.strictEqual(is_updated, true)
       assert.strictEqual(updated_city.plastic, city.plastic + seconds_elapsed * plastic_earnings)
       assert.ok(updated_city.last_plastic_gather !== city.last_plastic_gather)
       assert.strictEqual(updated_city.mushroom, city.mushroom + seconds_elapsed * mushroom_earnings)

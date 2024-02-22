@@ -114,21 +114,15 @@ export class CityEntity extends BaseEntity {
   gather({
     earnings_per_second,
     gather_at_time,
-    player_id,
     warehouses_capacity
   }: {
     earnings_per_second: Resource
-    player_id: string
     gather_at_time: number
     warehouses_capacity: Resource
   }): {
     city: CityEntity,
-    updated: boolean,
+    is_updated: boolean,
   } {
-    if (!this.isOwnedBy(player_id)) {
-      throw new Error(CityError.NOT_OWNER)
-    }
-
     const plastic_earnings = this.getEarnings({
       earnings_per_second: earnings_per_second.plastic,
       last_gather_time: this.last_plastic_gather,
@@ -139,7 +133,7 @@ export class CityEntity extends BaseEntity {
       last_gather_time: this.last_mushroom_gather,
       gather_at_time
     })
-    const updated = Boolean(plastic_earnings) || Boolean(mushroom_earnings)
+    const is_updated = Boolean(plastic_earnings) || Boolean(mushroom_earnings)
     const city = this
       .gatherPlastic({
         earnings: plastic_earnings,
@@ -154,7 +148,7 @@ export class CityEntity extends BaseEntity {
 
     return {
       city,
-      updated
+      is_updated
     }
   }
 

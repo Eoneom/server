@@ -5,7 +5,10 @@ export interface WarehouseCapacity {
   multiplier: number
 }
 
-export const warehouses_capacity: Record<BuildingCode.MUSHROOM_WAREHOUSE | BuildingCode.PLASTIC_WAREHOUSE, WarehouseCapacity> = {
+export type WarehouseBuildingCode = BuildingCode.MUSHROOM_WAREHOUSE | BuildingCode.PLASTIC_WAREHOUSE
+export type WarehouseBuildingLevels = Record<WarehouseBuildingCode, number>
+
+export const warehouses_capacity: Record<WarehouseBuildingCode, WarehouseCapacity> = {
   [BuildingCode.MUSHROOM_WAREHOUSE]: {
     base: 3000,
     multiplier: 2

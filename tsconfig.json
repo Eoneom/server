@@ -25,6 +25,9 @@
       "#command/*": [
         "./src/app/command/*"
       ],
+      "#modules/*": [
+        "./src/modules/*"
+      ],
       "#query/*": [
         "./src/app/query/*"
       ],

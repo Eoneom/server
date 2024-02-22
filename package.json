@@ -58,6 +58,9 @@
     "#cron/*": {
       "default": "./dist/src/cron/*.js"
     },
+    "#modules/*": {
+      "default": "./dist/src/modules/*.js"
+    },
     "#query/*": {
       "default": "./dist/src/app/query/*.js"
     },

@@ -1,7 +1,10 @@
 import { GenericCommand } from '#app/command/generic'
-import { AppService } from '#app/service'
 import { CityEntity } from '#core/city/entity'
-import { Resource } from '#shared/resource'
+import { CityError } from '#core/city/error'
+import { CellEntity } from '#core/world/cell.entity'
+import { ProductionBuildingLevels } from '#modules/resource/constant/production'
+import { WarehouseBuildingLevels } from '#modules/resource/constant/warehouse-capacity'
+import { ResourceService } from '#modules/resource/service'
 
 interface CityGatherRequest {
   city_id: string
@@ -11,15 +14,16 @@ interface CityGatherRequest {
 
 interface CityGatherExec {
   city: CityEntity
-  earnings_per_second: Resource
   gather_at_time: number
   player_id: string
-  warehouses_capacity: Resource
+  cell: CellEntity
+  production_building_levels: ProductionBuildingLevels
+  warehouse_building_levels: WarehouseBuildingLevels
 }
 
 interface CityGatherSave {
-  city: CityEntity
-  updated: boolean
+  updated_city: CityEntity
+  is_updated: boolean
 }
 
 export class CityGatherCommand extends GenericCommand<
@@ -38,54 +42,63 @@ export class CityGatherCommand extends GenericCommand<
   }: CityGatherRequest): Promise<CityGatherExec> {
     const [
       city,
-      earnings_per_second,
-      warehouses_capacity
+      cell,
+      production_building_levels,
+      warehouse_building_levels
     ] = await Promise.all([
       this.repository.city.get(city_id),
-      AppService.getCityEarningsBySecond({ city_id }),
-      AppService.getCityWarehousesCapacity({ city_id })
+      this.repository.cell.getCityCell({ city_id }),
+      this.repository.building.getProductionLevels(),
+      this.repository.building.getWarehouseLevels()
     ])
 
     return {
       city,
-      earnings_per_second,
       player_id,
-      warehouses_capacity,
-      gather_at_time
+      gather_at_time,
+      cell,
+      production_building_levels,
+      warehouse_building_levels
     }
   }
 
   exec({
     city,
-    earnings_per_second,
     player_id,
-    warehouses_capacity,
-    gather_at_time
+    gather_at_time,
+    cell,
+    production_building_levels,
+    warehouse_building_levels,
   }: CityGatherExec): CityGatherSave {
+    if (!city.isOwnedBy(player_id)) {
+      throw new Error(CityError.NOT_OWNER)
+    }
+
     const {
-      city: updated_city,
-      updated
-    } = city.gather({
-      player_id,
-      gather_at_time,
-      earnings_per_second,
-      warehouses_capacity
+      updated_city,
+      is_updated
+    } = ResourceService.gather({
+      city,
+      cell,
+      production_building_levels,
+      warehouse_building_levels,
+      gather_at_time
     })
 
     return {
-      city: updated ? updated_city : city,
-      updated
+      updated_city: is_updated ? updated_city : city,
+      is_updated
     }
   }
 
   async save({
-    city,
-    updated
+    updated_city,
+    is_updated
   }: CityGatherSave) {
-    if (!updated) {
+    if (!is_updated) {
       return
     }
 
-    await this.repository.city.updateOne(city)
+    await this.repository.city.updateOne(updated_city)
   }
 }

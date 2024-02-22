@@ -12,6 +12,7 @@ import {
   isWarehouseBuildingCode
 } from '#core/building/helper'
 import { BuildingService } from '#core/building/service'
+import { ResourceService } from '#modules/resource/service'
 
 export interface BuildingGetQueryRequest {
   city_id: string
@@ -101,7 +102,7 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
         coefficients
       })
 
-      const next_production = BuildingService.getEarningsBySecond({
+      const next_production = ResourceService.getEarningsPerSecond({
         level: level + 1,
         code: building.code,
         coefficients

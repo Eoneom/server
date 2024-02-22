@@ -4,6 +4,7 @@ import { Resource } from '#shared/resource'
 import { CellEntity } from '#core/world/cell.entity'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
+import { ResourceService } from '#modules/resource/service'
 
 export interface CityGetQueryRequest {
   city_id: string
@@ -33,16 +34,22 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
     }
 
     const [
-      earnings_per_second,
       cell,
       maximum_building_levels,
-      warehouses_capacity
+      production_building_levels,
+      warehouse_building_levels
     ] = await Promise.all([
-      AppService.getCityEarningsBySecond({ city_id: city.id }),
       this.repository.cell.getCityCell({ city_id: city.id }),
       AppService.getCityMaximumBuildingLevels({ city_id: city.id }),
-      AppService.getCityWarehousesCapacity({ city_id: city.id })
+      this.repository.building.getProductionLevels(),
+      this.repository.building.getWarehouseLevels()
     ])
+
+    const earnings_per_second = ResourceService.getEarningsPerSecond({
+      production_building_levels,
+      cell
+    })
+    const warehouses_capacity = ResourceService.getWarehousesCapacity({ warehouse_building_levels })
 
     return {
       city,

@@ -1,6 +1,5 @@
 import { Factory } from '#adapter/factory'
 import { BuildingCode } from '#core/building/constant/code'
-import { BuildingService } from '#core/building/service'
 import { CityService } from '#core/city/service'
 import {
   Levels,
@@ -12,7 +11,6 @@ import { TroupCode } from '#core/troup/constant/code'
 import { CellEntity } from '#core/world/cell.entity'
 import { WorldService } from '#core/world/service'
 import { Coordinates } from '#core/world/value/coordinates'
-import { Resource } from '#shared/resource'
 
 export class AppService {
   static async getExploredCellIds({ coordinates }: { coordinates: Coordinates }): Promise<string[]> {
@@ -25,72 +23,6 @@ export class AppService {
     const repository = Factory.getRepository()
     const city_cells_count = await repository.cell.getCityCellsCount({ city_id })
     return CityService.getMaximumBuildingLevels({ city_cells_count })
-  }
-
-  static async getCityEarningsBySecond({ city_id }: { city_id: string }): Promise<Resource> {
-    const repository = Factory.getRepository()
-    const [
-      mushroom_farm_level,
-      recycling_plant_level,
-      city_cell
-    ] = await Promise.all([
-      repository.building.getLevel({
-        city_id,
-        code: BuildingCode.MUSHROOM_FARM
-      }),
-      repository.building.getLevel({
-        city_id,
-        code: BuildingCode.RECYCLING_PLANT
-      }),
-      repository.cell.getCityCell({ city_id })
-    ])
-
-    const coefficients = city_cell.resource_coefficient
-
-    const plastic = BuildingService.getEarningsBySecond({
-      code: BuildingCode.RECYCLING_PLANT,
-      level: recycling_plant_level,
-      coefficients,
-    })
-
-    const mushroom = BuildingService.getEarningsBySecond({
-      level: mushroom_farm_level,
-      code: BuildingCode.MUSHROOM_FARM,
-      coefficients,
-    })
-
-    return {
-      plastic,
-      mushroom
-    }
-  }
-
-  static async getCityWarehousesCapacity({ city_id }: { city_id: string }): Promise<Resource> {
-    const repository = Factory.getRepository()
-    const [
-      mushroom_warehouse_level,
-      plastic_warehouse_level
-    ] = await Promise.all([
-      repository.building.getLevel({
-        city_id,
-        code: BuildingCode.MUSHROOM_WAREHOUSE
-      }),
-      repository.building.getLevel({
-        city_id,
-        code: BuildingCode.PLASTIC_WAREHOUSE
-      })
-    ])
-
-    return {
-      mushroom: BuildingService.getWarehouseCapacity({
-        level: mushroom_warehouse_level,
-        code: BuildingCode.MUSHROOM_WAREHOUSE
-      }),
-      plastic: BuildingService.getWarehouseCapacity({
-        level: plastic_warehouse_level,
-        code: BuildingCode.PLASTIC_WAREHOUSE
-      })
-    }
   }
 
   static async getBuildingRequirementLevels({

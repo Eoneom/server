@@ -7,6 +7,14 @@ import { MongoGenericRepository } from '#adapter/repository/generic'
 import { BuildingCode } from '#core/building/constant/code'
 import { BuildingError } from '#core/building/error'
 import { now } from '#shared/time'
+import {
+  ProductionBuildingCode,
+  ProductionBuildingLevels, production_building_codes
+} from '#modules/resource/constant/production'
+import {
+  WarehouseBuildingCode, WarehouseBuildingLevels
+} from '#modules/resource/constant/warehouse-capacity'
+import assert from 'assert'
 
 export class MongoBuildingRepository
   extends MongoGenericRepository<typeof BuildingModel, BuildingDocument, BuildingEntity>
@@ -14,6 +22,42 @@ export class MongoBuildingRepository
 
   constructor() {
     super(BuildingModel, BuildingError.NOT_FOUND)
+  }
+
+  async getWarehouseLevels(): Promise<WarehouseBuildingLevels> {
+    const buildings = await this.model.find<{ code: WarehouseBuildingCode, level: number }>({ code: production_building_codes }, {
+      code: 1,
+      level: 1
+    })
+
+    const plastic_warehouse = buildings.find(building => building.code === BuildingCode.PLASTIC_WAREHOUSE)
+    assert(plastic_warehouse)
+
+    const mushroom_warehouse = buildings.find(building => building.code === BuildingCode.MUSHROOM_WAREHOUSE)
+    assert(mushroom_warehouse)
+
+    return {
+      plastic_warehouse: plastic_warehouse.level,
+      mushroom_warehouse: mushroom_warehouse.level
+    }
+  }
+
+  async getProductionLevels(): Promise<ProductionBuildingLevels> {
+    const buildings = await this.model.find<{ code: ProductionBuildingCode, level: number }>({ code: production_building_codes }, {
+      code: 1,
+      level: 1
+    })
+
+    const recycling_plant = buildings.find(building => building.code === BuildingCode.RECYCLING_PLANT)
+    assert(recycling_plant)
+
+    const mushroom_farm = buildings.find(building => building.code === BuildingCode.MUSHROOM_FARM)
+    assert(mushroom_farm)
+
+    return {
+      recycling_plant: recycling_plant.level,
+      mushroom_farm: mushroom_farm.level
+    }
   }
 
   async getTotalLevels({ city_id }: { city_id: string }): Promise<number> {

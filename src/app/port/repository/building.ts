@@ -1,6 +1,8 @@
 import { BuildingEntity } from '#core/building/entity'
 import { GenericRepository } from '#app/port/repository/generic'
 import { BuildingCode } from '#core/building/constant/code'
+import { WarehouseBuildingLevels } from '#modules/resource/constant/warehouse-capacity'
+import { ProductionBuildingLevels } from '#modules/resource/constant/production'
 
 export type BuildingRepository = GenericRepository<BuildingEntity> & {
   list(query: {
@@ -13,6 +15,9 @@ export type BuildingRepository = GenericRepository<BuildingEntity> & {
   getInProgress(query: { city_id: string }): Promise<BuildingEntity | null>
   getLevel(query: { city_id: string, code: BuildingCode }): Promise<number>
   getUpgradeDone(query: { city_id: string }): Promise<BuildingEntity | null>
+
+  getWarehouseLevels(): Promise<WarehouseBuildingLevels>
+  getProductionLevels(): Promise<ProductionBuildingLevels>
 
   getTotalLevels(query: { city_id: string }): Promise<number>
 
