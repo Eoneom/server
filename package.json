@@ -1,74 +1,18 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "root",
+  "private": true,
+  "packageManager": "yarn@4.13.0",
+  "workspaces": [
+    "apps/server",
+    "apps/web",
+    "client"
+  ],
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "build:watch": "tsc --watch",
-    "start": "node --enable-source-maps dist/src/index.js | pino-pretty-min",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint --fix ./src",
-    "test": "jest",
-    "test:coverage": "jest --collect-coverage",
-    "test:watch": "jest --watch"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/cors": "^2.8.13",
-    "@types/express": "^4.17.16",
-    "@types/jest": "^29.5.3",
-    "@types/node": "^18.7.13",
-    "@types/node-cron": "^3.0.11",
-    "@types/uuid": "^9.0.2",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
-    "@typescript-eslint/parser": "^5.51.0",
-    "jest": "^29.6.2",
-    "pino-pretty-min": "^0.3.2",
-    "ts-jest": "^29.1.1",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "@typegoose/typegoose": "^9.11.2",
-    "body-parser": "^1.20.1",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "node-cron": "^3.0.3",
-    "pino": "^8.15.0",
-    "uuid": "^9.0.0"
-  },
-  "imports": {
-    "#adapter/*": {
-      "default": "./dist/src/adapter/*.js"
-    },
-    "#app/*": {
-      "default": "./dist/src/app/*.js"
-    },
-    "#client/*": {
-      "default": "./client/*.js"
-    },
-    "#command/*": {
-      "default": "./dist/src/app/command/*.js"
-    },
-    "#core/*": {
-      "default": "./dist/src/core/*.js"
-    },
-    "#cron/*": {
-      "default": "./dist/src/cron/*.js"
-    },
-    "#query/*": {
-      "default": "./dist/src/app/query/*.js"
-    },
-    "#shared/*": {
-      "default": "./dist/src/shared/*.js"
-    },
-    "#type/*": {
-      "default": "./dist/src/type/*.js"
-    },
-    "#web/*": {
-      "default": "./dist/src/web/*.js"
-    }
+    "server:build": "yarn workspace server build",
+    "server:start": "yarn workspace server start",
+    "server:test": "yarn workspace server test",
+    "client:build": "yarn workspace @kroust/swarm-client build",
+    "web:start": "yarn workspace swarm-web start",
+    "web:build": "yarn workspace swarm-web build"
   }
 }

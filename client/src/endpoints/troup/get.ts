@@ -1,4 +1,4 @@
-import { TroupCode } from '../../../../src/core/troup/constant/code'
+import { TroupCode } from '@server-core/troup/constant/code'
 import { GenericResponse } from '../../response'
 import { Requirement } from '../shared/requirement'
 

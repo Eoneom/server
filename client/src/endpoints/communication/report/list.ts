@@ -1,4 +1,4 @@
-import { ReportType } from '../../../../../src/core/communication/value/report-type'
+import { ReportType } from '@server-core/communication/value/report-type'
 import { GenericResponse } from '../../../response'
 
 export interface CommunicationListReportDataResponse {

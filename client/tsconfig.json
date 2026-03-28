@@ -3,6 +3,12 @@
     "target": "es2019",
     "module": "commonjs",
     "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@server-core/*": [
+        "../apps/server/src/core/*"
+      ]
+    },
     "outDir": "./dist",
     "allowJs": false,
     "strict": true,

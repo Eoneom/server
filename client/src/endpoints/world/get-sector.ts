@@ -1,6 +1,6 @@
 import { GenericResponse } from '../../response'
 
-import { CellType } from '../../../../src/core/world/value/cell-type'
+import { CellType } from '@server-core/world/value/cell-type'
 
 export interface WorldGetSectorRequest {
   sector: number

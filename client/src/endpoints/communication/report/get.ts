@@ -1,5 +1,5 @@
-import { ReportType } from '../../../../../src/core/communication/value/report-type'
-import { TroupCode } from '../../../../../src/core/troup/constant/code'
+import { ReportType } from '@server-core/communication/value/report-type'
+import { TroupCode } from '@server-core/troup/constant/code'
 import { GenericResponse } from '../../../response'
 import { Coordinates } from '../../shared/coordinates'
 

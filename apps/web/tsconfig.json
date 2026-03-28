@@ -1,0 +1,86 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@kroust/swarm-client": [
+        "../../client/src/index.ts"
+      ],
+      "@server-core/*": [
+        "../../apps/server/src/core/*"
+      ],
+      "#helpers/*": [
+        "./src/helpers/*"
+      ],
+      "#hook/*": [
+        "./src/hook/*"
+      ],
+      "#auth/*": [
+        "./src/modules/auth/*"
+      ],
+      "#building/*": [
+        "./src/modules/building/*"
+      ],
+      "#city/*": [
+        "./src/modules/city/*"
+      ],
+      "#cost/*": [
+        "./src/modules/cost/*"
+      ],
+      "#communication/*": [
+        "./src/modules/communication/*"
+      ],
+      "#map/*": [
+        "./src/modules/map/*"
+      ],
+      "#movement/*": [
+        "./src/modules/movement/*"
+      ],
+      "#outpost/*": [
+        "./src/modules/outpost/*"
+      ],
+      "#requirement/*": [
+        "./src/modules/requirement/*"
+      ],
+      "#store/*": [
+        "./src/store/*"
+      ],
+      "#technology/*": [
+        "./src/modules/technology/*"
+      ],
+      "#troup/*": [
+        "./src/modules/troup/*"
+      ],
+      "#types": [
+        "./src/types/index.ts"
+      ],
+      "#types/*": [
+        "./src/types/*"
+      ],
+      "#ui/*": [
+        "./src/ui/*"
+      ],
+    },
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src"
+  ]
+}

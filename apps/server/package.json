@@ -1,0 +1,77 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc && node ./scripts/flatten-dist.mjs",
+    "build:watch": "tsc --watch",
+    "start": "node --enable-source-maps dist/index.js | pino-pretty-min",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint --fix ./src",
+    "test": "jest",
+    "test:coverage": "jest --collect-coverage",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.16",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^18.7.13",
+    "@types/node-cron": "^3.0.11",
+    "@types/uuid": "^9.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "eslint": "^8.33.0",
+    "jest": "^29.6.2",
+    "pino-pretty-min": "^0.3.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@typegoose/typegoose": "^9.11.2",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "~6.7.2",
+    "node-cron": "^3.0.3",
+    "pino": "^8.15.0",
+    "uuid": "^9.0.0"
+  },
+  "imports": {
+    "#adapter/*": {
+      "default": "./dist/adapter/*.js"
+    },
+    "#app/*": {
+      "default": "./dist/app/*.js"
+    },
+    "#client/*": {
+      "default": "../../client/*.js"
+    },
+    "#command/*": {
+      "default": "./dist/app/command/*.js"
+    },
+    "#core/*": {
+      "default": "./dist/core/*.js"
+    },
+    "#cron/*": {
+      "default": "./dist/cron/*.js"
+    },
+    "#query/*": {
+      "default": "./dist/app/query/*.js"
+    },
+    "#shared/*": {
+      "default": "./dist/shared/*.js"
+    },
+    "#type/*": {
+      "default": "./dist/type/*.js"
+    },
+    "#web/*": {
+      "default": "./dist/web/*.js"
+    }
+  }
+}

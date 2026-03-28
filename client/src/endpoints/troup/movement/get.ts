@@ -1,5 +1,5 @@
-import { TroupCode } from '../../../../../src/core/troup/constant/code'
-import { MovementAction } from '../../../../../src/core/troup/constant/movement-action'
+import { TroupCode } from '@server-core/troup/constant/code'
+import { MovementAction } from '@server-core/troup/constant/movement-action'
 import { GenericResponse } from '../../../response'
 import { Coordinates } from '../../shared/coordinates'
 
