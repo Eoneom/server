@@ -1,14 +1,9 @@
 import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
 import { BuildingCode } from '#core/building/constant/code'
-import { BuildingEntity } from '#core/building/entity'
-import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { PricingService } from '#core/pricing/service'
-import {
-  Levels,
-  RequirementService
-} from '#core/requirement/service'
+import { RequirementService } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant/code'
 
 export interface BuildingUpgradeRequest {
@@ -27,26 +22,29 @@ export async function upgradeBuilding({
   logger.info('run')
 
   const [
-    architecture_technology,
+    maximum_building_levels,
+    total_building_levels,
+  ] = await Promise.all([
+    AppService.getCityMaximumBuildingLevels({ city_id }),
+    repository.building.getTotalLevels({ city_id }),
+  ])
+
+  if (total_building_levels >= maximum_building_levels) {
+    throw new Error(CityError.NOT_ENOUGH_SPACE)
+  }
+
+  const [
     city,
     building,
     is_building_in_progress,
-    maximum_building_levels,
-    total_building_levels,
     levels
   ] = await Promise.all([
-    repository.technology.get({
-      player_id,
-      code: TechnologyCode.ARCHITECTURE
-    }),
     repository.city.get(city_id),
     repository.building.get({
       city_id,
       code: building_code
     }),
     repository.building.isInProgress({ city_id }),
-    AppService.getCityMaximumBuildingLevels({ city_id }),
-    repository.building.getTotalLevels({ city_id }),
     AppService.getBuildingRequirementLevels({
       city_id,
       player_id,
@@ -54,13 +52,16 @@ export async function upgradeBuilding({
     })
   ])
 
-  if (total_building_levels >= maximum_building_levels) {
-    throw new Error(CityError.NOT_ENOUGH_SPACE)
-  }
   RequirementService.checkBuildingRequirement({
     building_code: building.code,
     levels
   })
+
+  const architecture_technology = await repository.technology.get({
+    player_id,
+    code: TechnologyCode.ARCHITECTURE
+  })
+
   const {
     resource,
     duration

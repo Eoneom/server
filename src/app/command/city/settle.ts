@@ -4,10 +4,8 @@ import { BuildingService } from '#core/building/service'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { CityService } from '#core/city/service'
-import { OutpostEntity } from '#core/outpost/entity'
 import { OutpostError } from '#core/outpost/error'
 import { TroupCode } from '#core/troup/constant/code'
-import { TroupEntity } from '#core/troup/entity'
 import { TroupService } from '#core/troup/service'
 
 export interface CitySettleParams {
@@ -33,22 +31,11 @@ export async function citySettle({
     outpost,
     existing_cities_count,
     does_city_exist,
-    exploration
   ] = await Promise.all([
     repository.outpost.getById(outpost_id),
     repository.city.count({ player_id }),
     repository.city.exist(city_name),
-    repository.exploration.get({ player_id })
   ])
-
-  const cell = await repository.cell.getById(outpost.cell_id)
-
-  const settler_troup = await repository.troup.getInCell({
-    cell_id: outpost.cell_id,
-    code: TroupCode.SETTLER
-  })
-
-  const cells_around_city = await AppService.getCellsAround({ coordinates: cell.coordinates })
 
   if (CityService.isLimitReached(existing_cities_count)) {
     throw new Error(CityError.LIMIT_REACHED)
@@ -62,6 +49,17 @@ export async function citySettle({
     throw new Error(CityError.ALREADY_EXISTS)
   }
 
+  const [
+    cell,
+    settler_troup 
+  ] = await Promise.all([
+    repository.cell.getById(outpost.cell_id),
+    repository.troup.getInCell({
+      cell_id: outpost.cell_id,
+      code: TroupCode.SETTLER
+    }),
+  ])
+
   const have_enough_settler = TroupService.haveEnoughTroups({
     origin_troups: [ settler_troup ],
     move_troups: [
@@ -74,6 +72,14 @@ export async function citySettle({
   if (!have_enough_settler) {
     throw new Error(CityError.NO_SETTLER_AVAILABLE)
   }
+
+  const [
+    exploration,
+    cells_around_city 
+  ] = await Promise.all([
+    repository.exploration.get({ player_id }),
+    AppService.getCellsAround({ coordinates: cell.coordinates }),
+  ])
 
   const city = CityEntity.initCity({
     player_id,

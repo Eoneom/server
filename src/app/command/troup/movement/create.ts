@@ -34,10 +34,7 @@ export async function createTroupMovement({
   const logger = Factory.getLogger('app:command:troup:move')
   logger.info('run')
 
-  const [ origin_cell ] = await Promise.all([
-    repository.cell.getCell({ coordinates: origin }),
-    repository.cell.getCell({ coordinates: destination }),
-  ])
+  const origin_cell = await repository.cell.getCell({ coordinates: origin })
 
   const origin_troups = await repository.troup.listInCell({
     cell_id: origin_cell.id,

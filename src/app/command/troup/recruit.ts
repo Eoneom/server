@@ -2,12 +2,9 @@ import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
 import { BuildingCode } from '#core/building/constant/code'
 import { PricingService } from '#core/pricing/service'
-import {
-  Levels, RequirementService
-} from '#core/requirement/service'
+import { RequirementService } from '#core/requirement/service'
 import { TechnologyCode } from '#core/technology/constant/code'
 import { TroupCode } from '#core/troup/constant/code'
-import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { now } from '#shared/time'
 import assert from 'assert'
@@ -33,14 +30,20 @@ export async function recruitTroup({
   const logger = Factory.getLogger('app:command:troup:recruit')
   logger.info('run')
 
+  const city_cell = await repository.cell.getCityCell({ city_id })
+
+  const is_recruitment_in_progress = await repository.troup.isInProgress({ cell_id: city_cell.id })
+  if (is_recruitment_in_progress) {
+    throw new Error(TroupError.ALREADY_IN_PROGRESS)
+  }
+
   const [
-    city_cell,
     city,
     cloning_factory_level,
     replication_catalyst_level,
     levels,
+    troup,
   ] = await Promise.all([
-    repository.cell.getCityCell({ city_id }),
     repository.city.get(city_id),
     repository.building.getLevel({
       city_id,
@@ -55,19 +58,11 @@ export async function recruitTroup({
       player_id,
       troup_code,
     }),
-  ])
-
-  const [ troup, is_recruitment_in_progress ] = await Promise.all([
     repository.troup.getInCell({
       cell_id: city_cell.id,
       code: troup_code,
     }),
-    repository.troup.isInProgress({ cell_id: city_cell.id }),
   ])
-
-  if (is_recruitment_in_progress) {
-    throw new Error(TroupError.ALREADY_IN_PROGRESS)
-  }
 
   RequirementService.checkTroupRequirement({
     troup_code: troup.code,

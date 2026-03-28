@@ -17,14 +17,13 @@ export async function cancelTroup({
   logger.info('run')
 
   const city_cell = await repository.cell.getCityCell({ city_id })
-  const [ city, troup ] = await Promise.all([
-    repository.city.get(city_id),
-    repository.troup.getInProgress({ cell_id: city_cell.id }),
-  ])
+  const troup = await repository.troup.getInProgress({ cell_id: city_cell.id })
 
   if (!troup) {
     throw new Error(TroupError.NOT_IN_PROGRESS)
   }
+
+  const city = await repository.city.get(city_id)
 
   const updated_troup = troup.progressRecruitment({ progress_time: now() })
   const troup_costs = PricingService.getTroupCost({

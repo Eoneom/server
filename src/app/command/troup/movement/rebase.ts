@@ -3,7 +3,6 @@ import { ReportFactory } from '#core/communication/report.factory'
 import { ReportType } from '#core/communication/value/report-type'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupError } from '#core/troup/error'
-import { MovementEntity } from '#core/troup/movement.entity'
 import { TroupService } from '#core/troup/service'
 import { WorldService } from '#core/world/service'
 
@@ -20,14 +19,13 @@ export async function rebaseTroupMovement({
   const logger = Factory.getLogger('app:command:troup:rebase')
   logger.info('run')
 
-  const [ troups, movement ] = await Promise.all([
-    repository.troup.listByMovement({ movement_id }),
-    repository.movement.getById(movement_id),
-  ])
+  const movement = await repository.movement.getById(movement_id)
 
   if (!movement.isOwnedBy(player_id)) {
     throw new Error(TroupError.NOT_OWNER)
   }
+
+  const troups = await repository.troup.listByMovement({ movement_id })
 
   const distance = WorldService.getDistance({
     origin: movement.destination,

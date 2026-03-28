@@ -3,11 +3,11 @@ import { AppService } from '#app/service'
 import { ReportFactory } from '#core/communication/report.factory'
 import { ReportType } from '#core/communication/value/report-type'
 import { MovementAction } from '#core/troup/constant/movement-action'
-import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { TroupService } from '#core/troup/service'
 import { WorldService } from '#core/world/service'
+
 export interface FinishTroupExploreMovementParams {
   player_id: string
   movement_id: string
@@ -25,13 +25,7 @@ export async function finishTroupExploreMovement({
   const logger = Factory.getLogger('app:command:troup:finish:explore')
   logger.info('run')
 
-  const [ troups, movement, exploration ] = await Promise.all([
-    repository.troup.listByMovement({ movement_id }),
-    repository.movement.getById(movement_id),
-    repository.exploration.get({ player_id }),
-  ])
-
-  const explored_cell_ids = await AppService.getExploredCellIds({ coordinates: movement.destination })
+  const movement = await repository.movement.getById(movement_id)
 
   if (!movement.isOwnedBy(player_id)) {
     throw new Error(TroupError.MOVEMENT_NOT_OWNER)
@@ -40,6 +34,16 @@ export async function finishTroupExploreMovement({
   if (!movement.isArrived()) {
     throw new Error(TroupError.MOVEMENT_NOT_ARRIVED)
   }
+
+  const [
+    troups,
+    exploration,
+    explored_cell_ids 
+  ] = await Promise.all([
+    repository.troup.listByMovement({ movement_id }),
+    repository.exploration.get({ player_id }),
+    AppService.getExploredCellIds({ coordinates: movement.destination }),
+  ])
 
   const distance = WorldService.getDistance({
     origin: movement.destination,

@@ -15,17 +15,13 @@ export async function cancelBuilding({
   const logger = Factory.getLogger('app:command:building:cancel')
   logger.info('run')
 
-  const [
-    city,
-    building
-  ] = await Promise.all([
-    repository.city.get(city_id),
-    repository.building.getInProgress({ city_id })
-  ])
+  const building = await repository.building.getInProgress({ city_id })
 
   if (!building) {
     throw new Error(BuildingError.NOT_IN_PROGRESS)
   }
+
+  const city = await repository.city.get(city_id)
 
   const resource_refund = PricingService.getBuildingUpgradeRefund({
     code: building.code,

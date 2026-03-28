@@ -21,17 +21,13 @@ export async function finishBuildingUpgrade({
   const logger = Factory.getLogger('app:command:building:finish-upgrade')
   logger.info('run')
 
-  const [
-    city,
-    building_to_finish
-  ] = await Promise.all([
-    repository.city.get(city_id),
-    repository.building.getUpgradeDone({ city_id })
-  ])
+  const city = await repository.city.get(city_id)
 
   if (!city.isOwnedBy(player_id)) {
     throw new Error(CityError.NOT_OWNER)
   }
+
+  const building_to_finish = await repository.building.getUpgradeDone({ city_id })
 
   if (!building_to_finish) {
     return null
