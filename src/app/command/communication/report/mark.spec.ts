@@ -1,6 +1,6 @@
-import {
-  CommunicationReportMarkCommand, CommunicationReportMarkExec
-} from '#app/command/communication/report/mark'
+import { markCommunicationReport } from './mark'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
 import { CommunicationError } from '#core/communication/error'
 import { ReportEntity } from '#core/communication/report.entity'
 import { ReportType } from '#core/communication/value/report-type'
@@ -8,7 +8,7 @@ import { FAKE_ID } from '#shared/identification'
 import { now } from '#shared/time'
 import assert from 'assert'
 
-describe('CommuncationReportMarkCommand', () => {
+describe('markCommunicationReport', () => {
   const player_id = 'player_id'
   const origin = {
     x: 1,
@@ -25,7 +25,8 @@ describe('CommuncationReportMarkCommand', () => {
     mushroom: 2
   }
   let report: ReportEntity
-  let success_params: CommunicationReportMarkExec
+  let reportUpdateOne: jest.Mock
+  let repository: Pick<Repository, 'report'>
 
   beforeEach(() => {
     report = ReportEntity.create({
@@ -37,27 +38,48 @@ describe('CommuncationReportMarkCommand', () => {
       troups: [],
       type: ReportType.BASE,
       recorded_at: now(),
-      was_read: false,
+      was_read: false
     })
 
-    success_params = {
-      report,
-      was_read: true,
-      player_id
+    reportUpdateOne = jest.fn().mockResolvedValue(undefined)
+
+    repository = {
+      report: {
+        getById: jest.fn().mockResolvedValue(report),
+        updateOne: reportUpdateOne
+      } as unknown as Repository['report']
     }
+
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
-  it('should prevent another player from changing the report read status', () => {
-    assert.throws(() => new CommunicationReportMarkCommand().exec({
-      ...success_params,
-      player_id: 'another_player_id'
-    }), new RegExp(CommunicationError.REPORT_NOT_OWNER))
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  it('should change the report read status', () => {
-    const { report: updated_report } = new CommunicationReportMarkCommand().exec(success_params)
+  it('should prevent another player from changing the report read status', async () => {
+    await assert.rejects(
+      () => markCommunicationReport({
+        report_id: report.id,
+        player_id: 'another_player_id',
+        was_read: true
+      }),
+      new RegExp(CommunicationError.REPORT_NOT_OWNER)
+    )
+
+    assert.strictEqual(reportUpdateOne.mock.calls.length, 0)
+  })
+
+  it('should change the report read status', async () => {
+    await markCommunicationReport({
+      report_id: report.id,
+      player_id,
+      was_read: true
+    })
 
     assert.strictEqual(report.was_read, false)
+    assert.strictEqual(reportUpdateOne.mock.calls.length, 1)
+    const updated_report = reportUpdateOne.mock.calls[0][0]
     assert.strictEqual(updated_report.was_read, true)
   })
 })

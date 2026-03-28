@@ -5,7 +5,7 @@ import {
 } from 'express'
 import { CommunicationMarkReportResponse } from '#client/src/endpoints/communication/report/mark'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { CommunicationReportMarkCommand } from '#app/command/communication/report/mark'
+import { markCommunicationReport } from '#app/command/communication/report/mark'
 
 export const communicationMarkReportHandler = async (
   req: Request,
@@ -30,7 +30,7 @@ export const communicationMarkReportHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await new CommunicationReportMarkCommand().run({
+    await markCommunicationReport({
       player_id,
       report_id,
       was_read: Boolean(was_read)

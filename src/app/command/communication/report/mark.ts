@@ -1,60 +1,28 @@
-import { GenericCommand } from '#app/command/generic'
+import { Factory } from '#adapter/factory'
 import { CommunicationError } from '#core/communication/error'
-import { ReportEntity } from '#core/communication/report.entity'
 
-interface CommunicationReportMarkRequest {
+export interface CommunicationReportMarkParams {
   report_id: string
   player_id: string
   was_read: boolean
 }
 
-export interface CommunicationReportMarkExec {
-  report: ReportEntity
-  player_id: string
-  was_read: boolean
-}
+export async function markCommunicationReport({
+  report_id,
+  player_id,
+  was_read,
+}: CommunicationReportMarkParams): Promise<void> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:communication:report:mark')
+  logger.info('run')
 
-interface CommunicationReportMarkSave {
-  report: ReportEntity
-}
+  const report = await repository.report.getById(report_id)
 
-export class CommunicationReportMarkCommand extends GenericCommand<
-  CommunicationReportMarkRequest,
-  CommunicationReportMarkExec,
-  CommunicationReportMarkSave
-> {
-  constructor() {
-    super({ name: 'communication:report:mark' })
+  if (!report.isOwnedBy(player_id)) {
+    throw new Error(CommunicationError.REPORT_NOT_OWNER)
   }
 
-  async fetch({
-    report_id,
-    player_id,
-    was_read
-  }: CommunicationReportMarkRequest): Promise<CommunicationReportMarkExec> {
-    const report = await this.repository.report.getById(report_id)
-    return {
-      report,
-      player_id,
-      was_read
-    }
-  }
+  const updated_report = report.markAs(was_read)
 
-  exec({
-    report,
-    player_id,
-    was_read
-  }: CommunicationReportMarkExec): CommunicationReportMarkSave {
-    if (!report.isOwnedBy(player_id)) {
-      throw new Error(CommunicationError.REPORT_NOT_OWNER)
-    }
-
-    const updated_report = report.markAs(was_read)
-
-    return { report: updated_report }
-  }
-
-  async save({ report }: CommunicationReportMarkSave): Promise<void> {
-    await this.repository.report.updateOne(report)
-  }
+  await repository.report.updateOne(updated_report)
 }
