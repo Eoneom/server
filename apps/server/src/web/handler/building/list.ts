@@ -6,7 +6,7 @@ import {
 import {
   BuildingListResponse,
   BuildingListDataResponse
-} from '#client/src/endpoints/building/list'
+} from '@eoneom/api-client/src/endpoints/building/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   BuildingListQuery,

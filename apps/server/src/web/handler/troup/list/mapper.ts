@@ -1,5 +1,5 @@
 import { TroupListQueryResponse } from '#app/query/troup/list'
-import { TroupListDataResponse } from '#client/src/endpoints/troup/list/shared'
+import { TroupListDataResponse } from '@eoneom/api-client/src/endpoints/troup/list/shared'
 
 export const troupListResponseMapper = ({
   troups,

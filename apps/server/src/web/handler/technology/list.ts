@@ -3,7 +3,7 @@ import {
 } from 'express'
 import {
   TechnologyListDataResponse, TechnologyListResponse
-} from '#client/src/endpoints/technology/list'
+} from '@eoneom/api-client/src/endpoints/technology/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   TechnologyListQuery, TechnologyListQueryResponse

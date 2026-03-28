@@ -7,7 +7,7 @@ import {
   BuildingGetRequest,
   BuildingGetDataResponse,
   BuildingGetResponse
-} from '#client/src/endpoints/building/get'
+} from '@eoneom/api-client/src/endpoints/building/get'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   BuildingGetQuery,

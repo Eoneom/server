@@ -1,4 +1,4 @@
-import { Coordinates } from '@kroust/swarm-client'
+import { Coordinates } from '@eoneom/api-client'
 
 export const formatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600)

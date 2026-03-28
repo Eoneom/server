@@ -6,7 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@server-core/*": [
-        "../apps/server/src/core/*"
+        "../../apps/server/src/core/*"
       ]
     },
     "outDir": "./dist",

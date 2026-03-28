@@ -3,7 +3,7 @@ import {
 } from 'express'
 import {
   BuildingCancelRequest, BuildingCancelResponse
-} from '#client/src/endpoints/building/cancel'
+} from '@eoneom/api-client/src/endpoints/building/cancel'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { cancelBuilding } from '#command/building/cancel'
 

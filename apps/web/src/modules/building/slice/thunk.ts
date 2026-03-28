@@ -5,7 +5,7 @@ import { refreshCity } from '#city/slice/thunk'
 import { client } from '#helpers/api'
 import { isError } from '#helpers/assertion'
 import { createAppAsyncThunk } from '#store/type'
-import { BuildingCode } from '@kroust/swarm-client'
+import { BuildingCode } from '@eoneom/api-client'
 
 export const getBuilding = createAppAsyncThunk('building/get', async (code: BuildingCode, { getState, rejectWithValue }) => {
   const token = selectToken(getState())

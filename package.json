@@ -3,15 +3,14 @@
   "private": true,
   "packageManager": "yarn@4.13.0",
   "workspaces": [
-    "apps/server",
-    "apps/web",
-    "client"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "server:build": "yarn workspace server build",
     "server:start": "yarn workspace server start",
     "server:test": "yarn workspace server test",
-    "client:build": "yarn workspace @kroust/swarm-client build",
+    "client:build": "yarn workspace @eoneom/api-client build",
     "web:start": "yarn workspace swarm-web start",
     "web:build": "yarn workspace swarm-web build"
   }

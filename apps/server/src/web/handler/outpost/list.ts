@@ -7,7 +7,7 @@ import {
 import {
   OutpostListDataResponse,
   OutpostListResponse
-} from '#client/src/endpoints/outpost/list'
+} from '@eoneom/api-client/src/endpoints/outpost/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   OutpostListQuery,

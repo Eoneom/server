@@ -1,4 +1,4 @@
-import { MovementAction } from '@kroust/swarm-client'
+import { MovementAction } from '@eoneom/api-client'
 import React from 'react'
 
 interface Props {

@@ -3,7 +3,7 @@ import {
   Request,
   Response
 } from 'express'
-import { TroupFinishMovementResponse } from '#client/src/endpoints/troup/movement/finish'
+import { TroupFinishMovementResponse } from '@eoneom/api-client/src/endpoints/troup/movement/finish'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { sagaFinishMovement } from '#app/saga/finish/movement'
 

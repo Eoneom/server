@@ -2,7 +2,7 @@ import { selectBuildings } from '#building/slice'
 import { useAppSelector } from '#store/type'
 import { selectTechnologies } from '#technology/slice'
 import { BuildingItem, TechnologyItem } from '#types'
-import { Requirement } from '@kroust/swarm-client'
+import { Requirement } from '@eoneom/api-client'
 import { useMemo } from 'react'
 
 export const useRequirement = ({ requirement }: { requirement: Requirement }) => {

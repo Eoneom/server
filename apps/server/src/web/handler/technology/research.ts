@@ -3,7 +3,7 @@ import {
 } from 'express'
 import {
   TechnologyResearchRequest, TechnologyResearchResponse
-} from '#client/src/endpoints/technology/research'
+} from '@eoneom/api-client/src/endpoints/technology/research'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { sagaResearchTechnology } from '#app/saga/research-technology'
 

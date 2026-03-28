@@ -1,4 +1,4 @@
-import { TroupCode } from '@kroust/swarm-client'
+import { TroupCode } from '@eoneom/api-client'
 import React from 'react'
 
 interface Props {

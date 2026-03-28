@@ -5,7 +5,7 @@ import {
   TechnologyGetDataResponse,
   TechnologyGetRequest,
   TechnologyGetResponse
-} from '#client/src/endpoints/technology/get'
+} from '@eoneom/api-client/src/endpoints/technology/get'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   TechnologyGetQuery,

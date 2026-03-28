@@ -2274,6 +2274,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eoneom/api-client@workspace:*, @eoneom/api-client@workspace:packages/api-client":
+  version: 0.0.0-use.local
+  resolution: "@eoneom/api-client@workspace:packages/api-client"
+  dependencies:
+    typescript: "npm:^4.9.5"
+  languageName: unknown
+  linkType: soft
+
 "@eslint-community/eslint-utils@npm:^4.2.0":
   version: 4.9.1
   resolution: "@eslint-community/eslint-utils@npm:4.9.1"
@@ -2984,14 +2992,6 @@ __metadata:
   checksum: 10c0/4b30ec8cd56c5fd9a661f088230af01e0c1a3888d11ffb6b47639700f71225be21d1f7e168048d6d4f9449207b978a235c07c8f15c07705685d16dc06280e9d9
   languageName: node
   linkType: hard
-
-"@kroust/swarm-client@workspace:*, @kroust/swarm-client@workspace:client":
-  version: 0.0.0-use.local
-  resolution: "@kroust/swarm-client@workspace:client"
-  dependencies:
-    typescript: "npm:^4.9.5"
-  languageName: unknown
-  linkType: soft
 
 "@leichtgewicht/ip-codec@npm:^2.0.1":
   version: 2.0.5
@@ -14500,6 +14500,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
+    "@eoneom/api-client": "workspace:*"
     "@typegoose/typegoose": "npm:^9.11.2"
     "@types/cors": "npm:^2.8.13"
     "@types/express": "npm:^4.17.16"
@@ -15283,7 +15284,7 @@ __metadata:
   resolution: "swarm-web@workspace:apps/web"
   dependencies:
     "@craco/craco": "npm:^7.1.0"
-    "@kroust/swarm-client": "workspace:*"
+    "@eoneom/api-client": "workspace:*"
     "@reduxjs/toolkit": "npm:^2.1.0"
     "@testing-library/dom": "npm:^9.3.4"
     "@testing-library/jest-dom": "npm:^5.16.5"

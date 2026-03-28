@@ -1,7 +1,7 @@
 import path from 'path'
 
 const repoRoot = path.resolve(__dirname, '../..')
-const clientSrc = path.join(repoRoot, 'client', 'src')
+const clientSrc = path.join(repoRoot, 'packages', 'api-client', 'src')
 const serverCore = path.join(repoRoot, 'apps', 'server', 'src', 'core')
 
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
       ]
       webpackConfig.resolve.alias = {
         ...webpackConfig.resolve.alias,
-        '@kroust/swarm-client': path.join(clientSrc, 'index.ts'),
+        '@eoneom/api-client': path.join(clientSrc, 'index.ts'),
         '@server-core': serverCore,
       }
 

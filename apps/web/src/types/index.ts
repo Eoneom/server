@@ -15,7 +15,7 @@ import {
   TroupListMovementDataResponse,
   TroupMovementEstimateDataResponse,
   WorldGetSectorDataResponse,
-} from '@kroust/swarm-client'
+} from '@eoneom/api-client'
 
 export type City = CityGetDataResponse
 export type CityItem = CityListDataResponse['cities'][number]

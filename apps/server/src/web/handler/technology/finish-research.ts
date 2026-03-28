@@ -1,7 +1,7 @@
 import {
   NextFunction, Request, Response
 } from 'express'
-import { TechnologyFinishResearchResponse } from '#client/src/endpoints/technology/finish-research'
+import { TechnologyFinishResearchResponse } from '@eoneom/api-client/src/endpoints/technology/finish-research'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { finishTechnologyResearch } from '#app/command/technology/finish-research'
 

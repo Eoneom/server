@@ -6,7 +6,7 @@ import {
 import {
   TroupGetRequest,
   TroupGetResponse
-} from '#client/src/endpoints/troup/get'
+} from '@eoneom/api-client/src/endpoints/troup/get'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { TroupGetQuery } from '#app/query/troup/get'
 

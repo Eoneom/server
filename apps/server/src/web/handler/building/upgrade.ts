@@ -3,7 +3,7 @@ import {
 } from 'express'
 import {
   BuildingUpgradeRequest, BuildingUpgradeResponse
-} from '#client/src/endpoints/building/upgrade'
+} from '@eoneom/api-client/src/endpoints/building/upgrade'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { sagaUpgradeBuilding } from '#app/saga/upgrade-building'
 

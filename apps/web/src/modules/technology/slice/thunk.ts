@@ -4,7 +4,7 @@ import { refreshCity } from '#city/slice/thunk'
 import { client } from '#helpers/api'
 import { isError } from '#helpers/assertion'
 import { createAppAsyncThunk } from '#store/type'
-import { TechnologyCode } from '@kroust/swarm-client'
+import { TechnologyCode } from '@eoneom/api-client'
 
 export const getTechnology = createAppAsyncThunk('technology/get', async (code: TechnologyCode, { getState, rejectWithValue }) => {
   const state = getState()

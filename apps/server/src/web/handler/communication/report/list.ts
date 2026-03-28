@@ -6,7 +6,7 @@ import {
 import {
   CommunicationListReportDataResponse,
   CommunicationListReportResponse
-} from '#client/src/endpoints/communication/report/list'
+} from '@eoneom/api-client/src/endpoints/communication/report/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   CommunicationListReportQuery,

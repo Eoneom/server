@@ -1,7 +1,7 @@
 import { MovementCreateTroupsInput } from '#movement/create/troups/input'
 import { TroupTranslations } from '#troup/translations'
 import { TroupItem } from '#types'
-import { TroupCode } from '@kroust/swarm-client'
+import { TroupCode } from '@eoneom/api-client'
 import React from 'react'
 
 interface Props {

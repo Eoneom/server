@@ -5,7 +5,7 @@ import {
   WorldGetSectorDataResponse,
   WorldGetSectorRequest,
   WorldGetSectorResponse
-} from '#client/src/endpoints/world/get-sector'
+} from '@eoneom/api-client/src/endpoints/world/get-sector'
 import {
   WorldGetSectorQuery, WorldGetSectorQueryResponse
 } from '#app/query/world/get-sector'

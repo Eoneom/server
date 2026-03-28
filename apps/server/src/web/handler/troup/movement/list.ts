@@ -4,7 +4,7 @@ import {
 import {
   TroupListMovementResponse,
   TroupListMovementDataResponse
-} from '#client/src/endpoints/troup/movement/list'
+} from '@eoneom/api-client/src/endpoints/troup/movement/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   TroupMovementListQuery,

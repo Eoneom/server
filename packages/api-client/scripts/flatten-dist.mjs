@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const clientRoot = path.resolve(__dirname, '..')
 const distRoot = path.join(clientRoot, 'dist')
-const nestedSrc = path.join(distRoot, 'client', 'src')
+const nestedSrc = path.join(distRoot, 'packages', 'api-client', 'src')
 
 if (!fs.existsSync(nestedSrc)) {
   console.error('flatten-dist: expected', nestedSrc)

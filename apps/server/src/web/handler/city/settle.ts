@@ -2,7 +2,7 @@ import { citySettle } from '#app/command/city/settle'
 import {
   CitySettleRequest,
   CitySettleResponse
-} from '#client/src/endpoints/city/settle'
+} from '@eoneom/api-client/src/endpoints/city/settle'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   NextFunction,

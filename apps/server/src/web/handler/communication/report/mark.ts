@@ -3,7 +3,7 @@ import {
   Request,
   Response
 } from 'express'
-import { CommunicationMarkReportResponse } from '#client/src/endpoints/communication/report/mark'
+import { CommunicationMarkReportResponse } from '@eoneom/api-client/src/endpoints/communication/report/mark'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { markCommunicationReport } from '#app/command/communication/report/mark'
 

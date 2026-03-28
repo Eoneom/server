@@ -3,7 +3,7 @@ import {
 } from 'express'
 import {
   LoginRequest, LoginResponse
-} from '#client/src/endpoints/player/login'
+} from '@eoneom/api-client/src/endpoints/player/login'
 import { loginAuth } from '#command/auth/login'
 
 export const loginHandler = async (

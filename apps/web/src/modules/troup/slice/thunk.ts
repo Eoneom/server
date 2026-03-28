@@ -7,7 +7,7 @@ import { resetOutpost, selectOutpostId } from '#outpost/slice'
 import { listOutposts } from '#outpost/slice/thunk'
 import { createAppAsyncThunk } from '#store/type'
 import { setTroups } from '#troup/slice'
-import { Coordinates, MovementAction, TroupCode } from '@kroust/swarm-client'
+import { Coordinates, MovementAction, TroupCode } from '@eoneom/api-client'
 
 export const getTroup = createAppAsyncThunk('troup/get', async (id: string, { getState, rejectWithValue }) => {
   const token = selectToken(getState())

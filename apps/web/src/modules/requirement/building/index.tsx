@@ -1,4 +1,4 @@
-import { Requirement } from '@kroust/swarm-client'
+import { Requirement } from '@eoneom/api-client'
 import React from 'react'
 import { BuildingTranslations } from '#building/translations'
 import { useAppSelector } from '#store/type'

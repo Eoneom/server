@@ -6,7 +6,7 @@ import {
 import {
   CommunicationCountUnreadReportDataResponse,
   CommunicationCountUnreadReportResponse
-} from '#client/src/endpoints/communication/report/count-unread'
+} from '@eoneom/api-client/src/endpoints/communication/report/count-unread'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { CommunicationCountUnreadReportQuery } from '#app/query/communication/report/count-unread'
 

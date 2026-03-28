@@ -8,7 +8,7 @@ module.exports = {
     '^@server-core/(.*)$': '<rootDir>/src/core/$1',
     '^#adapter/(.*)$': '<rootDir>/src/adapter/$1',
     '^#app/(.*)$': '<rootDir>/src/app/$1',
-    '^#client/(.*)$': '<rootDir>/../../client/$1',
+    '^@eoneom/api-client/(.*)$': '<rootDir>/../../packages/api-client/$1',
     '^#core/(.*)$': '<rootDir>/src/core/$1',
     '^#cron/(.*)$': '<rootDir>/src/cron/$1',
     '^#command/(.*)$': '<rootDir>/src/app/command/$1',

@@ -1,4 +1,4 @@
-import { TechnologyCode } from '@kroust/swarm-client'
+import { TechnologyCode } from '@eoneom/api-client'
 
 interface TechnologyTranslation {
   name: string

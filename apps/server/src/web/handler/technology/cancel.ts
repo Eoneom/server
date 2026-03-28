@@ -1,7 +1,7 @@
 import {
   NextFunction, Request, Response
 } from 'express'
-import { TechnologyCancelResponse } from '#client/src/endpoints/technology/cancel'
+import { TechnologyCancelResponse } from '@eoneom/api-client/src/endpoints/technology/cancel'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { cancelTechnology } from '#command/technology/cancel'
 

@@ -4,7 +4,7 @@ import {
 import {
   TroupProgressRecruitRequest,
   TroupProgressRecruitResponse
-} from '#client/src/endpoints/troup/progress-recruit'
+} from '@eoneom/api-client/src/endpoints/troup/progress-recruit'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { progressTroupRecruitment } from '#app/command/troup/progress-recruit'
 

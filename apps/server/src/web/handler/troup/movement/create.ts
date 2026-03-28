@@ -7,7 +7,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   TroupMovementCreateRequest,
   TroupMovementCreateResponse
-} from '#client/src/endpoints/troup/movement/create'
+} from '@eoneom/api-client/src/endpoints/troup/movement/create'
 import { createTroupMovement } from '#app/command/troup/movement/create'
 
 export const troupCreateMovementHandler = async (

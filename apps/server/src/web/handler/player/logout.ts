@@ -5,7 +5,7 @@ import {
 } from 'express'
 import assert from 'assert'
 
-import { LogoutResponse } from '#client/src/endpoints/player/logout'
+import { LogoutResponse } from '@eoneom/api-client/src/endpoints/player/logout'
 import { logoutAuth } from '#command/auth/logout'
 
 export const logoutHandler = async (

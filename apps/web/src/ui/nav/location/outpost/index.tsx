@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { OutpostItem } from '#types'
 import { NavLocationItem } from '#ui/nav/location/item'
 import { formatCoordinates } from '#helpers/transform'
-import { OutpostType } from '@kroust/swarm-client'
+import { OutpostType } from '@eoneom/api-client'
 
 interface Props {
   outposts: OutpostItem[]

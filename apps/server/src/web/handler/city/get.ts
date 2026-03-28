@@ -7,7 +7,7 @@ import {
   CityGetRequest,
   CityGetResponse,
   CityGetDataResponse
-} from '#client/src/endpoints/city/get'
+} from '@eoneom/api-client/src/endpoints/city/get'
 import { getPlayerIdFromContext } from '#web/helpers'
 import {
   CityGetQuery,

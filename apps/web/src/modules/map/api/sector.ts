@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import { WorldGetSectorDataResponse } from '@kroust/swarm-client'
+import { WorldGetSectorDataResponse } from '@eoneom/api-client'
 
 import { client } from '#helpers/api'
 import { isError } from '#helpers/assertion'

@@ -1,4 +1,4 @@
-import { CellType } from '@kroust/swarm-client'
+import { CellType } from '@eoneom/api-client'
 
 export const getCellFillStyle = ({ type }: { type?: CellType }): string => {
   switch(type) {

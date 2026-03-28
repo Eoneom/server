@@ -4,7 +4,7 @@ import {
 import {
   BuildingFinishUpgradeRequest,
   BuildingFinishUpgradeResponse
-} from '#client/src/endpoints/building/finish-upgrade'
+} from '@eoneom/api-client/src/endpoints/building/finish-upgrade'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { sagaFinishUpgrade } from '#app/saga/finish/upgrade'
 

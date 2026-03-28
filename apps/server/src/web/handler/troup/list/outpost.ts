@@ -3,7 +3,7 @@ import {
   Request,
   Response
 } from 'express'
-import { TroupListResponse } from '#client/src/endpoints/troup/list/shared'
+import { TroupListResponse } from '@eoneom/api-client/src/endpoints/troup/list/shared'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { TroupListQuery } from '#query/troup/list'
 import { troupListResponseMapper } from '#web/handler/troup/list/mapper'

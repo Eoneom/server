@@ -1,4 +1,4 @@
-import { BuildingCode } from '@kroust/swarm-client'
+import { BuildingCode } from '@eoneom/api-client'
 
 interface BuildingTranslation {
   name: string

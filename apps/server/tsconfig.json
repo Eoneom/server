@@ -16,8 +16,8 @@
       "#app/*": [
         "./src/app/*"
       ],
-      "#client/*": [
-        "../../client/*"
+      "@eoneom/api-client/*": [
+        "../../packages/api-client/*"
       ],
       "#core/*": [
         "./src/core/*"

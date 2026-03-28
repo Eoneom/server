@@ -1,7 +1,7 @@
 import React from 'react'
 import { RequirementBuilding } from '#requirement/building'
 import { RequirementTechnology } from '#requirement/technology'
-import { Requirement as RequirementValue } from '@kroust/swarm-client'
+import { Requirement as RequirementValue } from '@eoneom/api-client'
 
 interface Props {
   requirements?: RequirementValue

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { MovementAction, TroupCode } from '@kroust/swarm-client'
+import { MovementAction, TroupCode } from '@eoneom/api-client'
 
 import { selectCityCoordinates } from '#city/slice'
 import { selectOutpostCoordinates } from '#outpost/slice'

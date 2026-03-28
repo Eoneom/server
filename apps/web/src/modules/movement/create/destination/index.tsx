@@ -1,5 +1,5 @@
 import { MovementCreateDestinationCoordinate } from '#movement/create/destination/coordinate'
-import { Coordinates } from '@kroust/swarm-client'
+import { Coordinates } from '@eoneom/api-client'
 import React from 'react'
 
 interface Props {

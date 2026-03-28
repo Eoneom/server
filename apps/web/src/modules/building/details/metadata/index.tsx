@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { isProductionBuilding, isWarehouseBuilding } from '@kroust/swarm-client'
+import { isProductionBuilding, isWarehouseBuilding } from '@eoneom/api-client'
 
 import { Building } from '#types'
 

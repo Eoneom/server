@@ -3,7 +3,7 @@ import {
 } from 'express'
 import {
   SignupRequest, SignupResponse
-} from '#client/src/endpoints/player/signup'
+} from '@eoneom/api-client/src/endpoints/player/signup'
 import { signupAuth } from '#command/auth/signup'
 
 export const signupHandler = async (

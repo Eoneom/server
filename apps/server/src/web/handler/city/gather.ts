@@ -5,7 +5,7 @@ import {
 } from 'express'
 import {
   CityGatherRequest, CityGatherResponse
-} from '#client/src/endpoints/city/gather'
+} from '@eoneom/api-client/src/endpoints/city/gather'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { sagaGather } from '#app/saga/gather'
 

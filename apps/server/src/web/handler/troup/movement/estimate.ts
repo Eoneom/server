@@ -6,7 +6,7 @@ import {
 import {
   TroupMovementEstimateRequest,
   TroupMovementEstimateResponse
-} from '#client/src/endpoints/troup/movement/estimate'
+} from '@eoneom/api-client/src/endpoints/troup/movement/estimate'
 import { TroupMovementEstimateQuery } from '#app/query/troup/movement/estimate'
 
 export const troupEstimateMovementHandler = async (

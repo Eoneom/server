@@ -1,5 +1,5 @@
 import { Factory } from '#adapter/factory'
-import { ErrorResponse } from '#client/src/response'
+import { ErrorResponse } from '@eoneom/api-client/src/response'
 import {
   NextFunction, Request, Response
 } from 'express'

@@ -1,6 +1,6 @@
 import { useAppSelector } from '#store/type'
 import { selectTroups } from '#troup/slice'
-import { TroupCode } from '@kroust/swarm-client'
+import { TroupCode } from '@eoneom/api-client'
 import React, { useMemo, useState } from 'react'
 
 interface Props {

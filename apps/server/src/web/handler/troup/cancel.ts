@@ -3,7 +3,7 @@ import {
 } from 'express'
 import {
   TroupCancelRequest, TroupCancelResponse
-} from '#client/src/endpoints/troup/cancel'
+} from '@eoneom/api-client/src/endpoints/troup/cancel'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { cancelTroup } from '#app/command/troup/cancel'
 
