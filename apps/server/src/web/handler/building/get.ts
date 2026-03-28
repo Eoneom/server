@@ -57,7 +57,7 @@ const response_mapper = ({
   building,
   cost,
   requirement,
-  metadata
+  metadata,
 }: BuildingGetQueryResponse): BuildingGetDataResponse => {
   return {
     code: building.code,

@@ -7,7 +7,7 @@ import { useRequirement } from '#requirement/hook'
 import { useAppDispatch, useAppSelector } from '#store/type'
 import { selectCity } from '#city/slice'
 import { upgradeBuilding } from '#building/slice/thunk'
-import { selectBuildingInProgress, selectTotalBuildingsLevel } from '#building/slice'
+import { selectBuildingInProgress } from '#building/slice'
 
 interface Props {
   building: Building
@@ -16,12 +16,12 @@ interface Props {
 export const BuildingDetailsUpgrade: React.FC<Props> = ({ building }) => {
   const dispatch = useAppDispatch()
   const inProgress = useAppSelector(selectBuildingInProgress)
-  const levelsTotal = useAppSelector(selectTotalBuildingsLevel)
   const city = useAppSelector(selectCity)
   const { isRequirementMet } = useRequirement({ requirement: building.requirement })
 
   const canBuild = !inProgress &&
-    levelsTotal < (city?.maximum_building_levels ?? 0) &&
+    city != null &&
+    city.building_levels_used < city.maximum_building_levels &&
     hasEnoughResources({ city, cost: building.upgrade_cost }) &&
     isRequirementMet
 

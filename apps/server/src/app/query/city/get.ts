@@ -16,6 +16,7 @@ export interface CityGetQueryResponse {
   pre_cell_earnings_per_second: Resource
   cell_resource_coefficient: Resource
   maximum_building_levels: number
+  building_levels_used: number
   cell: CellEntity
   warehouses_capacity: Resource
   warehouse_space_remaining: Resource
@@ -39,12 +40,14 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
       production,
       cell,
       maximum_building_levels,
-      warehouses_capacity
+      warehouses_capacity,
+      building_levels_used,
     ] = await Promise.all([
       AppService.getCityProductionBreakdown({ city_id: city.id }),
       this.repository.cell.getCityCell({ city_id: city.id }),
       AppService.getCityMaximumBuildingLevels({ city_id: city.id }),
-      AppService.getCityWarehousesCapacity({ city_id: city.id })
+      AppService.getCityWarehousesCapacity({ city_id: city.id }),
+      this.repository.building.getTotalLevels({ city_id: city.id }),
     ])
 
     const warehouse_space_remaining: Resource = {
@@ -58,6 +61,7 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
       pre_cell_earnings_per_second: production.pre_cell_earnings_per_second,
       cell_resource_coefficient: production.cell_resource_coefficient,
       maximum_building_levels,
+      building_levels_used,
       cell,
       warehouses_capacity,
       warehouse_space_remaining

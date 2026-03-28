@@ -52,7 +52,7 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
       this.repository.technology.get({
         player_id,
         code: TechnologyCode.ARCHITECTURE
-      })
+      }),
     ])
 
     const metadata = await this.getMetadata({ building })

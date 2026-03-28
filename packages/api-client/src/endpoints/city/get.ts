@@ -11,6 +11,7 @@ export interface CityGetDataResponse {
   plastic: number
   mushroom: number
   maximum_building_levels: number
+  building_levels_used: number
   coordinates: Coordinates
   earnings_per_second: {
     plastic: number

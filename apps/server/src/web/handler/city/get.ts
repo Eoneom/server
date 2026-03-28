@@ -48,6 +48,7 @@ export const cityGetHandler = async (
 const response_mapper = ({
   city,
   maximum_building_levels,
+  building_levels_used,
   earnings_per_second,
   pre_cell_earnings_per_second,
   cell_resource_coefficient,
@@ -61,6 +62,7 @@ const response_mapper = ({
     plastic: city.plastic,
     mushroom: city.mushroom,
     maximum_building_levels,
+    building_levels_used,
     earnings_per_second: {
       plastic: earnings_per_second.plastic,
       mushroom: earnings_per_second.mushroom
