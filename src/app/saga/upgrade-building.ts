@@ -1,5 +1,5 @@
 import { upgradeBuilding } from '#app/command/building/upgrade'
-import { TechnologyFinishResearchCommand } from '#app/command/technology/finish-research'
+import { finishTechnologyResearch } from '#app/command/technology/finish-research'
 import { BuildingCode } from '#core/building/constant/code'
 
 export const sagaUpgradeBuilding = async ({
@@ -11,7 +11,7 @@ export const sagaUpgradeBuilding = async ({
   city_id: string
   building_code: BuildingCode
 }): Promise<void> => {
-  await new TechnologyFinishResearchCommand().run({ player_id })
+  await finishTechnologyResearch({ player_id })
   await upgradeBuilding({
     player_id,
     city_id,

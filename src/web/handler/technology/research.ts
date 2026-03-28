@@ -5,7 +5,6 @@ import {
   TechnologyResearchRequest, TechnologyResearchResponse
 } from '#client/src/endpoints/technology/research'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TechnologyResearchCommand } from '#command/technology/research'
 import { sagaResearchTechnology } from '#app/saga/research-technology'
 
 export const technologyResearchHandler = async (

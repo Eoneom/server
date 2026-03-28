@@ -1,5 +1,5 @@
 import { finishBuildingUpgrade } from '#app/command/building/finish-upgrade'
-import { TechnologyResearchCommand } from '#app/command/technology/research'
+import { researchTechnology } from '#app/command/technology/research'
 import { TechnologyCode } from '#core/technology/constant/code'
 
 export const sagaResearchTechnology = async ({
@@ -15,7 +15,7 @@ export const sagaResearchTechnology = async ({
     player_id,
     city_id
   })
-  await new TechnologyResearchCommand().run({
+  await researchTechnology({
     city_id,
     technology_code,
     player_id

@@ -1,34 +1,56 @@
-import { TechnologyFinishResearchCommand } from '#app/command/technology/finish-research'
+import { finishTechnologyResearch } from './finish-research'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
 import { TechnologyCode } from '#core/technology/constant/code'
 import { TechnologyEntity } from '#core/technology/entity'
 import { now } from '#shared/time'
 import assert from 'assert'
 
-describe('TechnologyFinishResearchCommand', () => {
+describe('finishTechnologyResearch', () => {
   const player_id = 'player_id'
-  let command: TechnologyFinishResearchCommand
   let technology_to_finish: TechnologyEntity
+  let technologyUpdateOne: jest.Mock
+  let repository: Pick<Repository, 'technology'>
 
   beforeEach(() => {
-    command = new TechnologyFinishResearchCommand()
     technology_to_finish = TechnologyEntity.create({
       ...TechnologyEntity.init({
         player_id,
-        code: TechnologyCode.ARCHITECTURE 
+        code: TechnologyCode.ARCHITECTURE
       }),
       research_at: now()
     })
+
+    technologyUpdateOne = jest.fn().mockResolvedValue(undefined)
+
+    repository = {
+      technology: {
+        getResearchDone: jest.fn().mockResolvedValue(technology_to_finish),
+        updateOne: technologyUpdateOne
+      } as unknown as Repository['technology']
+    }
+
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
-  it('should not return any update if there is no technology in progress', () => {
-    const { technology: updated_technology } = command.exec({ technology_to_finish: null })
-    assert.ok(!updated_technology)
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  it('should finish the  technology upgrade', () => {
-    const { technology: updated_technology } = command.exec({ technology_to_finish })
+  it('should not return any update if there is no technology in progress', async () => {
+    repository.technology.getResearchDone = jest.fn().mockResolvedValue(null)
+
+    await finishTechnologyResearch({ player_id })
+
+    assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
+  })
+
+  it('should finish the technology research', async () => {
+    await finishTechnologyResearch({ player_id })
 
     assert.ok(technology_to_finish.research_at)
+    assert.strictEqual(technologyUpdateOne.mock.calls.length, 1)
+    const updated_technology = technologyUpdateOne.mock.calls[0][0]
     assert.ok(updated_technology)
     assert.ok(!updated_technology.research_at)
   })

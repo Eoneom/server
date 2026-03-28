@@ -1,41 +1,20 @@
-import { GenericCommand } from '#command/generic'
-import { TechnologyEntity } from '#core/technology/entity'
+import { Factory } from '#adapter/factory'
 import { TechnologyError } from '#core/technology/error'
 
-interface TechnologyCancelRequest {
+export interface CancelTechnologyParams {
   player_id: string
 }
 
-interface TechnologyCancelExec {
-  technology: TechnologyEntity | null
-}
+export async function cancelTechnology({ player_id }: CancelTechnologyParams): Promise<void> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:technology:cancel')
+  logger.info('run')
 
-interface TechnologyCancelSave {
-  technology: TechnologyEntity
-}
+  const technology = await repository.technology.getInProgress({ player_id })
 
-export class TechnologyCancelCommand extends GenericCommand<
-  TechnologyCancelRequest,
-  TechnologyCancelExec,
-  TechnologyCancelSave
-> {
-  constructor() {
-    super({ name: 'technology:cancel' })
+  if (!technology) {
+    throw new Error(TechnologyError.NOT_IN_PROGRESS)
   }
 
-  async fetch({ player_id }: TechnologyCancelRequest): Promise<TechnologyCancelExec> {
-    const technology = await this.repository.technology.getInProgress({ player_id })
-
-    return { technology }
-  }
-  exec({ technology }: TechnologyCancelExec): TechnologyCancelSave {
-    if (!technology) {
-      throw new Error(TechnologyError.NOT_IN_PROGRESS)
-    }
-
-    return { technology: technology.cancel() }
-  }
-  async save({ technology }: TechnologyCancelSave): Promise<void> {
-    await this.repository.technology.updateOne(technology)
-  }
+  await repository.technology.updateOne(technology.cancel())
 }
