@@ -1,83 +1,45 @@
-import { GenericCommand } from '#command/generic'
-import { BuildingEntity } from '#core/building/entity'
+import { Factory } from '#adapter/factory'
 import { BuildingError } from '#core/building/error'
-import { CityEntity } from '#core/city/entity'
 import { PricingService } from '#core/pricing/service'
 
-interface BuildingCancelRequest {
+export interface BuildingCancelRequest {
   city_id: string
   player_id: string
 }
 
-interface BuildingCancelExec {
-  city: CityEntity
-  player_id: string
-  building: BuildingEntity | null
-}
+export async function cancelBuilding({
+  city_id,
+  player_id,
+}: BuildingCancelRequest): Promise<void> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:building:cancel')
+  logger.info('run')
 
-interface BuildingCancelSave {
-  building: BuildingEntity
-  city: CityEntity
-}
-
-export class BuildingCancelCommand extends GenericCommand<
-  BuildingCancelRequest,
-  BuildingCancelExec,
-  BuildingCancelSave
-> {
-  constructor() {
-    super({ name: 'building:cancel' })
-  }
-
-  async fetch({
-    city_id,
-    player_id
-  }: BuildingCancelRequest): Promise<BuildingCancelExec> {
-    const [
-      city,
-      building
-    ] = await Promise.all([
-      this.repository.city.get(city_id),
-      this.repository.building.getInProgress({ city_id })
-    ])
-
-    return {
-      city,
-      player_id,
-      building
-    }
-  }
-  exec({
+  const [
     city,
-    player_id,
     building
-  }: BuildingCancelExec): BuildingCancelSave {
-    if (!building) {
-      throw new Error(BuildingError.NOT_IN_PROGRESS)
-    }
+  ] = await Promise.all([
+    repository.city.get(city_id),
+    repository.building.getInProgress({ city_id })
+  ])
 
-    const resource_refund = PricingService.getBuildingUpgradeRefund({
-      code: building.code,
-      level: building.level
-    })
-
-    const updated_city = city.refund({
-      player_id,
-      resource: resource_refund
-    })
-
-    return {
-      building: building.cancel(),
-      city: updated_city
-    }
+  if (!building) {
+    throw new Error(BuildingError.NOT_IN_PROGRESS)
   }
-  async save({
-    building,
-    city
-  }: BuildingCancelSave): Promise<void> {
-    await Promise.all([
-      this.repository.building.updateOne(building),
-      this.repository.city.updateOne(city)
-    ])
-  }
+
+  const resource_refund = PricingService.getBuildingUpgradeRefund({
+    code: building.code,
+    level: building.level
+  })
+
+  const updated_city = city.refund({
+    player_id,
+    resource: resource_refund
+  })
+  const updated_building = building.cancel()
+
+  await Promise.all([
+    repository.building.updateOne(updated_building),
+    repository.city.updateOne(updated_city)
+  ])
 }
