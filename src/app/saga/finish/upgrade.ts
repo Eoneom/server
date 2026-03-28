@@ -1,5 +1,5 @@
 import { finishBuildingUpgrade } from '#app/command/building/finish-upgrade'
-import { CityGatherCommand } from '#app/command/city/gather'
+import { cityGather } from '#app/command/city/gather'
 import {
   isProductionBuildingCode, isWarehouseBuildingCode
 } from '#core/building/helper'
@@ -17,7 +17,7 @@ export const sagaFinishUpgrade = async ({
   })
 
   if (upgrade_result && (isProductionBuildingCode(upgrade_result.code) || isWarehouseBuildingCode(upgrade_result.code))) {
-    await new CityGatherCommand().run({
+    await cityGather({
       player_id,
       city_id,
       gather_at_time: upgrade_result.upgraded_at
