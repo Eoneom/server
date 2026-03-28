@@ -4,7 +4,7 @@ import {
 import {
   LoginRequest, LoginResponse
 } from '#client/src/endpoints/player/login'
-import { AuthLoginCommand } from '#command/auth/login'
+import { loginAuth } from '#command/auth/login'
 
 export const loginHandler = async (
   req: Request<LoginRequest>,
@@ -20,7 +20,7 @@ export const loginHandler = async (
   }
 
   try {
-    const { token } = await new AuthLoginCommand().run({ player_name })
+    const { token } = await loginAuth({ player_name })
 
     return res.status(200).send({
       status: 'ok',

@@ -1,4 +1,4 @@
-import { AuthAuthorizeCommand } from '#app/command/auth/authorize'
+import { authorizeAuth } from '#app/command/auth/authorize'
 import { now } from '#shared/time'
 import {
   NextFunction, Request, Response
@@ -13,7 +13,7 @@ export const authMiddleware = async (req: Request<unknown>, res: Response<unknow
     })
   }
   try {
-    const { player_id } = await new AuthAuthorizeCommand().run({
+    const { player_id } = await authorizeAuth({
       token,
       action_at: now()
     })

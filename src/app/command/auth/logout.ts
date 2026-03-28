@@ -1,45 +1,20 @@
-import { GenericCommand } from '#command/generic'
-import { AuthEntity } from '#core/auth/entity'
+import { Factory } from '#adapter/factory'
 
-export interface AuthLogoutRequest {
+export interface LogoutAuthParams {
   token: string
 }
 
-interface AuthLogoutExec {
-  auth?: AuthEntity
-}
+export async function logoutAuth({ token }: LogoutAuthParams): Promise<void> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:auth:logout')
+  logger.info('run')
 
-interface AuthLogoutSave {
-  auth_id_to_delete?: string
-}
-
-export class AuthLogoutCommand extends GenericCommand<
-  AuthLogoutRequest,
-  AuthLogoutExec,
-  AuthLogoutSave
-> {
-  constructor() {
-    super({ name: 'auth:logout' })
+  let auth
+  try {
+    auth = await repository.auth.get({ token })
+  } catch {
+    return
   }
 
-  async fetch({ token }: AuthLogoutRequest): Promise<AuthLogoutExec> {
-    try {
-      const auth = await this.repository.auth.get({ token })
-      return { auth }
-    } catch (err) {
-      return { }
-    }
-  }
-
-  exec({ auth }: AuthLogoutExec): AuthLogoutSave {
-    return { auth_id_to_delete: auth?.id }
-  }
-
-  async save({ auth_id_to_delete }: AuthLogoutSave): Promise<void> {
-    if (!auth_id_to_delete) {
-      return
-    }
-
-    await this.repository.auth.delete(auth_id_to_delete)
-  }
+  await repository.auth.delete(auth.id)
 }

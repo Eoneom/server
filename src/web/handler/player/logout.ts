@@ -6,7 +6,7 @@ import {
 import assert from 'assert'
 
 import { LogoutResponse } from '#client/src/endpoints/player/logout'
-import { AuthLogoutCommand } from '#command/auth/logout'
+import { logoutAuth } from '#command/auth/logout'
 
 export const logoutHandler = async (
   req: Request,
@@ -17,7 +17,7 @@ export const logoutHandler = async (
   assert(token)
 
   try {
-    await new AuthLogoutCommand().run({ token })
+    await logoutAuth({ token })
     return res.status(200).send({ status: 'ok' })
   } catch (err) {
     next(err)

@@ -1,53 +1,26 @@
-import { GenericCommand } from '#app/command/generic'
-import { AuthEntity } from '#core/auth/entity'
+import { Factory } from '#adapter/factory'
 
-interface AuthAuthorizeRequest {
+export interface AuthorizeAuthParams {
   token: string
   action_at: number
 }
 
-interface AuthAuthorizeExec {
-  auth: AuthEntity
-  action_at: number
-}
-
-interface AuthAuthorizeSave {
-  auth: AuthEntity
-}
-
-interface AuthAuthorizeResponse {
+export interface AuthorizeAuthResult {
   player_id: string
 }
 
-export class AuthAuthorizeCommand extends GenericCommand<
-  AuthAuthorizeRequest,
-  AuthAuthorizeExec,
-  AuthAuthorizeSave,
-  AuthAuthorizeResponse
-> {
-  constructor() {
-    super({ name: 'auth:authorize' })
-  }
-  async fetch({
-    token,
-    action_at
-  }: AuthAuthorizeRequest): Promise<AuthAuthorizeExec> {
-    const auth = await this.repository.auth.get({ token })
-    return {
-      auth,
-      action_at
-    }
-  }
+export async function authorizeAuth({
+  token,
+  action_at,
+}: AuthorizeAuthParams): Promise<AuthorizeAuthResult> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:auth:authorize')
+  logger.info('run')
 
-  exec({
-    auth,
-    action_at
-  }: AuthAuthorizeExec): AuthAuthorizeSave {
-    return { auth: auth.updateLastAction(action_at) }
-  }
+  const auth = await repository.auth.get({ token })
+  const updated_auth = auth.updateLastAction(action_at)
 
-  async save({ auth }: AuthAuthorizeSave): Promise<AuthAuthorizeResponse> {
-    await this.repository.auth.updateOne(auth)
-    return { player_id: auth.player_id }
-  }
+  await repository.auth.updateOne(updated_auth)
+
+  return { player_id: updated_auth.player_id }
 }

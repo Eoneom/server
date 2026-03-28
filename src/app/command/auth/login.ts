@@ -1,43 +1,25 @@
-import { GenericCommand } from '#command/generic'
+import { Factory } from '#adapter/factory'
 import { AuthEntity } from '#core/auth/entity'
 
-export interface AuthLoginRequest {
+export interface LoginAuthParams {
   player_name: string
 }
 
-interface AuthLoginExec {
-  player_id: string
-}
-
-interface AuthLoginSave {
-  auth: AuthEntity
-}
-
-export interface AuthLoginResponse {
+export interface LoginAuthResult {
   token: string
 }
 
-export class AuthLoginCommand extends GenericCommand<
-  AuthLoginRequest,
-  AuthLoginExec,
-  AuthLoginSave,
-  AuthLoginResponse
-> {
-  constructor() {
-    super({ name: 'auth:login' })
-  }
+export async function loginAuth({
+  player_name,
+}: LoginAuthParams): Promise<LoginAuthResult> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:auth:login')
+  logger.info('run')
 
-  async fetch({ player_name }: AuthLoginRequest): Promise<AuthLoginExec> {
-    const player = await this.repository.player.getByName(player_name)
-    return { player_id: player.id }
-  }
+  const player = await repository.player.getByName(player_name)
+  const auth = AuthEntity.generate({ player_id: player.id })
 
-  exec({ player_id }: AuthLoginExec): AuthLoginSave {
-    return { auth: AuthEntity.generate({ player_id }) }
-  }
+  await repository.auth.create(auth)
 
-  async save({ auth }: AuthLoginSave): Promise<AuthLoginResponse> {
-    await this.repository.auth.create(auth)
-    return { token: auth.token }
-  }
+  return { token: auth.token }
 }

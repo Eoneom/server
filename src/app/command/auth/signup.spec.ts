@@ -1,6 +1,7 @@
-import {
-  AuthSignupCommand, AuthSignupExec
-} from '#app/command/auth/signup'
+import { signupAuth } from './signup'
+import { Factory } from '#adapter/factory'
+import { AppService } from '#app/service'
+import { Repository } from '#app/port/repository/generic'
 import { BuildingCode } from '#core/building/constant/code'
 import { CityError } from '#core/city/error'
 import { PlayerError } from '#core/player/error'
@@ -11,7 +12,7 @@ import { CellType } from '#core/world/value/cell-type'
 import { FAKE_ID } from '#shared/identification'
 import assert from 'assert'
 
-describe('AuthSignupCommand', () => {
+describe('signupAuth', () => {
   const player_name = 'player_name'
   const city_name = 'city_name'
   const default_cell_params = {
@@ -28,132 +29,173 @@ describe('AuthSignupCommand', () => {
       x: 1,
       y: 1,
       sector: 1
-    },
-  })
-
-  let command: AuthSignupCommand
-  let success_params: AuthSignupExec
-
-  beforeEach(() => {
-    command = new AuthSignupCommand()
-    success_params = {
-      does_city_exist: false,
-      does_player_exist: false,
-      player_name,
-      city_name,
-      city_first_cell,
-      cells_around_city: [
-        CellEntity.create({
-          ...default_cell_params,
-          id: 'cell_id_1',
-          coordinates: {
-            sector: 1,
-            x: 0,
-            y: 1
-          }
-        }),
-
-        CellEntity.create({
-          ...default_cell_params,
-          id: 'cell_id_2',
-          coordinates: {
-            sector: 1,
-            x: 1,
-            y: 0
-          }
-        }),
-        CellEntity.create({
-          ...default_cell_params,
-          id: 'cell_id_3',
-          coordinates: {
-            sector: 1,
-            x: 2,
-            y: 1
-          }
-        }),
-        CellEntity.create({
-          ...default_cell_params,
-          id: 'cell_id_4',
-          coordinates: {
-            sector: 1,
-            x: 1,
-            y: 2
-          }
-        }),
-      ]
     }
   })
 
-  it('should prevent user from signup with an existing name', () => {
-    assert.throws(() => command.exec({
-      ...success_params,
-      does_player_exist: true,
-    }), new RegExp(PlayerError.ALREADY_EXISTS))
+  const cells_around_city = [
+    CellEntity.create({
+      ...default_cell_params,
+      id: 'cell_id_1',
+      coordinates: {
+        sector: 1,
+        x: 0,
+        y: 1
+      }
+    }),
+    CellEntity.create({
+      ...default_cell_params,
+      id: 'cell_id_2',
+      coordinates: {
+        sector: 1,
+        x: 1,
+        y: 0
+      }
+    }),
+    CellEntity.create({
+      ...default_cell_params,
+      id: 'cell_id_3',
+      coordinates: {
+        sector: 1,
+        x: 2,
+        y: 1
+      }
+    }),
+    CellEntity.create({
+      ...default_cell_params,
+      id: 'cell_id_4',
+      coordinates: {
+        sector: 1,
+        x: 1,
+        y: 2
+      }
+    })
+  ]
+
+  let playerCreate: jest.Mock
+  let cityCreate: jest.Mock
+  let buildingCreate: jest.Mock
+  let technologyCreate: jest.Mock
+  let cellUpdateOne: jest.Mock
+  let troupCreate: jest.Mock
+  let explorationCreate: jest.Mock
+  let repository: Pick<Repository, 'player' | 'city' | 'building' | 'technology' | 'cell' | 'troup' | 'exploration'>
+
+  beforeEach(() => {
+    playerCreate = jest.fn().mockResolvedValue(undefined)
+    cityCreate = jest.fn().mockResolvedValue(undefined)
+    buildingCreate = jest.fn().mockResolvedValue(undefined)
+    technologyCreate = jest.fn().mockResolvedValue(undefined)
+    cellUpdateOne = jest.fn().mockResolvedValue(undefined)
+    troupCreate = jest.fn().mockResolvedValue(undefined)
+    explorationCreate = jest.fn().mockResolvedValue(undefined)
+
+    repository = {
+      player: {
+        exist: jest.fn().mockResolvedValue(false),
+        create: playerCreate
+      } as unknown as Repository['player'],
+      city: {
+        exist: jest.fn().mockResolvedValue(false),
+        create: cityCreate
+      } as unknown as Repository['city'],
+      building: {
+        create: buildingCreate
+      } as unknown as Repository['building'],
+      technology: {
+        create: technologyCreate
+      } as unknown as Repository['technology'],
+      cell: {
+        updateOne: cellUpdateOne
+      } as unknown as Repository['cell'],
+      troup: {
+        create: troupCreate
+      } as unknown as Repository['troup'],
+      exploration: {
+        create: explorationCreate
+      } as unknown as Repository['exploration']
+    }
+
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    jest.spyOn(AppService, 'selectCityFirstCell').mockResolvedValue(city_first_cell)
+    jest.spyOn(AppService, 'getCellsAround').mockResolvedValue(cells_around_city)
   })
 
-  it('should prevent user from settling a city with an existing name', () => {
-    assert.throws(() => command.exec({
-      ...success_params,
-      does_city_exist: true,
-    }), new RegExp(CityError.ALREADY_EXISTS))
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  it('should init all city buildings', () => {
-    const {
-      buildings,
-      city
-    } = command.exec(success_params)
+  it('should prevent user from signup with an existing name', async () => {
+    repository.player.exist = jest.fn().mockResolvedValue(true)
 
-    assert.strictEqual(buildings.length, Object.keys(BuildingCode).length)
-    buildings.forEach(building => {
-      assert.strictEqual(building.city_id, city.id)
+    await assert.rejects(
+      () => signupAuth({ player_name, city_name }),
+      new RegExp(PlayerError.ALREADY_EXISTS)
+    )
+
+    assert.strictEqual(playerCreate.mock.calls.length, 0)
+  })
+
+  it('should prevent user from settling a city with an existing name', async () => {
+    repository.city.exist = jest.fn().mockResolvedValue(true)
+
+    await assert.rejects(
+      () => signupAuth({ player_name, city_name }),
+      new RegExp(CityError.ALREADY_EXISTS)
+    )
+
+    assert.strictEqual(playerCreate.mock.calls.length, 0)
+  })
+
+  it('should init all city buildings', async () => {
+    await signupAuth({ player_name, city_name })
+
+    assert.strictEqual(buildingCreate.mock.calls.length, Object.keys(BuildingCode).length)
+    const created_city = cityCreate.mock.calls[0][0]
+    buildingCreate.mock.calls.forEach(([ building ]) => {
+      assert.strictEqual(building.city_id, created_city.id)
     })
   })
 
-  it('should init all technologies', () => {
-    const {
-      technologies,
-      player
-    } = command.exec(success_params)
+  it('should init all technologies', async () => {
+    await signupAuth({ player_name, city_name })
 
-    assert.strictEqual(technologies.length, Object.keys(TechnologyCode).length)
-    technologies.forEach(technology => {
-      assert.strictEqual(technology.player_id, player.id)
+    assert.strictEqual(technologyCreate.mock.calls.length, Object.keys(TechnologyCode).length)
+    const created_player = playerCreate.mock.calls[0][0]
+    technologyCreate.mock.calls.forEach(([ technology ]) => {
+      assert.strictEqual(technology.player_id, created_player.id)
     })
   })
 
-  it('should init all city troups', () => {
-    const {
-      troups,
-      player
-    } = command.exec(success_params)
+  it('should init all city troups', async () => {
+    await signupAuth({ player_name, city_name })
 
-    assert.strictEqual(troups.length, Object.keys(TroupCode).length)
-    troups.forEach(troup => {
+    assert.strictEqual(troupCreate.mock.calls.length, Object.keys(TroupCode).length)
+    const created_player = playerCreate.mock.calls[0][0]
+    troupCreate.mock.calls.forEach(([ troup ]) => {
       assert.strictEqual(troup.count, 0)
-      assert.strictEqual(troup.player_id, player.id)
+      assert.strictEqual(troup.player_id, created_player.id)
       assert.strictEqual(troup.cell_id, city_first_cell.id)
       assert.strictEqual(troup.ongoing_recruitment, null)
       assert.strictEqual(troup.movement_id, null)
     })
   })
 
-  it('should place the city in the world', () => {
-    const {
-      cell,
-      city,
-    } = command.exec(success_params)
+  it('should place the city in the world', async () => {
+    await signupAuth({ player_name, city_name })
 
-    assert.strictEqual(cell.city_id, city.id)
+    assert.strictEqual(cellUpdateOne.mock.calls.length, 1)
+    const updated_cell = cellUpdateOne.mock.calls[0][0]
+    const created_city = cityCreate.mock.calls[0][0]
+    assert.strictEqual(updated_cell.city_id, created_city.id)
   })
 
-  it('should init the exploration cells in the world next to the initial city', () => {
-    const {
-      exploration,
-      player
-    } = command.exec(success_params)
+  it('should init the exploration cells in the world next to the initial city', async () => {
+    await signupAuth({ player_name, city_name })
 
+    assert.strictEqual(explorationCreate.mock.calls.length, 1)
+    const exploration = explorationCreate.mock.calls[0][0]
+    const created_player = playerCreate.mock.calls[0][0]
     assert.strictEqual(exploration.cell_ids.length, 5)
-    assert.strictEqual(exploration.player_id, player.id)
+    assert.strictEqual(exploration.player_id, created_player.id)
   })
 })
