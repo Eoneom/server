@@ -63,3 +63,4 @@ jobs:
           name: api-client-dist
           path: packages/api-client/dist
       - run: yarn workspace @eoneom/web build
+      - run: yarn workspace @eoneom/web test:ci

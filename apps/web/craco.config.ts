@@ -4,7 +4,40 @@ const repoRoot = path.resolve(__dirname, '../..')
 const clientSrc = path.join(repoRoot, 'packages', 'api-client', 'src')
 const serverCore = path.join(repoRoot, 'apps', 'server', 'src', 'core')
 
+const webSrc = path.join(__dirname, 'src')
+
+const jestHashAliases: Record<string, string> = {
+  '^#helpers/(.*)$': `${webSrc}/helpers/$1`,
+  '^#hook/(.*)$': `${webSrc}/hook/$1`,
+  '^#auth/(.*)$': `${webSrc}/modules/auth/$1`,
+  '^#building/(.*)$': `${webSrc}/modules/building/$1`,
+  '^#city/(.*)$': `${webSrc}/modules/city/$1`,
+  '^#cost/(.*)$': `${webSrc}/modules/cost/$1`,
+  '^#communication/(.*)$': `${webSrc}/modules/communication/$1`,
+  '^#map/(.*)$': `${webSrc}/modules/map/$1`,
+  '^#movement/(.*)$': `${webSrc}/modules/movement/$1`,
+  '^#outpost/(.*)$': `${webSrc}/modules/outpost/$1`,
+  '^#requirement/(.*)$': `${webSrc}/modules/requirement/$1`,
+  '^#store/(.*)$': `${webSrc}/store/$1`,
+  '^#technology/(.*)$': `${webSrc}/modules/technology/$1`,
+  '^#troup/(.*)$': `${webSrc}/modules/troup/$1`,
+  '^#types$': `${webSrc}/types/index.ts`,
+  '^#types/(.*)$': `${webSrc}/types/$1`,
+  '^#ui/(.*)$': `${webSrc}/ui/$1`,
+  '^@eoneom/api-client$': path.join(clientSrc, 'index.ts'),
+  '^@server-core/(.*)$': `${serverCore}/$1`,
+}
+
 module.exports = {
+  jest: {
+    configure: (jestConfig: { moduleNameMapper?: Record<string, string | string[]> }) => ({
+      ...jestConfig,
+      moduleNameMapper: {
+        ...jestConfig.moduleNameMapper,
+        ...jestHashAliases,
+      },
+    }),
+  },
   webpack: {
     configure: (webpackConfig: {
       module?: { rules?: Array<{ oneOf?: object[] }> }
