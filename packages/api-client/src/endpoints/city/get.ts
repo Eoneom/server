@@ -16,7 +16,19 @@ export interface CityGetDataResponse {
     plastic: number
     mushroom: number
   }
+  pre_cell_earnings_per_second: {
+    plastic: number
+    mushroom: number
+  }
+  cell_resource_coefficient: {
+    plastic: number
+    mushroom: number
+  }
   warehouses_capacity: {
+    plastic: number
+    mushroom: number
+  }
+  warehouse_space_remaining: {
     plastic: number
     mushroom: number
   }

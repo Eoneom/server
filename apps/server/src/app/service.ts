@@ -14,6 +14,11 @@ import { WorldService } from '#core/world/service'
 import { Coordinates } from '#core/world/value/coordinates'
 import { Resource } from '#shared/resource'
 
+export const NEUTRAL_CELL_COEFFICIENTS: Resource = {
+  plastic: 1,
+  mushroom: 1
+}
+
 export class AppService {
   static async getExploredCellIds({ coordinates }: { coordinates: Coordinates }): Promise<string[]> {
     const repository = Factory.getRepository()
@@ -28,40 +33,75 @@ export class AppService {
   }
 
   static async getCityEarningsBySecond({ city_id }: { city_id: string }): Promise<Resource> {
-    const repository = Factory.getRepository()
-    const [
+    const {
       mushroom_farm_level,
       recycling_plant_level,
       city_cell
-    ] = await Promise.all([
-      repository.building.getLevel({
-        city_id,
-        code: BuildingCode.MUSHROOM_FARM
-      }),
-      repository.building.getLevel({
-        city_id,
-        code: BuildingCode.RECYCLING_PLANT
-      }),
-      repository.cell.getCityCell({ city_id })
-    ])
+    } = await this.loadCityProductionInputs(city_id)
 
     const coefficients = city_cell.resource_coefficient
+
+    return {
+      plastic: BuildingService.getEarningsBySecond({
+        code: BuildingCode.RECYCLING_PLANT,
+        level: recycling_plant_level,
+        coefficients,
+      }),
+      mushroom: BuildingService.getEarningsBySecond({
+        level: mushroom_farm_level,
+        code: BuildingCode.MUSHROOM_FARM,
+        coefficients,
+      })
+    }
+  }
+
+  static async getCityProductionBreakdown({ city_id }: { city_id: string }): Promise<{
+    earnings_per_second: Resource
+    pre_cell_earnings_per_second: Resource
+    cell_resource_coefficient: Resource
+  }> {
+    const {
+      mushroom_farm_level,
+      recycling_plant_level,
+      city_cell
+    } = await this.loadCityProductionInputs(city_id)
+
+    const cell_resource_coefficient = city_cell.resource_coefficient
 
     const plastic = BuildingService.getEarningsBySecond({
       code: BuildingCode.RECYCLING_PLANT,
       level: recycling_plant_level,
-      coefficients,
+      coefficients: cell_resource_coefficient,
     })
 
     const mushroom = BuildingService.getEarningsBySecond({
       level: mushroom_farm_level,
       code: BuildingCode.MUSHROOM_FARM,
-      coefficients,
+      coefficients: cell_resource_coefficient,
+    })
+
+    const pre_cell_plastic = BuildingService.getEarningsBySecond({
+      code: BuildingCode.RECYCLING_PLANT,
+      level: recycling_plant_level,
+      coefficients: NEUTRAL_CELL_COEFFICIENTS,
+    })
+
+    const pre_cell_mushroom = BuildingService.getEarningsBySecond({
+      level: mushroom_farm_level,
+      code: BuildingCode.MUSHROOM_FARM,
+      coefficients: NEUTRAL_CELL_COEFFICIENTS,
     })
 
     return {
-      plastic,
-      mushroom
+      earnings_per_second: {
+        plastic,
+        mushroom
+      },
+      pre_cell_earnings_per_second: {
+        plastic: pre_cell_plastic,
+        mushroom: pre_cell_mushroom
+      },
+      cell_resource_coefficient
     }
   }
 
@@ -144,6 +184,74 @@ export class AppService {
     })
   }
 
+  static async selectCityFirstCell(): Promise<CellEntity> {
+    const repository = Factory.getRepository()
+    for (;;) {
+      const random_coordinates = WorldService.getRandomCoordinates()
+      const cell = await repository.cell.getCell({ coordinates: random_coordinates })
+      if (!cell.isAssigned()) {
+        return cell
+      }
+    }
+  }
+
+  static async getCellsAround({ coordinates }: { coordinates: Coordinates }): Promise<CellEntity[]> {
+    const repository = Factory.getRepository()
+    const all_coordinates: Coordinates[] = [
+      {
+        x: coordinates.x - 1,
+        y: coordinates.y,
+        sector: coordinates.sector
+      },
+      {
+        x: coordinates.x,
+        y: coordinates.y - 1,
+        sector: coordinates.sector
+      },
+      {
+        x: coordinates.x + 1,
+        y: coordinates.y,
+        sector: coordinates.sector
+      },
+      {
+        x: coordinates.x,
+        y: coordinates.y + 1,
+        sector: coordinates.sector
+      }
+    ]
+
+    return Promise.all(all_coordinates.map(cell_coordinates => repository.cell.getCell({ coordinates: cell_coordinates })))
+  }
+
+  private static async loadCityProductionInputs(city_id: string): Promise<{
+    mushroom_farm_level: number
+    recycling_plant_level: number
+    city_cell: CellEntity
+  }> {
+    const repository = Factory.getRepository()
+    const [
+      mushroom_farm_level,
+      recycling_plant_level,
+      city_cell
+    ] = await Promise.all([
+      repository.building.getLevel({
+        city_id,
+        code: BuildingCode.MUSHROOM_FARM
+      }),
+      repository.building.getLevel({
+        city_id,
+        code: BuildingCode.RECYCLING_PLANT
+      }),
+      repository.cell.getCityCell({ city_id })
+    ])
+
+    return {
+      mushroom_farm_level,
+      recycling_plant_level,
+      city_cell
+    }
+  }
+
   private static async getRequirementLevels({
     city_id,
     player_id,
@@ -188,44 +296,5 @@ export class AppService {
       building: building_levels,
       technology: technology_levels
     }
-  }
-
-  static async selectCityFirstCell(): Promise<CellEntity> {
-    const repository = Factory.getRepository()
-    for (;;) {
-      const random_coordinates = WorldService.getRandomCoordinates()
-      const cell = await repository.cell.getCell({ coordinates: random_coordinates })
-      if (!cell.isAssigned()) {
-        return cell
-      }
-    }
-  }
-
-  static async getCellsAround({ coordinates }: { coordinates: Coordinates }): Promise<CellEntity[]> {
-    const repository = Factory.getRepository()
-    const all_coordinates: Coordinates[] = [
-      {
-        x: coordinates.x - 1,
-        y: coordinates.y,
-        sector: coordinates.sector
-      },
-      {
-        x: coordinates.x,
-        y: coordinates.y - 1,
-        sector: coordinates.sector
-      },
-      {
-        x: coordinates.x + 1,
-        y: coordinates.y,
-        sector: coordinates.sector
-      },
-      {
-        x: coordinates.x,
-        y: coordinates.y + 1,
-        sector: coordinates.sector
-      }
-    ]
-
-    return Promise.all(all_coordinates.map(cell_coordinates => repository.cell.getCell({ coordinates: cell_coordinates })))
   }
 }
