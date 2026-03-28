@@ -10,7 +10,6 @@ import {
   WorldGetSectorQuery, WorldGetSectorQueryResponse
 } from '#app/query/world/get-sector'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { CellEntity } from '#core/world/cell.entity'
 
 export const worldGetSectorHandler = async (
   req: Request<WorldGetSectorRequest>,
@@ -66,7 +65,7 @@ const cell_mapper = ({
   cell,
   explored_cell_ids
 }: {
-  cell: CellEntity,
+  cell: WorldGetSectorQueryResponse['cells'][number],
   explored_cell_ids: string[]
 }): WorldGetSectorDataResponse['cells'][number] => {
   const is_explored = explored_cell_ids.some((explored_cell_id) => explored_cell_id === cell.id)
