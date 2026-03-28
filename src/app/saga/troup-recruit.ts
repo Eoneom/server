@@ -1,4 +1,4 @@
-import { BuildingFinishUpgradeCommand } from '#app/command/building/finish-upgrade'
+import { finishBuildingUpgrade } from '#app/command/building/finish-upgrade'
 import { TechnologyFinishResearchCommand } from '#app/command/technology/finish-research'
 import { TroupRecruitCommand } from '#app/command/troup/recruit'
 import { TroupCode } from '#core/troup/constant/code'
@@ -14,7 +14,7 @@ export const sagaRecruitTroup = async ({
   count: number
   player_id: string
 }): Promise<void> => {
-  await new BuildingFinishUpgradeCommand().run({
+  await finishBuildingUpgrade({
     player_id,
     city_id
   })
