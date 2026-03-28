@@ -1,4 +1,4 @@
-import { CitySettleCommand } from '#app/command/city/settle'
+import { citySettle } from '#app/command/city/settle'
 import {
   CitySettleRequest,
   CitySettleResponse
@@ -33,7 +33,7 @@ export const citySettleHandler = async (
     }
 
     const player_id = getPlayerIdFromContext(res)
-    const { city_id } = await new CitySettleCommand().run({
+    const { city_id } = await citySettle({
       outpost_id,
       player_id,
       city_name
