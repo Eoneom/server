@@ -1,110 +1,146 @@
 # Eoneom game server
 
-This project is currently a proof of concept for web strategy game server.
+Proof-of-concept web strategy game. This repository is a **Yarn 4** monorepo: the HTTP API lives in `apps/server`, the React client in `apps/web` (`swarm-web`), and the shared TypeScript client in `packages/api-client`.
 
-## Setup project
+## Prerequisites
 
-### Launch dependencies
+- **Node.js** (LTS recommended; the stack targets modern Node for native ESM tooling in scripts)
+- **Yarn 4** — the repo pins Yarn via Corepack (see root `package.json` `packageManager` field)
+- **Docker** — for local MongoDB (optional if you already run MongoDB on `localhost:27017`)
 
-```
-cd containers
-docker-compose up -d
-```
+Enable Corepack once so the correct Yarn version is used:
 
-### Build app
-
-```
-npm run build
+```bash
+corepack enable
 ```
 
-### Build app in dev mode
+## Install dependencies
 
-```
-npm run build:watch
+From the **repository root**:
+
+```bash
+yarn install
 ```
 
-### Start app
+## Run MongoDB locally
 
+The server connects to MongoDB at `mongodb://localhost:27017/` with database name `eoneom` (see `apps/server/src/adapter/repository/mongo.ts`).
+
+From the repository root:
+
+```bash
+docker compose -f containers/docker-compose.yml up -d
 ```
-npm run start
+
+Data is stored under `containers/data`. To stop:
+
+```bash
+docker compose -f containers/docker-compose.yml down
 ```
+
+(Legacy Docker Compose v1 users can run the same file with `docker-compose` instead of `docker compose`.)
+
+## Launch the API server (from root scripts)
+
+Root `package.json` exposes convenience scripts that delegate to the `server` workspace.
+
+1. Build (TypeScript compile and dist layout):
+
+   ```bash
+   yarn server:build
+   ```
+
+2. Start (runs compiled output with pretty logs):
+
+   ```bash
+   yarn server:start
+   ```
+
+The API listens on **port 3000**. Endpoints are wired in `apps/server/src/web/router.ts`.
+
+### Tests
+
+```bash
+yarn server:test
+```
+
+### Workspace equivalents
+
+The same commands can be run explicitly against the workspace:
+
+```bash
+yarn workspace server build
+yarn workspace server start
+yarn workspace server test
+```
+
+Additional scripts (lint, watch build, coverage) are defined only on `apps/server/package.json` — use `yarn workspace server <script>` for those.
+
+## Other root scripts
+
+| Script            | Purpose                                      |
+| ----------------- | -------------------------------------------- |
+| `yarn client:build` | Build `@eoneom/api-client` (shared package) |
+| `yarn web:start`  | Start the React app (`swarm-web`, port **3001**) |
+| `yarn web:build`  | Production build of the web app            |
+
+Typical full-stack local setup: MongoDB running, `yarn server:start` in one terminal, `yarn web:start` in another (API on 3000, UI on 3001).
 
 ## Interact with the server
 
-Once launched, the app is listening on port `3000` and accept HTTP requests for commands and queries.
-You can find every possible endpoints in the `router.ts` file.
+With the server running, send HTTP commands and queries to port **3000**. See `apps/server/src/web/router.ts` for available routes.
 
 ## Architecture
 
 ### Adapter
 
-Contains implementation of the app required ports. It includes database connection and queries, logger and lock mechanism.
+Implements the application’s outbound ports: database, logging, locking.
 
 #### Database
 
-MongoDB implementation for repository port methods. Simple adapter to call mongoDB, and define collections.
+MongoDB adapter for repository ports. Models follow a common shape:
 
-Every model is built on the same pattern:
-
-- `document`: declare document classes and export Typegoose model
-- `repository`: extends the generic repository and implement specific methods
+- `document`: Typegoose document classes and exported models
+- `repository`: extends the generic repository and adds domain-specific methods
 
 ### App
 
-Contains all the app features, divided into commands and queries.
+Features split into commands and queries.
 
 #### Command
 
-It is designed to follow a `fetch -> exec -> save` pattern to prevent persisting stuff when an error occurs.
-
-- fetch necessary data for application service
-- calls application service
-- persist updates on entities
+Commands brings modification to the API.
 
 #### Port
 
-Describes necessary external methods for the application to work. It includes repository queries, logger and lock mechanism interfaces.
+Interfaces for repositories, logger, and lock implementations.
 
 #### Query
 
-Calls the application service or the repository directly to read data.
+Reads via application services or repositories.
 
 #### Saga
 
-Orchestrate multiple commands when a serie of use cases needs to be called.
+Coordinates multiple commands when a use case spans several commands.
 
 #### Service
 
-Implement high level use cases to respond to player's needs.
+Higher-level use cases for player-facing behavior.
 
 ### Core
 
-Contains domain logic with mostly pure functions.
+Domain logic and mostly pure functions. Each module is organized as:
 
-Core modules represent the different contexts of the application.
-
-There is a similar architecture for every module:
-
-- `constant`: store every constants needed by the domain
-- `value`: contains value objects needed by the domain
-- `entity`: declare entities used by the domain
-- `error`: declare all errors thrown by the domain
-- `service`: implement business logic when multiple entities are needed
-- `type`: declare additional useful types used in entities
+- `constant`, `value`, `entity`, `error`, `service`, `type` as needed for that bounded context
 
 ### Cron
 
-Contains scheduled tasks that call commands and queries of the app.
+Scheduled tasks that invoke app commands and queries.
 
 ### Shared
 
-Contains useful helpers and types that does not fit directly in the model, or call simple external libraries. Prevent from using heavy interfacing with the ports and adapters.
+Small helpers and types that avoid heavy port indirection.
 
 ### Web
 
-`http` file launches a simple HTTP server using middlewares and router.
-The router declares all possible endpoints and link it to their corresponding handler.
-
-#### Handler
-
-Defines how the server will respond for every type of request
+`http` boots Express, middleware, and the router. **Handlers** map routes to command/query behavior.
