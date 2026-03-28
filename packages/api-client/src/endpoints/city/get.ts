@@ -33,6 +33,10 @@ export interface CityGetDataResponse {
     plastic: number
     mushroom: number
   }
+  warehouse_full_in_seconds: {
+    plastic: number
+    mushroom: number
+  }
 }
 
 export type CityGetResponse = GenericResponse<CityGetDataResponse>

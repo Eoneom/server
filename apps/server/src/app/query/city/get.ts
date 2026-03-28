@@ -1,8 +1,10 @@
 import { GenericQuery } from '#query/generic'
 import { AppService } from '#app/service'
 import { Resource } from '#shared/resource'
+import { now } from '#shared/time'
 import { CellEntity } from '#core/world/cell/entity'
 import { CityEntity } from '#core/city/entity'
+import { CityService } from '#core/city/service'
 import { CityError } from '#core/city/error'
 
 export interface CityGetQueryRequest {
@@ -20,6 +22,7 @@ export interface CityGetQueryResponse {
   cell: CellEntity
   warehouses_capacity: Resource
   warehouse_space_remaining: Resource
+  warehouse_full_in_seconds: Resource
 }
 
 export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQueryResponse> {
@@ -55,6 +58,24 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
       mushroom: Math.max(0, warehouses_capacity.mushroom - city.mushroom)
     }
 
+    const { city: city_as_of_now } = city.gather({
+      player_id,
+      gather_at_time: now(),
+      earnings_per_second: production.earnings_per_second,
+      warehouses_capacity
+    })
+
+    const warehouse_full_in_seconds: Resource = {
+      plastic: CityService.computeWarehouseFullInSeconds({
+        space_remaining: warehouses_capacity.plastic - city_as_of_now.plastic,
+        earnings_per_second: production.earnings_per_second.plastic
+      }),
+      mushroom: CityService.computeWarehouseFullInSeconds({
+        space_remaining: warehouses_capacity.mushroom - city_as_of_now.mushroom,
+        earnings_per_second: production.earnings_per_second.mushroom
+      })
+    }
+
     return {
       city,
       earnings_per_second: production.earnings_per_second,
@@ -64,7 +85,8 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
       building_levels_used,
       cell,
       warehouses_capacity,
-      warehouse_space_remaining
+      warehouse_space_remaining,
+      warehouse_full_in_seconds
     }
   }
 }

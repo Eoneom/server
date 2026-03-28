@@ -5,21 +5,24 @@ import { Repository } from '#app/port/repository/generic'
 import { CityEntity } from '#core/city/entity'
 import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
+import * as time from '#shared/time'
 
 describe('CityGetQuery', () => {
   const player_id = 'player_id'
   let city: CityEntity
   let cell: CellEntity
   let repository: Pick<Repository, 'building' | 'city' | 'cell'>
+  let nowSpy: jest.SpiedFunction<typeof time.now>
 
   beforeEach(() => {
+    nowSpy = jest.spyOn(time, 'now').mockReturnValue(0)
     city = CityEntity.create({
       ...CityEntity.initCity({
         name: 'dummy',
         player_id
       }),
-      plastic: 30000,
-      mushroom: 30000
+      plastic: 0,
+      mushroom: 0
     })
     cell = CellEntity.create({
       id: 'cell_id',
@@ -67,5 +70,13 @@ describe('CityGetQuery', () => {
     expect(result.building_levels_used).toBe(7)
     expect(result.maximum_building_levels).toBe(42)
     expect(repository.building.getTotalLevels).toHaveBeenCalledWith({ city_id: city.id })
+  })
+
+  it('returns warehouse_full_in_seconds after 50s of accrual', async () => {
+    nowSpy.mockReturnValue(50_000)
+
+    const result = await new CityGetQuery().run({ city_id: city.id, player_id })
+
+    expect(result.warehouse_full_in_seconds).toEqual({ plastic: 50, mushroom: 0 })
   })
 })

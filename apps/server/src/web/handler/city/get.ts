@@ -54,7 +54,8 @@ const response_mapper = ({
   cell_resource_coefficient,
   cell,
   warehouses_capacity,
-  warehouse_space_remaining
+  warehouse_space_remaining,
+  warehouse_full_in_seconds
 }: CityGetQueryResponse): CityGetDataResponse => {
   return {
     id: city.id,
@@ -82,6 +83,10 @@ const response_mapper = ({
     warehouse_space_remaining: {
       plastic: warehouse_space_remaining.plastic,
       mushroom: warehouse_space_remaining.mushroom
+    },
+    warehouse_full_in_seconds: {
+      plastic: warehouse_full_in_seconds.plastic,
+      mushroom: warehouse_full_in_seconds.mushroom
     },
     coordinates: {
       x: cell.coordinates.x,

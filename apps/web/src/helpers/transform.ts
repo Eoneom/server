@@ -17,6 +17,10 @@ export const formatTime = (seconds: number): string => {
   return `${remainingSeconds}s`
 }
 
+export const transformApproximateTimeUntilSeconds = (seconds: number): string => {
+  return `~${formatTime(Math.ceil(seconds))}`
+}
+
 export const formatCoordinates = (coordinates: Coordinates): string => {
   return `${coordinates.sector}.${coordinates.x}.${coordinates.y}`
 }
