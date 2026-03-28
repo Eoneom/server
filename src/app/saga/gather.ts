@@ -1,4 +1,4 @@
-import { BuildingFinishUpgradeCommand } from '#app/command/building/finish-upgrade'
+import { finishBuildingUpgrade } from '#app/command/building/finish-upgrade'
 import { CityGatherCommand } from '#app/command/city/gather'
 import {
   isProductionBuildingCode,
@@ -13,7 +13,7 @@ export const sagaGather = async ({
   player_id: string
   city_id: string
 }) => {
-  const upgrade_result = await new BuildingFinishUpgradeCommand().run({
+  const upgrade_result = await finishBuildingUpgrade({
     player_id,
     city_id
   })

@@ -5,7 +5,7 @@ import {
   BuildingCancelRequest, BuildingCancelResponse
 } from '#client/src/endpoints/building/cancel'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { BuildingCancelCommand } from '#command/building/cancel'
+import { cancelBuilding } from '#command/building/cancel'
 
 export const buildingCancelHandler = async (
   req: Request<BuildingCancelRequest>,
@@ -22,7 +22,7 @@ export const buildingCancelHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await new BuildingCancelCommand().run({
+    await cancelBuilding({
       player_id,
       city_id,
     })

@@ -1,5 +1,5 @@
+import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
-import { GenericCommand } from '#command/generic'
 import { BuildingCode } from '#core/building/constant/code'
 import { BuildingEntity } from '#core/building/entity'
 import { CityEntity } from '#core/city/entity'
@@ -17,122 +17,69 @@ export interface BuildingUpgradeRequest {
   building_code: BuildingCode
 }
 
-export interface BuildingUpgradeExec {
-  player_id: string
-  city: CityEntity
-  is_building_in_progress: boolean
-  architecture_level: number
-  maximum_building_levels: number
-  total_building_levels: number
-  building: BuildingEntity
-  levels: Levels
-}
+export async function upgradeBuilding({
+  player_id,
+  city_id,
+  building_code,
+}: BuildingUpgradeRequest): Promise<void> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:building:upgrade')
+  logger.info('run')
 
-interface BuildingUpgradeSave {
-  city: CityEntity
-  building: BuildingEntity
-}
-
-export class BuildingUpgradeCommand extends GenericCommand<
-  BuildingUpgradeRequest,
-  BuildingUpgradeExec,
-  BuildingUpgradeSave
-> {
-  constructor() {
-    super({ name: 'building:upgrade' })
-  }
-
-  async fetch({
-    player_id,
-    city_id,
-    building_code,
-  }: BuildingUpgradeRequest): Promise<BuildingUpgradeExec> {
-    const [
-      architecture_technology,
-      city,
-      building,
-      is_building_in_progress,
-      maximum_building_levels,
-      total_building_levels,
-      levels
-    ] = await Promise.all([
-      this.repository.technology.get({
-        player_id,
-        code: TechnologyCode.ARCHITECTURE
-      }),
-      this.repository.city.get(city_id),
-      this.repository.building.get({
-        city_id,
-        code: building_code
-      }),
-      this.repository.building.isInProgress({ city_id }),
-      AppService.getCityMaximumBuildingLevels({ city_id }),
-      this.repository.building.getTotalLevels({ city_id }),
-      AppService.getBuildingRequirementLevels({
-        city_id,
-        player_id,
-        building_code
-      })
-    ])
-
-    return {
-      architecture_level: architecture_technology.level,
-      building,
-      city,
-      is_building_in_progress,
-      player_id,
-      maximum_building_levels,
-      total_building_levels,
-      levels
-    }
-  }
-  exec({
-    architecture_level,
+  const [
+    architecture_technology,
+    city,
     building,
-    city,
     is_building_in_progress,
-    total_building_levels,
     maximum_building_levels,
-    levels,
-    player_id
-  }: BuildingUpgradeExec): BuildingUpgradeSave {
-    if (total_building_levels >= maximum_building_levels) {
-      throw new Error(CityError.NOT_ENOUGH_SPACE)
-    }
-    RequirementService.checkBuildingRequirement({
-      building_code: building.code,
-      levels
-    })
-    const {
-      resource,
-      duration
-    } = PricingService.getBuildingLevelCost({
-      level: building.level + 1,
-      code: building.code,
-      architecture_level
-    })
-    const updated_city = city.purchase({
+    total_building_levels,
+    levels
+  ] = await Promise.all([
+    repository.technology.get({
       player_id,
-      resource
+      code: TechnologyCode.ARCHITECTURE
+    }),
+    repository.city.get(city_id),
+    repository.building.get({
+      city_id,
+      code: building_code
+    }),
+    repository.building.isInProgress({ city_id }),
+    AppService.getCityMaximumBuildingLevels({ city_id }),
+    repository.building.getTotalLevels({ city_id }),
+    AppService.getBuildingRequirementLevels({
+      city_id,
+      player_id,
+      building_code
     })
-    const updated_building = building.launchUpgrade({
-      is_building_in_progress,
-      duration,
-    })
+  ])
 
-    return {
-      city: updated_city,
-      building: updated_building
-    }
+  if (total_building_levels >= maximum_building_levels) {
+    throw new Error(CityError.NOT_ENOUGH_SPACE)
   }
-  async save({
-    city,
-    building
-  }: BuildingUpgradeSave): Promise<void> {
-    await Promise.all([
-      this.repository.city.updateOne(city),
-      this.repository.building.updateOne(building)
-    ])
-  }
+  RequirementService.checkBuildingRequirement({
+    building_code: building.code,
+    levels
+  })
+  const {
+    resource,
+    duration
+  } = PricingService.getBuildingLevelCost({
+    level: building.level + 1,
+    code: building.code,
+    architecture_level: architecture_technology.level
+  })
+  const updated_city = city.purchase({
+    player_id,
+    resource
+  })
+  const updated_building = building.launchUpgrade({
+    is_building_in_progress,
+    duration,
+  })
 
+  await Promise.all([
+    repository.city.updateOne(updated_city),
+    repository.building.updateOne(updated_building)
+  ])
 }
