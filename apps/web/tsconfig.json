@@ -53,8 +53,8 @@
       "#technology/*": [
         "./src/modules/technology/*"
       ],
-      "#troup/*": [
-        "./src/modules/troup/*"
+      "#troop/*": [
+        "./src/modules/troop/*"
       ],
       "#types": [
         "./src/types/index.ts"

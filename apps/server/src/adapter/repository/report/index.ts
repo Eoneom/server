@@ -1,4 +1,4 @@
-import { ReportEntity } from '#core/communication/report.entity'
+import { ReportEntity } from '#core/communication/report/entity'
 import { ReportRepository } from '#app/port/repository/report'
 import {
   ReportDocument,
@@ -42,7 +42,7 @@ export class MongoReportRepository
       id: document._id.toString(),
       player_id: document.player_id.toString(),
       type: document.type,
-      troups: document.troups,
+      troops: document.troops,
       origin: document.origin,
       destination: document.destination,
       recorded_at: document.recorded_at,

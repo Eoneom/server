@@ -1,6 +1,6 @@
 import { useAppSelector } from '#store/type'
-import { selectTroups } from '#troup/slice'
-import { TroupCode } from '@eoneom/api-client'
+import { selectTroops } from '#troop/slice'
+import { TroopCode } from '@eoneom/api-client'
 import React, { useMemo, useState } from 'react'
 
 interface Props {
@@ -9,10 +9,10 @@ interface Props {
 
 export const OutpostSettle: React.FC<Props> = ({ onSettle }) => {
   const [ cityName, setCityName ] = useState('')
-  const troups = useAppSelector(selectTroups)
+  const troops = useAppSelector(selectTroops)
   const settler = useMemo(() => {
-    return troups.find(troup => troup.code === TroupCode.SETTLER)
-  }, [ troups ])
+    return troops.find(troop => troop.code === TroopCode.SETTLER)
+  }, [ troops ])
 
   const disabled = useMemo(() => {
     return (settler?.count ?? 0) === 0

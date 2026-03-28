@@ -9,11 +9,11 @@ import {
   OutpostListDataResponse,
   TechnologyGetDataResponse,
   TechnologyListDataResponse,
-  TroupGetDataResponse,
-  TroupGetMovementDataResponse,
-  TroupListDataResponse,
-  TroupListMovementDataResponse,
-  TroupMovementEstimateDataResponse,
+  TroopGetDataResponse,
+  TroopGetMovementDataResponse,
+  TroopListDataResponse,
+  TroopListMovementDataResponse,
+  TroopMovementEstimateDataResponse,
   WorldGetSectorDataResponse,
 } from '@eoneom/api-client'
 
@@ -28,12 +28,12 @@ export type TechnologyItem = TechnologyListDataResponse['technologies'][number]
 
 export type Sector = WorldGetSectorDataResponse & { id: number }
 
-export type Troup = TroupGetDataResponse
-export type TroupItem = TroupListDataResponse['troups'][number]
+export type Troop = TroopGetDataResponse
+export type TroopItem = TroopListDataResponse['troops'][number]
 
-export type Movement = TroupGetMovementDataResponse
-export type MovementItem = TroupListMovementDataResponse['movements'][number]
-export type MovementEstimation = TroupMovementEstimateDataResponse
+export type Movement = TroopGetMovementDataResponse
+export type MovementItem = TroopListMovementDataResponse['movements'][number]
+export type MovementEstimation = TroopMovementEstimateDataResponse
 
 export type Report = CommunicationGetReportDataResponse
 export type ReportItem = CommunicationListReportDataResponse['reports'][number]

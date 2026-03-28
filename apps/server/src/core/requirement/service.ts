@@ -1,11 +1,11 @@
 import { BuildingCode } from '#core/building/constant/code'
 import { BuildingRequirement } from '#core/requirement/constant/building'
 import { TechnologyRequirement } from '#core/requirement/constant/technology'
-import { TroupRequirement } from '#core/requirement/constant/troup'
+import { TroopRequirement } from '#core/requirement/constant/troop'
 import { RequirementError } from '#core/requirement/error'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant/code'
-import { TroupCode } from '#core/troup/constant/code'
+import { TroopCode } from '#core/troop/constant/code'
 
 export interface Levels {
   building: Partial<Record<BuildingCode, number>>
@@ -13,20 +13,20 @@ export interface Levels {
 }
 
 export class RequirementService {
-  static listTroupRequirements(): typeof TroupRequirement {
-    return TroupRequirement
+  static listTroopRequirements(): typeof TroopRequirement {
+    return TroopRequirement
   }
-  static getTroupRequirement({ troup_code }: { troup_code: TroupCode }): RequirementValue {
-    return TroupRequirement[troup_code]
+  static getTroopRequirement({ troop_code }: { troop_code: TroopCode }): RequirementValue {
+    return TroopRequirement[troop_code]
   }
-  static checkTroupRequirement({
-    troup_code,
+  static checkTroopRequirement({
+    troop_code,
     levels
   }: {
-    troup_code: TroupCode,
+    troop_code: TroopCode,
     levels: Levels
   }): void {
-    const requirement = this.getTroupRequirement({ troup_code })
+    const requirement = this.getTroopRequirement({ troop_code })
     return this.checkRequirement({
       requirement,
       levels

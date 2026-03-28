@@ -6,7 +6,7 @@ import { BuildingPage } from '#building/page'
 import { TechnologyPage } from '#technology/page'
 import { MapPage } from '#map/page'
 import { CityPage } from '#city/page'
-import { TroupPage } from '#troup/page'
+import { TroopPage } from '#troop/page'
 import { MovementPage } from '#movement/page'
 import { ReportPage } from '#communication/page'
 import { CityRoot } from '#city/root'
@@ -66,8 +66,8 @@ export const router = createBrowserRouter([
             element: <TechnologyPage />
           },
           {
-            path: 'troup',
-            element: <TroupPage />
+            path: 'troop',
+            element: <TroopPage />
           },
           map,
           movement

@@ -1,10 +1,10 @@
 import { Factory } from '#adapter/factory'
-import { TroupMovementGetActionQuery } from '#app/query/troup/movement/get-action'
-import { TroupMovementListFinishedQuery } from '#app/query/troup/movement/list-finished'
+import { TroopMovementGetActionQuery } from '#query/troop/movement/get-action'
+import { TroopMovementListFinishedQuery } from '#query/troop/movement/list-finished'
 import { sagaFinishBase } from '#app/saga/finish/base'
 import { sagaFinishExplore } from '#app/saga/finish/explore'
-import { MovementAction } from '#core/troup/constant/movement-action'
-import { TroupError } from '#core/troup/error'
+import { MovementAction } from '#core/troop/constant/movement-action'
+import { TroopError } from '#core/troop/error'
 
 export const sagaFinishMovement = async ({ player_id }: {
   player_id: string
@@ -18,7 +18,7 @@ export const sagaFinishMovement = async ({ player_id }: {
   lock.set(key)
 
   let is_outpost_created = false
-  const { movement_ids } = await new TroupMovementListFinishedQuery().run({ player_id })
+  const { movement_ids } = await new TroopMovementListFinishedQuery().run({ player_id })
   for (const movement_id of movement_ids) {
     const result = await finishMovement({
       player_id,
@@ -39,7 +39,7 @@ const finishMovement = async ({
   player_id: string
   movement_id: string
 }): Promise<{ is_outpost_created: boolean }> => {
-  const { action } = await new TroupMovementGetActionQuery().run({ movement_id })
+  const { action } = await new TroopMovementGetActionQuery().run({ movement_id })
 
   switch (action) {
   case MovementAction.EXPLORE:
@@ -54,6 +54,6 @@ const finishMovement = async ({
       movement_id
     })
   default:
-    throw new Error(TroupError.MOVEMENT_ACTION_NOT_IMPLEMENTED)
+    throw new Error(TroopError.MOVEMENT_ACTION_NOT_IMPLEMENTED)
   }
 }

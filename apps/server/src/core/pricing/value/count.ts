@@ -1,4 +1,4 @@
-import { TroupCode } from '#core/troup/constant/code'
+import { TroopCode } from '#core/troop/constant/code'
 import { Resource } from '#shared/resource'
 
 export interface CountCosts {
@@ -8,7 +8,7 @@ export interface CountCosts {
 }
 
 export interface CountCostValue {
-  code: TroupCode
+  code: TroopCode
   resource: Resource
   duration: number
 }

@@ -1,0 +1,99 @@
+import { Factory } from '#adapter/factory'
+import { AppService } from '#app/service'
+import { BuildingCode } from '#core/building/constant/code'
+import { PricingService } from '#core/pricing/service'
+import { RequirementService } from '#core/requirement/service'
+import { TechnologyCode } from '#core/technology/constant/code'
+import { TroopCode } from '#core/troop/constant/code'
+import { TroopError } from '#core/troop/error'
+import { now } from '#shared/time'
+import assert from 'assert'
+
+export interface RecruitTroopParams {
+  city_id: string
+  troop_code: TroopCode
+  count: number
+  player_id: string
+}
+
+export interface RecruitTroopResult {
+  recruit_at: number
+}
+
+export async function recruitTroop({
+  city_id,
+  player_id,
+  troop_code,
+  count,
+}: RecruitTroopParams): Promise<RecruitTroopResult> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:troop:recruit')
+  logger.info('run')
+
+  const city_cell = await repository.cell.getCityCell({ city_id })
+
+  const is_recruitment_in_progress = await repository.troop.isInProgress({ cell_id: city_cell.id })
+  if (is_recruitment_in_progress) {
+    throw new Error(TroopError.ALREADY_IN_PROGRESS)
+  }
+
+  const [
+    city,
+    cloning_factory_level,
+    replication_catalyst_level,
+    levels,
+    troop,
+  ] = await Promise.all([
+    repository.city.get(city_id),
+    repository.building.getLevel({
+      city_id,
+      code: BuildingCode.CLONING_FACTORY,
+    }),
+    repository.technology.getLevel({
+      player_id,
+      code: TechnologyCode.REPLICATION_CATALYST,
+    }),
+    AppService.getTroopRequirementLevels({
+      city_id,
+      player_id,
+      troop_code,
+    }),
+    repository.troop.getInCell({
+      cell_id: city_cell.id,
+      code: troop_code,
+    }),
+  ])
+
+  RequirementService.checkTroopRequirement({
+    troop_code: troop.code,
+    levels,
+  })
+
+  const {
+    resource, duration
+  } = PricingService.getTroopCost({
+    code: troop.code,
+    count,
+    cloning_factory_level,
+    replication_catalyst_level,
+  })
+
+  const updated_city = city.purchase({
+    player_id,
+    resource,
+  })
+
+  const updated_troop = troop.launchRecruitment({
+    count,
+    duration,
+    recruitment_time: now(),
+  })
+
+  await Promise.all([
+    repository.troop.updateOne(updated_troop),
+    repository.city.updateOne(updated_city),
+  ])
+
+  assert(updated_troop.ongoing_recruitment)
+  return { recruit_at: updated_troop.ongoing_recruitment.finish_at }
+}

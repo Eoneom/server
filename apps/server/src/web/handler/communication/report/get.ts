@@ -11,7 +11,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   CommunicationGetReportQuery,
   CommunicationGetReportQueryResponse
-} from '#app/query/communication/report/get'
+} from '#query/communication/report/get'
 
 export const communicationGetReportHandler = async (
   req: Request,
@@ -51,9 +51,9 @@ const response_mapper = ({ report }: CommunicationGetReportQueryResponse): Commu
     origin: report.origin,
     recorded_at: report.recorded_at,
     was_read: report.was_read,
-    troups: report.troups.map(troup => ({
-      code:troup.code,
-      count: troup.count
+    troops: report.troops.map(troop => ({
+      code:troop.code,
+      count: troop.count
     }))
   }
 

@@ -12,7 +12,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   BuildingGetQuery,
   BuildingGetQueryResponse
-} from '#app/query/building/get'
+} from '#query/building/get'
 
 export const buildingGetHandler = async (
   req: Request<BuildingGetRequest>,

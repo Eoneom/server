@@ -1,5 +1,5 @@
 import { GenericQuery } from '#query/generic'
-import { ReportEntity } from '#core/communication/report.entity'
+import { ReportEntity } from '#core/communication/report/entity'
 
 export interface CommunicationListReportQueryRequest {
   player_id: string

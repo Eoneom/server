@@ -6,7 +6,7 @@ import { useWorld } from '#map/hook/world'
 import { useAppDispatch, useAppSelector } from '#store/type'
 import { selectCityCoordinates } from '#city/slice'
 import { selectOutpostCoordinates } from '#outpost/slice'
-import { listTroups } from '#troup/slice/thunk'
+import { listTroops } from '#troop/slice/thunk'
 
 export const MapPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -21,7 +21,7 @@ export const MapPage: React.FC = () => {
       return
     }
 
-    dispatch(listTroups())
+    dispatch(listTroops())
     fetch({ sectorId })
   }, [cityCoordinates, outpostCoordinates])
 

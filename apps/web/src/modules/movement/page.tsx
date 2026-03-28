@@ -8,8 +8,8 @@ import { MovementCreate } from '#movement/create'
 import { useAppDispatch, useAppSelector } from '#store/type'
 import {  selectCityId } from '#city/slice'
 import { selectOutpostId } from '#outpost/slice'
-import { getMovement, listTroups } from '#troup/slice/thunk'
-import { resetMovement, selectMovement } from '#troup/slice'
+import { getMovement, listTroops } from '#troop/slice/thunk'
+import { resetMovement, selectMovement } from '#troop/slice'
 
 export const MovementPage: React.FC = () => {
   const { movementId } = useParams()
@@ -23,7 +23,7 @@ export const MovementPage: React.FC = () => {
       return
     }
 
-    dispatch(listTroups())
+    dispatch(listTroops())
   }, [cityId, outpostId])
 
   useEffect(() => {

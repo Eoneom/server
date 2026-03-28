@@ -1,6 +1,6 @@
 import { OutpostEntity } from '#core/outpost/entity'
 import { GenericQuery } from '#query/generic'
-import { CellEntity } from '#core/world/cell.entity'
+import { CellEntity } from '#core/world/cell/entity'
 
 export interface OutpostListQueryRequest {
   player_id: string

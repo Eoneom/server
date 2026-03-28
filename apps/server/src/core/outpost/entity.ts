@@ -2,7 +2,7 @@ import { OutpostType } from '#core/outpost/constant/type'
 import {
   BaseEntity,
   BaseEntityProps
-} from '#core/type/base.entity'
+} from '#core/type/base/entity'
 
 type OutpostEntityProps = BaseEntityProps & {
   player_id: string

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { MovementAction, TroupCode } from '@eoneom/api-client'
+import { MovementAction, TroopCode } from '@eoneom/api-client'
 
 import { Button } from '#ui/button'
 import { LayoutDetailsContent } from '#ui/layout/details/content'
@@ -9,7 +9,7 @@ import { Sector } from '#types'
 import { useAppDispatch, useAppSelector } from '#store/type'
 import { selectCity } from '#city/slice'
 import { selectOutpostCoordinates } from '#outpost/slice'
-import { createMovement } from '#troup/slice/thunk'
+import { createMovement } from '#troop/slice/thunk'
 
 interface Props {
   coordinates: {
@@ -50,8 +50,8 @@ export const MapDetails: React.FC<Props> = ({ coordinates, sector }) => {
       action: MovementAction.EXPLORE,
       origin,
       destination: { sector: sector.id, x: coordinates.x, y: coordinates.y },
-      troups: [{
-        code: TroupCode.EXPLORER,
+      troops: [{
+        code: TroopCode.EXPLORER,
         count: 1
       }]
     }))

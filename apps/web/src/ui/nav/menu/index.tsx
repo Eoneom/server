@@ -27,7 +27,7 @@ export const NavMenu: React.FC = () => {
             <ul>
               <li><NavLink className={getActiveClassName} to={`/city/${cityId}/building`}>Construction</NavLink></li>
               <li><NavLink className={getActiveClassName} to={`/city/${cityId}/technology`}>Recherche</NavLink></li>
-              <li><NavLink className={getActiveClassName} to={`/city/${cityId}/troup`}>Recrutement</NavLink></li>
+              <li><NavLink className={getActiveClassName} to={`/city/${cityId}/troop`}>Recrutement</NavLink></li>
             </ul>
           </>
         )

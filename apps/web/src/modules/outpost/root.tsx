@@ -7,7 +7,7 @@ import { getOutpost } from '#outpost/slice/thunk'
 import { selectOutpostId, selectOutposts } from '#outpost/slice'
 import { getCity } from '#city/slice/thunk'
 import { toast } from 'react-toastify'
-import { listTroups } from '#troup/slice/thunk'
+import { listTroops } from '#troop/slice/thunk'
 
 export const OutpostRoot: React.FC = () => {
   const { outpostId } = useParams()
@@ -26,7 +26,7 @@ export const OutpostRoot: React.FC = () => {
 
     dispatch(resetCity())
     dispatch(getOutpost(outpostId)).then(() => {
-      dispatch(listTroups())
+      dispatch(listTroops())
     })
   }, [outpostId, token])
 

@@ -4,16 +4,16 @@ import { CommunicationEndpoint } from './endpoints/communication'
 import { OutpostEndpoint } from './endpoints/outpost'
 import { PlayerEndpoint } from './endpoints/player'
 import { TechnologyEndpoint } from './endpoints/technology'
-import { TroupEndpoint } from './endpoints/troup'
+import { TroopEndpoint } from './endpoints/troop'
 import { WorldEndpoint } from './endpoints/world'
 import { Fetcher } from './fetcher'
 export { TechnologyCode } from '@server-core/technology/constant/code'
 export { BuildingCode } from '@server-core/building/constant/code'
 export { CellType } from '@server-core/world/value/cell-type'
-export { TroupCode } from '@server-core/troup/constant/code'
+export { TroopCode } from '@server-core/troop/constant/code'
 export { ReportType } from '@server-core/communication/value/report-type'
 export { OutpostType } from '@server-core/outpost/constant/type'
-export { MovementAction } from '@server-core/troup/constant/movement-action'
+export { MovementAction } from '@server-core/troop/constant/movement-action'
 
 export * from './endpoints/shared/coordinates'
 export * from './endpoints'
@@ -27,7 +27,7 @@ export class Client {
   public player: PlayerEndpoint
   public building: BuildingEndpoint
   public technology: TechnologyEndpoint
-  public troup: TroupEndpoint
+  public troop: TroopEndpoint
   public world: WorldEndpoint
 
   constructor({ base_url }: { base_url: string }) {
@@ -39,7 +39,7 @@ export class Client {
     this.player = new PlayerEndpoint({ fetcher: this.fetcher })
     this.building = new BuildingEndpoint({ fetcher: this.fetcher })
     this.technology = new TechnologyEndpoint({ fetcher: this.fetcher })
-    this.troup = new TroupEndpoint({ fetcher: this.fetcher })
+    this.troop = new TroopEndpoint({ fetcher: this.fetcher })
     this.world = new WorldEndpoint({ fetcher: this.fetcher })
   }
 }

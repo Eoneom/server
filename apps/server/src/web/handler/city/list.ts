@@ -11,7 +11,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   CityListQuery,
   CityListQueryResponse
-} from '#app/query/city/list'
+} from '#query/city/list'
 
 export const cityListHandler = async (
   req: Request,

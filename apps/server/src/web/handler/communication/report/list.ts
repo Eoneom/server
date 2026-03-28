@@ -11,7 +11,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   CommunicationListReportQuery,
   CommunicationListReportQueryResponse
-} from '#app/query/communication/report/list'
+} from '#query/communication/report/list'
 
 export const communicationListReportHandler = async (
   req: Request,

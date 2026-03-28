@@ -1,7 +1,7 @@
 import { GenericQuery } from '#query/generic'
 import { AppService } from '#app/service'
 import { Resource } from '#shared/resource'
-import { CellEntity } from '#core/world/cell.entity'
+import { CellEntity } from '#core/world/cell/entity'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 

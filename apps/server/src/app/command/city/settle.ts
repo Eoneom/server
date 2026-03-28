@@ -5,8 +5,8 @@ import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { CityService } from '#core/city/service'
 import { OutpostError } from '#core/outpost/error'
-import { TroupCode } from '#core/troup/constant/code'
-import { TroupService } from '#core/troup/service'
+import { TroopCode } from '#core/troop/constant/code'
+import { TroopService } from '#core/troop/service'
 
 export interface CitySettleParams {
   outpost_id: string
@@ -51,20 +51,20 @@ export async function citySettle({
 
   const [
     cell,
-    settler_troup 
+    settler_troop 
   ] = await Promise.all([
     repository.cell.getById(outpost.cell_id),
-    repository.troup.getInCell({
+    repository.troop.getInCell({
       cell_id: outpost.cell_id,
-      code: TroupCode.SETTLER
+      code: TroopCode.SETTLER
     }),
   ])
 
-  const have_enough_settler = TroupService.haveEnoughTroups({
-    origin_troups: [ settler_troup ],
-    move_troups: [
+  const have_enough_settler = TroopService.haveEnoughTroops({
+    origin_troops: [ settler_troop ],
+    move_troops: [
       {
-        code: TroupCode.SETTLER,
+        code: TroopCode.SETTLER,
         count: 1
       }
     ]
@@ -88,7 +88,7 @@ export async function citySettle({
 
   const buildings = BuildingService.init({ city_id: city.id })
 
-  const settler_troup_to_update = settler_troup.removeCount(1)
+  const settler_troop_to_update = settler_troop.removeCount(1)
   const cell_to_update = cell.assign({ city_id: city.id })
   const exploration_to_update = exploration.exploreCells([
     ...cells_around_city.map(c => c.id),
@@ -99,7 +99,7 @@ export async function citySettle({
     repository.outpost.delete(outpost.id),
     repository.city.create(city),
     ...buildings.map(building => repository.building.create(building)),
-    repository.troup.updateOne(settler_troup_to_update),
+    repository.troop.updateOne(settler_troop_to_update),
     repository.cell.updateOne(cell_to_update),
     repository.exploration.updateOne(exploration_to_update)
   ])

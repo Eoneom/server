@@ -11,28 +11,28 @@ import {
   LevelCost, LevelCostValue
 } from '#core/pricing/value/level'
 import { TechnologyCode } from '#core/technology/constant/code'
-import { TroupCode } from '#core/troup/constant/code'
+import { TroopCode } from '#core/troop/constant/code'
 import { CountCostValue } from '#core/pricing/value/count'
 import {
   CLONING_FACTORY_REDUCTION_PER_LEVEL,
   REPLICATION_CATALYST_REDUCTION_PER_LEVEL,
-  troup_costs
-} from '#core/pricing/constant/troup'
+  troop_costs
+} from '#core/pricing/constant/troop'
 import { Resource } from '#shared/resource'
 
 export class PricingService {
-  static getTroupCost({
+  static getTroopCost({
     code,
     count,
     cloning_factory_level,
     replication_catalyst_level
   }: {
-    code: TroupCode
+    code: TroopCode
     count: number
     cloning_factory_level: number
     replication_catalyst_level: number
   }): CountCostValue {
-    const cost = troup_costs[code]
+    const cost = troop_costs[code]
 
     const cloning_factory_reduction = this.getLevelReduction({
       reduction_percent_per_level: CLONING_FACTORY_REDUCTION_PER_LEVEL,

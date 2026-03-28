@@ -3,7 +3,7 @@ import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
 import { BuildingCode } from '#core/building/constant/code'
 import { BuildingService } from '#core/building/service'
-import { CellEntity } from '#core/world/cell.entity'
+import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
 import { Coordinates } from '#core/world/value/coordinates'
 

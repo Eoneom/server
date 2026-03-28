@@ -6,7 +6,7 @@ import { citySliceReducer } from '#city/slice'
 import { reportSliceReducer } from '#communication/report/slice'
 import { outpostSliceReducer } from '#outpost/slice'
 import { technologySliceReducer } from '#technology/slice'
-import { troupSliceReducer } from '#troup/slice'
+import { troopSliceReducer } from '#troop/slice'
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +16,7 @@ export const store = configureStore({
     outpost: outpostSliceReducer,
     report: reportSliceReducer,
     technology: technologySliceReducer,
-    troup: troupSliceReducer
+    troop: troopSliceReducer
   }
 })
 

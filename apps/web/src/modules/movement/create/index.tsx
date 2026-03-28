@@ -3,32 +3,32 @@ import { useAppDispatch, useAppSelector } from '#store/type'
 import { MovementCreateAction } from './action'
 import { MovementCreateDestination } from './destination'
 import { MovementCreateEstimation } from './estimation'
-import { MovementCreateTroups } from './troups'
+import { MovementCreateTroops } from './troops'
 import { MovementCreateWarning } from './warning'
 import { MovementEstimation } from '#types'
-import { Coordinates, MovementAction, OutpostType, TroupCode } from '@eoneom/api-client'
+import { Coordinates, MovementAction, OutpostType, TroopCode } from '@eoneom/api-client'
 import React, { useEffect, useState } from 'react'
 import { selectOutpost } from '#outpost/slice'
-import { selectTroups } from '#troup/slice'
+import { selectTroops } from '#troop/slice'
 import { estimateMovement } from '../api/estimate'
 import { selectToken } from '#auth/slice'
-import { createMovement } from '#troup/slice/thunk'
+import { createMovement } from '#troop/slice/thunk'
 
 export const MovementCreate: React.FC = () => {
   const dispatch = useAppDispatch()
-  const troups = useAppSelector(selectTroups)
+  const troops = useAppSelector(selectTroops)
   const outpost = useAppSelector(selectOutpost)
   const cityCoordinates = useAppSelector(selectCityCoordinates)
   const token = useAppSelector(selectToken)
 
-  const [ selectedTroups, setSelectedTroups ] = useState<Partial<Record<TroupCode, number>>>({})
+  const [ selectedTroops, setSelectedTroops ] = useState<Partial<Record<TroopCode, number>>>({})
   const [ destination, setDestination ] = useState<Coordinates>({ x: 1, y: 1, sector: 1 })
   const [ estimation, setEstimation ] = useState<MovementEstimation>({ speed: 0, duration: 0, distance: 0 })
   const [ action, setAction ] = useState<MovementAction>(MovementAction.BASE)
 
   useEffect(() => {
     launchMovementEstimation()
-  }, [selectedTroups, destination])
+  }, [selectedTroops, destination])
 
   const launchMovementEstimation = async () => {
     if (!token) {
@@ -40,12 +40,12 @@ export const MovementCreate: React.FC = () => {
       return
     }
 
-    const troupCodes: TroupCode[] = Object.keys(selectedTroups).filter(code => selectedTroups[code as TroupCode]).map(code => code as TroupCode)
-    if (!troupCodes.length) {
+    const troopCodes: TroopCode[] = Object.keys(selectedTroops).filter(code => selectedTroops[code as TroopCode]).map(code => code as TroopCode)
+    if (!troopCodes.length) {
       return
     }
 
-    const result = await estimateMovement({ token, origin, destination, troupCodes })
+    const result = await estimateMovement({ token, origin, destination, troopCodes })
     if (!result) {
       setEstimation({
         speed: 0,
@@ -66,29 +66,29 @@ export const MovementCreate: React.FC = () => {
       return
     }
 
-    const moveTroups = Object.keys(selectedTroups).reduce((acc, key) => {
-      const code = key as TroupCode
-      if (selectedTroups[code]) {
-        return [...acc, {code, count: selectedTroups[code] ?? 0}]
+    const moveTroops = Object.keys(selectedTroops).reduce((acc, key) => {
+      const code = key as TroopCode
+      if (selectedTroops[code]) {
+        return [...acc, {code, count: selectedTroops[code] ?? 0}]
       }
 
       return acc
-    }, new Array<{ code: TroupCode, count: number }>())
+    }, new Array<{ code: TroopCode, count: number }>())
 
-    if (!moveTroups.length) {
+    if (!moveTroops.length) {
       return
     }
 
-    dispatch(createMovement({ action, origin, destination, troups: moveTroups }))
+    dispatch(createMovement({ action, origin, destination, troops: moveTroops }))
   }
 
   return <form id="movement-creation" onSubmit={(event) => onSubmit(event)}>
-    <div id="troup-selection">
-      <h2>Troupes à envoyer</h2>
-      <MovementCreateTroups
-        troups={troups}
-        selectedTroups={selectedTroups}
-        onChange={setSelectedTroups}
+    <div id="troop-selection">
+      <h2>Troopes à envoyer</h2>
+      <MovementCreateTroops
+        troops={troops}
+        selectedTroops={selectedTroops}
+        onChange={setSelectedTroops}
       />
     </div>
     <div id="movement-submit">
@@ -105,8 +105,8 @@ export const MovementCreate: React.FC = () => {
 
       <MovementCreateWarning
         isTemporaryOutpost={Boolean(outpost?.type === OutpostType.TEMPORARY)}
-        troups={troups}
-        selectedTroups={selectedTroups}
+        troops={troops}
+        selectedTroops={selectedTroops}
       /><br />
       <input disabled={!estimation.distance} type="submit" value="Envoyer" />
     </div>

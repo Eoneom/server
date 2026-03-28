@@ -1,5 +1,5 @@
 import { CoordinatesDocument } from '#adapter/repository/shared/coordinates'
-import { MovementAction } from '#core/troup/constant/movement-action'
+import { MovementAction } from '#core/troop/constant/movement-action'
 import {
   getModelForClass,
   mongoose,

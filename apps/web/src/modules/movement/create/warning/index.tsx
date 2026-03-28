@@ -1,25 +1,25 @@
-import { TroupCode } from '@eoneom/api-client'
+import { TroopCode } from '@eoneom/api-client'
 import React from 'react'
 
 interface Props {
   isTemporaryOutpost: boolean
-  troups: {
-    code: TroupCode
+  troops: {
+    code: TroopCode
     count: number
   }[]
-  selectedTroups: Partial<Record<TroupCode, number>>
+  selectedTroops: Partial<Record<TroopCode, number>>
 }
 
-export const MovementCreateWarning: React.FC<Props> = ({ isTemporaryOutpost, troups, selectedTroups }) => {
+export const MovementCreateWarning: React.FC<Props> = ({ isTemporaryOutpost, troops, selectedTroops }) => {
   if (!isTemporaryOutpost) {
     return null
   }
 
-  const isAllTroupsTaken = troups.every(troup => {
-    return troup.count === (selectedTroups[troup.code] ?? 0)
+  const isAllTroopsTaken = troops.every(troop => {
+    return troop.count === (selectedTroops[troop.code] ?? 0)
   })
 
-  if (!isAllTroupsTaken) {
+  if (!isAllTroopsTaken) {
     return null
   }
 

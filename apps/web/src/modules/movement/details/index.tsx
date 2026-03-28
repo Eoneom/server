@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Movement } from '#types'
 import { LayoutDetailsContent } from '#ui/layout/details/content'
-import { TroupTranslations } from '#troup/translations'
+import { TroopTranslations } from '#troop/translations'
 import { formatCoordinates } from '#helpers/transform'
 
 interface Props {
@@ -18,11 +18,11 @@ export const MovementDetails: React.FC<Props> = ({ movement }) => {
       Arrivée : {formatCoordinates(movement.destination)}
     </p>
 
-    <h3>Troupes</h3>
+    <h3>Troopes</h3>
     <ul>
-      {movement.troups.map(troup => {
-        const { name } = TroupTranslations[troup.code]
-        return <li key={troup.code}>{name} {troup.count}</li>
+      {movement.troops.map(troop => {
+        const { name } = TroopTranslations[troop.code]
+        return <li key={troop.code}>{name} {troop.count}</li>
       })}
     </ul>
   </LayoutDetailsContent>

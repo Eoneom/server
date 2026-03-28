@@ -9,7 +9,7 @@ interface Props {
 
 export const MovementCreateEstimation: React.FC<Props> = ({ estimation }) => {
   if (!estimation.distance) {
-    return <>Destination non trouvée ou aucune troupe à envoyer</>
+    return <>Destination non trouvée ou aucune troope à envoyer</>
   }
 
   return <ul>
@@ -18,7 +18,7 @@ export const MovementCreateEstimation: React.FC<Props> = ({ estimation }) => {
       <span>{estimation.distance}</span>
     </li>
     <li>
-      <span>Vitesse des troupes</span>
+      <span>Vitesse des troopes</span>
       <span>{estimation.speed}</span>
     </li>
     <li>

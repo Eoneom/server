@@ -1,7 +1,7 @@
 import {
   FAKE_ID, generateToken
 } from '#shared/identification'
-import { BaseEntity } from '#core/type/base.entity'
+import { BaseEntity } from '#core/type/base/entity'
 import { now } from '#shared/time'
 
 type AuthEntityProps = BaseEntity & {

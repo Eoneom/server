@@ -1,0 +1,44 @@
+import {
+  NextFunction,
+  Request,
+  Response
+} from 'express'
+import { TroopListResponse } from '@eoneom/api-client/src/endpoints/troop/list/shared'
+import { getPlayerIdFromContext } from '#web/helpers'
+import { TroopListQuery } from '#query/troop/list'
+import { troopListResponseMapper } from '#web/handler/troop/list/mapper'
+
+export const troopListOutpostHandler = async (
+  req: Request,
+  res: Response<TroopListResponse>,
+  next: NextFunction
+) => {
+  const outpost_id = req.params.outpost_id
+  if (!outpost_id) {
+    return res.status(400).json({
+      status: 'nok',
+      error_code: 'outpost_id:not-found'
+    })
+  }
+
+  try {
+    const player_id = getPlayerIdFromContext(res)
+    const result = await new TroopListQuery().run({
+      player_id,
+      location: {
+        type: 'outpost',
+        outpost_id
+      },
+    })
+    const response = troopListResponseMapper(result)
+
+    return res.json({
+      status: 'ok',
+      data: response
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+

@@ -1,4 +1,4 @@
-import { ExplorationEntity } from '#core/world/exploration.entity'
+import { ExplorationEntity } from '#core/world/exploration/entity'
 import { ExplorationRepository } from '#app/port/repository/exploration'
 import {
   ExplorationDocument,

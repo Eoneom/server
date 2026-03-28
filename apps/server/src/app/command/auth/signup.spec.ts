@@ -6,8 +6,8 @@ import { BuildingCode } from '#core/building/constant/code'
 import { CityError } from '#core/city/error'
 import { PlayerError } from '#core/player/error'
 import { TechnologyCode } from '#core/technology/constant/code'
-import { TroupCode } from '#core/troup/constant/code'
-import { CellEntity } from '#core/world/cell.entity'
+import { TroopCode } from '#core/troop/constant/code'
+import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
 import { FAKE_ID } from '#shared/identification'
 import assert from 'assert'
@@ -76,9 +76,9 @@ describe('signupAuth', () => {
   let buildingCreate: jest.Mock
   let technologyCreate: jest.Mock
   let cellUpdateOne: jest.Mock
-  let troupCreate: jest.Mock
+  let troopCreate: jest.Mock
   let explorationCreate: jest.Mock
-  let repository: Pick<Repository, 'player' | 'city' | 'building' | 'technology' | 'cell' | 'troup' | 'exploration'>
+  let repository: Pick<Repository, 'player' | 'city' | 'building' | 'technology' | 'cell' | 'troop' | 'exploration'>
 
   beforeEach(() => {
     playerCreate = jest.fn().mockResolvedValue(undefined)
@@ -86,7 +86,7 @@ describe('signupAuth', () => {
     buildingCreate = jest.fn().mockResolvedValue(undefined)
     technologyCreate = jest.fn().mockResolvedValue(undefined)
     cellUpdateOne = jest.fn().mockResolvedValue(undefined)
-    troupCreate = jest.fn().mockResolvedValue(undefined)
+    troopCreate = jest.fn().mockResolvedValue(undefined)
     explorationCreate = jest.fn().mockResolvedValue(undefined)
 
     repository = {
@@ -107,9 +107,9 @@ describe('signupAuth', () => {
       cell: {
         updateOne: cellUpdateOne
       } as unknown as Repository['cell'],
-      troup: {
-        create: troupCreate
-      } as unknown as Repository['troup'],
+      troop: {
+        create: troopCreate
+      } as unknown as Repository['troop'],
       exploration: {
         create: explorationCreate
       } as unknown as Repository['exploration']
@@ -166,17 +166,17 @@ describe('signupAuth', () => {
     })
   })
 
-  it('should init all city troups', async () => {
+  it('should init all city troops', async () => {
     await signupAuth({ player_name, city_name })
 
-    assert.strictEqual(troupCreate.mock.calls.length, Object.keys(TroupCode).length)
+    assert.strictEqual(troopCreate.mock.calls.length, Object.keys(TroopCode).length)
     const created_player = playerCreate.mock.calls[0][0]
-    troupCreate.mock.calls.forEach(([ troup ]) => {
-      assert.strictEqual(troup.count, 0)
-      assert.strictEqual(troup.player_id, created_player.id)
-      assert.strictEqual(troup.cell_id, city_first_cell.id)
-      assert.strictEqual(troup.ongoing_recruitment, null)
-      assert.strictEqual(troup.movement_id, null)
+    troopCreate.mock.calls.forEach(([ troop ]) => {
+      assert.strictEqual(troop.count, 0)
+      assert.strictEqual(troop.player_id, created_player.id)
+      assert.strictEqual(troop.cell_id, city_first_cell.id)
+      assert.strictEqual(troop.ongoing_recruitment, null)
+      assert.strictEqual(troop.movement_id, null)
     })
   })
 

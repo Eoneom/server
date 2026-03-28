@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '#store/type'
 import { selectCityId } from '#city/slice'
 import { countUnreadReports } from '#communication/report/slice/thunk'
 import { selectOutpostId } from '#outpost/slice'
-import { finishMovement } from '#troup/slice/thunk'
+import { finishMovement } from '#troop/slice/thunk'
 
 interface Props {
   movement: MovementItem

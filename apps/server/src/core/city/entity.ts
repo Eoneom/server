@@ -9,7 +9,7 @@ import { now } from '#shared/time'
 import {
   BaseEntity,
   BaseEntityProps
-} from '#core/type/base.entity'
+} from '#core/type/base/entity'
 
 type CityEntityProps = BaseEntityProps & {
   player_id: string

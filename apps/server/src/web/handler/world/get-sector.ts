@@ -8,7 +8,7 @@ import {
 } from '@eoneom/api-client/src/endpoints/world/get-sector'
 import {
   WorldGetSectorQuery, WorldGetSectorQueryResponse
-} from '#app/query/world/get-sector'
+} from '#query/world/get-sector'
 import { getPlayerIdFromContext } from '#web/helpers'
 
 export const worldGetSectorHandler = async (

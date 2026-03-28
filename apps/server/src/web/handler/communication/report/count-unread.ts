@@ -8,7 +8,7 @@ import {
   CommunicationCountUnreadReportResponse
 } from '@eoneom/api-client/src/endpoints/communication/report/count-unread'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { CommunicationCountUnreadReportQuery } from '#app/query/communication/report/count-unread'
+import { CommunicationCountUnreadReportQuery } from '#query/communication/report/count-unread'
 
 export const communicationCountUnreadReportHandler = async (
   req: Request,

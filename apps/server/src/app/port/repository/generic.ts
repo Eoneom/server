@@ -4,8 +4,8 @@ import { CityRepository } from '#app/port/repository/city'
 import { PlayerRepository } from '#app/port/repository/player'
 import { TechnologyRepository } from '#app/port/repository/technology'
 import { CellRepository } from '#app/port/repository/cell'
-import { BaseEntity } from '#core/type/base.entity'
-import { TroupRepository } from '#app/port/repository/troup'
+import { BaseEntity } from '#core/type/base/entity'
+import { TroopRepository } from '#app/port/repository/troop'
 import { ExplorationRepository } from '#app/port/repository/exploration'
 import { MovementRepository } from '#app/port/repository/movement'
 import { ReportRepository } from '#app/port/repository/report'
@@ -30,5 +30,5 @@ export interface Repository {
   player: PlayerRepository
   report: ReportRepository
   technology: TechnologyRepository
-  troup: TroupRepository
+  troop: TroopRepository
 }

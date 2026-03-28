@@ -1,4 +1,4 @@
-import { CellEntity } from '#core/world/cell.entity'
+import { CellEntity } from '#core/world/cell/entity'
 import { CellRepository } from '#app/port/repository/cell'
 import {
   CellDocument, CellModel

@@ -1,0 +1,124 @@
+import { cancelTroop } from '#app/command/troop/cancel'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
+import { TroopCode } from '#core/troop/constant/code'
+import { TroopEntity } from '#core/troop/entity'
+import { TroopError } from '#core/troop/error'
+import { CityEntity } from '#core/city/entity'
+import { CityError } from '#core/city/error'
+import { now } from '#shared/time'
+import assert from 'assert'
+import { troop_costs } from '#core/pricing/constant/troop'
+
+describe('cancelTroop', () => {
+  const player_id = 'player_id'
+  const another_player_id = 'another_player_id'
+  const code = TroopCode.EXPLORER
+  const cell_id = 'cell_id'
+  let city: CityEntity
+  let troop: TroopEntity
+  let troopUpdateOne: jest.Mock
+  let cityUpdateOne: jest.Mock
+  let repository: Pick<Repository, 'cell' | 'city' | 'troop'>
+
+  beforeEach(() => {
+    city = CityEntity.initCity({
+      name: 'dummy',
+      player_id,
+    })
+
+    const current_time = now()
+    const last_progress = current_time - troop_costs[code].duration * 1000
+    const remaining_count = 1000
+    troop = TroopEntity.create({
+      id: 'troop_id',
+      code,
+      count: 0,
+      cell_id,
+      player_id,
+      movement_id: null,
+      ongoing_recruitment: {
+        finish_at: last_progress + 1000 * remaining_count * troop_costs[code].duration,
+        remaining_count,
+        last_progress,
+      },
+    })
+
+    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
+    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+
+    repository = {
+      cell: {
+        getCityCell: jest.fn().mockResolvedValue({ id: cell_id }),
+      } as unknown as Repository['cell'],
+      city: {
+        get: jest.fn().mockResolvedValue(city),
+        updateOne: cityUpdateOne,
+      } as unknown as Repository['city'],
+      troop: {
+        getInProgress: jest.fn().mockResolvedValue(troop),
+        updateOne: troopUpdateOne,
+      } as unknown as Repository['troop'],
+    }
+
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should prevent player from cancelling other player troops', async () => {
+    await assert.rejects(
+      () => cancelTroop({
+        city_id: city.id,
+        player_id: another_player_id,
+      }),
+      new RegExp(CityError.NOT_OWNER)
+    )
+  })
+
+  it('should assert that there is a troop in progress', async () => {
+    repository.troop.getInProgress = jest.fn().mockResolvedValue(null)
+
+    await assert.rejects(
+      () => cancelTroop({
+        city_id: city.id,
+        player_id,
+      }),
+      new RegExp(TroopError.NOT_IN_PROGRESS)
+    )
+  })
+
+  it('should refund the remaining troop price when troop is cancelled', async () => {
+    await cancelTroop({
+      city_id: city.id,
+      player_id,
+    })
+
+    const updated_city = cityUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_city.plastic, city.plastic + 999 * troop_costs[code].plastic)
+    assert.strictEqual(updated_city.mushroom, city.mushroom + 999 * troop_costs[code].mushroom)
+  })
+
+  it('should recruit troops since the last progress', async () => {
+    await cancelTroop({
+      city_id: city.id,
+      player_id,
+    })
+
+    const updated_troop = troopUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_troop.count, 1)
+  })
+
+  it('should cancel troop', async () => {
+    await cancelTroop({
+      city_id: city.id,
+      player_id,
+    })
+
+    const updated_troop = troopUpdateOne.mock.calls[0][0]
+    assert.ok(troop.ongoing_recruitment)
+    assert.ok(!updated_troop.ongoing_recruitment)
+  })
+})

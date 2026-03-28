@@ -4,8 +4,8 @@ import { BuildingService } from '#core/building/service'
 import { CityService } from '#core/city/service'
 import { PlayerService } from '#core/player/service'
 import { TechnologyService } from '#core/technology/service'
-import { TroupService } from '#core/troup/service'
-import { ExplorationEntity } from '#core/world/exploration.entity'
+import { TroopService } from '#core/troop/service'
+import { ExplorationEntity } from '#core/world/exploration/entity'
 
 export interface SignupAuthParams {
   city_name: string
@@ -49,7 +49,7 @@ export async function signupAuth({
   const buildings = BuildingService.init({ city_id: city.id })
   const technologies = TechnologyService.init({ player_id: player.id })
   const cell = city_first_cell.assign({ city_id: city.id })
-  const troups = TroupService.init({
+  const troops = TroopService.init({
     player_id: player.id,
     cell_id: cell.id
   })
@@ -67,7 +67,7 @@ export async function signupAuth({
     ...buildings.map(building => repository.building.create(building)),
     ...technologies.map(technology => repository.technology.create(technology)),
     repository.cell.updateOne(cell),
-    ...troups.map(troup => repository.troup.create(troup)),
+    ...troops.map(troop => repository.troop.create(troop)),
     repository.exploration.create(exploration)
   ])
 

@@ -10,7 +10,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   TechnologyGetQuery,
   TechnologyGetQueryResponse
-} from '#app/query/technology/get'
+} from '#query/technology/get'
 
 export const technologyGetHandler = async (
   req: Request<TechnologyGetRequest>,

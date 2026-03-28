@@ -3,7 +3,7 @@ import { now } from '#shared/time'
 import {
   BaseEntity,
   BaseEntityProps
-} from '#core/type/base.entity'
+} from '#core/type/base/entity'
 import { BuildingError } from '#core/building/error'
 
 type BuildingEntityProps = BaseEntityProps & {

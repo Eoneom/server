@@ -14,8 +14,8 @@ import { MongoTechnologyRepository } from '#adapter/repository/technology/index'
 import { Repository } from '#app/port/repository/generic'
 import { CellRepository } from '#app/port/repository/cell'
 import { MongoCellRepository } from '#adapter/repository/cell/index'
-import { TroupRepository } from '#app/port/repository/troup'
-import { MongoTroupRepository } from '#adapter/repository/troup/index'
+import { TroopRepository } from '#app/port/repository/troop'
+import { MongoTroopRepository } from '#adapter/repository/troop/index'
 import { ExplorationRepository } from '#app/port/repository/exploration'
 import { MongoExplorationRepository } from '#adapter/repository/exploration/index'
 import { MovementRepository } from '#app/port/repository/movement'
@@ -36,7 +36,7 @@ export class MongoRepository implements Repository {
   player: PlayerRepository
   report: ReportRepository
   technology: TechnologyRepository
-  troup: TroupRepository
+  troop: TroopRepository
 
   constructor() {
     this.auth = new MongoAuthRepository()
@@ -49,7 +49,7 @@ export class MongoRepository implements Repository {
     this.report = new MongoReportRepository()
     this.player = new MongoPlayerRepository()
     this.technology = new MongoTechnologyRepository()
-    this.troup = new MongoTroupRepository()
+    this.troop = new MongoTroopRepository()
   }
 
   async connect(): Promise<void> {

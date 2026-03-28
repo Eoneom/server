@@ -1,6 +1,6 @@
 import { CoordinatesDocument } from '#adapter/repository/shared/coordinates'
 import { ReportType } from '#core/communication/value/report-type'
-import { TroupCode } from '#core/troup/constant/code'
+import { TroopCode } from '#core/troop/constant/code'
 import {
   getModelForClass,
   mongoose,
@@ -9,13 +9,13 @@ import {
 
 import { Document } from 'mongoose'
 
-class ReportTroup {
+class ReportTroop {
   @prop({
     required: true,
     type: String,
-    enum: TroupCode
+    enum: TroopCode
   })
-  public code!: TroupCode
+  public code!: TroopCode
 
   @prop({ required: true })
   public count!: number
@@ -40,9 +40,9 @@ class Report {
 
   @prop({
     required: true,
-    type: [ ReportTroup ]
+    type: [ ReportTroop ]
   })
-  public troups!: ReportTroup[]
+  public troops!: ReportTroop[]
 
   @prop({ required: true })
   public recorded_at!: number

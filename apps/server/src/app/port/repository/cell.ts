@@ -1,5 +1,5 @@
 import { GenericRepository } from '#app/port/repository/generic'
-import { CellEntity } from '#core/world/cell.entity'
+import { CellEntity } from '#core/world/cell/entity'
 import { Coordinates } from '#core/world/value/coordinates'
 
 export type CellRepository = GenericRepository<CellEntity> & {

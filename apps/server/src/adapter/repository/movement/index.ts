@@ -1,11 +1,11 @@
-import { MovementEntity } from '#core/troup/movement.entity'
+import { MovementEntity } from '#core/troop/movement/entity'
 import { MovementRepository } from '#app/port/repository/movement'
 import {
   MovementDocument,
   MovementModel
 } from '#adapter/repository/movement/document'
 import { MongoGenericRepository } from '#adapter/repository/generic'
-import { TroupError } from '#core/troup/error'
+import { TroopError } from '#core/troop/error'
 import { now } from '#shared/time'
 
 export class MongoMovementRepository
@@ -13,7 +13,7 @@ export class MongoMovementRepository
   implements MovementRepository {
 
   constructor() {
-    super(MovementModel, TroupError.MOVEMENT_NOT_FOUND)
+    super(MovementModel, TroopError.MOVEMENT_NOT_FOUND)
   }
 
   async listFinishedIds({ player_id }: { player_id: string }): Promise<string[]> {

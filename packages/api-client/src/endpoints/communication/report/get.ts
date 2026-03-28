@@ -1,5 +1,5 @@
 import { ReportType } from '@server-core/communication/value/report-type'
-import { TroupCode } from '@server-core/troup/constant/code'
+import { TroopCode } from '@server-core/troop/constant/code'
 import { GenericResponse } from '../../../response'
 import { Coordinates } from '../../shared/coordinates'
 
@@ -14,8 +14,8 @@ export interface CommunicationGetReportDataResponse {
   destination: Coordinates
   origin: Coordinates
   was_read: boolean
-  troups: {
-    code: TroupCode
+  troops: {
+    code: TroopCode
     count: number
   }[]
 }

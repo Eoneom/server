@@ -1,5 +1,5 @@
-import { finishTroupBaseMovement } from '#app/command/troup/movement/finish/base'
-import { rebaseTroupMovement } from '#app/command/troup/movement/rebase'
+import { finishTroopBaseMovement } from '#app/command/troop/movement/finish/base'
+import { rebaseTroopMovement } from '#app/command/troop/movement/rebase'
 import { OutpostError } from '#core/outpost/error'
 
 export const sagaFinishBase = async ({
@@ -9,13 +9,13 @@ export const sagaFinishBase = async ({
   movement_id: string
 }): Promise<{ is_outpost_created: boolean }> => {
   try {
-    return await finishTroupBaseMovement({
+    return await finishTroopBaseMovement({
       player_id,
       movement_id,
     })
   } catch (err: unknown) {
     if ((err as Error).message === OutpostError.LIMIT_REACHED) {
-      await rebaseTroupMovement({
+      await rebaseTroopMovement({
         player_id,
         movement_id
       })

@@ -8,8 +8,8 @@ import {
 } from '#core/requirement/service'
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant/code'
-import { TroupCode } from '#core/troup/constant/code'
-import { CellEntity } from '#core/world/cell.entity'
+import { TroopCode } from '#core/troop/constant/code'
+import { CellEntity } from '#core/world/cell/entity'
 import { WorldService } from '#core/world/service'
 import { Coordinates } from '#core/world/value/coordinates'
 import { Resource } from '#shared/resource'
@@ -167,16 +167,16 @@ export class AppService {
     })
   }
 
-  static async getTroupRequirementLevels({
+  static async getTroopRequirementLevels({
     city_id,
     player_id,
-    troup_code
+    troop_code
   }: {
     city_id: string
     player_id: string
-    troup_code: TroupCode
+    troop_code: TroopCode
   }): Promise<Levels> {
-    const requirement = RequirementService.getTroupRequirement({ troup_code })
+    const requirement = RequirementService.getTroopRequirement({ troop_code })
     return this.getRequirementLevels({
       city_id,
       player_id,

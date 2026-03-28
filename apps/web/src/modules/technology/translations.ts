@@ -15,6 +15,6 @@ export const TechnologyTranslations: Record<TechnologyCode, TechnologyTranslatio
   [TechnologyCode.REPLICATION_CATALYST]: {
     name: 'Catalyseur de réplication',
     description: 'L\'ajout de catalyseur dans le bain des clones permet d\'accélérer leur développement',
-    effect: 'Accélère la production de troupes de 10% par niveau'
+    effect: 'Accélère la production de troopes de 10% par niveau'
   }
 }

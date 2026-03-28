@@ -7,10 +7,10 @@ import { CityError } from '#core/city/error'
 import { OutpostType } from '#core/outpost/constant/type'
 import { OutpostEntity } from '#core/outpost/entity'
 import { OutpostError } from '#core/outpost/error'
-import { TroupCode } from '#core/troup/constant/code'
-import { TroupEntity } from '#core/troup/entity'
-import { CellEntity } from '#core/world/cell.entity'
-import { ExplorationEntity } from '#core/world/exploration.entity'
+import { TroopCode } from '#core/troop/constant/code'
+import { TroopEntity } from '#core/troop/entity'
+import { CellEntity } from '#core/world/cell/entity'
+import { ExplorationEntity } from '#core/world/exploration/entity'
 import { CellType } from '#core/world/value/cell-type'
 import { FAKE_ID } from '#shared/identification'
 import assert from 'assert'
@@ -30,7 +30,7 @@ describe('citySettle', () => {
   }
 
   let exploration: ExplorationEntity
-  let settler_troup: TroupEntity
+  let settler_troop: TroopEntity
   let outpost: OutpostEntity
   let cell: CellEntity
   let cells_around_city: CellEntity[]
@@ -38,10 +38,10 @@ describe('citySettle', () => {
   let outpostDelete: jest.Mock
   let cityCreate: jest.Mock
   let buildingCreate: jest.Mock
-  let troupUpdateOne: jest.Mock
+  let troopUpdateOne: jest.Mock
   let cellUpdateOne: jest.Mock
   let explorationUpdateOne: jest.Mock
-  let repository: Pick<Repository, 'outpost' | 'city' | 'exploration' | 'cell' | 'troup' | 'building'>
+  let repository: Pick<Repository, 'outpost' | 'city' | 'exploration' | 'cell' | 'troop' | 'building'>
 
   beforeEach(() => {
     outpost = OutpostEntity.create({
@@ -51,9 +51,9 @@ describe('citySettle', () => {
       type: OutpostType.TEMPORARY
     })
 
-    settler_troup = TroupEntity.create({
-      id: 'troup_id',
-      code: TroupCode.SETTLER,
+    settler_troop = TroopEntity.create({
+      id: 'troop_id',
+      code: TroopCode.SETTLER,
       count: 1,
       player_id,
       cell_id,
@@ -122,7 +122,7 @@ describe('citySettle', () => {
     outpostDelete = jest.fn().mockResolvedValue(undefined)
     cityCreate = jest.fn().mockResolvedValue(undefined)
     buildingCreate = jest.fn().mockResolvedValue(undefined)
-    troupUpdateOne = jest.fn().mockResolvedValue(undefined)
+    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
     cellUpdateOne = jest.fn().mockResolvedValue(undefined)
     explorationUpdateOne = jest.fn().mockResolvedValue(undefined)
 
@@ -144,10 +144,10 @@ describe('citySettle', () => {
         getById: jest.fn().mockResolvedValue(cell),
         updateOne: cellUpdateOne
       } as unknown as Repository['cell'],
-      troup: {
-        getInCell: jest.fn().mockResolvedValue(settler_troup),
-        updateOne: troupUpdateOne
-      } as unknown as Repository['troup'],
+      troop: {
+        getInCell: jest.fn().mockResolvedValue(settler_troop),
+        updateOne: troopUpdateOne
+      } as unknown as Repository['troop'],
       building: {
         create: buildingCreate
       } as unknown as Repository['building']
@@ -193,9 +193,9 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city when there is no settler available', async () => {
-    repository.troup.getInCell = jest.fn().mockResolvedValue(
-      TroupEntity.create({
-        ...settler_troup,
+    repository.troop.getInCell = jest.fn().mockResolvedValue(
+      TroopEntity.create({
+        ...settler_troop,
         count: 0
       })
     )
@@ -286,16 +286,16 @@ describe('citySettle', () => {
     assert.strictEqual(outpostDelete.mock.calls[0][0], outpost.id)
   })
 
-  it('should remove one settler from the original outpost troups', async () => {
+  it('should remove one settler from the original outpost troops', async () => {
     await citySettle({
       outpost_id,
       player_id,
       city_name
     })
 
-    assert.strictEqual(troupUpdateOne.mock.calls.length, 1)
-    const updated_troup = troupUpdateOne.mock.calls[0][0]
-    assert.strictEqual(updated_troup.id, settler_troup.id)
-    assert.strictEqual(updated_troup.count, 0)
+    assert.strictEqual(troopUpdateOne.mock.calls.length, 1)
+    const updated_troop = troopUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_troop.id, settler_troop.id)
+    assert.strictEqual(updated_troop.count, 0)
   })
 })

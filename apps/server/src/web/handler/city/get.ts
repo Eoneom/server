@@ -12,7 +12,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   CityGetQuery,
   CityGetQueryResponse
-} from '#app/query/city/get'
+} from '#query/city/get'
 
 export const cityGetHandler = async (
   req: Request<CityGetRequest>,

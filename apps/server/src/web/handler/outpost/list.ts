@@ -12,7 +12,7 @@ import { getPlayerIdFromContext } from '#web/helpers'
 import {
   OutpostListQuery,
   OutpostListQueryResponse
-} from '#app/query/outpost/list'
+} from '#query/outpost/list'
 
 export const outpostListHandler = async (
   req: Request,

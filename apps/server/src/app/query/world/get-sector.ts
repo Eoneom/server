@@ -1,4 +1,4 @@
-import { CellEntity } from '#core/world/cell.entity'
+import { CellEntity } from '#core/world/cell/entity'
 import { GenericQuery } from '#query/generic'
 
 interface WorldGetSectorQueryRequest {

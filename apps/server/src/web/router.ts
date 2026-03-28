@@ -15,13 +15,13 @@ import { technologyCancelHandler } from '#web/handler/technology/cancel'
 import { technologyFinishResearchHandler } from '#web/handler/technology/finish-research'
 import { technologyListHandler } from '#web/handler/technology/list'
 import { technologyResearchHandler } from '#web/handler/technology/research'
-import { troupCancelHandler } from '#web/handler/troup/cancel'
-import { troupFinishMovementHandler } from '#web/handler/troup/movement/finish'
-import { troupListCityHandler } from '#web/handler/troup/list/city'
-import { troupListOutpostHandler } from '#web/handler/troup/list/outpost'
-import { troupListMovementHandler } from '#web/handler/troup/movement/list'
-import { troupProgressRecruitHandler } from '#web/handler/troup/progress-recruit'
-import { troupRecruitHandler } from '#web/handler/troup/recruit'
+import { troopCancelHandler } from '#web/handler/troop/cancel'
+import { troopFinishMovementHandler } from '#web/handler/troop/movement/finish'
+import { troopListCityHandler } from '#web/handler/troop/list/city'
+import { troopListOutpostHandler } from '#web/handler/troop/list/outpost'
+import { troopListMovementHandler } from '#web/handler/troop/movement/list'
+import { troopProgressRecruitHandler } from '#web/handler/troop/progress-recruit'
+import { troopRecruitHandler } from '#web/handler/troop/recruit'
 import { worldGetSectorHandler } from '#web/handler/world/get-sector'
 import { technologyGetHandler } from '#web/handler/technology/get'
 import { outpostListHandler } from '#web/handler/outpost/list'
@@ -30,10 +30,10 @@ import { communicationGetReportHandler } from '#web/handler/communication/report
 import { communicationCountUnreadReportHandler } from '#web/handler/communication/report/count-unread'
 import { communicationMarkReportHandler } from '#web/handler/communication/report/mark'
 import { logoutHandler } from '#web/handler/player/logout'
-import { troupGetMovementHandler } from '#web/handler/troup/movement/get'
-import { troupEstimateMovementHandler } from '#web/handler/troup/movement/estimate'
-import { troupCreateMovementHandler } from '#web/handler/troup/movement/create'
-import { troupGetHandler } from '#web/handler/troup/get'
+import { troopGetMovementHandler } from '#web/handler/troop/movement/get'
+import { troopEstimateMovementHandler } from '#web/handler/troop/movement/estimate'
+import { troopCreateMovementHandler } from '#web/handler/troop/movement/create'
+import { troopGetHandler } from '#web/handler/troop/get'
 import { citySettleHandler } from '#web/handler/city/settle'
 
 export const router = (): Router => {
@@ -66,18 +66,18 @@ export const router = (): Router => {
   r.put('/technology/research/finish', authMiddleware, technologyFinishResearchHandler)
   r.get('/city/:city_id/technology/:technology_code', authMiddleware, technologyGetHandler)
 
-  r.get('/troup/movement', authMiddleware, troupListMovementHandler)
-  r.post('/troup/movement', authMiddleware, troupCreateMovementHandler)
-  r.get('/troup/movement/:movement_id', authMiddleware, troupGetMovementHandler)
-  r.put('/troup/movement/finish', authMiddleware, troupFinishMovementHandler)
-  r.post('/troup/movement/estimate', authMiddleware, troupEstimateMovementHandler)
+  r.get('/troop/movement', authMiddleware, troopListMovementHandler)
+  r.post('/troop/movement', authMiddleware, troopCreateMovementHandler)
+  r.get('/troop/movement/:movement_id', authMiddleware, troopGetMovementHandler)
+  r.put('/troop/movement/finish', authMiddleware, troopFinishMovementHandler)
+  r.post('/troop/movement/estimate', authMiddleware, troopEstimateMovementHandler)
 
-  r.get('/troup/:troup_id', authMiddleware, troupGetHandler)
-  r.put('/troup/cancel', authMiddleware, troupCancelHandler)
-  r.put('/troup/recruit', authMiddleware, troupRecruitHandler)
-  r.put('/troup/recruit/progress', authMiddleware, troupProgressRecruitHandler)
-  r.get('/city/:city_id/troup', authMiddleware, troupListCityHandler)
-  r.get('/outpost/:outpost_id/troup', authMiddleware, troupListOutpostHandler)
+  r.get('/troop/:troop_id', authMiddleware, troopGetHandler)
+  r.put('/troop/cancel', authMiddleware, troopCancelHandler)
+  r.put('/troop/recruit', authMiddleware, troopRecruitHandler)
+  r.put('/troop/recruit/progress', authMiddleware, troopProgressRecruitHandler)
+  r.get('/city/:city_id/troop', authMiddleware, troopListCityHandler)
+  r.get('/outpost/:outpost_id/troop', authMiddleware, troopListOutpostHandler)
 
   r.get('/outpost', authMiddleware, outpostListHandler)
   r.get('/outpost/:outpost_id', authMiddleware, outpostGetHandler)

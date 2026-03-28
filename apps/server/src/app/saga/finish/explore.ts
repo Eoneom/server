@@ -1,5 +1,5 @@
-import { finishTroupBaseMovement } from '#app/command/troup/movement/finish/base'
-import { finishTroupExploreMovement } from '#app/command/troup/movement/finish/explore'
+import { finishTroopBaseMovement } from '#app/command/troop/movement/finish/base'
+import { finishTroopExploreMovement } from '#app/command/troop/movement/finish/explore'
 
 export const sagaFinishExplore = async ({
   player_id, movement_id
@@ -7,13 +7,13 @@ export const sagaFinishExplore = async ({
   player_id: string
   movement_id: string
 }) => {
-  const { base_movement } = await finishTroupExploreMovement({
+  const { base_movement } = await finishTroopExploreMovement({
     player_id,
     movement_id,
   })
 
   if (base_movement.isArrived()) {
-    await finishTroupBaseMovement({
+    await finishTroopBaseMovement({
       player_id,
       movement_id: base_movement.id
     })
