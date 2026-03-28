@@ -5,7 +5,7 @@ import {
   TroupCancelRequest, TroupCancelResponse
 } from '#client/src/endpoints/troup/cancel'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TroupCancelCommand } from '#app/command/troup/cancel'
+import { cancelTroup } from '#app/command/troup/cancel'
 
 export const troupCancelHandler = async (
   req: Request<TroupCancelRequest>,
@@ -22,7 +22,7 @@ export const troupCancelHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await new TroupCancelCommand().run({
+    await cancelTroup({
       player_id,
       city_id,
     })

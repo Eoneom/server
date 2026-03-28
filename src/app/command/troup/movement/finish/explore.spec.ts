@@ -1,8 +1,8 @@
 import assert from 'assert'
-import {
-  TroupFinishExploreCommand,
-  TroupFinishExploreCommandExec
-} from '#app/command/troup/movement/finish/explore'
+import { finishTroupExploreMovement } from '#app/command/troup/movement/finish/explore'
+import { AppService } from '#app/service'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
 import { TroupCode } from '#core/troup/constant/code'
 import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupError } from '#core/troup/error'
@@ -11,7 +11,7 @@ import { now } from '#shared/time'
 import { TroupEntity } from '#core/troup/entity'
 import { ExplorationEntity } from '#core/world/exploration.entity'
 
-describe('TroupFinishExploreCommand', () => {
+describe('finishTroupExploreMovement', () => {
   const player_id = 'player_id'
   const movement_id = 'movement_id'
   const troup_id = 'troup_id'
@@ -22,12 +22,14 @@ describe('TroupFinishExploreCommand', () => {
   let movement: MovementEntity
   let troup: TroupEntity
   let exploration: ExplorationEntity
-  let command: TroupFinishExploreCommand
-  let success_params: TroupFinishExploreCommandExec
+  let movementDelete: jest.Mock
+  let movementCreate: jest.Mock
+  let troupUpdateOne: jest.Mock
+  let explorationUpdateOne: jest.Mock
+  let reportCreate: jest.Mock
+  let repository: Pick<Repository, 'troup' | 'movement' | 'exploration' | 'report'>
 
   beforeEach(() => {
-    command = new TroupFinishExploreCommand()
-
     movement = MovementEntity.create({
       id: movement_id,
       player_id,
@@ -35,14 +37,14 @@ describe('TroupFinishExploreCommand', () => {
       origin: {
         sector: 1,
         x: 2,
-        y: 3
+        y: 3,
       },
       destination: {
         sector: 4,
         x: 5,
-        y: 6
+        y: 6,
       },
-      arrive_at: now() - 5000
+      arrive_at: now() - 5000,
     })
 
     troup = TroupEntity.create({
@@ -52,67 +54,110 @@ describe('TroupFinishExploreCommand', () => {
       cell_id: city_cell_id,
       count: 1,
       ongoing_recruitment: null,
-      movement_id: null
+      movement_id: null,
     })
 
     exploration = ExplorationEntity.create({
       id: exploration_id,
       player_id,
-      cell_ids: [ already_explored_cell_id ]
+      cell_ids: [ already_explored_cell_id ],
     })
 
-    success_params = {
-      movement,
-      player_id,
-      troups: [ troup ],
-      exploration,
-      explored_cell_ids: [ cell_id ]
+    movementDelete = jest.fn().mockResolvedValue(undefined)
+    movementCreate = jest.fn().mockResolvedValue(undefined)
+    troupUpdateOne = jest.fn().mockResolvedValue(undefined)
+    explorationUpdateOne = jest.fn().mockResolvedValue(undefined)
+    reportCreate = jest.fn().mockResolvedValue(undefined)
+
+    repository = {
+      troup: {
+        listByMovement: jest.fn().mockResolvedValue([ troup ]),
+        updateOne: troupUpdateOne,
+      } as unknown as Repository['troup'],
+      movement: {
+        getById: jest.fn().mockResolvedValue(movement),
+        delete: movementDelete,
+        create: movementCreate,
+      } as unknown as Repository['movement'],
+      exploration: {
+        get: jest.fn().mockResolvedValue(exploration),
+        updateOne: explorationUpdateOne,
+      } as unknown as Repository['exploration'],
+      report: {
+        create: reportCreate,
+      } as unknown as Repository['report'],
     }
+
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    jest.spyOn(AppService, 'getExploredCellIds').mockResolvedValue([ cell_id ])
   })
 
-  it('should prevent a player for finishing a movement of another player', () => {
-    assert.throws(() => command.exec({
-      ...success_params,
-      movement: MovementEntity.create({
-        ...movement,
-        player_id: 'another_player_id'
-      })
-    }), new RegExp(TroupError.MOVEMENT_NOT_OWNER))
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  it('should prevent a player from finishing a movement when arrive at date is in the future', () => {
-    assert.throws(() => command.exec({
-      ...success_params,
-      movement: MovementEntity.create({
-        ...movement,
-        arrive_at: now() + 10000
-      })
-    }), new RegExp(TroupError.MOVEMENT_NOT_ARRIVED))
+  it('should prevent a player for finishing a movement of another player', async () => {
+    repository.movement.getById = jest.fn().mockResolvedValue(MovementEntity.create({
+      ...movement,
+      player_id: 'another_player_id',
+    }))
+
+    await assert.rejects(
+      () => finishTroupExploreMovement({
+        player_id,
+        movement_id,
+      }),
+      new RegExp(TroupError.MOVEMENT_NOT_OWNER)
+    )
   })
 
-  it('should mark the cell as explored', () => {
-    const { exploration } = command.exec(success_params)
+  it('should prevent a player from finishing a movement when arrive at date is in the future', async () => {
+    repository.movement.getById = jest.fn().mockResolvedValue(MovementEntity.create({
+      ...movement,
+      arrive_at: now() + 10000,
+    }))
 
-    assert.strictEqual(exploration.cell_ids.length, 2)
-    assert.ok(exploration.cell_ids.some(cell_id => cell_id ))
+    await assert.rejects(
+      () => finishTroupExploreMovement({
+        player_id,
+        movement_id,
+      }),
+      new RegExp(TroupError.MOVEMENT_NOT_ARRIVED)
+    )
   })
 
-  it('should send the troup back to base at the origin', () => {
-    const {
-      base_movement: movement_to_create,
-      explore_movement_id: movement_id_to_delete,
-      troups
-    } = command.exec(success_params)
+  it('should mark the cell as explored', async () => {
+    await finishTroupExploreMovement({
+      player_id,
+      movement_id,
+    })
 
-    assert.strictEqual(movement_id_to_delete, movement.id)
+    const updated_exploration = explorationUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_exploration.cell_ids.length, 2)
+    assert.ok(updated_exploration.cell_ids.some((c: string) => c))
+  })
+
+  it('should send the troup back to base at the origin', async () => {
+    await finishTroupExploreMovement({
+      player_id,
+      movement_id,
+    })
+
+    const movement_to_create = movementCreate.mock.calls[0][0]
+    assert.strictEqual(movementDelete.mock.calls[0][0], movement.id)
     assert.strictEqual(movement_to_create.action, MovementAction.BASE)
-    assert.strictEqual(troups.length, 1)
-    assert.strictEqual(troups[0].movement_id, movement_to_create.id)
+    const troups_updated = troupUpdateOne.mock.calls.map(([ t ]) => t)
+    assert.strictEqual(troups_updated.length, 1)
+    assert.strictEqual(troups_updated[0].movement_id, movement_to_create.id)
   })
 
-  it('should create a report describing the explored cell', () => {
-    const { report } = command.exec(success_params)
+  it('should create a report describing the explored cell', async () => {
+    await finishTroupExploreMovement({
+      player_id,
+      movement_id,
+    })
 
+    const report = reportCreate.mock.calls[0][0]
     assert.strictEqual(report.troups.length, 1)
     assert.strictEqual(report.was_read, false)
     assert.strictEqual(report.troups[0].code, TroupCode.EXPLORER)

@@ -6,7 +6,7 @@ import {
   TroupProgressRecruitResponse
 } from '#client/src/endpoints/troup/progress-recruit'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TroupProgressRecruitCommand } from '#app/command/troup/progress-recruit'
+import { progressTroupRecruitment } from '#app/command/troup/progress-recruit'
 
 export const troupProgressRecruitHandler = async (
   req: Request<TroupProgressRecruitRequest>,
@@ -23,7 +23,7 @@ export const troupProgressRecruitHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    const { recruit_count } = await new TroupProgressRecruitCommand().run({
+    const { recruit_count } = await progressTroupRecruitment({
       city_id,
       player_id,
     })

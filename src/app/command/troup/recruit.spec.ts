@@ -1,7 +1,7 @@
-import {
-  TroupRecruitCommand,
-  TroupRecruitExec
-} from '#app/command/troup/recruit'
+import { recruitTroup } from '#app/command/troup/recruit'
+import { AppService } from '#app/service'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
 import { BuildingCode } from '#core/building/constant/code'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
@@ -11,91 +11,149 @@ import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import assert from 'assert'
 
-describe('TroupRecruitCommand', () => {
+describe('recruitTroup', () => {
   const player_id = 'player_id'
   const requested_troup_count = 10
   const cell_id = 'cell_id'
   let city: CityEntity
   let troup: TroupEntity
-  let command: TroupRecruitCommand
-  let success_params: TroupRecruitExec
+  let troupUpdateOne: jest.Mock
+  let cityUpdateOne: jest.Mock
+  let repository: Pick<Repository, 'cell' | 'city' | 'building' | 'technology' | 'troup'>
 
   beforeEach(() => {
-    command = new TroupRecruitCommand()
     city = CityEntity.create({
       ...CityEntity.initCity({
         name: 'dummy',
-        player_id
+        player_id,
       }),
       plastic: 100000,
-      mushroom: 100000
+      mushroom: 100000,
     })
     troup = TroupEntity.init({
       player_id,
       cell_id,
-      code: TroupCode.EXPLORER
+      code: TroupCode.EXPLORER,
     })
 
-    success_params = {
-      player_id,
-      city,
-      count: requested_troup_count,
-      troup,
-      is_recruitment_in_progress: false,
-      cloning_factory_level: 0,
-      replication_catalyst_level: 0,
-      levels: {
-        building: { [BuildingCode.CLONING_FACTORY]: 1 },
-        technology: {}
-      },
+    troupUpdateOne = jest.fn().mockResolvedValue(undefined)
+    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+
+    repository = {
+      cell: {
+        getCityCell: jest.fn().mockResolvedValue({ id: cell_id }),
+      } as unknown as Repository['cell'],
+      city: {
+        get: jest.fn().mockResolvedValue(city),
+        updateOne: cityUpdateOne,
+      } as unknown as Repository['city'],
+      building: {
+        getLevel: jest.fn().mockResolvedValue(0),
+      } as unknown as Repository['building'],
+      technology: {
+        getLevel: jest.fn().mockResolvedValue(0),
+      } as unknown as Repository['technology'],
+      troup: {
+        getInCell: jest.fn().mockResolvedValue(troup),
+        isInProgress: jest.fn().mockResolvedValue(false),
+        updateOne: troupUpdateOne,
+      } as unknown as Repository['troup'],
     }
+
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    jest.spyOn(AppService, 'getTroupRequirementLevels').mockResolvedValue({
+      building: { [BuildingCode.CLONING_FACTORY]: 1 },
+      technology: {},
+    })
   })
 
-  it('should prevent player to recruit in another player city', () => (
-    assert.throws(() => command.exec({
-      ...success_params,
-      player_id: 'another_player_id'
-    }), new RegExp(CityError.NOT_OWNER))
-  ))
-
-  it('should prevent player to recruit when city does not have enough resources', () => (
-    assert.throws(() => command.exec({
-      ...success_params,
-      city: CityEntity.create({
-        ...city,
-        plastic: 0,
-        mushroom: 0
-      })
-    }), new RegExp(CityError.NOT_ENOUGH_RESOURCES))
-  ))
-
-  it('should prevent player to recruit when recruitment is already in progress', () => (
-    assert.throws(() => command.exec({
-      ...success_params,
-      is_recruitment_in_progress: true
-    }), new RegExp(TroupError.ALREADY_IN_PROGRESS))
-  ))
-
-  it('should prevent player to recruit if building requirements are not met', () => {
-    assert.throws(() => command.exec({
-      ...success_params,
-      levels: {
-        ...success_params.levels,
-        building: {}
-      }
-    }), new RegExp(RequirementError.BUILDING_NOT_FULFILLED))
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  it('should purchase the troups in the city', () => {
-    const { city: updated_city } = command.exec(success_params)
+  it('should prevent player to recruit in another player city', async () => {
+    await assert.rejects(
+      () => recruitTroup({
+        city_id: city.id,
+        player_id: 'another_player_id',
+        troup_code: TroupCode.EXPLORER,
+        count: requested_troup_count,
+      }),
+      new RegExp(CityError.NOT_OWNER)
+    )
+  })
 
+  it('should prevent player to recruit when city does not have enough resources', async () => {
+    repository.city.get = jest.fn().mockResolvedValue(CityEntity.create({
+      ...city,
+      plastic: 0,
+      mushroom: 0,
+    }))
+
+    await assert.rejects(
+      () => recruitTroup({
+        city_id: city.id,
+        player_id,
+        troup_code: TroupCode.EXPLORER,
+        count: requested_troup_count,
+      }),
+      new RegExp(CityError.NOT_ENOUGH_RESOURCES)
+    )
+  })
+
+  it('should prevent player to recruit when recruitment is already in progress', async () => {
+    repository.troup.isInProgress = jest.fn().mockResolvedValue(true)
+
+    await assert.rejects(
+      () => recruitTroup({
+        city_id: city.id,
+        player_id,
+        troup_code: TroupCode.EXPLORER,
+        count: requested_troup_count,
+      }),
+      new RegExp(TroupError.ALREADY_IN_PROGRESS)
+    )
+  })
+
+  it('should prevent player to recruit if building requirements are not met', async () => {
+    jest.spyOn(AppService, 'getTroupRequirementLevels').mockResolvedValue({
+      building: {},
+      technology: {},
+    })
+
+    await assert.rejects(
+      () => recruitTroup({
+        city_id: city.id,
+        player_id,
+        troup_code: TroupCode.EXPLORER,
+        count: requested_troup_count,
+      }),
+      new RegExp(RequirementError.BUILDING_NOT_FULFILLED)
+    )
+  })
+
+  it('should purchase the troups in the city', async () => {
+    await recruitTroup({
+      city_id: city.id,
+      player_id,
+      troup_code: TroupCode.EXPLORER,
+      count: requested_troup_count,
+    })
+
+    const updated_city = cityUpdateOne.mock.calls[0][0]
     assert.ok(updated_city.plastic < city.plastic)
     assert.ok(updated_city.mushroom < city.mushroom)
   })
 
-  it('should launch troups recruitment', () => {
-    const { troup: updated_troup } = command.exec(success_params)
+  it('should launch troups recruitment', async () => {
+    await recruitTroup({
+      city_id: city.id,
+      player_id,
+      troup_code: TroupCode.EXPLORER,
+      count: requested_troup_count,
+    })
 
+    const updated_troup = troupUpdateOne.mock.calls[0][0]
     assert.ok(updated_troup.ongoing_recruitment)
     assert.ok(updated_troup.ongoing_recruitment.finish_at)
     assert.ok(updated_troup.ongoing_recruitment.last_progress)

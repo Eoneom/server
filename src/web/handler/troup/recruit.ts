@@ -5,7 +5,6 @@ import {
   TroupRecruitRequest, TroupRecruitResponse
 } from '#client/src/endpoints/troup/recruit'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { TroupRecruitCommand } from '#app/command/troup/recruit'
 import { sagaRecruitTroup } from '#app/saga/troup-recruit'
 
 export const troupRecruitHandler = async (

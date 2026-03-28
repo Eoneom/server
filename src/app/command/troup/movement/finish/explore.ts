@@ -1,143 +1,81 @@
-import { GenericCommand } from '#app/command/generic'
+import { Factory } from '#adapter/factory'
+import { AppService } from '#app/service'
+import { ReportFactory } from '#core/communication/report.factory'
+import { ReportType } from '#core/communication/value/report-type'
+import { MovementAction } from '#core/troup/constant/movement-action'
 import { TroupEntity } from '#core/troup/entity'
 import { TroupError } from '#core/troup/error'
 import { MovementEntity } from '#core/troup/movement.entity'
 import { TroupService } from '#core/troup/service'
 import { WorldService } from '#core/world/service'
-import { ExplorationEntity } from '#core/world/exploration.entity'
-import { AppService } from '#app/service'
-import { ReportEntity } from '#core/communication/report.entity'
-import { ReportType } from '#core/communication/value/report-type'
-import { ReportFactory } from '#core/communication/report.factory'
-import { MovementAction } from '#core/troup/constant/movement-action'
-
-interface TroupFinishExploreCommandRequest {
+export interface FinishTroupExploreMovementParams {
   player_id: string
   movement_id: string
 }
 
-export interface TroupFinishExploreCommandExec {
-  player_id: string
-  exploration: ExplorationEntity
-  movement: MovementEntity
-  troups: TroupEntity[]
-  explored_cell_ids: string[]
-}
-
-interface TroupFinishExploreCommandSave {
-  base_movement: MovementEntity
-  explore_movement_id: string
-  troups: TroupEntity[]
-  exploration: ExplorationEntity
-  report: ReportEntity
-}
-
-interface TroupFinishExploreCommandResponse {
+export interface FinishTroupExploreMovementResult {
   base_movement: MovementEntity
 }
 
-export class TroupFinishExploreCommand extends GenericCommand<
-  TroupFinishExploreCommandRequest,
-  TroupFinishExploreCommandExec,
-  TroupFinishExploreCommandSave,
-  TroupFinishExploreCommandResponse
-> {
-  constructor() {
-    super({ name: 'troup:finish:explore' })
+export async function finishTroupExploreMovement({
+  player_id,
+  movement_id,
+}: FinishTroupExploreMovementParams): Promise<FinishTroupExploreMovementResult> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:troup:finish:explore')
+  logger.info('run')
+
+  const [ troups, movement, exploration ] = await Promise.all([
+    repository.troup.listByMovement({ movement_id }),
+    repository.movement.getById(movement_id),
+    repository.exploration.get({ player_id }),
+  ])
+
+  const explored_cell_ids = await AppService.getExploredCellIds({ coordinates: movement.destination })
+
+  if (!movement.isOwnedBy(player_id)) {
+    throw new Error(TroupError.MOVEMENT_NOT_OWNER)
   }
 
-  async fetch({
-    player_id,
-    movement_id
-  }: TroupFinishExploreCommandRequest): Promise<TroupFinishExploreCommandExec> {
-    const [
-      troups,
-      movement,
-      exploration
-    ] = await Promise.all([
-      this.repository.troup.listByMovement({ movement_id }),
-      this.repository.movement.getById(movement_id),
-      this.repository.exploration.get({ player_id }),
-    ])
-
-    const explored_cell_ids = await AppService.getExploredCellIds({ coordinates: movement.destination })
-
-    return {
-      troups,
-      player_id,
-      movement,
-      exploration,
-      explored_cell_ids
-    }
+  if (!movement.isArrived()) {
+    throw new Error(TroupError.MOVEMENT_NOT_ARRIVED)
   }
 
-  exec({
-    player_id,
+  const distance = WorldService.getDistance({
+    origin: movement.destination,
+    destination: movement.origin,
+  })
+
+  const base_movement = TroupService.createMovement({
     troups,
-    exploration,
+    start_at: movement.arrive_at,
+    distance,
+    origin: movement.destination,
+    destination: movement.origin,
+    player_id,
+    action: MovementAction.BASE,
+  })
+
+  const base_troups = TroupService.assignToMovement({
+    troups,
+    movement_id: base_movement.id,
+  })
+
+  const updated_exploration = exploration.exploreCells(explored_cell_ids)
+
+  const report = ReportFactory.generateUnread({
+    type: ReportType.EXPLORATION,
     movement,
-    explored_cell_ids
-  }: TroupFinishExploreCommandExec): TroupFinishExploreCommandSave {
-    if (!movement.isOwnedBy(player_id)) {
-      throw new Error(TroupError.MOVEMENT_NOT_OWNER)
-    }
-
-    if (!movement.isArrived()) {
-      throw new Error(TroupError.MOVEMENT_NOT_ARRIVED)
-    }
-
-    const distance = WorldService.getDistance({
-      origin: movement.destination,
-      destination: movement.origin,
-    })
-
-    const base_movement = TroupService.createMovement({
-      troups,
-      start_at: movement.arrive_at,
-      distance,
-      origin: movement.destination,
-      destination: movement.origin,
-      player_id,
-      action: MovementAction.BASE
-    })
-
-    const base_troups = TroupService.assignToMovement({
-      troups,
-      movement_id: base_movement.id
-    })
-
-    const updated_exploration = exploration.exploreCells(explored_cell_ids)
-
-    const report = ReportFactory.generateUnread({
-      type: ReportType.EXPLORATION,
-      movement,
-      troups
-    })
-
-    return {
-      explore_movement_id: movement.id,
-      base_movement: base_movement,
-      troups: base_troups,
-      exploration: updated_exploration,
-      report
-    }
-  }
-
-  async save({
-    explore_movement_id,
-    base_movement,
     troups,
-    exploration,
-    report
-  }: TroupFinishExploreCommandSave): Promise<TroupFinishExploreCommandResponse> {
-    await Promise.all([
-      this.repository.movement.delete(explore_movement_id),
-      this.repository.movement.create(base_movement),
-      ...troups.map(troup => this.repository.troup.updateOne(troup)),
-      this.repository.exploration.updateOne(exploration),
-      this.repository.report.create(report)
-    ])
+  })
 
-    return { base_movement }
-  }
+  await Promise.all([
+    repository.movement.delete(movement.id),
+    repository.movement.create(base_movement),
+    ...base_troups.map(troup => repository.troup.updateOne(troup)),
+    repository.exploration.updateOne(updated_exploration),
+    repository.report.create(report),
+  ])
+
+  return { base_movement }
 }

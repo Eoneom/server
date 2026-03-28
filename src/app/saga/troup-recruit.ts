@@ -1,6 +1,6 @@
 import { finishBuildingUpgrade } from '#app/command/building/finish-upgrade'
 import { finishTechnologyResearch } from '#app/command/technology/finish-research'
-import { TroupRecruitCommand } from '#app/command/troup/recruit'
+import { recruitTroup } from '#app/command/troup/recruit'
 import { TroupCode } from '#core/troup/constant/code'
 
 export const sagaRecruitTroup = async ({
@@ -19,7 +19,7 @@ export const sagaRecruitTroup = async ({
     city_id
   })
   await finishTechnologyResearch({ player_id })
-  await new TroupRecruitCommand().run({
+  await recruitTroup({
     city_id,
     count,
     player_id,
