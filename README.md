@@ -1,6 +1,6 @@
 # Eoneom game server
 
-Proof-of-concept web strategy game. This repository is a **Yarn 4** monorepo: the HTTP API lives in `apps/server`, the React client in `apps/web` (`swarm-web`), and the shared TypeScript client in `packages/api-client`.
+Proof-of-concept web strategy game. This repository is a **Yarn 4** monorepo: the HTTP API lives in `apps/server` (`@eoneom/server`), the React client in `apps/web` (`@eoneom/web`), and the shared TypeScript client in `packages/api-client`.
 
 ## Prerequisites
 
@@ -42,7 +42,7 @@ docker compose -f containers/docker-compose.yml down
 
 ## Launch the API server (from root scripts)
 
-Root `package.json` exposes convenience scripts that delegate to the `server` workspace.
+Root `package.json` exposes convenience scripts that delegate to the `@eoneom/server` workspace.
 
 1. Build (TypeScript compile and dist layout):
 
@@ -69,19 +69,19 @@ yarn server:test
 The same commands can be run explicitly against the workspace:
 
 ```bash
-yarn workspace server build
-yarn workspace server start
-yarn workspace server test
+yarn workspace @eoneom/server build
+yarn workspace @eoneom/server start
+yarn workspace @eoneom/server test
 ```
 
-Additional scripts (lint, watch build, coverage) are defined only on `apps/server/package.json` — use `yarn workspace server <script>` for those.
+Additional scripts (lint, watch build, coverage) are defined only on `apps/server/package.json` — use `yarn workspace @eoneom/server <script>` for those.
 
 ## Other root scripts
 
 | Script            | Purpose                                      |
 | ----------------- | -------------------------------------------- |
 | `yarn client:build` | Build `@eoneom/api-client` (shared package) |
-| `yarn web:start`  | Start the React app (`swarm-web`, port **3001**) |
+| `yarn web:start`  | Start the React app (`@eoneom/web`, port **3001**) |
 | `yarn web:build`  | Production build of the web app            |
 
 Typical full-stack local setup: MongoDB running, `yarn server:start` in one terminal, `yarn web:start` in another (API on 3000, UI on 3001).

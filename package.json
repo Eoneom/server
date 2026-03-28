@@ -7,11 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "server:build": "yarn workspace server build",
-    "server:start": "yarn workspace server start",
-    "server:test": "yarn workspace server test",
+    "server:build": "yarn workspace @eoneom/server build",
+    "server:start": "yarn workspace @eoneom/server start",
+    "server:test": "yarn workspace @eoneom/server test",
     "client:build": "yarn workspace @eoneom/api-client build",
-    "web:start": "yarn workspace swarm-web start",
-    "web:build": "yarn workspace swarm-web build"
+    "web:start": "yarn workspace @eoneom/web start",
+    "web:build": "yarn workspace @eoneom/web build"
   }
 }
