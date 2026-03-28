@@ -1,4 +1,4 @@
-import { WorldGenerateCommand } from '#app/command/world/generate'
+import { generateWorld } from '#app/command/world/generate'
 import { Factory } from '#adapter/factory'
 import { WorldError } from '#core/world/error'
 import { launchServer } from '#web/http'
@@ -10,7 +10,7 @@ import { sync_task } from '#cron/index'
   await repository.connect()
 
   try {
-    await new WorldGenerateCommand().run()
+    await generateWorld()
   } catch (err: any) {
     if (err.message !== WorldError.ALREADY_EXISTS) {
       logger.error(err.message)

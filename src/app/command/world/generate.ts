@@ -1,40 +1,17 @@
-import { GenericCommand } from '#app/command/generic'
-import { CellEntity } from '#core/world/cell.entity'
+import { Factory } from '#adapter/factory'
 import { WorldError } from '#core/world/error'
 import { WorldService } from '#core/world/service'
 
-interface WorldGenerateExec {
-  is_world_initialized: boolean
-}
+export async function generateWorld(): Promise<void> {
+  const repository = Factory.getRepository()
+  const logger = Factory.getLogger('app:command:world:generate')
+  logger.info('run')
 
-interface WorldGenerateSave {
-  cells: CellEntity[]
-}
-
-export class WorldGenerateCommand extends GenericCommand<
-  void,
-  WorldGenerateExec,
-  WorldGenerateSave
-> {
-  constructor() {
-    super({ name: 'world:generate' })
+  const is_world_initialized = await repository.cell.isInitialized()
+  if (is_world_initialized) {
+    throw new Error(WorldError.ALREADY_EXISTS)
   }
 
-  async fetch(): Promise<WorldGenerateExec> {
-    const is_world_initialized = await this.repository.cell.isInitialized()
-    return { is_world_initialized }
-  }
-
-  exec({ is_world_initialized }: WorldGenerateExec): WorldGenerateSave {
-    if (is_world_initialized) {
-      throw new Error(WorldError.ALREADY_EXISTS)
-    }
-    const cells = WorldService.generate()
-    return { cells }
-  }
-
-  async save({ cells }: WorldGenerateSave): Promise<void> {
-    await Promise.all(cells.map(cell => this.repository.cell.create(cell)))
-  }
-
+  const cells = WorldService.generate()
+  await Promise.all(cells.map(cell => repository.cell.create(cell)))
 }
