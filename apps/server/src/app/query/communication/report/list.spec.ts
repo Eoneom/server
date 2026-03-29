@@ -47,12 +47,12 @@ describe('CommunicationListReportQuery', () => {
 
     expect(result.reports).toBe(reports)
     expect(result.total).toBe(reports.length)
-    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 20, offset: 0 })
+    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 10, offset: 0 })
   })
 
   it('uses offset for page 2', async () => {
     await new CommunicationListReportQuery().run({ player_id, page: 2 })
 
-    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 20, offset: 20 })
+    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 10, offset: 10 })
   })
 })
