@@ -20,7 +20,10 @@ export const HeaderResourcesItem: React.FC<Props> = ({ value, warehouse_capacity
   const progressClassName = value >= warehouse_capacity * warnCapacity ? 'warn' : ''
   const tooltipContent = <>
     {earningsPerHour}<br />
-    {earningsPerDay}<br />
+    {earningsPerDay}
+  </>
+  const storageTooltipContent = <>
+    {storageLevel}%<br />
     Max = {transformDecimals(warehouse_capacity)}
     {warehouse_full_in_seconds > 0 ? <>
       <br />
@@ -36,7 +39,7 @@ export const HeaderResourcesItem: React.FC<Props> = ({ value, warehouse_capacity
         value={transformDecimals(value)}
       />
     </Tooltip>
-    <Tooltip content={`${storageLevel}%`} position='bottom'>
+    <Tooltip content={storageTooltipContent} position='bottom'>
       <progress
         className={progressClassName}
         value={value}

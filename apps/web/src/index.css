@@ -316,10 +316,12 @@ input[type="submit"]:disabled {
 
 .tooltip .tooltip-text {
   visibility: hidden;
-  width: 8em;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(22em, 90vw);
   background-color: var(--light-primary-3);
   color: var(--dark-primary);
-  padding: 0.25em;
+  padding: 0.35em 0.5em;
   border-radius: 1em;
 
   font-weight: normal;
@@ -340,7 +342,7 @@ input[type="submit"]:disabled {
 .tooltip-text.bottom {
   top: 100%;
   left: 50%;
-  margin-left: -4em;
+  transform: translateX(-50%);
 }
 
 li.unread {
