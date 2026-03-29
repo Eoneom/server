@@ -1,6 +1,10 @@
 import { ReportType } from '@server-core/communication/value/report-type'
 import { GenericResponse } from '../../../response'
 
+export interface CommunicationListReportRequest {
+  page?: number
+}
+
 export interface CommunicationListReportDataResponse {
   reports: {
     id: string
@@ -8,6 +12,8 @@ export interface CommunicationListReportDataResponse {
     recorded_at: number
     was_read: boolean
   }[]
+  total: number
+  page_size: number
 }
 
 export type CommunicationListReportResponse = GenericResponse<CommunicationListReportDataResponse>

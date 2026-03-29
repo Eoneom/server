@@ -30,7 +30,11 @@ describe('CommunicationListReportQuery', () => {
         was_read: true
       })
     ]
-    repository = { report: { list: jest.fn().mockResolvedValue(reports) } as unknown as Repository['report'] }
+    repository = {
+      report: {
+        list: jest.fn().mockResolvedValue({ reports, total: reports.length })
+      } as unknown as Repository['report']
+    }
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
@@ -38,10 +42,17 @@ describe('CommunicationListReportQuery', () => {
     jest.restoreAllMocks()
   })
 
-  it('returns reports for player', async () => {
-    const result = await new CommunicationListReportQuery().run({ player_id })
+  it('returns reports for player on page 1', async () => {
+    const result = await new CommunicationListReportQuery().run({ player_id, page: 1 })
 
     expect(result.reports).toBe(reports)
-    expect(repository.report.list).toHaveBeenCalledWith({ player_id })
+    expect(result.total).toBe(reports.length)
+    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 20, offset: 0 })
+  })
+
+  it('uses offset for page 2', async () => {
+    await new CommunicationListReportQuery().run({ player_id, page: 2 })
+
+    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 20, offset: 20 })
   })
 })

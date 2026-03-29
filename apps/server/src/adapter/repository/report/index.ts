@@ -32,9 +32,24 @@ export class MongoReportRepository
     return this.findByIdOrThrow(id)
   }
 
-  async list({ player_id }: { player_id: string }): Promise<ReportEntity[]> {
-    const reports = await this.model.find({ player_id }).sort({ recorded_at: -1 })
-    return reports.map(report => this.buildFromModel(report))
+  async list({
+    player_id,
+    limit,
+    offset
+  }: {
+    player_id: string
+    limit: number
+    offset: number
+  }): Promise<{ reports: ReportEntity[]; total: number }> {
+    const filter = { player_id }
+    const [documents, total] = await Promise.all([
+      this.model.find(filter).sort({ recorded_at: -1 }).skip(offset).limit(limit),
+      this.model.countDocuments(filter)
+    ])
+    return {
+      reports: documents.map(report => this.buildFromModel(report)),
+      total
+    }
   }
 
   protected buildFromModel(document: ReportDocument): ReportEntity {

@@ -3,23 +3,34 @@ import { client } from '#helpers/api'
 import { isError } from '#helpers/assertion'
 import { createAppAsyncThunk } from '#store/type'
 
-export const listReports = createAppAsyncThunk('report/list', async (_, { getState, rejectWithValue }) => {
-  const token = selectToken(getState())
-  if (!token) {
-    throw rejectWithValue('empty token')
-  }
+export const listReports = createAppAsyncThunk(
+  'report/list',
+  async (arg: { page?: number } | undefined, { getState, rejectWithValue }) => {
+    const token = selectToken(getState())
+    if (!token) {
+      throw rejectWithValue('empty token')
+    }
 
-  const res = await client.communication.listReport(token)
-  if (isError(res)) {
-    throw rejectWithValue(res.error_code)
-  }
+    const state = getState() as { report: { currentPage: number } }
+    const page = arg?.page ?? state.report.currentPage
 
-  if (!res.data) {
-    throw rejectWithValue('no data')
-  }
+    const res = await client.communication.listReport(token, { page })
+    if (isError(res)) {
+      throw rejectWithValue(res.error_code)
+    }
 
-  return res.data.reports
-})
+    if (!res.data) {
+      throw rejectWithValue('no data')
+    }
+
+    return {
+      reports: res.data.reports,
+      total: res.data.total,
+      page_size: res.data.page_size,
+      page
+    }
+  }
+)
 
 export const getReport = createAppAsyncThunk('report/get', async (reportId: string, { getState, dispatch, rejectWithValue }) => {
   const token = selectToken(getState())

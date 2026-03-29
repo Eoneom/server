@@ -18,8 +18,8 @@ export const ReportPage: React.FC = () => {
       return
     }
 
-    dispatch(listReports())
-  }, [token])
+    dispatch(listReports({ page: 1 }))
+  }, [token, dispatch])
 
   return <LayoutPage details={report && <ReportExploration report={report}/>}>
     <ReportList reports={reports} />

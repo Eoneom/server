@@ -5,11 +5,15 @@ export class Fetcher {
     this.base_url = base_url
   }
 
-  public async get<T>(path: string, { token }: { token: string }): Promise<T> {
+  public async get<T>(
+    path: string,
+    { token, searchParams }: { token: string; searchParams?: Record<string, string | number> }
+  ): Promise<T> {
     return this.request({
       method: 'GET',
       path,
-      token
+      token,
+      searchParams
     })
   }
 
@@ -47,14 +51,16 @@ export class Fetcher {
     method,
     path,
     body,
-    token
+    token,
+    searchParams
   }: {
     method: string,
     path: string,
     body?: unknown
     token?: string
+    searchParams?: Record<string, string | number>
   }): Promise<T> {
-    const url = this.getUrl(path)
+    const url = this.getUrl(path, searchParams)
     const headers = new Headers({ 'Content-Type': 'application/json' })
     if (token) {
       headers.append('Authorization', token)
@@ -66,7 +72,14 @@ export class Fetcher {
     }).then(data => data.json())
   }
 
-  private getUrl(path: string) {
-    return `${this.base_url}${path}`
+  private getUrl(path: string, searchParams?: Record<string, string | number>) {
+    const base = `${this.base_url}${path}`
+    if (!searchParams || Object.keys(searchParams).length === 0) {
+      return base
+    }
+    const query = new URLSearchParams(
+      Object.entries(searchParams).map(([key, value]) => [key, String(value)])
+    ).toString()
+    return `${base}?${query}`
   }
 }

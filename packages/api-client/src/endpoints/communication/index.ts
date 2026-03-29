@@ -4,7 +4,10 @@ import {
   CommunicationGetReportRequest,
   CommunicationGetReportResponse
 } from './report/get'
-import { CommunicationListReportResponse } from './report/list'
+import {
+  CommunicationListReportRequest,
+  CommunicationListReportResponse
+} from './report/list'
 import {
   CommunicationMarkReportRequest, CommunicationMarkReportResponse
 } from './report/mark'
@@ -16,8 +19,11 @@ export class CommunicationEndpoint {
     this.fetcher = fetcher
   }
 
-  public listReport(token: string): Promise<CommunicationListReportResponse> {
-    return this.fetcher.get('/communication/report', { token })
+  public listReport(
+    token: string,
+    { page = 1 }: CommunicationListReportRequest = {}
+  ): Promise<CommunicationListReportResponse> {
+    return this.fetcher.get('/communication/report', { token, searchParams: { page } })
   }
 
   public getReport(token: string, { report_id }: CommunicationGetReportRequest): Promise<CommunicationGetReportResponse> {
