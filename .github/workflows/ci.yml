@@ -32,6 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
@@ -44,13 +46,21 @@ jobs:
           name: api-client-dist
           path: packages/api-client/dist
       - run: yarn workspace @eoneom/server build
-      - run: yarn workspace @eoneom/server test
+      - run: yarn workspace @eoneom/server test:coverage
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/server/coverage/lcov.info
+          flags: server
+          fail_ci_if_error: true
 
   web:
     needs: api-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
@@ -63,4 +73,10 @@ jobs:
           name: api-client-dist
           path: packages/api-client/dist
       - run: yarn workspace @eoneom/web build
-      - run: yarn workspace @eoneom/web test:ci
+      - run: yarn workspace @eoneom/web test:ci:coverage
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/web/coverage/lcov.info
+          flags: web
+          fail_ci_if_error: true
