@@ -38,9 +38,10 @@ describe('finishTroopBaseMovement', () => {
   let troopDelete: jest.Mock
   let reportCreate: jest.Mock
   let outpostCreate: jest.Mock
+  let ensureWorldStockForCell: jest.Mock
   let repository: Pick<
     Repository,
-    'troop' | 'movement' | 'cell' | 'outpost' | 'report'
+    'troop' | 'movement' | 'cell' | 'outpost' | 'report' | 'resource_stock'
   >
 
   function mountRepository({
@@ -57,6 +58,7 @@ describe('finishTroopBaseMovement', () => {
     troopDelete = jest.fn().mockResolvedValue(undefined)
     reportCreate = jest.fn().mockResolvedValue(undefined)
     outpostCreate = jest.fn().mockResolvedValue(undefined)
+    ensureWorldStockForCell = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       troop: {
@@ -87,6 +89,9 @@ describe('finishTroopBaseMovement', () => {
       report: {
         create: reportCreate,
       } as unknown as Repository['report'],
+      resource_stock: {
+        ensureWorldStockForCell,
+      } as unknown as Repository['resource_stock'],
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)

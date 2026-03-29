@@ -46,11 +46,14 @@ export const outpostGetHandler = async (
 
 const response_mapper = ({
   outpost,
-  cell
+  cell,
+  resource_stock
 }: OutpostGetQueryResponse): OutpostGetDataResponse => {
   return {
     id: outpost.id,
     coordinates: cell.coordinates,
-    type: outpost.type
+    type: outpost.type,
+    plastic: resource_stock.plastic,
+    mushroom: resource_stock.mushroom
   }
 }

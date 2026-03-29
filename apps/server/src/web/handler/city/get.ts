@@ -53,6 +53,7 @@ const response_mapper = ({
   pre_cell_earnings_per_second,
   cell_resource_coefficient,
   cell,
+  resource_stock,
   warehouses_capacity,
   warehouse_space_remaining,
   warehouse_full_in_seconds
@@ -60,8 +61,8 @@ const response_mapper = ({
   return {
     id: city.id,
     name: city.name,
-    plastic: city.plastic,
-    mushroom: city.mushroom,
+    plastic: resource_stock.plastic,
+    mushroom: resource_stock.mushroom,
     maximum_building_levels,
     building_levels_used,
     earnings_per_second: {

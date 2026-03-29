@@ -16,13 +16,9 @@ describe('finishBuildingUpgrade', () => {
   let repository: Pick<Repository, 'building' | 'city'>
 
   beforeEach(() => {
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'dummy',
-        player_id
-      }),
-      plastic: 1000,
-      mushroom: 1000
+    city = CityEntity.initCity({
+      name: 'dummy',
+      player_id
     })
     building_to_finish = BuildingEntity.create({
       id: 'building_id',

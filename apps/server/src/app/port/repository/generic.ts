@@ -10,6 +10,7 @@ import { ExplorationRepository } from '#app/port/repository/exploration'
 import { MovementRepository } from '#app/port/repository/movement'
 import { ReportRepository } from '#app/port/repository/report'
 import { OutpostRepository } from '#app/port/repository/outpost'
+import { ResourceStockRepository } from '#app/port/repository/resource-stock'
 
 export interface GenericRepository<Entity extends BaseEntity> {
   create(entity: Entity | Omit<Entity, 'id'>): Promise<string>
@@ -23,6 +24,7 @@ export interface Repository {
   auth: AuthRepository
   building: BuildingRepository
   cell: CellRepository
+  resource_stock: ResourceStockRepository
   city: CityRepository
   exploration: ExplorationRepository
   movement: MovementRepository

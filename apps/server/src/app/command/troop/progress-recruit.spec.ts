@@ -18,13 +18,9 @@ describe('progressTroopRecruitment', () => {
   let repository: Pick<Repository, 'cell' | 'city' | 'troop'>
 
   beforeEach(() => {
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'dummy',
-        player_id,
-      }),
-      plastic: 100000,
-      mushroom: 100000,
+    city = CityEntity.initCity({
+      name: 'dummy',
+      player_id,
     })
     const troop_creation_time = now()
     troop = TroopEntity.create({

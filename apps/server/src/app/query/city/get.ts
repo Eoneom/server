@@ -6,6 +6,7 @@ import { CellEntity } from '#core/world/cell/entity'
 import { CityEntity } from '#core/city/entity'
 import { CityService } from '#core/city/service'
 import { CityError } from '#core/city/error'
+import { ResourceStockEntity } from '#core/resources/resource-stock/entity'
 
 export interface CityGetQueryRequest {
   city_id: string
@@ -20,6 +21,7 @@ export interface CityGetQueryResponse {
   maximum_building_levels: number
   building_levels_used: number
   cell: CellEntity
+  resource_stock: ResourceStockEntity
   warehouses_capacity: Resource
   warehouse_space_remaining: Resource
   warehouse_full_in_seconds: Resource
@@ -53,25 +55,34 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
       this.repository.building.getTotalLevels({ city_id: city.id }),
     ])
 
-    const warehouse_space_remaining: Resource = {
-      plastic: Math.max(0, warehouses_capacity.plastic - city.plastic),
-      mushroom: Math.max(0, warehouses_capacity.mushroom - city.mushroom)
-    }
+    const stock_row = await this.repository.resource_stock.getByCellId({
+      cell_id: cell.id
+    })
 
-    const { city: city_as_of_now } = city.gather({
-      player_id,
+    AppService.assertResourceStockMatchesCityCell({
+      city,
+      city_cell: cell,
+      stock: stock_row
+    })
+
+    const { stock: stock_as_of_now } = stock_row.gather({
       gather_at_time: now(),
       earnings_per_second: production.earnings_per_second,
       warehouses_capacity
     })
 
+    const warehouse_space_remaining: Resource = {
+      plastic: Math.max(0, warehouses_capacity.plastic - stock_as_of_now.plastic),
+      mushroom: Math.max(0, warehouses_capacity.mushroom - stock_as_of_now.mushroom)
+    }
+
     const warehouse_full_in_seconds: Resource = {
       plastic: CityService.computeWarehouseFullInSeconds({
-        space_remaining: warehouses_capacity.plastic - city_as_of_now.plastic,
+        space_remaining: warehouses_capacity.plastic - stock_as_of_now.plastic,
         earnings_per_second: production.earnings_per_second.plastic
       }),
       mushroom: CityService.computeWarehouseFullInSeconds({
-        space_remaining: warehouses_capacity.mushroom - city_as_of_now.mushroom,
+        space_remaining: warehouses_capacity.mushroom - stock_as_of_now.mushroom,
         earnings_per_second: production.earnings_per_second.mushroom
       })
     }
@@ -84,6 +95,7 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
       maximum_building_levels,
       building_levels_used,
       cell,
+      resource_stock: stock_as_of_now,
       warehouses_capacity,
       warehouse_space_remaining,
       warehouse_full_in_seconds

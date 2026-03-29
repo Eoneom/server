@@ -1,4 +1,5 @@
 import { upgradeBuilding } from '#app/command/building/upgrade'
+import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
 import { AppService } from '#app/service'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -15,18 +16,22 @@ import assert from 'assert'
 describe('upgradeBuilding', () => {
   const player_id = 'player_id'
   let city: CityEntity
+  let city_cell: ReturnType<typeof testCityCell>
+  let stock: ReturnType<typeof testResourceStock>
   let building: BuildingEntity
   let architecture: TechnologyEntity
-  let cityUpdateOne: jest.Mock
+  let stockUpdateOne: jest.Mock
   let buildingUpdateOne: jest.Mock
-  let repository: Pick<Repository, 'building' | 'city' | 'technology' | 'cell'>
+  let repository: Pick<Repository, 'building' | 'city' | 'technology' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'dummy',
-        player_id
-      }),
+    city = CityEntity.initCity({
+      name: 'dummy',
+      player_id
+    })
+    city_cell = testCityCell({ city_id: city.id })
+    stock = testResourceStock({
+      cell_id: city_cell.id,
       plastic: 30000,
       mushroom: 30000
     })
@@ -44,7 +49,7 @@ describe('upgradeBuilding', () => {
     })
 
     buildingUpdateOne = jest.fn().mockResolvedValue(undefined)
-    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       building: {
@@ -56,7 +61,6 @@ describe('upgradeBuilding', () => {
       } as unknown as Repository['building'],
       city: {
         get: jest.fn().mockResolvedValue(city),
-        updateOne: cityUpdateOne
       } as unknown as Repository['city'],
       technology: {
         get: jest.fn().mockResolvedValue(architecture),
@@ -70,8 +74,13 @@ describe('upgradeBuilding', () => {
         ])
       } as unknown as Repository['technology'],
       cell: {
-        getCityCellsCount: jest.fn().mockResolvedValue(10)
-      } as unknown as Repository['cell']
+        getCityCellsCount: jest.fn().mockResolvedValue(10),
+        getCityCell: jest.fn().mockResolvedValue(city_cell)
+      } as unknown as Repository['cell'],
+      resource_stock: {
+        getByCellId: jest.fn().mockResolvedValue(stock),
+        updateOne: stockUpdateOne
+      } as unknown as Repository['resource_stock']
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -93,12 +102,12 @@ describe('upgradeBuilding', () => {
   })
 
   it('should prevent a player to upgrade if city does not have enough resources', async () => {
-    const city_without_ressources = CityEntity.create({
-      ...city,
+    const broke = testResourceStock({
+      cell_id: city_cell.id,
       plastic: 0,
       mushroom: 0
     })
-    repository.city.get = jest.fn().mockResolvedValue(city_without_ressources)
+    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(broke)
 
     await assert.rejects(
       () => upgradeBuilding({
@@ -157,9 +166,9 @@ describe('upgradeBuilding', () => {
       building_code: BuildingCode.CLONING_FACTORY
     })
 
-    const updated_city = cityUpdateOne.mock.calls[0][0]
-    assert.ok(updated_city.plastic < city.plastic)
-    assert.ok(updated_city.mushroom < city.mushroom)
+    const updated_stock = stockUpdateOne.mock.calls[0][0]
+    assert.ok(updated_stock.plastic < stock.plastic)
+    assert.ok(updated_stock.mushroom < stock.mushroom)
   })
 
   it('should launch the building upgrade', async () => {

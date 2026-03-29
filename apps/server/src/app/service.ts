@@ -1,6 +1,8 @@
 import { Factory } from '#adapter/factory'
 import { BuildingCode } from '#core/building/constant/code'
 import { BuildingService } from '#core/building/service'
+import { CityEntity } from '#core/city/entity'
+import { CityError } from '#core/city/error'
 import { CityService } from '#core/city/service'
 import {
   Levels,
@@ -9,7 +11,9 @@ import {
 import { RequirementValue } from '#core/requirement/value/requirement'
 import { TechnologyCode } from '#core/technology/constant/code'
 import { TroopCode } from '#core/troop/constant/code'
+import { ResourceStockEntity } from '#core/resources/resource-stock/entity'
 import { CellEntity } from '#core/world/cell/entity'
+import { WorldError } from '#core/world/error'
 import { WorldService } from '#core/world/service'
 import { Coordinates } from '#core/world/value/coordinates'
 import { Resource } from '#shared/resource'
@@ -226,6 +230,37 @@ export class AppService {
     ]
 
     return Promise.all(all_coordinates.map(cell_coordinates => repository.cell.getCell({ coordinates: cell_coordinates })))
+  }
+
+  static assertResourceStockMatchesCityCell({
+    city,
+    city_cell,
+    stock
+  }: {
+    city: CityEntity
+    city_cell: CellEntity
+    stock: ResourceStockEntity
+  }): void {
+    if (city_cell.city_id !== city.id || stock.cell_id !== city_cell.id) {
+      throw new Error(WorldError.CELL_CITY_MISMATCH)
+    }
+  }
+
+  static assertCityResourceStockContext({
+    city,
+    city_cell,
+    stock,
+    player_id
+  }: {
+    city: CityEntity
+    city_cell: CellEntity
+    stock: ResourceStockEntity
+    player_id: string
+  }): void {
+    if (!city.isOwnedBy(player_id)) {
+      throw new Error(CityError.NOT_OWNER)
+    }
+    AppService.assertResourceStockMatchesCityCell({ city, city_cell, stock })
   }
 
   private static async loadCityProductionInputs(city_id: string): Promise<{

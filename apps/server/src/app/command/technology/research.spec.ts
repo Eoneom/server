@@ -11,22 +11,27 @@ import { TechnologyCode } from '#core/technology/constant/code'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyError } from '#core/technology/error'
 import assert from 'assert'
+import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
 
 describe('researchTechnology', () => {
   const player_id = 'player_id'
   let city: CityEntity
+  let city_cell: ReturnType<typeof testCityCell>
+  let stock: ReturnType<typeof testResourceStock>
   let technology: TechnologyEntity
   let research_lab: BuildingEntity
-  let cityUpdateOne: jest.Mock
+  let stockUpdateOne: jest.Mock
   let technologyUpdateOne: jest.Mock
-  let repository: Pick<Repository, 'city' | 'technology' | 'building'>
+  let repository: Pick<Repository, 'city' | 'technology' | 'building' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'dummy',
-        player_id
-      }),
+    city = CityEntity.initCity({
+      name: 'dummy',
+      player_id
+    })
+    city_cell = testCityCell({ city_id: city.id })
+    stock = testResourceStock({
+      cell_id: city_cell.id,
       plastic: 100000,
       mushroom: 100000
     })
@@ -41,13 +46,12 @@ describe('researchTechnology', () => {
       level: 0
     })
 
-    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
     technologyUpdateOne = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       city: {
         get: jest.fn().mockResolvedValue(city),
-        updateOne: cityUpdateOne
       } as unknown as Repository['city'],
       technology: {
         get: jest.fn().mockResolvedValue(technology),
@@ -56,7 +60,14 @@ describe('researchTechnology', () => {
       } as unknown as Repository['technology'],
       building: {
         get: jest.fn().mockResolvedValue(research_lab)
-      } as unknown as Repository['building']
+      } as unknown as Repository['building'],
+      cell: {
+        getCityCell: jest.fn().mockResolvedValue(city_cell)
+      } as unknown as Repository['cell'],
+      resource_stock: {
+        getByCellId: jest.fn().mockResolvedValue(stock),
+        updateOne: stockUpdateOne
+      } as unknown as Repository['resource_stock']
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -80,17 +91,17 @@ describe('researchTechnology', () => {
       new RegExp(CityError.NOT_OWNER)
     )
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 0)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 0)
     assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
   })
 
   it('should prevent a player to research if city does not have enough resources', async () => {
-    const city_without_resources = CityEntity.create({
-      ...city,
+    const broke = testResourceStock({
+      cell_id: city_cell.id,
       plastic: 0,
       mushroom: 0
     })
-    repository.city.get = jest.fn().mockResolvedValue(city_without_resources)
+    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(broke)
 
     await assert.rejects(
       () => researchTechnology({
@@ -101,7 +112,7 @@ describe('researchTechnology', () => {
       new RegExp(CityError.NOT_ENOUGH_RESOURCES)
     )
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 0)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 0)
     assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
   })
 
@@ -117,7 +128,7 @@ describe('researchTechnology', () => {
       new RegExp(TechnologyError.ALREADY_IN_PROGRESS)
     )
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 0)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 0)
     assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
   })
 
@@ -136,7 +147,7 @@ describe('researchTechnology', () => {
       new RegExp(RequirementError.BUILDING_NOT_FULFILLED)
     )
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 0)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 0)
     assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
   })
 
@@ -163,7 +174,7 @@ describe('researchTechnology', () => {
       new RegExp(RequirementError.BUILDING_NOT_FULFILLED)
     )
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 0)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 0)
     assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
   })
 
@@ -187,7 +198,7 @@ describe('researchTechnology', () => {
       technology_code: TechnologyCode.ARCHITECTURE
     })
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 1)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 1)
     assert.strictEqual(technologyUpdateOne.mock.calls.length, 1)
   })
 
@@ -198,10 +209,10 @@ describe('researchTechnology', () => {
       technology_code: TechnologyCode.ARCHITECTURE
     })
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 1)
-    const updated_city = cityUpdateOne.mock.calls[0][0]
-    assert.ok(updated_city.plastic < city.plastic)
-    assert.ok(updated_city.mushroom < city.mushroom)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 1)
+    const updated_stock = stockUpdateOne.mock.calls[0][0]
+    assert.ok(updated_stock.plastic < stock.plastic)
+    assert.ok(updated_stock.mushroom < stock.mushroom)
   })
 
   it('should launch the technology research', async () => {

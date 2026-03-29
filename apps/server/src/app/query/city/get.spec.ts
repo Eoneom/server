@@ -6,23 +6,20 @@ import { CityEntity } from '#core/city/entity'
 import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
 import * as time from '#shared/time'
+import { testResourceStock } from '../../test-support/resource-stock'
 
 describe('CityGetQuery', () => {
   const player_id = 'player_id'
   let city: CityEntity
   let cell: CellEntity
-  let repository: Pick<Repository, 'building' | 'city' | 'cell'>
+  let repository: Pick<Repository, 'building' | 'city' | 'cell' | 'resource_stock'>
   let nowSpy: jest.SpiedFunction<typeof time.now>
 
   beforeEach(() => {
     nowSpy = jest.spyOn(time, 'now').mockReturnValue(0)
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'dummy',
-        player_id
-      }),
-      plastic: 0,
-      mushroom: 0
+    city = CityEntity.initCity({
+      name: 'dummy',
+      player_id
     })
     cell = CellEntity.create({
       id: 'cell_id',
@@ -42,6 +39,11 @@ describe('CityGetQuery', () => {
       cell: {
         getCityCell: jest.fn().mockResolvedValue(cell),
       } as unknown as Repository['cell'],
+      resource_stock: {
+        getByCellId: jest.fn().mockResolvedValue(
+          testResourceStock({ cell_id: cell.id, plastic: 0, mushroom: 0 })
+        ),
+      } as unknown as Repository['resource_stock'],
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)

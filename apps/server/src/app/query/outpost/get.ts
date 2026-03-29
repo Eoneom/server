@@ -2,6 +2,7 @@ import { GenericQuery } from '#query/generic'
 import { OutpostEntity } from '#core/outpost/entity'
 import { OutpostError } from '#core/outpost/error'
 import { CellEntity } from '#core/world/cell/entity'
+import { ResourceStockEntity } from '#core/resources/resource-stock/entity'
 
 export interface OutpostGetQueryRequest {
   player_id: string
@@ -11,6 +12,7 @@ export interface OutpostGetQueryRequest {
 export interface OutpostGetQueryResponse {
   outpost: OutpostEntity
   cell: CellEntity
+  resource_stock: ResourceStockEntity
 }
 
 export class OutpostGetQuery extends GenericQuery<OutpostGetQueryRequest, OutpostGetQueryResponse> {
@@ -26,10 +28,17 @@ export class OutpostGetQuery extends GenericQuery<OutpostGetQueryRequest, Outpos
     if (!outpost.isOwnedBy(player_id)) {
       throw new Error(OutpostError.NOT_OWNER)
     }
-    const cell = await this.repository.cell.getById(outpost.cell_id)
+    const [
+      cell,
+      resource_stock
+    ] = await Promise.all([
+      this.repository.cell.getById(outpost.cell_id),
+      this.repository.resource_stock.getByCellId({ cell_id: outpost.cell_id })
+    ])
     return {
       outpost,
-      cell
+      cell,
+      resource_stock
     }
   }
 }

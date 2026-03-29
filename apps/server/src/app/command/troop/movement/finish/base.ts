@@ -174,13 +174,21 @@ export async function finishTroopBaseMovement({
     })
   }
 
-  await Promise.all([
-    finish_save.outpost && repository.outpost.create(finish_save.outpost),
+  const save_promises: Promise<unknown>[] = [
     repository.report.create(finish_save.report),
     repository.movement.delete(finish_save.delete_movement_id),
     ...finish_save.updated_troops.map(troop => repository.troop.updateOne(troop, { upsert: true })),
     ...finish_save.delete_troop_ids.map(troop_id => repository.troop.delete(troop_id)),
-  ])
+  ]
+  if (finish_save.outpost) {
+    save_promises.push(
+      repository.outpost.create(finish_save.outpost),
+      repository.resource_stock.ensureWorldStockForCell({
+        cell_id: finish_save.outpost.cell_id
+      }),
+    )
+  }
+  await Promise.all(save_promises)
 
   return { is_outpost_created: Boolean(finish_save.outpost) }
 }

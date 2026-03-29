@@ -10,25 +10,30 @@ import { TroopCode } from '#core/troop/constant/code'
 import { TroopEntity } from '#core/troop/entity'
 import { TroopError } from '#core/troop/error'
 import assert from 'assert'
+import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
 
 describe('recruitTroop', () => {
   const player_id = 'player_id'
   const requested_troop_count = 10
   const cell_id = 'cell_id'
   let city: CityEntity
+  let city_cell: ReturnType<typeof testCityCell>
+  let stock: ReturnType<typeof testResourceStock>
   let troop: TroopEntity
   let troopUpdateOne: jest.Mock
-  let cityUpdateOne: jest.Mock
-  let repository: Pick<Repository, 'cell' | 'city' | 'building' | 'technology' | 'troop'>
+  let stockUpdateOne: jest.Mock
+  let repository: Pick<Repository, 'cell' | 'city' | 'building' | 'technology' | 'troop' | 'resource_stock'>
 
   beforeEach(() => {
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'dummy',
-        player_id,
-      }),
+    city = CityEntity.initCity({
+      name: 'dummy',
+      player_id,
+    })
+    city_cell = testCityCell({ city_id: city.id, cell_id })
+    stock = testResourceStock({
+      cell_id,
       plastic: 100000,
-      mushroom: 100000,
+      mushroom: 100000
     })
     troop = TroopEntity.init({
       player_id,
@@ -37,15 +42,14 @@ describe('recruitTroop', () => {
     })
 
     troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       cell: {
-        getCityCell: jest.fn().mockResolvedValue({ id: cell_id }),
+        getCityCell: jest.fn().mockResolvedValue(city_cell),
       } as unknown as Repository['cell'],
       city: {
         get: jest.fn().mockResolvedValue(city),
-        updateOne: cityUpdateOne,
       } as unknown as Repository['city'],
       building: {
         getLevel: jest.fn().mockResolvedValue(0),
@@ -58,6 +62,10 @@ describe('recruitTroop', () => {
         isInProgress: jest.fn().mockResolvedValue(false),
         updateOne: troopUpdateOne,
       } as unknown as Repository['troop'],
+      resource_stock: {
+        getByCellId: jest.fn().mockResolvedValue(stock),
+        updateOne: stockUpdateOne,
+      } as unknown as Repository['resource_stock'],
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -84,11 +92,8 @@ describe('recruitTroop', () => {
   })
 
   it('should prevent player to recruit when city does not have enough resources', async () => {
-    repository.city.get = jest.fn().mockResolvedValue(CityEntity.create({
-      ...city,
-      plastic: 0,
-      mushroom: 0,
-    }))
+    const broke = testResourceStock({ cell_id, plastic: 0, mushroom: 0 })
+    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(broke)
 
     await assert.rejects(
       () => recruitTroop({
@@ -140,9 +145,9 @@ describe('recruitTroop', () => {
       count: requested_troop_count,
     })
 
-    const updated_city = cityUpdateOne.mock.calls[0][0]
-    assert.ok(updated_city.plastic < city.plastic)
-    assert.ok(updated_city.mushroom < city.mushroom)
+    const updated_stock = stockUpdateOne.mock.calls[0][0]
+    assert.ok(updated_stock.plastic < stock.plastic)
+    assert.ok(updated_stock.mushroom < stock.mushroom)
   })
 
   it('should launch troops recruitment', async () => {

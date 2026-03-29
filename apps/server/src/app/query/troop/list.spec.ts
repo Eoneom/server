@@ -20,13 +20,9 @@ describe('TroopListQuery', () => {
   let repository: Pick<Repository, 'city' | 'cell' | 'troop' | 'building' | 'technology' | 'outpost'>
 
   beforeEach(() => {
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'c',
-        player_id 
-      }),
-      plastic: 0,
-      mushroom: 0
+    city = CityEntity.initCity({
+      name: 'c',
+      player_id
     })
     cell = CellEntity.create({
       id: 'cell1',
@@ -71,13 +67,9 @@ describe('TroopListQuery', () => {
   })
 
   it('throws when city is not owned by player', async () => {
-    const other_city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'x',
-        player_id: 'other' 
-      }),
-      plastic: 0,
-      mushroom: 0
+    const other_city = CityEntity.initCity({
+      name: 'x',
+      player_id: 'other'
     })
     ;(repository.city.get as jest.Mock).mockResolvedValue(other_city)
 

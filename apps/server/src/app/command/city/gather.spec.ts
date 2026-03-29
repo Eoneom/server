@@ -10,26 +10,43 @@ import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { now } from '#shared/time'
 import assert from 'assert'
+import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
 
 describe('cityGather', () => {
   const player_id = 'player_id'
   let city: CityEntity
-  let cityUpdateOne: jest.Mock
-  let repository: Pick<Repository, 'city'>
+  let city_cell: ReturnType<typeof testCityCell>
+  let stock: ReturnType<typeof testResourceStock>
+  let stockUpdateOne: jest.Mock
+  let repository: Pick<Repository, 'city' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
     city = CityEntity.initCity({
       name: 'dummy',
       player_id
     })
+    city_cell = testCityCell({ city_id: city.id })
+    stock = testResourceStock({
+      cell_id: city_cell.id,
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM,
+      last_plastic_gather: 0,
+      last_mushroom_gather: 0
+    })
 
-    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       city: {
         get: jest.fn().mockResolvedValue(city),
-        updateOne: cityUpdateOne
-      } as unknown as Repository['city']
+      } as unknown as Repository['city'],
+      cell: {
+        getCityCell: jest.fn().mockResolvedValue(city_cell)
+      } as unknown as Repository['cell'],
+      resource_stock: {
+        getByCellId: jest.fn().mockImplementation(() => Promise.resolve(stock)),
+        updateOne: stockUpdateOne
+      } as unknown as Repository['resource_stock']
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -62,14 +79,14 @@ describe('cityGather', () => {
 
   it('should prevent gather if not enough time has passed', async () => {
     const gather_at_time = now()
-
-    repository.city.get = jest.fn().mockResolvedValue(
-      CityEntity.create({
-        ...city,
-        last_plastic_gather: gather_at_time + 10 * 1000,
-        last_mushroom_gather: gather_at_time + 10 * 1000
-      })
-    )
+    const blocked = testResourceStock({
+      cell_id: city_cell.id,
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM,
+      last_plastic_gather: gather_at_time + 10 * 1000,
+      last_mushroom_gather: gather_at_time + 10 * 1000
+    })
+    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(blocked)
 
     await cityGather({
       city_id: city.id,
@@ -77,7 +94,7 @@ describe('cityGather', () => {
       gather_at_time
     })
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 0)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 0)
   })
 
   it('should gather the maximum of what warehouses can handle', async () => {
@@ -97,13 +114,14 @@ describe('cityGather', () => {
       mushroom: mushroom_warehouse_capacity
     })
 
-    repository.city.get = jest.fn().mockResolvedValue(
-      CityEntity.create({
-        ...city,
-        last_plastic_gather: gather_at_time - time_elapsed * 1000,
-        last_mushroom_gather: gather_at_time - time_elapsed * 1000
-      })
-    )
+    const seeded = testResourceStock({
+      cell_id: city_cell.id,
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM,
+      last_plastic_gather: gather_at_time - time_elapsed * 1000,
+      last_mushroom_gather: gather_at_time - time_elapsed * 1000
+    })
+    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(seeded)
 
     await cityGather({
       city_id: city.id,
@@ -111,10 +129,10 @@ describe('cityGather', () => {
       gather_at_time
     })
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 1)
-    const updated_city = cityUpdateOne.mock.calls[0][0]
-    assert.strictEqual(updated_city.plastic, plastic_warehouse_capacity)
-    assert.strictEqual(updated_city.mushroom, mushroom_warehouse_capacity)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 1)
+    const updated_stock = stockUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_stock.plastic, plastic_warehouse_capacity)
+    assert.strictEqual(updated_stock.mushroom, mushroom_warehouse_capacity)
   })
 
   it('should gather city resources', async () => {
@@ -128,13 +146,14 @@ describe('cityGather', () => {
       mushroom: mushroom_earnings
     })
 
-    repository.city.get = jest.fn().mockResolvedValue(
-      CityEntity.create({
-        ...city,
-        last_plastic_gather: gather_at_time - time_elapsed * 1000,
-        last_mushroom_gather: gather_at_time - time_elapsed * 1000
-      })
-    )
+    const seeded = testResourceStock({
+      cell_id: city_cell.id,
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM,
+      last_plastic_gather: gather_at_time - time_elapsed * 1000,
+      last_mushroom_gather: gather_at_time - time_elapsed * 1000
+    })
+    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(seeded)
 
     await cityGather({
       city_id: city.id,
@@ -142,9 +161,9 @@ describe('cityGather', () => {
       gather_at_time
     })
 
-    assert.strictEqual(cityUpdateOne.mock.calls.length, 1)
-    const updated_city = cityUpdateOne.mock.calls[0][0]
-    assert.strictEqual(updated_city.plastic, city.plastic + time_elapsed * plastic_earnings)
-    assert.strictEqual(updated_city.mushroom, city.mushroom + time_elapsed * mushroom_earnings)
+    assert.strictEqual(stockUpdateOne.mock.calls.length, 1)
+    const updated_stock = stockUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_stock.plastic, STARTING_PLASTIC + time_elapsed * plastic_earnings)
+    assert.strictEqual(updated_stock.mushroom, STARTING_MUSHROOM + time_elapsed * mushroom_earnings)
   })
 })

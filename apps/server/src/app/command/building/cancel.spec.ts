@@ -1,4 +1,8 @@
 import { cancelBuilding } from '#app/command/building/cancel'
+import {
+  STARTING_MUSHROOM,
+  STARTING_PLASTIC
+} from '#core/city/constant'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
 import { BuildingCode } from '#core/building/constant/code'
@@ -8,20 +12,29 @@ import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { now } from '#shared/time'
 import assert from 'assert'
+import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
 
 describe('cancelBuilding', () => {
   const player_id = 'player_id'
   const another_player_id = 'another_player_id'
   let city: CityEntity
+  let city_cell: ReturnType<typeof testCityCell>
+  let stock: ReturnType<typeof testResourceStock>
   let building: BuildingEntity
-  let cityUpdateOne: jest.Mock
+  let stockUpdateOne: jest.Mock
   let buildingUpdateOne: jest.Mock
-  let repository: Pick<Repository, 'building' | 'city'>
+  let repository: Pick<Repository, 'building' | 'city' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
     city = CityEntity.initCity({
       name: 'dummy',
       player_id
+    })
+    city_cell = testCityCell({ city_id: city.id })
+    stock = testResourceStock({
+      cell_id: city_cell.id,
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM
     })
 
     building = BuildingEntity.create({
@@ -33,7 +46,7 @@ describe('cancelBuilding', () => {
     })
 
     buildingUpdateOne = jest.fn().mockResolvedValue(undefined)
-    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       building: {
@@ -42,8 +55,14 @@ describe('cancelBuilding', () => {
       } as unknown as Repository['building'],
       city: {
         get: jest.fn().mockResolvedValue(city),
-        updateOne: cityUpdateOne
-      } as unknown as Repository['city']
+      } as unknown as Repository['city'],
+      cell: {
+        getCityCell: jest.fn().mockResolvedValue(city_cell)
+      } as unknown as Repository['cell'],
+      resource_stock: {
+        getByCellId: jest.fn().mockResolvedValue(stock),
+        updateOne: stockUpdateOne
+      } as unknown as Repository['resource_stock']
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -81,9 +100,9 @@ describe('cancelBuilding', () => {
       city_id: city.id
     })
 
-    const updated_city = cityUpdateOne.mock.calls[0][0]
-    assert.strictEqual(updated_city.plastic, city.plastic + 39)
-    assert.strictEqual(updated_city.mushroom, city.mushroom + 67)
+    const updated_stock = stockUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_stock.plastic, STARTING_PLASTIC + 39)
+    assert.strictEqual(updated_stock.mushroom, STARTING_MUSHROOM + 67)
   })
 
   it('should cancel building', async () => {

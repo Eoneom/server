@@ -1,6 +1,5 @@
 import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
-import { CityError } from '#core/city/error'
 
 export interface CityGatherRequest {
   city_id: string
@@ -19,23 +18,26 @@ export async function cityGather({
 
   const city = await repository.city.get(city_id)
 
-  if (!city.isOwnedBy(player_id)) {
-    throw new Error(CityError.NOT_OWNER)
-  }
-
   const [
+    city_cell,
     earnings_per_second,
     warehouses_capacity
   ] = await Promise.all([
+    repository.cell.getCityCell({ city_id }),
     AppService.getCityEarningsBySecond({ city_id }),
     AppService.getCityWarehousesCapacity({ city_id })
   ])
 
+  const stock = await repository.resource_stock.getByCellId({
+    cell_id: city_cell.id
+  })
+
+  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
+
   const {
-    city: updated_city,
+    stock: updated_stock,
     updated
-  } = city.gather({
-    player_id,
+  } = stock.gather({
     gather_at_time,
     earnings_per_second,
     warehouses_capacity
@@ -45,5 +47,5 @@ export async function cityGather({
     return
   }
 
-  await repository.city.updateOne(updated_city)
+  await repository.resource_stock.updateOne(updated_stock)
 }

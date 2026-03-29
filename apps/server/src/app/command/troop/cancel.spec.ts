@@ -5,10 +5,15 @@ import { TroopCode } from '#core/troop/constant/code'
 import { TroopEntity } from '#core/troop/entity'
 import { TroopError } from '#core/troop/error'
 import { CityEntity } from '#core/city/entity'
+import {
+  STARTING_MUSHROOM,
+  STARTING_PLASTIC
+} from '#core/city/constant'
 import { CityError } from '#core/city/error'
 import { now } from '#shared/time'
 import assert from 'assert'
 import { troop_costs } from '#core/pricing/constant/troop'
+import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
 
 describe('cancelTroop', () => {
   const player_id = 'player_id'
@@ -16,15 +21,23 @@ describe('cancelTroop', () => {
   const code = TroopCode.EXPLORER
   const cell_id = 'cell_id'
   let city: CityEntity
+  let city_cell: ReturnType<typeof testCityCell>
+  let stock: ReturnType<typeof testResourceStock>
   let troop: TroopEntity
   let troopUpdateOne: jest.Mock
-  let cityUpdateOne: jest.Mock
-  let repository: Pick<Repository, 'cell' | 'city' | 'troop'>
+  let stockUpdateOne: jest.Mock
+  let repository: Pick<Repository, 'cell' | 'city' | 'troop' | 'resource_stock'>
 
   beforeEach(() => {
     city = CityEntity.initCity({
       name: 'dummy',
       player_id,
+    })
+    city_cell = testCityCell({ city_id: city.id, cell_id })
+    stock = testResourceStock({
+      cell_id,
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM
     })
 
     const current_time = now()
@@ -46,20 +59,23 @@ describe('cancelTroop', () => {
     })
 
     troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    cityUpdateOne = jest.fn().mockResolvedValue(undefined)
+    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       cell: {
-        getCityCell: jest.fn().mockResolvedValue({ id: cell_id }),
+        getCityCell: jest.fn().mockResolvedValue(city_cell),
       } as unknown as Repository['cell'],
       city: {
         get: jest.fn().mockResolvedValue(city),
-        updateOne: cityUpdateOne,
       } as unknown as Repository['city'],
       troop: {
         getInProgress: jest.fn().mockResolvedValue(troop),
         updateOne: troopUpdateOne,
       } as unknown as Repository['troop'],
+      resource_stock: {
+        getByCellId: jest.fn().mockResolvedValue(stock),
+        updateOne: stockUpdateOne,
+      } as unknown as Repository['resource_stock'],
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -97,9 +113,9 @@ describe('cancelTroop', () => {
       player_id,
     })
 
-    const updated_city = cityUpdateOne.mock.calls[0][0]
-    assert.strictEqual(updated_city.plastic, city.plastic + 999 * troop_costs[code].plastic)
-    assert.strictEqual(updated_city.mushroom, city.mushroom + 999 * troop_costs[code].mushroom)
+    const updated_stock = stockUpdateOne.mock.calls[0][0]
+    assert.strictEqual(updated_stock.plastic, STARTING_PLASTIC + 999 * troop_costs[code].plastic)
+    assert.strictEqual(updated_stock.mushroom, STARTING_MUSHROOM + 999 * troop_costs[code].mushroom)
   })
 
   it('should recruit troops since the last progress', async () => {

@@ -35,16 +35,21 @@ export const outpostListHandler = async (
 
 const response_mapper = ({
   outposts,
-  cells
+  cells,
+  resource_stocks
 }: OutpostListQueryResponse): OutpostListDataResponse => {
   const outposts_response: OutpostListDataResponse['outposts'] = outposts.map(outpost => {
     const cell = cells.find(c => c.id === outpost.cell_id)
     assert(cell)
+    const stock = resource_stocks.find(s => s.cell_id === outpost.cell_id)
+    assert(stock)
 
     return {
       id: outpost.id,
       coordinates: cell.coordinates,
-      type: outpost.type
+      type: outpost.type,
+      plastic: stock.plastic,
+      mushroom: stock.mushroom
     }
   })
 

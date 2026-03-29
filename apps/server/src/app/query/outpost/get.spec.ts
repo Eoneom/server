@@ -6,13 +6,15 @@ import { OutpostType } from '#core/outpost/constant/type'
 import { OutpostError } from '#core/outpost/error'
 import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
+import { testResourceStock } from '../../test-support/resource-stock'
 
 describe('OutpostGetQuery', () => {
   const player_id = 'player_id'
   const outpost_id = 'o1'
   let outpost: OutpostEntity
   let cell: CellEntity
-  let repository: Pick<Repository, 'outpost' | 'cell'>
+  let stock: ReturnType<typeof testResourceStock>
+  let repository: Pick<Repository, 'outpost' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
     outpost = OutpostEntity.create({
@@ -20,6 +22,11 @@ describe('OutpostGetQuery', () => {
       player_id,
       cell_id: 'cell1',
       type: OutpostType.TEMPORARY
+    })
+    stock = testResourceStock({
+      cell_id: 'cell1',
+      plastic: 10,
+      mushroom: 20
     })
     cell = CellEntity.create({
       id: 'cell1',
@@ -36,7 +43,10 @@ describe('OutpostGetQuery', () => {
     })
     repository = {
       outpost: { getById: jest.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost'],
-      cell: { getById: jest.fn().mockResolvedValue(cell) } as unknown as Repository['cell']
+      cell: { getById: jest.fn().mockResolvedValue(cell) } as unknown as Repository['cell'],
+      resource_stock: {
+        getByCellId: jest.fn().mockResolvedValue(stock)
+      } as unknown as Repository['resource_stock']
     }
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
@@ -66,6 +76,7 @@ describe('OutpostGetQuery', () => {
 
     expect(result.outpost).toBe(outpost)
     expect(result.cell).toBe(cell)
+    expect(result.resource_stock).toBe(stock)
     expect(repository.cell.getById).toHaveBeenCalledWith(outpost.cell_id)
   })
 })

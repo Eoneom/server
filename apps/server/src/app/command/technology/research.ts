@@ -22,10 +22,12 @@ export async function researchTechnology({
 
   const [
     city,
+    city_cell,
     technology,
     is_technology_in_progress
   ] = await Promise.all([
     repository.city.get(city_id),
+    repository.cell.getCityCell({ city_id }),
     repository.technology.get({
       player_id,
       code: technology_code
@@ -59,17 +61,18 @@ export async function researchTechnology({
     level: technology.level + 1,
     research_lab_level: research_lab.level
   })
-  const updated_city = city.purchase({
-    player_id,
-    resource
+  const stock = await repository.resource_stock.getByCellId({
+    cell_id: city_cell.id
   })
+  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
+  const updated_stock = stock.purchase({ resource })
   const updated_technology = technology.launchResearch({
     is_technology_in_progress,
     duration,
   })
 
   await Promise.all([
-    repository.city.updateOne(updated_city),
+    repository.resource_stock.updateOne(updated_stock),
     repository.technology.updateOne(updated_technology)
   ])
 }

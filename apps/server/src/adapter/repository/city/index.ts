@@ -39,11 +39,7 @@ export class MongoCityRepository
     return CityEntity.create({
       id: document._id.toString(),
       player_id: document.player_id.toString(),
-      name: document.name,
-      plastic: document.plastic,
-      mushroom: document.mushroom,
-      last_plastic_gather: document.last_plastic_gather,
-      last_mushroom_gather: document.last_mushroom_gather
+      name: document.name
     })
   }
 }

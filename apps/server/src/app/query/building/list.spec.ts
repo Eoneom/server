@@ -18,13 +18,9 @@ describe('BuildingListQuery', () => {
   let repository: Pick<Repository, 'city' | 'building' | 'technology'>
 
   beforeEach(() => {
-    city = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'c',
-        player_id 
-      }),
-      plastic: 0,
-      mushroom: 0
+    city = CityEntity.initCity({
+      name: 'c',
+      player_id
     })
     architecture = TechnologyEntity.create({
       id: 't1',
@@ -64,13 +60,9 @@ describe('BuildingListQuery', () => {
   })
 
   it('throws when city is not owned by player', async () => {
-    const other = CityEntity.create({
-      ...CityEntity.initCity({
-        name: 'x',
-        player_id: 'other' 
-      }),
-      plastic: 0,
-      mushroom: 0
+    const other = CityEntity.initCity({
+      name: 'x',
+      player_id: 'other'
     })
     ;(repository.city.get as jest.Mock).mockResolvedValue(other)
 

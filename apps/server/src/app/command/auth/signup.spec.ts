@@ -7,10 +7,15 @@ import { CityError } from '#core/city/error'
 import { PlayerError } from '#core/player/error'
 import { TechnologyCode } from '#core/technology/constant/code'
 import { TroopCode } from '#core/troop/constant/code'
+import {
+  STARTING_MUSHROOM,
+  STARTING_PLASTIC
+} from '#core/city/constant'
 import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
 import { FAKE_ID } from '#shared/identification'
 import assert from 'assert'
+import { testResourceStock } from '../../test-support/resource-stock'
 
 describe('signupAuth', () => {
   const player_name = 'player_name'
@@ -78,9 +83,11 @@ describe('signupAuth', () => {
   let buildingCreate: jest.Mock
   let technologyCreate: jest.Mock
   let cellUpdateOne: jest.Mock
+  let resourceStockGetByCellId: jest.Mock
+  let resourceStockUpdateOne: jest.Mock
   let troopCreate: jest.Mock
   let explorationCreate: jest.Mock
-  let repository: Pick<Repository, 'player' | 'city' | 'building' | 'technology' | 'cell' | 'troop' | 'exploration'>
+  let repository: Pick<Repository, 'player' | 'city' | 'building' | 'technology' | 'cell' | 'resource_stock' | 'troop' | 'exploration'>
 
   beforeEach(() => {
     playerExist = jest.fn().mockResolvedValue(false)
@@ -92,6 +99,14 @@ describe('signupAuth', () => {
     cellUpdateOne = jest.fn().mockResolvedValue(undefined)
     troopCreate = jest.fn().mockResolvedValue(undefined)
     explorationCreate = jest.fn().mockResolvedValue(undefined)
+    resourceStockGetByCellId = jest.fn().mockImplementation(({ cell_id }: { cell_id: string }) =>
+      Promise.resolve(testResourceStock({
+        cell_id,
+        plastic: 123,
+        mushroom: 456
+      }))
+    )
+    resourceStockUpdateOne = jest.fn().mockResolvedValue(undefined)
 
     repository = {
       player: {
@@ -111,6 +126,10 @@ describe('signupAuth', () => {
       cell: {
         updateOne: cellUpdateOne
       } as unknown as Repository['cell'],
+      resource_stock: {
+        getByCellId: resourceStockGetByCellId,
+        updateOne: resourceStockUpdateOne
+      } as unknown as Repository['resource_stock'],
       troop: {
         create: troopCreate
       } as unknown as Repository['troop'],
@@ -221,13 +240,18 @@ describe('signupAuth', () => {
     })
   })
 
-  it('should place the city in the world', async () => {
+  it('should place the city in the world and apply first-city canonical stock', async () => {
     await signupAuth({ player_name, city_name })
 
     assert.strictEqual(cellUpdateOne.mock.calls.length, 1)
     const updated_cell = cellUpdateOne.mock.calls[0][0]
     const created_city = cityCreate.mock.calls[0][0]
     assert.strictEqual(updated_cell.city_id, created_city.id)
+
+    assert.strictEqual(resourceStockUpdateOne.mock.calls.length, 1)
+    const saved_stock = resourceStockUpdateOne.mock.calls[0][0]
+    assert.strictEqual(saved_stock.plastic, STARTING_PLASTIC)
+    assert.strictEqual(saved_stock.mushroom, STARTING_MUSHROOM)
   })
 
   it('should init the exploration cells in the world next to the initial city', async () => {

@@ -1,0 +1,187 @@
+import {
+  STARTING_MUSHROOM,
+  STARTING_PLASTIC
+} from '#core/city/constant'
+import { CityError } from '#core/city/error'
+import { Resource } from '#shared/resource'
+
+export type ResourceStockState = {
+  plastic: number
+  mushroom: number
+  last_plastic_gather: number
+  last_mushroom_gather: number
+}
+
+export class ResourcesService {
+  static randomIntInclusive({
+    max,
+    random = Math.random
+  }: {
+    max: number
+    random?: () => number
+  }): number {
+    return Math.floor(random() * (max + 1))
+  }
+
+  /** Initial stock for a new world cell: independent random amounts per resource in [0, STARTING_*]. */
+  static randomResourceStockState({
+    gather_at,
+    random = Math.random
+  }: {
+    gather_at: number
+    random?: () => number
+  }): ResourceStockState {
+    return {
+      plastic: ResourcesService.randomIntInclusive({ max: STARTING_PLASTIC, random }),
+      mushroom: ResourcesService.randomIntInclusive({ max: STARTING_MUSHROOM, random }),
+      last_plastic_gather: gather_at,
+      last_mushroom_gather: gather_at
+    }
+  }
+
+  static firstCityCanonicalResourceStockState({
+    gather_at
+  }: {
+    gather_at: number
+  }): ResourceStockState {
+    return {
+      plastic: STARTING_PLASTIC,
+      mushroom: STARTING_MUSHROOM,
+      last_plastic_gather: gather_at,
+      last_mushroom_gather: gather_at
+    }
+  }
+
+  static emptyResourceStockState({
+    gather_at
+  }: {
+    gather_at: number
+  }): ResourceStockState {
+    return {
+      plastic: 0,
+      mushroom: 0,
+      last_plastic_gather: gather_at,
+      last_mushroom_gather: gather_at
+    }
+  }
+
+  static gatherResourceStock({
+    state,
+    gather_at_time,
+    earnings_per_second,
+    warehouses_capacity
+  }: {
+    state: ResourceStockState
+    gather_at_time: number
+    earnings_per_second: Resource
+    warehouses_capacity: Resource
+  }): {
+    next: ResourceStockState
+    updated: boolean
+  } {
+    const plastic_earnings = ResourcesService.getEarnings({
+      earnings_per_second: earnings_per_second.plastic,
+      last_gather_time: state.last_plastic_gather,
+      gather_at_time
+    })
+    const mushroom_earnings = ResourcesService.getEarnings({
+      earnings_per_second: earnings_per_second.mushroom,
+      last_gather_time: state.last_mushroom_gather,
+      gather_at_time
+    })
+    const updated = Boolean(plastic_earnings) || Boolean(mushroom_earnings)
+    let next = state
+
+    if (plastic_earnings) {
+      const capped = ResourcesService.getCappedEarnings({
+        earnings: plastic_earnings,
+        capacity: warehouses_capacity.plastic,
+        current_resource: next.plastic
+      })
+      next = {
+        ...next,
+        last_plastic_gather: gather_at_time,
+        plastic: next.plastic + capped
+      }
+    }
+
+    if (mushroom_earnings) {
+      const capped = ResourcesService.getCappedEarnings({
+        earnings: mushroom_earnings,
+        capacity: warehouses_capacity.mushroom,
+        current_resource: next.mushroom
+      })
+      next = {
+        ...next,
+        last_mushroom_gather: gather_at_time,
+        mushroom: next.mushroom + capped
+      }
+    }
+
+    return { next, updated }
+  }
+
+  static purchaseResourceStock({
+    state,
+    resource
+  }: {
+    state: ResourceStockState
+    resource: Resource
+  }): ResourceStockState {
+    if (state.plastic < resource.plastic || state.mushroom < resource.mushroom) {
+      throw new Error(CityError.NOT_ENOUGH_RESOURCES)
+    }
+    return {
+      ...state,
+      plastic: state.plastic - resource.plastic,
+      mushroom: state.mushroom - resource.mushroom
+    }
+  }
+
+  static refundResourceStock({
+    state,
+    resource
+  }: {
+    state: ResourceStockState
+    resource: Resource
+  }): ResourceStockState {
+    return {
+      ...state,
+      plastic: state.plastic + resource.plastic,
+      mushroom: state.mushroom + resource.mushroom
+    }
+  }
+
+  private static getCappedEarnings({
+    earnings,
+    capacity,
+    current_resource
+  }: {
+    earnings: number
+    capacity: number
+    current_resource: number
+  }): number {
+    return earnings + current_resource > capacity ? capacity - current_resource : earnings
+  }
+
+  private static getEarnings({
+    earnings_per_second,
+    last_gather_time,
+    gather_at_time,
+  }: {
+    earnings_per_second: number
+    last_gather_time: number
+    gather_at_time: number
+  }): number {
+    if (gather_at_time < last_gather_time) {
+      return 0
+    }
+
+    const seconds_since_last_gather = Math.floor((gather_at_time - last_gather_time) / 1000)
+    if (seconds_since_last_gather < 1) {
+      return 0
+    }
+
+    return Math.floor(seconds_since_last_gather * earnings_per_second)
+  }
+}

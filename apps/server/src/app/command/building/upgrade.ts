@@ -35,11 +35,13 @@ export async function upgradeBuilding({
 
   const [
     city,
+    city_cell,
     building,
     is_building_in_progress,
     levels
   ] = await Promise.all([
     repository.city.get(city_id),
+    repository.cell.getCityCell({ city_id }),
     repository.building.get({
       city_id,
       code: building_code
@@ -70,17 +72,18 @@ export async function upgradeBuilding({
     code: building.code,
     architecture_level: architecture_technology.level
   })
-  const updated_city = city.purchase({
-    player_id,
-    resource
+  const stock = await repository.resource_stock.getByCellId({
+    cell_id: city_cell.id
   })
+  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
+  const updated_stock = stock.purchase({ resource })
   const updated_building = building.launchUpgrade({
     is_building_in_progress,
     duration,
   })
 
   await Promise.all([
-    repository.city.updateOne(updated_city),
+    repository.resource_stock.updateOne(updated_stock),
     repository.building.updateOne(updated_building)
   ])
 }

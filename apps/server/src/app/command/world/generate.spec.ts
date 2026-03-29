@@ -15,17 +15,22 @@ describe('generateWorld', () => {
   })
 
   let isInitialized: jest.Mock
-  let create: jest.Mock
-  let repository: Pick<Repository, 'cell'>
+  let cellCreate: jest.Mock
+  let stockCreate: jest.Mock
+  let repository: Pick<Repository, 'cell' | 'resource_stock'>
 
   beforeEach(() => {
     isInitialized = jest.fn()
-    create = jest.fn().mockResolvedValue(undefined)
+    cellCreate = jest.fn().mockResolvedValue('persisted_cell_id')
+    stockCreate = jest.fn().mockResolvedValue(undefined)
     repository = {
       cell: {
         isInitialized,
-        create
-      } as unknown as Repository['cell']
+        create: cellCreate
+      } as unknown as Repository['cell'],
+      resource_stock: {
+        create: stockCreate
+      } as unknown as Repository['resource_stock']
     }
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
     jest.spyOn(WorldService, 'generate').mockReturnValue([ cell ])
@@ -39,17 +44,20 @@ describe('generateWorld', () => {
     isInitialized.mockResolvedValue(true)
 
     await expect(generateWorld()).rejects.toThrow(WorldError.ALREADY_EXISTS)
-    expect(create).not.toHaveBeenCalled()
+    expect(cellCreate).not.toHaveBeenCalled()
     expect(isInitialized).toHaveBeenCalledTimes(1)
   })
 
-  it('creates each cell when the world is not initialized', async () => {
+  it('creates each cell and matching stock when the world is not initialized', async () => {
     isInitialized.mockResolvedValue(false)
 
     await generateWorld()
 
     expect(isInitialized).toHaveBeenCalledTimes(1)
-    expect(create).toHaveBeenCalledTimes(1)
-    expect(create).toHaveBeenCalledWith(cell)
+    expect(cellCreate).toHaveBeenCalledTimes(1)
+    expect(cellCreate).toHaveBeenCalledWith(cell)
+    expect(stockCreate).toHaveBeenCalledTimes(1)
+    const stock_arg = stockCreate.mock.calls[0][0]
+    expect(stock_arg.cell_id).toBe('persisted_cell_id')
   })
 })

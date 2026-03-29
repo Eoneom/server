@@ -10,6 +10,8 @@ export interface OutpostGetDataResponse {
   id: string
   coordinates: Coordinates
   type: OutpostType
+  plastic: number
+  mushroom: number
 }
 
 export type OutpostGetResponse = GenericResponse<OutpostGetDataResponse>

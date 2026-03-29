@@ -78,10 +78,11 @@ export async function recruitTroop({
     replication_catalyst_level,
   })
 
-  const updated_city = city.purchase({
-    player_id,
-    resource,
+  const stock = await repository.resource_stock.getByCellId({
+    cell_id: city_cell.id
   })
+  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
+  const updated_stock = stock.purchase({ resource })
 
   const updated_troop = troop.launchRecruitment({
     count,
@@ -91,7 +92,7 @@ export async function recruitTroop({
 
   await Promise.all([
     repository.troop.updateOne(updated_troop),
-    repository.city.updateOne(updated_city),
+    repository.resource_stock.updateOne(updated_stock),
   ])
 
   assert(updated_troop.ongoing_recruitment)

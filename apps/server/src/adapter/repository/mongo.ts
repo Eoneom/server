@@ -24,11 +24,14 @@ import { ReportRepository } from '#app/port/repository/report'
 import { MongoReportRepository } from '#adapter/repository/report/index'
 import { OutpostRepository } from '#app/port/repository/outpost'
 import { MongoOutpostRepository } from '#adapter/repository/outpost/index'
+import { ResourceStockRepository } from '#app/port/repository/resource-stock'
+import { MongoResourceStockRepository } from '#adapter/repository/resource-stock/index'
 
 export class MongoRepository implements Repository {
   auth: AuthRepository
   building: BuildingRepository
   cell: CellRepository
+  resource_stock: ResourceStockRepository
   city: CityRepository
   exploration: ExplorationRepository
   movement: MovementRepository
@@ -42,6 +45,7 @@ export class MongoRepository implements Repository {
     this.auth = new MongoAuthRepository()
     this.building = new MongoBuildingRepository()
     this.cell = new MongoCellRepository()
+    this.resource_stock = new MongoResourceStockRepository()
     this.city = new MongoCityRepository()
     this.exploration = new MongoExplorationRepository()
     this.movement = new MongoMovementRepository()

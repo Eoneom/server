@@ -1,6 +1,8 @@
 import { Factory } from '#adapter/factory'
 import { WorldError } from '#core/world/error'
 import { WorldService } from '#core/world/service'
+import { ResourceStockEntity } from '#core/resources/resource-stock/entity'
+import { now } from '#shared/time'
 
 export async function generateWorld(): Promise<void> {
   const repository = Factory.getRepository()
@@ -13,5 +15,13 @@ export async function generateWorld(): Promise<void> {
   }
 
   const cells = WorldService.generate()
-  await Promise.all(cells.map(cell => repository.cell.create(cell)))
+  const gather_at = now()
+  for (const cell of cells) {
+    const cell_id = await repository.cell.create(cell)
+    const stock = ResourceStockEntity.initForWorldCell({
+      cell_id,
+      gather_at
+    })
+    await repository.resource_stock.create(stock)
+  }
 }

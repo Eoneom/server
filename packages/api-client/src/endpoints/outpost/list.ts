@@ -7,6 +7,8 @@ export interface OutpostListDataResponse {
     id: string
     coordinates: Coordinates
     type: OutpostType
+    plastic: number
+    mushroom: number
   }[]
 }
 

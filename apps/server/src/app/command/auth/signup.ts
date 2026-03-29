@@ -6,6 +6,8 @@ import { PlayerService } from '#core/player/service'
 import { TechnologyService } from '#core/technology/service'
 import { TroopService } from '#core/troop/service'
 import { ExplorationEntity } from '#core/world/exploration/entity'
+import { ResourcesService } from '#core/resources/service'
+import { now } from '#shared/time'
 
 export interface SignupAuthParams {
   city_name: string
@@ -48,7 +50,12 @@ export async function signupAuth({
   })
   const buildings = BuildingService.init({ city_id: city.id })
   const technologies = TechnologyService.init({ player_id: player.id })
+  const gather_at = now()
   const cell = city_first_cell.assign({ city_id: city.id })
+  const initial_stock = await repository.resource_stock.getByCellId({ cell_id: cell.id })
+  const stock_for_first_city = initial_stock.withState(
+    ResourcesService.firstCityCanonicalResourceStockState({ gather_at })
+  )
   const troops = TroopService.init({
     player_id: player.id,
     cell_id: cell.id
@@ -67,6 +74,7 @@ export async function signupAuth({
     ...buildings.map(building => repository.building.create(building)),
     ...technologies.map(technology => repository.technology.create(technology)),
     repository.cell.updateOne(cell),
+    repository.resource_stock.updateOne(stock_for_first_city),
     ...troops.map(troop => repository.troop.create(troop)),
     repository.exploration.create(exploration)
   ])

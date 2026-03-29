@@ -10,13 +10,9 @@ describe('CityListQuery', () => {
 
   beforeEach(() => {
     cities = [
-      CityEntity.create({
-        ...CityEntity.initCity({
-          name: 'a',
-          player_id 
-        }),
-        plastic: 0,
-        mushroom: 0
+      CityEntity.initCity({
+        name: 'a',
+        player_id
       })
     ]
     repository = { city: { list: jest.fn().mockResolvedValue(cities) } as unknown as Repository['city'] }
