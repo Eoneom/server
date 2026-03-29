@@ -39,6 +39,8 @@ const minimalOutpost = (overrides: Partial<Outpost> = {}): Outpost => ({
   id: 'out-1',
   coordinates: { sector: 5, x: 6, y: 7 },
   type: OutpostType.TEMPORARY,
+  plastic: 0,
+  mushroom: 0,
   ...overrides,
 })
 
