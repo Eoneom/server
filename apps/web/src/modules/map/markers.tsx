@@ -50,7 +50,7 @@ export const MapMarkers: React.FC<MapMarkersProps> = ({
           y={c.y + oy + 18}
           text="Ville"
           fontSize={13}
-          fontFamily="Montserrat, sans-serif"
+          fontFamily="Munson, system-ui, sans-serif"
           fill="#f1c40f"
           listening={false}
         />,
@@ -85,7 +85,7 @@ export const MapMarkers: React.FC<MapMarkersProps> = ({
           y={c.y + oy + 16}
           text="Avant-poste"
           fontSize={12}
-          fontFamily="Montserrat, sans-serif"
+          fontFamily="Munson, system-ui, sans-serif"
           fill="#e67e22"
           listening={false}
         />,

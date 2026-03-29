@@ -46,7 +46,7 @@ export const MapLegendOverlay: React.FC<MapLegendOverlayProps> = ({
               y={2}
               text={item.label}
               fontSize={12}
-              fontFamily="Montserrat, sans-serif"
+              fontFamily="Munson, system-ui, sans-serif"
               fill="#e8e8ec"
               listening={false}
             />
