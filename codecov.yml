@@ -1,4 +1,9 @@
 # https://docs.codecov.com/docs/codecov-yaml
+#
+# Codecov can only score files that appear in the uploaded LCOV. Jest omits any
+# source file that is never loaded during tests unless collectCoverageFrom lists
+# the tree explicitly (see apps/server/jest.config.js). Those files then show
+# as 0% covered and are included in project totals and the PR file list.
 coverage:
   status:
     project:

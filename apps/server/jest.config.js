@@ -4,6 +4,13 @@ module.exports = {
   testEnvironment: 'node',
   modulePathIgnorePatterns: [ 'dist' ],
   coveragePathIgnorePatterns: [ 'src/adapter' ],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.spec.ts',
+    '!src/**/*.spec.tsx',
+    '!src/**/*.d.ts',
+    '!src/adapter/**',
+  ],
   moduleNameMapper: {
     '^@server-core/(.*)$': '<rootDir>/src/core/$1',
     '^#adapter/(.*)$': '<rootDir>/src/adapter/$1',
