@@ -23,24 +23,26 @@ export async function researchTechnology({
   const [
     city,
     technology,
-    is_technology_in_progress,
-    levels
+    is_technology_in_progress
   ] = await Promise.all([
     repository.city.get(city_id),
     repository.technology.get({
       player_id,
       code: technology_code
     }),
-    repository.technology.isInProgress({ player_id }),
-    AppService.getTechnologyRequirementLevels({
-      city_id,
-      player_id,
-      technology_code
-    })
+    repository.technology.isInProgress({ player_id })
   ])
+
+  const levels = await AppService.getTechnologyRequirementLevels({
+    city_id,
+    player_id,
+    technology_code,
+    technology_level: technology.level
+  })
 
   RequirementService.checkTechnologyRequirement({
     technology_code: technology.code,
+    technology_level: technology.level,
     levels,
   })
 

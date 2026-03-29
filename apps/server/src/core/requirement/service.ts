@@ -53,24 +53,52 @@ export class RequirementService {
     })
   }
 
-  static getTechnologyRequirement({ technology_code }: { technology_code: TechnologyCode }): RequirementValue {
-    return TechnologyRequirement[technology_code]
+  static getTechnologyRequirement({
+    technology_code,
+    technology_level
+  }: {
+    technology_code: TechnologyCode
+    technology_level: number
+  }): RequirementValue {
+    return this.applyResearchLabRequirementOffset(
+      TechnologyRequirement[technology_code],
+      technology_level
+    )
   }
   static listTechnologyRequirements(): typeof TechnologyRequirement {
     return TechnologyRequirement
   }
   static checkTechnologyRequirement({
     technology_code,
+    technology_level,
     levels
   }: {
     technology_code: TechnologyCode
+    technology_level: number
     levels: Levels
   }): void {
-    const requirement = this.getTechnologyRequirement({ technology_code })
+    const requirement = this.getTechnologyRequirement({
+      technology_code,
+      technology_level
+    })
     return this.checkRequirement({
       requirement,
       levels
     })
+  }
+
+  private static applyResearchLabRequirementOffset(
+    requirement: RequirementValue,
+    technology_level: number
+  ): RequirementValue {
+    return {
+      buildings: requirement.buildings.map((b) =>
+        b.code === BuildingCode.RESEARCH_LAB
+          ? { ...b, level: b.level + technology_level }
+          : b
+      ),
+      technologies: requirement.technologies
+    }
   }
 
   private static checkRequirement({

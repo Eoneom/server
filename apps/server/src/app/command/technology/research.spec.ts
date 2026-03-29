@@ -140,6 +140,57 @@ describe('researchTechnology', () => {
     assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
   })
 
+  it('should reject when research lab meets base requirement but not base plus technology level', async () => {
+    const technology_at_level_2 = TechnologyEntity.create({
+      id: 'technology_id',
+      code: TechnologyCode.ARCHITECTURE,
+      player_id,
+      level: 2,
+      research_started_at: undefined
+    })
+    repository.technology.get = jest.fn().mockResolvedValue(technology_at_level_2)
+    jest.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
+      building: { [BuildingCode.RESEARCH_LAB]: 2 },
+      technology: {}
+    })
+
+    await assert.rejects(
+      () => researchTechnology({
+        city_id: city.id,
+        player_id,
+        technology_code: TechnologyCode.ARCHITECTURE
+      }),
+      new RegExp(RequirementError.BUILDING_NOT_FULFILLED)
+    )
+
+    assert.strictEqual(cityUpdateOne.mock.calls.length, 0)
+    assert.strictEqual(technologyUpdateOne.mock.calls.length, 0)
+  })
+
+  it('should allow research when research lab meets base plus technology level', async () => {
+    const technology_at_level_2 = TechnologyEntity.create({
+      id: 'technology_id',
+      code: TechnologyCode.ARCHITECTURE,
+      player_id,
+      level: 2,
+      research_started_at: undefined
+    })
+    repository.technology.get = jest.fn().mockResolvedValue(technology_at_level_2)
+    jest.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
+      building: { [BuildingCode.RESEARCH_LAB]: 3 },
+      technology: {}
+    })
+
+    await researchTechnology({
+      city_id: city.id,
+      player_id,
+      technology_code: TechnologyCode.ARCHITECTURE
+    })
+
+    assert.strictEqual(cityUpdateOne.mock.calls.length, 1)
+    assert.strictEqual(technologyUpdateOne.mock.calls.length, 1)
+  })
+
   it('should purchase the research', async () => {
     await researchTechnology({
       city_id: city.id,

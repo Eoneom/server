@@ -154,12 +154,17 @@ export class AppService {
     city_id,
     player_id,
     technology_code,
+    technology_level
   }: {
-    city_id: string,
+    city_id: string
     player_id: string
     technology_code: TechnologyCode
-   }): Promise<Levels> {
-    const requirement = RequirementService.getTechnologyRequirement({ technology_code })
+    technology_level: number
+  }): Promise<Levels> {
+    const requirement = RequirementService.getTechnologyRequirement({
+      technology_code,
+      technology_level
+    })
     return this.getRequirementLevels({
       city_id,
       player_id,

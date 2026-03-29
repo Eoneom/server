@@ -44,7 +44,10 @@ export class TechnologyGetQuery extends GenericQuery<TechnologyGetQueryRequest, 
       level: technology.level + 1,
       research_lab_level: research_lab_level
     })
-    const requirement = RequirementService.getTechnologyRequirement({ technology_code })
+    const requirement = RequirementService.getTechnologyRequirement({
+      technology_code,
+      technology_level: technology.level
+    })
 
     return {
       technology,
