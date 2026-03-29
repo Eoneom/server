@@ -71,6 +71,8 @@ describe('signupAuth', () => {
     })
   ]
 
+  let playerExist: jest.Mock
+  let cityExist: jest.Mock
   let playerCreate: jest.Mock
   let cityCreate: jest.Mock
   let buildingCreate: jest.Mock
@@ -81,6 +83,8 @@ describe('signupAuth', () => {
   let repository: Pick<Repository, 'player' | 'city' | 'building' | 'technology' | 'cell' | 'troop' | 'exploration'>
 
   beforeEach(() => {
+    playerExist = jest.fn().mockResolvedValue(false)
+    cityExist = jest.fn().mockResolvedValue(false)
     playerCreate = jest.fn().mockResolvedValue(undefined)
     cityCreate = jest.fn().mockResolvedValue(undefined)
     buildingCreate = jest.fn().mockResolvedValue(undefined)
@@ -91,11 +95,11 @@ describe('signupAuth', () => {
 
     repository = {
       player: {
-        exist: jest.fn().mockResolvedValue(false),
+        exist: playerExist,
         create: playerCreate
       } as unknown as Repository['player'],
       city: {
-        exist: jest.fn().mockResolvedValue(false),
+        exist: cityExist,
         create: cityCreate
       } as unknown as Repository['city'],
       building: {
@@ -125,7 +129,7 @@ describe('signupAuth', () => {
   })
 
   it('should prevent user from signup with an existing name', async () => {
-    repository.player.exist = jest.fn().mockResolvedValue(true)
+    playerExist.mockResolvedValue(true)
 
     await assert.rejects(
       () => signupAuth({ player_name, city_name }),
@@ -136,7 +140,7 @@ describe('signupAuth', () => {
   })
 
   it('should prevent user from settling a city with an existing name', async () => {
-    repository.city.exist = jest.fn().mockResolvedValue(true)
+    cityExist.mockResolvedValue(true)
 
     await assert.rejects(
       () => signupAuth({ player_name, city_name }),
@@ -144,6 +148,43 @@ describe('signupAuth', () => {
     )
 
     assert.strictEqual(playerCreate.mock.calls.length, 0)
+  })
+
+  it('should pass names to exist checks and load surrounding cells from the first city cell', async () => {
+    await signupAuth({ player_name, city_name })
+
+    assert.strictEqual(playerExist.mock.calls.length, 1)
+    assert.strictEqual(playerExist.mock.calls[0][0], player_name)
+    assert.strictEqual(cityExist.mock.calls.length, 1)
+    assert.strictEqual(cityExist.mock.calls[0][0], city_name)
+
+    const select_first_cell = AppService.selectCityFirstCell as jest.Mock
+    assert.strictEqual(select_first_cell.mock.calls.length, 1)
+
+    const get_cells_around = AppService.getCellsAround as jest.Mock
+    assert.strictEqual(get_cells_around.mock.calls.length, 1)
+    assert.deepStrictEqual(get_cells_around.mock.calls[0][0], {
+      coordinates: city_first_cell.coordinates
+    })
+  })
+
+  it('should return player_id and city_id of the created entities', async () => {
+    const result = await signupAuth({ player_name, city_name })
+
+    const created_player = playerCreate.mock.calls[0][0]
+    const created_city = cityCreate.mock.calls[0][0]
+    assert.strictEqual(result.player_id, created_player.id)
+    assert.strictEqual(result.city_id, created_city.id)
+  })
+
+  it('should create player and city with the given names and link the city to the player', async () => {
+    await signupAuth({ player_name, city_name })
+
+    const created_player = playerCreate.mock.calls[0][0]
+    const created_city = cityCreate.mock.calls[0][0]
+    assert.strictEqual(created_player.name, player_name)
+    assert.strictEqual(created_city.name, city_name)
+    assert.strictEqual(created_city.player_id, created_player.id)
   })
 
   it('should init all city buildings', async () => {
@@ -195,7 +236,12 @@ describe('signupAuth', () => {
     assert.strictEqual(explorationCreate.mock.calls.length, 1)
     const exploration = explorationCreate.mock.calls[0][0]
     const created_player = playerCreate.mock.calls[0][0]
-    assert.strictEqual(exploration.cell_ids.length, 5)
+    const created_city = cityCreate.mock.calls[0][0]
+    const expected_cell_ids = [
+      ...cells_around_city.map(cell => cell.id),
+      city_first_cell.assign({ city_id: created_city.id }).id
+    ]
+    assert.deepStrictEqual(exploration.cell_ids, expected_cell_ids)
     assert.strictEqual(exploration.player_id, created_player.id)
   })
 })
