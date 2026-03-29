@@ -1,5 +1,6 @@
 import { ReportType } from '@server-core/communication/value/report-type'
 import { GenericResponse } from '../../../response'
+import { Coordinates } from '../../shared/coordinates'
 
 export interface CommunicationListReportRequest {
   page?: number
@@ -11,6 +12,8 @@ export interface CommunicationListReportDataResponse {
     type: ReportType
     recorded_at: number
     was_read: boolean
+    origin: Coordinates
+    destination: Coordinates
   }[]
   total: number
   page_size: number

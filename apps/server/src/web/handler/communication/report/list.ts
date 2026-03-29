@@ -47,7 +47,9 @@ const response_mapper = ({
     id: report.id,
     type: report.type,
     recorded_at: report.recorded_at,
-    was_read: report.was_read
+    was_read: report.was_read,
+    origin: report.origin,
+    destination: report.destination
   }))
 
   return {

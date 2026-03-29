@@ -1,7 +1,7 @@
 import { GenericQuery } from '#query/generic'
 import { ReportEntity } from '#core/communication/report/entity'
 
-export const COMMUNICATION_LIST_REPORT_PAGE_SIZE = 20
+export const COMMUNICATION_LIST_REPORT_PAGE_SIZE = 10
 
 export interface CommunicationListReportQueryRequest {
   player_id: string

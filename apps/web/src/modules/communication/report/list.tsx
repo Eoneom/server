@@ -4,7 +4,7 @@ import {
   selectReportsPageSize,
   selectReportsTotal
 } from '#communication/report/slice'
-import { formatDate } from '#helpers/transform'
+import { formatCoordinates, formatDate } from '#helpers/transform'
 import { Button } from '#ui/button'
 import { useAppDispatch, useAppSelector } from '#store/type'
 import { ReportItem } from '#types'
@@ -24,14 +24,14 @@ export const ReportList: React.FC<Props> = ({ reports }) => {
   const canPrev = currentPage > 1
   const canNext = totalPages > 0 && currentPage < totalPages
 
-  return <>
-    {
-      totalPages > 1 && (
-        <>
-          <p>
+  return (
+    <div className="report-list">
+      {totalPages > 1 && (
+        <div className="report-list__pagination">
+          <p className="report-list__page-label">
             Page {currentPage}/{totalPages}
           </p>
-          <div>
+          <div className="report-list__pagination-actions">
             <Button
               disabled={!canPrev}
               onClick={() => dispatch(listReports({ page: currentPage - 1 }))}
@@ -45,19 +45,37 @@ export const ReportList: React.FC<Props> = ({ reports }) => {
               Suivante
             </Button>
           </div>
-        </>
-      )
-    }
-    <ul>
-      {reports.map(report =>
-        <li
-          onClick={() => dispatch(getReport(report.id))}
-          key={report.id}
-          className={classNames({'unread': !report.was_read})}
-        >
-          {report.type} {formatDate(report.recorded_at)}
-        </li>
+        </div>
       )}
-    </ul>
-  </>
+      <ul className="report-list__items">
+        {reports.map(report => (
+          <li
+            key={report.id}
+            className={classNames('report-list__item', {
+              'report-list__item--unread': !report.was_read
+            })}
+            onClick={() => dispatch(getReport(report.id))}
+          >
+            <div className="report-list__meta">
+              <span className="report-list__type">{report.type}</span>
+              <time dateTime={new Date(report.recorded_at).toISOString()}>
+                {formatDate(report.recorded_at)}
+              </time>
+            </div>
+            <div className="report-list__route">
+              <span className="report-list__coords" title="Origine">
+                {formatCoordinates(report.origin)}
+              </span>
+              <span className="report-list__arrow" aria-hidden>
+                →
+              </span>
+              <span className="report-list__coords" title="Destination">
+                {formatCoordinates(report.destination)}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
