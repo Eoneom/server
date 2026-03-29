@@ -8,18 +8,14 @@ interface Props {
 }
 
 export const NavLocationCities: React.FC<Props> = ({ cities }) => {
-  return <>
-    <h3>Villes</h3>
-    <ul>
-      {
-        cities.map(city =>
-          <NavLocationItem
-            key={city.id}
-            to={`/city/${city.id}`}
-            text={city.name}
-          />
-        )
-      }
-    </ul>
-  </>
+  return (
+    <section className="nav-location-section">
+      <h3>Villes</h3>
+      <ul>
+        {cities.map(city => (
+          <NavLocationItem key={city.id} to={`/city/${city.id}`} text={city.name} />
+        ))}
+      </ul>
+    </section>
+  )
 }

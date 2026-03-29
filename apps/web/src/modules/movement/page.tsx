@@ -35,8 +35,12 @@ export const MovementPage: React.FC = () => {
     dispatch(getMovement(movementId))
   }, [movementId])
 
-  return <LayoutPage details={movement && <MovementDetails movement={movement}/>}>
-    <MovementCreate />
-    <MovementList />
-  </LayoutPage>
+  return (
+    <LayoutPage details={movement && <MovementDetails movement={movement} />}>
+      <div className="movement-page">
+        <MovementCreate />
+        <MovementList />
+      </div>
+    </LayoutPage>
+  )
 }

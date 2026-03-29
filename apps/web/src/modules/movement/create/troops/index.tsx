@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const MovementCreateTroops: React.FC<Props> = ({ troops, selectedTroops, onChange }) => {
-  return <ul>
+  return <ul className="app-list app-list--troop-pick">
     {
       troops.map(troop => {
         const {name} = TroopTranslations[troop.code]

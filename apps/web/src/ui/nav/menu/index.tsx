@@ -20,38 +20,76 @@ export const NavMenu: React.FC = () => {
 
   return (
     <nav id="menu">
-      {
-        cityId && (
-          <>
-            <h2>Ville</h2>
-            <ul>
-              <li><NavLink className={getActiveClassName} to={`/city/${cityId}/building`}>Construction</NavLink></li>
-              <li><NavLink className={getActiveClassName} to={`/city/${cityId}/technology`}>Recherche</NavLink></li>
-              <li><NavLink className={getActiveClassName} to={`/city/${cityId}/troop`}>Recrutement</NavLink></li>
-            </ul>
-          </>
-        )
-      }
+      {cityId && (
+        <section className="nav-menu-section">
+          <h2>Ville</h2>
+          <ul>
+            <li>
+              <NavLink className={getActiveClassName} to={`/city/${cityId}/building`}>
+                Construction
+              </NavLink>
+            </li>
+            <li>
+              <NavLink className={getActiveClassName} to={`/city/${cityId}/technology`}>
+                Recherche
+              </NavLink>
+            </li>
+            <li>
+              <NavLink className={getActiveClassName} to={`/city/${cityId}/troop`}>
+                Recrutement
+              </NavLink>
+            </li>
+          </ul>
+        </section>
+      )}
 
-      <h2>Monde</h2>
-      <ul>
-        <li><NavLink className={getActiveClassName} to={`${urlPrefix}/map`}>Carte</NavLink></li>
-        <li><NavLink className={getActiveClassName} to={`${urlPrefix}/movement`}>Déplacement</NavLink></li>
-        <li>Alliance</li>
-        <li>Empire</li>
-      </ul>
+      <section className="nav-menu-section">
+        <h2>Monde</h2>
+        <ul>
+          <li>
+            <NavLink className={getActiveClassName} to={`${urlPrefix}/map`}>
+              Carte
+            </NavLink>
+          </li>
+          <li>
+            <NavLink className={getActiveClassName} to={`${urlPrefix}/movement`}>
+              Déplacement
+            </NavLink>
+          </li>
+          <li className="nav-menu-placeholder">Alliance</li>
+          <li className="nav-menu-placeholder">Empire</li>
+        </ul>
+      </section>
 
-      <h2>Messages</h2>
-      <ul>
-        <li><NavLink className={getActiveClassName} to={'report'}>Rapport ({unreadCount})</NavLink></li>
-        <li>Messagerie</li>
-      </ul>
+      <section className="nav-menu-section">
+        <h2>Messages</h2>
+        <ul>
+          <li>
+            <NavLink className={getActiveClassName} to={'report'}>
+              Rapport ({unreadCount})
+            </NavLink>
+          </li>
+          <li className="nav-menu-placeholder">Messagerie</li>
+        </ul>
+      </section>
 
-      <h2>Compte</h2>
-      <ul>
-        <li>Paramètres</li>
-        <li><NavLink to={'logout'} onClick={(e) => {e.preventDefault(); dispatch(logout())}}>Se déconnecter</NavLink></li>
-      </ul>
+      <section className="nav-menu-section">
+        <h2>Compte</h2>
+        <ul>
+          <li className="nav-menu-placeholder">Paramètres</li>
+          <li>
+            <NavLink
+              to={'logout'}
+              onClick={e => {
+                e.preventDefault()
+                dispatch(logout())
+              }}
+            >
+              Se déconnecter
+            </NavLink>
+          </li>
+        </ul>
+      </section>
     </nav>
   )
 }

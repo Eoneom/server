@@ -57,21 +57,32 @@ export const MapDetails: React.FC<Props> = ({ coordinates, sector }) => {
     }))
   }
 
+  const isCityTile =
+    city?.coordinates.x === coordinates.x &&
+    city?.coordinates.y === coordinates.y
+
   return <LayoutDetailsContent>
-    <h2>Cellule sélectionnée: ({coordinates.x};{coordinates.y})</h2>
-    {
-      city?.coordinates.x === coordinates.x &&
-      city?.coordinates.y === coordinates.y &&
-      <>{city.name}</>
-    }
-    {
-      selectedCell && !selectedCell.characteristic && <Button onClick={handleExplore}>Explorer</Button>
-    }
-    {
-      selectedCell &&
-      selectedCell.characteristic &&
-      sector &&
-      <MapDetailsActionBase coordinates={{sector: sector.id, x: coordinates.x, y: coordinates.y}}/>
-    }
+    <div className="details-block">
+      <div>
+        <h2>Cellule sélectionnée</h2>
+        <p className="details-meta">
+          Coordonnées{' '}
+          <span className="details-coordinates">
+            ({coordinates.x}, {coordinates.y})
+          </span>
+        </p>
+      </div>
+      {isCityTile && city && <p className="details-highlight">{city.name}</p>}
+      {selectedCell && !selectedCell.characteristic && (
+        <div className="details-actions">
+          <Button onClick={handleExplore}>Explorer</Button>
+        </div>
+      )}
+      {selectedCell && selectedCell.characteristic && sector && (
+        <MapDetailsActionBase
+          coordinates={{ sector: sector.id, x: coordinates.x, y: coordinates.y }}
+        />
+      )}
+    </div>
   </LayoutDetailsContent>
 }

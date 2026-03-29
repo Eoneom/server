@@ -26,40 +26,39 @@ export const NavLocationOutposts: React.FC<Props> = ({ outposts }) => {
     return null
   }
 
-  return <>
-    <h3>Avant-postes</h3>
-    {
-      Boolean(temporaries.length) && <>
-        <h5>Temporaires</h5>
-        <ul>
-          {
-            temporaries.map(outpost =>
+  return (
+    <section className="nav-location-section">
+      <h3>Avant-postes</h3>
+      {Boolean(temporaries.length) && (
+        <>
+          <h5>Temporaires</h5>
+          <ul>
+            {temporaries.map(outpost => (
               <NavLocationItem
                 key={outpost.id}
                 to={`/outpost/${outpost.id}`}
                 text={formatCoordinates(outpost.coordinates)}
+                linkClassName="nav-location-link--coords"
               />
-            )
-          }
-        </ul>
-      </>
-    }
-
-    {
-      Boolean(permanents.length) && <>
-        <h5>Permanents</h5>
-        <ul>
-          {
-            permanents.map(outpost =>
+            ))}
+          </ul>
+        </>
+      )}
+      {Boolean(permanents.length) && (
+        <>
+          <h5>Permanents</h5>
+          <ul>
+            {permanents.map(outpost => (
               <NavLocationItem
                 key={outpost.id}
                 to={`/outpost/${outpost.id}`}
                 text={formatCoordinates(outpost.coordinates)}
+                linkClassName="nav-location-link--coords"
               />
-            )
-          }
-        </ul>
-      </>
-    }
-  </>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  )
 }

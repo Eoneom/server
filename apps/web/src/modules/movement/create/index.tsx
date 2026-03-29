@@ -82,33 +82,49 @@ export const MovementCreate: React.FC = () => {
     dispatch(createMovement({ action, origin, destination, troops: moveTroops }))
   }
 
-  return <form id="movement-creation" onSubmit={(event) => onSubmit(event)}>
-    <div id="troop-selection">
-      <h2>Troupes à envoyer</h2>
-      <MovementCreateTroops
-        troops={troops}
-        selectedTroops={selectedTroops}
-        onChange={setSelectedTroops}
-      />
-    </div>
-    <div id="movement-submit">
-      <h2>Déplacement</h2>
-      <MovementCreateAction
-        action={action}
-        onChange={setAction}
-      />
-      <MovementCreateDestination
-        destination={destination}
-        onChange={setDestination}
-      />
-      <MovementCreateEstimation estimation={estimation}/>
-
-      <MovementCreateWarning
-        isTemporaryOutpost={Boolean(outpost?.type === OutpostType.TEMPORARY)}
-        troops={troops}
-        selectedTroops={selectedTroops}
-      /><br />
-      <input disabled={!estimation.distance} type="submit" value="Envoyer" />
-    </div>
-  </form>
+  return (
+    <form
+      id="movement-creation"
+      className="movement-create-form"
+      onSubmit={event => onSubmit(event)}
+    >
+      <section className="movement-panel movement-panel--create">
+        <h2 className="movement-panel__title">Nouveau déplacement</h2>
+        <p className="movement-panel__lede">
+          Choisissez les troupes, l&apos;ordre et la case cible : l&apos;estimation se met à jour
+          automatiquement avant l&apos;envoi.
+        </p>
+        <div className="movement-create-grid">
+          <div id="troop-selection" className="movement-create-grid__col movement-create-grid__col--troops">
+            <h3 className="movement-subsection__title">Troupes à envoyer</h3>
+            <MovementCreateTroops
+              troops={troops}
+              selectedTroops={selectedTroops}
+              onChange={setSelectedTroops}
+            />
+          </div>
+          <div id="movement-submit" className="movement-create-grid__col movement-create-grid__col--config">
+            <div className="movement-config-stack">
+              <MovementCreateAction action={action} onChange={setAction} />
+              <MovementCreateDestination destination={destination} onChange={setDestination} />
+              <MovementCreateEstimation estimation={estimation} />
+            </div>
+          </div>
+        </div>
+        <div className="movement-submit-footer">
+          <MovementCreateWarning
+            isTemporaryOutpost={Boolean(outpost?.type === OutpostType.TEMPORARY)}
+            troops={troops}
+            selectedTroops={selectedTroops}
+          />
+          <input
+            className="movement-submit-button"
+            disabled={!estimation.distance}
+            type="submit"
+            value="Envoyer le déplacement"
+          />
+        </div>
+      </section>
+    </form>
+  )
 }

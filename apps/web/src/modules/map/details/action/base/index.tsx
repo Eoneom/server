@@ -54,20 +54,33 @@ export const MapDetailsActionBase: React.FC<Props> = ({ coordinates }) => {
     }))
   }
 
-  return  <>
-    <ul>
-      {troops.map(troop => {
-        const {name} = TroopTranslations[troop.code]
-        return <li key={troop.code}>
-          {name}
-          <input type="number" max={troop.count} onChange={event => setTroopsToBase({
-            ...troopsToBase,
-            [troop.code]: event.target.value
-          })} /> / {troop.count}
-          <br />
-        </li>
-      })}
-    </ul>
-    <Button onClick={handleBase}>Baser</Button>
-  </>
+  return (
+    <div className="details-block">
+      <h3>Troupes à baser</h3>
+      <ul className="details-troop-list">
+        {troops.map(troop => {
+          const { name } = TroopTranslations[troop.code]
+          return (
+            <li key={troop.code}>
+              <span>{name}</span>
+              <input
+                type="number"
+                min={0}
+                max={troop.count}
+                placeholder="0"
+                onChange={event =>
+                  setTroopsToBase({
+                    ...troopsToBase,
+                    [troop.code]: event.target.value,
+                  })
+                }
+              />
+              <span className="details-meta">/ {troop.count}</span>
+            </li>
+          )
+        })}
+      </ul>
+      <Button onClick={handleBase}>Baser</Button>
+    </div>
+  )
 }

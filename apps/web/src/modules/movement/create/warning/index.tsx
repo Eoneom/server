@@ -23,5 +23,9 @@ export const MovementCreateWarning: React.FC<Props> = ({ isTemporaryOutpost, tro
     return null
   }
 
-  return <strong>{'Attention, ce déplacement va supprimer l\'avant poste temporaire'}</strong>
+  return (
+    <p className="movement-warning" role="status">
+      Attention : ce déplacement va supprimer l&apos;avant-poste temporaire.
+    </p>
+  )
 }
