@@ -1,70 +1,135 @@
-import { getCellFillStyle } from '#map/helper'
+import { MapCells } from '#map/cells'
+import { gridDimensionFromSector, mapViewScaleAndPosition } from '#map/geometry'
+import { MapLegendOverlay } from '#map/legend-overlay'
+import { MapMarkers } from '#map/markers'
 import { Sector } from '#types'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Group, Layer, Stage } from 'react-konva'
 
-interface Props {
-  onCellClicked: (params: { x: number, y: number }) => void
+export interface MapCanvasProps {
   sector: Sector
+  onCellClicked: (params: { x: number; y: number }) => void
+  selectedCoordinates?: { x: number; y: number } | null
+  cityMarker?: { sector: number; x: number; y: number } | null
+  outpostMarker?: { sector: number; x: number; y: number } | null
 }
 
-export const MapCanvas: React.FC<Props> = ({ onCellClicked, sector }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+type HoverTooltip = {
+  px: number
+  py: number
+  cx: number
+  cy: number
+}
 
-  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef.current) {
+export const MapCanvas: React.FC<MapCanvasProps> = ({
+  sector,
+  onCellClicked,
+  selectedCoordinates,
+  cityMarker,
+  outpostMarker,
+}) => {
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [size, setSize] = useState({ width: 800, height: 450 })
+  const [hoverTooltip, setHoverTooltip] = useState<HoverTooltip | null>(null)
+
+  const gridDim = useMemo(() => gridDimensionFromSector(sector), [sector])
+
+  const { scale, position } = useMemo(
+    () => mapViewScaleAndPosition(size.width, size.height, gridDim),
+    [gridDim, size.height, size.width],
+  )
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) {
       return
     }
 
-    const rect = canvasRef.current.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
+    const ro = new ResizeObserver(entries => {
+      const entry = entries[0]
+      if (!entry) {
+        return
+      }
+      const { width, height } = entry.contentRect
+      const nextW = Math.max(0, Math.floor(width))
+      const nextH = Math.max(0, Math.floor(height))
+      setSize(s => (s.width === nextW && s.height === nextH ? s : { width: nextW, height: nextH }))
+    })
 
-    const computedStyle = getComputedStyle(canvasRef.current)
-    const cell_width = parseInt(computedStyle.getPropertyValue('width'), 10) / 10
-    const cell_height = parseInt(computedStyle.getPropertyValue('height'), 10) / 10
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
-    onCellClicked({
-      x: Math.ceil(x/cell_width),
-      y: Math.sqrt(sector.cells.length) - Math.ceil(y/cell_height) + 1,
+  const updateHoverTooltip = (
+    evt: { clientX: number; clientY: number },
+    cell: { coordinates: { x: number; y: number } },
+  ) => {
+    const box = wrapRef.current?.getBoundingClientRect()
+    if (!box) {
+      return
+    }
+    setHoverTooltip({
+      px: evt.clientX - box.left + 12,
+      py: evt.clientY - box.top + 12,
+      cx: cell.coordinates.x,
+      cy: cell.coordinates.y,
     })
   }
 
-  useEffect(() => {
-    if (!canvasRef.current || !sector) {
-      return
-    }
+  const hoverForCells =
+    hoverTooltip == null
+      ? null
+      : { cx: hoverTooltip.cx, cy: hoverTooltip.cy }
 
-    const ctx = canvasRef.current.getContext('2d')
-    if (!ctx) {
-      return
-    }
-
-    ctx.font = '30px Montserrat'
-    const WIDTH = canvasRef.current.width / Math.sqrt(sector.cells.length)
-    const TOTAL_HEIGHT = canvasRef.current.height
-    const HEIGHT = TOTAL_HEIGHT /  Math.sqrt(sector.cells.length)
-
-    sector.cells.forEach(cell => {
-      ctx.fillStyle = getCellFillStyle({ type: cell.characteristic?.type })
-
-      const square_x = (cell.coordinates.x - 1)*WIDTH
-      const square_y = TOTAL_HEIGHT-cell.coordinates.y*HEIGHT
-      ctx.fillRect(square_x, square_y, WIDTH, HEIGHT)
-
-      ctx.fillStyle = '#000'
-      ctx.fillText(`${cell.coordinates.x} ${cell.coordinates.y}`, square_x + WIDTH / 4, square_y + HEIGHT - 10)
-
-      ctx.strokeRect(square_x, square_y, WIDTH, HEIGHT)
-    })
-  }, [sector])
-
-  return sector && <>
-    <h2>Secteur {sector.id}</h2>
-    <canvas
-      id="map"
-      ref={canvasRef}
-      onClick={handleCanvasClick}
-      width="2000"
-      height="1125"/>
-  </>
+  return (
+    <div className="map-root">
+      <div className="map-toolbar">
+        <h2>Secteur {sector.id}</h2>
+        <p className="map-hint">Cliquez une case pour les détails.</p>
+      </div>
+      <div className="map-stage-wrap" ref={wrapRef}>
+        {hoverTooltip && (
+          <div
+            className="map-cell-tooltip"
+            style={{ left: hoverTooltip.px, top: hoverTooltip.py }}
+          >
+            ({hoverTooltip.cx}, {hoverTooltip.cy})
+          </div>
+        )}
+        <div id="map" className="map-stage-container" ref={containerRef}>
+          <Stage
+            width={size.width}
+            height={size.height}
+            onMouseLeave={() => setHoverTooltip(null)}
+          >
+            <Layer>
+              <Group
+                x={position.x}
+                y={position.y}
+                scaleX={scale}
+                scaleY={scale}
+              >
+                <MapCells
+                  sector={sector}
+                  gridDim={gridDim}
+                  hoverTooltip={hoverForCells}
+                  selectedCoordinates={selectedCoordinates}
+                  onCellClicked={onCellClicked}
+                  onHoverCell={updateHoverTooltip}
+                />
+                <MapMarkers
+                  sectorId={sector.id}
+                  gridDim={gridDim}
+                  cityMarker={cityMarker}
+                  outpostMarker={outpostMarker}
+                />
+              </Group>
+              <MapLegendOverlay stageHeight={size.height} />
+            </Layer>
+          </Stage>
+        </div>
+      </div>
+    </div>
+  )
 }

@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { MapCanvas } from '#map/canvas'
-import { LayoutPage } from '#ui/layout/page'
 import { MapDetails } from '#map/details'
 import { useWorld } from '#map/hook/world'
 import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectCityCoordinates } from '#city/slice'
+import { selectCity, selectCityCoordinates } from '#city/slice'
 import { selectOutpostCoordinates } from '#outpost/slice'
 import { listTroops } from '#troop/slice/thunk'
+import { LayoutPage } from '#ui/layout/page'
 
 export const MapPage: React.FC = () => {
   const dispatch = useAppDispatch()
+  const city = useAppSelector(selectCity)
   const cityCoordinates = useAppSelector(selectCityCoordinates)
   const outpostCoordinates = useAppSelector(selectOutpostCoordinates)
   const { fetch, sector } = useWorld()
@@ -34,6 +35,16 @@ export const MapPage: React.FC = () => {
   }, [ selectedCoordinates, sector])
 
   return <LayoutPage details={details}>
-    { sector && <MapCanvas onCellClicked={setSelectedCoordinates} sector={sector}/>}
+    {sector && (
+      <div className="map-page">
+        <MapCanvas
+          sector={sector}
+          onCellClicked={setSelectedCoordinates}
+          selectedCoordinates={selectedCoordinates}
+          cityMarker={city?.coordinates ?? null}
+          outpostMarker={outpostCoordinates ?? null}
+        />
+      </div>
+    )}
   </LayoutPage>
 }
