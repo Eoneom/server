@@ -1,0 +1,47 @@
+import { CommunicationListReportQuery } from '#app/query/communication/report/list'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
+import { ReportEntity } from '#core/communication/report/entity'
+import { ReportType } from '#core/communication/value/report-type'
+
+describe('CommunicationListReportQuery', () => {
+  const player_id = 'player_id'
+  let reports: ReportEntity[]
+  let repository: Pick<Repository, 'report'>
+
+  beforeEach(() => {
+    reports = [
+      ReportEntity.create({
+        id: 'r1',
+        player_id,
+        destination: {
+          x: 1,
+          y: 1,
+          sector: 1 
+        },
+        origin: {
+          x: 0,
+          y: 0,
+          sector: 1 
+        },
+        troops: [],
+        type: ReportType.BASE,
+        recorded_at: 1,
+        was_read: true
+      })
+    ]
+    repository = { report: { list: jest.fn().mockResolvedValue(reports) } as unknown as Repository['report'] }
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('returns reports for player', async () => {
+    const result = await new CommunicationListReportQuery().run({ player_id })
+
+    expect(result.reports).toBe(reports)
+    expect(repository.report.list).toHaveBeenCalledWith({ player_id })
+  })
+})

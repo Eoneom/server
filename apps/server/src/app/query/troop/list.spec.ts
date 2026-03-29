@@ -1,0 +1,153 @@
+import { TroopListQuery } from '#app/query/troop/list'
+import { Factory } from '#adapter/factory'
+import { Repository } from '#app/port/repository/generic'
+import { CityEntity } from '#core/city/entity'
+import { CityError } from '#core/city/error'
+import { OutpostEntity } from '#core/outpost/entity'
+import { OutpostType } from '#core/outpost/constant/type'
+import { OutpostError } from '#core/outpost/error'
+import { BuildingCode } from '#core/building/constant/code'
+import { CellEntity } from '#core/world/cell/entity'
+import { CellType } from '#core/world/value/cell-type'
+import { TroopCode } from '#core/troop/constant/code'
+import { TroopEntity } from '#core/troop/entity'
+
+describe('TroopListQuery', () => {
+  const player_id = 'player_id'
+  let city: CityEntity
+  let cell: CellEntity
+  let troop: TroopEntity
+  let repository: Pick<Repository, 'city' | 'cell' | 'troop' | 'building' | 'technology' | 'outpost'>
+
+  beforeEach(() => {
+    city = CityEntity.create({
+      ...CityEntity.initCity({
+        name: 'c',
+        player_id 
+      }),
+      plastic: 0,
+      mushroom: 0
+    })
+    cell = CellEntity.create({
+      id: 'cell1',
+      coordinates: {
+        x: 0,
+        y: 0,
+        sector: 1 
+      },
+      type: CellType.FOREST,
+      resource_coefficient: {
+        plastic: 1,
+        mushroom: 1 
+      },
+      city_id: city.id
+    })
+    troop = TroopEntity.create({
+      id: 'tr1',
+      code: TroopCode.EXPLORER,
+      count: 2,
+      player_id,
+      cell_id: cell.id,
+      movement_id: null,
+      ongoing_recruitment: null
+    })
+
+    repository = {
+      city: { get: jest.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      cell: {
+        getCityCell: jest.fn().mockResolvedValue(cell),
+        getById: jest.fn()
+      } as unknown as Repository['cell'],
+      troop: { listInCell: jest.fn().mockResolvedValue([ troop ]) } as unknown as Repository['troop'],
+      building: { getLevel: jest.fn().mockResolvedValue(1) } as unknown as Repository['building'],
+      technology: { getLevel: jest.fn().mockResolvedValue(0) } as unknown as Repository['technology'],
+      outpost: {} as unknown as Repository['outpost']
+    }
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('throws when city is not owned by player', async () => {
+    const other_city = CityEntity.create({
+      ...CityEntity.initCity({
+        name: 'x',
+        player_id: 'other' 
+      }),
+      plastic: 0,
+      mushroom: 0
+    })
+    ;(repository.city.get as jest.Mock).mockResolvedValue(other_city)
+
+    await expect(new TroopListQuery().run({
+      location: {
+        type: 'city',
+        city_id: other_city.id 
+      },
+      player_id
+    })).rejects.toThrow(CityError.NOT_OWNER)
+  })
+
+  it('lists troops for city location', async () => {
+    const result = await new TroopListQuery().run({
+      location: {
+        type: 'city',
+        city_id: city.id 
+      },
+      player_id
+    })
+
+    expect(result.troops.map(t => t.id)).toContain(troop.id)
+    expect(result.costs[TroopCode.EXPLORER]).toBeDefined()
+    expect(repository.troop.listInCell).toHaveBeenCalledWith({
+      cell_id: cell.id,
+      player_id
+    })
+    expect(repository.building.getLevel).toHaveBeenCalledWith({
+      city_id: city.id,
+      code: BuildingCode.CLONING_FACTORY
+    })
+  })
+
+  it('throws when outpost is not owned by player', async () => {
+    const outpost = OutpostEntity.create({
+      id: 'o1',
+      player_id: 'other',
+      cell_id: 'cell_o',
+      type: OutpostType.TEMPORARY
+    })
+    repository.outpost = { getById: jest.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost']
+
+    await expect(new TroopListQuery().run({
+      location: {
+        type: 'outpost',
+        outpost_id: outpost.id 
+      },
+      player_id
+    })).rejects.toThrow(OutpostError.NOT_OWNER)
+  })
+
+  it('lists troops for outpost location', async () => {
+    const outpost = OutpostEntity.create({
+      id: 'o1',
+      player_id,
+      cell_id: cell.id,
+      type: OutpostType.TEMPORARY
+    })
+    repository.outpost = { getById: jest.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost']
+    ;(repository.cell.getById as jest.Mock).mockResolvedValue(cell)
+
+    const result = await new TroopListQuery().run({
+      location: {
+        type: 'outpost',
+        outpost_id: outpost.id 
+      },
+      player_id
+    })
+
+    expect(result.troops.map(t => t.id)).toContain(troop.id)
+    expect(repository.cell.getById).toHaveBeenCalledWith(outpost.cell_id)
+  })
+})
