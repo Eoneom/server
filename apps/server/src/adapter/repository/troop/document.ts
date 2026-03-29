@@ -24,7 +24,11 @@ class OngoingRecruitment {
 
 @modelOptions({ schemaOptions: { collection: 'troups' } })
 class Troop {
-  @prop({ required: true })
+  @prop({
+    required: true,
+    type: String,
+    enum: TroopCode
+  })
   public code!: TroopCode
 
   @prop({ required: true })

@@ -1,4 +1,5 @@
 import { BuildingListQuery } from '#app/query/building/list'
+import type { BuildingListEntry } from '@eoneom/api-client/src/endpoints/building/list'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
 import { BuildingEntity } from '#core/building/entity'
@@ -86,10 +87,15 @@ describe('BuildingListQuery', () => {
     })
 
     expect(result.buildings).toHaveLength(2)
-    const upgrading = result.buildings.find(b => b.id === b_upgrade.id)
-    expect(upgrading?.upgrade_at).toBe(10_000)
-    expect(upgrading?.upgrade_started_at).toBeDefined()
+    const upgrading = result.buildings.find(
+      (b): b is Extract<BuildingListEntry, { upgrade_at: number }> =>
+        b.id === b_upgrade.id && 'upgrade_at' in b
+    )
+    expect(upgrading).toBeDefined()
+    expect(upgrading!.upgrade_at).toBe(10_000)
+    expect(upgrading!.upgrade_started_at).toBeDefined()
     const idle = result.buildings.find(b => b.id === b_idle.id)
-    expect(idle?.upgrade_at).toBeUndefined()
+    expect(idle).toBeDefined()
+    expect(idle && !('upgrade_at' in idle)).toBe(true)
   })
 })

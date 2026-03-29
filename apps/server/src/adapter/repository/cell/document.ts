@@ -19,7 +19,11 @@ class Cell {
   @prop({ required: true })
   public coordinates!: CoordinatesDocument
 
-  @prop({ required: true })
+  @prop({
+    required: true,
+    type: String,
+    enum: CellType
+  })
   public type!: CellType
 
   @prop({ required: true })

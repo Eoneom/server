@@ -9,7 +9,11 @@ class Technology {
   @prop({ required: true })
   public player_id!: mongoose.Types.ObjectId
 
-  @prop({ required: true })
+  @prop({
+    required: true,
+    type: String,
+    enum: TechnologyCode
+  })
   public code!: TechnologyCode
 
   @prop({ required: true })
