@@ -1,90 +1,414 @@
-import { AppService, NEUTRAL_CELL_COEFFICIENTS } from '#app/service'
+import {
+  AppService, NEUTRAL_CELL_COEFFICIENTS 
+} from '#app/service'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
 import { BuildingCode } from '#core/building/constant/code'
+import { BuildingEntity } from '#core/building/entity'
 import { BuildingService } from '#core/building/service'
+import { CityService } from '#core/city/service'
+import { TechnologyCode } from '#core/technology/constant/code'
+import { TechnologyEntity } from '#core/technology/entity'
+import { TroopCode } from '#core/troop/constant/code'
 import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
 import { Coordinates } from '#core/world/value/coordinates'
+import { WorldService } from '#core/world/service'
 
-describe('AppService.getCityProductionBreakdown', () => {
-  const city_id = 'city_1'
-  const coordinates: Coordinates = {
-    x: 1,
-    y: 2,
-    sector: 3
+describe('AppService', () => {
+  const setRepositoryMock = (repository: Repository) => {
+    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository)
   }
-  const resource_coefficient = {
-    plastic: 0.85,
-    mushroom: 1.1
-  }
-  const city_cell = CellEntity.create({
-    id: 'cell_id',
-    coordinates,
-    type: CellType.LAKE,
-    resource_coefficient
-  })
 
   beforeEach(() => {
-    const repository = {
-      building: {
-        getLevel: jest.fn().mockImplementation(({ code }: { code: BuildingCode }) => {
-          if (code === BuildingCode.MUSHROOM_FARM) {
-            return 2
-          }
-          if (code === BuildingCode.RECYCLING_PLANT) {
-            return 1
-          }
-          return 0
-        })
-      },
-      cell: {
-        getCityCell: jest.fn().mockResolvedValue(city_cell)
-      }
-    } as unknown as Repository
-
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository)
+    setRepositoryMock({} as Repository)
   })
 
   afterEach(() => {
     jest.restoreAllMocks()
   })
 
-  it('returns same earnings_per_second as getCityEarningsBySecond', async () => {
-    const [breakdown, earnings] = await Promise.all([
-      AppService.getCityProductionBreakdown({ city_id }),
-      AppService.getCityEarningsBySecond({ city_id })
-    ])
-
-    expect(breakdown.earnings_per_second).toEqual(earnings)
-  })
-
-  it('exposes cell coefficients and pre-cell rates from BuildingService', async () => {
-    const breakdown = await AppService.getCityProductionBreakdown({ city_id })
-
-    expect(breakdown.cell_resource_coefficient).toEqual(resource_coefficient)
-
-    expect(breakdown.pre_cell_earnings_per_second.plastic).toBe(
-      BuildingService.getEarningsBySecond({
+  describe('getCityProductionBreakdown', () => {
+    const city_id = 'city_1'
+    const coordinates: Coordinates = {
+      x: 1,
+      y: 2,
+      sector: 3
+    }
+    const resource_coefficient = {
+      plastic: 0.85,
+      mushroom: 1.1
+    }
+    const city_cell = CellEntity.create({
+      id: 'cell_id',
+      coordinates,
+      type: CellType.LAKE,
+      resource_coefficient
+    })
+  
+    beforeEach(() => {
+      const repository = {
+        building: {
+          getLevel: jest.fn().mockImplementation(({ code }: { code: BuildingCode }) => {
+            if (code === BuildingCode.MUSHROOM_FARM) {
+              return 2
+            }
+            if (code === BuildingCode.RECYCLING_PLANT) {
+              return 1
+            }
+            return 0
+          })
+        },
+        cell: { getCityCell: jest.fn().mockResolvedValue(city_cell) }
+      } as unknown as Repository
+  
+      setRepositoryMock(repository)
+    })
+  
+    it('returns same earnings_per_second as getCityEarningsBySecond', async () => {
+      const [
+        breakdown,
+        earnings 
+      ] = await Promise.all([
+        AppService.getCityProductionBreakdown({ city_id }),
+        AppService.getCityEarningsBySecond({ city_id })
+      ])
+  
+      expect(breakdown.earnings_per_second).toEqual(earnings)
+    })
+  
+    it('exposes cell coefficients and pre-cell rates from BuildingService', async () => {
+      const breakdown = await AppService.getCityProductionBreakdown({ city_id })
+  
+      expect(breakdown.cell_resource_coefficient).toEqual(resource_coefficient)
+  
+      expect(breakdown.pre_cell_earnings_per_second.plastic).toBe(BuildingService.getEarningsBySecond({
         code: BuildingCode.RECYCLING_PLANT,
         level: 1,
         coefficients: NEUTRAL_CELL_COEFFICIENTS
-      })
-    )
-    expect(breakdown.pre_cell_earnings_per_second.mushroom).toBe(
-      BuildingService.getEarningsBySecond({
+      }))
+      expect(breakdown.pre_cell_earnings_per_second.mushroom).toBe(BuildingService.getEarningsBySecond({
         code: BuildingCode.MUSHROOM_FARM,
         level: 2,
         coefficients: NEUTRAL_CELL_COEFFICIENTS
-      })
-    )
-
-    expect(breakdown.earnings_per_second.plastic).toBe(
-      BuildingService.getEarningsBySecond({
+      }))
+  
+      expect(breakdown.earnings_per_second.plastic).toBe(BuildingService.getEarningsBySecond({
         code: BuildingCode.RECYCLING_PLANT,
         level: 1,
         coefficients: resource_coefficient
-      })
-    )
+      }))
+    })
   })
+  
+  describe('getExploredCellIds', () => {
+    const coordinates: Coordinates = {
+      x: 4,
+      y: 5,
+      sector: 1 
+    }
+    const cell = CellEntity.create({
+      id: 'explored_cell',
+      coordinates,
+      type: CellType.FOREST,
+      resource_coefficient: {
+        plastic: 1,
+        mushroom: 1 
+      }
+    })
+  
+    beforeEach(() => {
+      const repository = { cell: { getCell: jest.fn().mockResolvedValue(cell) } } as unknown as Repository
+      setRepositoryMock(repository)
+    })
+  
+    it('returns the cell id for the given coordinates', async () => {
+      const ids = await AppService.getExploredCellIds({ coordinates })
+      expect(ids).toEqual([ cell.id ])
+    })
+  })
+  
+  describe('getCityMaximumBuildingLevels', () => {
+    const city_id = 'city_max_levels'
+  
+    beforeEach(() => {
+      const repository = { cell: { getCityCellsCount: jest.fn().mockResolvedValue(7) } } as unknown as Repository
+      setRepositoryMock(repository)
+    })
+  
+    it('delegates to CityService using city cell count from repository', async () => {
+      const result = await AppService.getCityMaximumBuildingLevels({ city_id })
+      expect(result).toBe(CityService.getMaximumBuildingLevels({ city_cells_count: 7 }))
+    })
+  })
+  
+  describe('getCityWarehousesCapacity', () => {
+    const city_id = 'city_wh'
+  
+    beforeEach(() => {
+      const repository = {
+        building: {
+          getLevel: jest.fn().mockImplementation(({ code }: { code: BuildingCode }) => {
+            if (code === BuildingCode.MUSHROOM_WAREHOUSE) {
+              return 3
+            }
+            if (code === BuildingCode.PLASTIC_WAREHOUSE) {
+              return 2
+            }
+            return 0
+          })
+        }
+      } as unknown as Repository
+      setRepositoryMock(repository)
+    })
+  
+    it('matches BuildingService warehouse capacity for both warehouses', async () => {
+      const capacity = await AppService.getCityWarehousesCapacity({ city_id })
+      expect(capacity.mushroom).toBe(BuildingService.getWarehouseCapacity({
+        code: BuildingCode.MUSHROOM_WAREHOUSE,
+        level: 3
+      }))
+      expect(capacity.plastic).toBe(BuildingService.getWarehouseCapacity({
+        code: BuildingCode.PLASTIC_WAREHOUSE,
+        level: 2
+      }))
+    })
+  })
+  
+  describe('getBuildingRequirementLevels', () => {
+    const city_id = 'city_req_b'
+    const player_id = 'player_req_b'
+  
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+  
+    it('calls list with empty code lists and returns empty maps for MUSHROOM_FARM', async () => {
+      const building_list = jest.fn().mockResolvedValue([])
+      const technology_list = jest.fn().mockResolvedValue([])
+      const repository = {
+        building: { list: building_list },
+        technology: { list: technology_list }
+      } as unknown as Repository
+      setRepositoryMock(repository)
+  
+      const levels = await AppService.getBuildingRequirementLevels({
+        city_id,
+        player_id,
+        building_code: BuildingCode.MUSHROOM_FARM
+      })
+  
+      expect(levels).toEqual({
+        building: {},
+        technology: {} 
+      })
+      expect(building_list).toHaveBeenCalledWith({
+        city_id,
+        codes: [] 
+      })
+      expect(technology_list).toHaveBeenCalledWith({
+        player_id,
+        codes: [] 
+      })
+    })
+  
+    it('maps CLONING_FACTORY technology requirements from repository', async () => {
+      const architecture = TechnologyEntity.create({
+        id: 'tech_1',
+        player_id,
+        code: TechnologyCode.ARCHITECTURE,
+        level: 4
+      })
+      const building_list = jest.fn().mockResolvedValue([])
+      const technology_list = jest.fn().mockResolvedValue([ architecture ])
+      const repository = {
+        building: { list: building_list },
+        technology: { list: technology_list }
+      } as unknown as Repository
+      setRepositoryMock(repository)
+  
+      const levels = await AppService.getBuildingRequirementLevels({
+        city_id,
+        player_id,
+        building_code: BuildingCode.CLONING_FACTORY
+      })
+  
+      expect(levels.building).toEqual({})
+      expect(levels.technology[TechnologyCode.ARCHITECTURE]).toBe(4)
+      expect(technology_list).toHaveBeenCalledWith({
+        player_id,
+        codes: [ TechnologyCode.ARCHITECTURE ]
+      })
+    })
+  })
+  
+  describe('getTechnologyRequirementLevels', () => {
+    const city_id = 'city_req_t'
+    const player_id = 'player_req_t'
+  
+    it('maps ARCHITECTURE building requirements from repository', async () => {
+      const research_lab = BuildingEntity.create({
+        id: 'b_lab',
+        city_id,
+        code: BuildingCode.RESEARCH_LAB,
+        level: 6
+      })
+      const building_list = jest.fn().mockResolvedValue([ research_lab ])
+      const technology_list = jest.fn().mockResolvedValue([])
+      const repository = {
+        building: { list: building_list },
+        technology: { list: technology_list }
+      } as unknown as Repository
+      jest.spyOn(Factory, 'getRepository').mockReturnValue(repository)
+  
+      const levels = await AppService.getTechnologyRequirementLevels({
+        city_id,
+        player_id,
+        technology_code: TechnologyCode.ARCHITECTURE,
+        technology_level: 0
+      })
+  
+      expect(levels.technology).toEqual({})
+      expect(levels.building[BuildingCode.RESEARCH_LAB]).toBe(6)
+      expect(building_list).toHaveBeenCalledWith({
+        city_id,
+        codes: [ BuildingCode.RESEARCH_LAB ]
+      })
+    })
+  })
+  
+  describe('getTroopRequirementLevels', () => {
+    const city_id = 'city_req_tr'
+    const player_id = 'player_req_tr'
+  
+    it('maps EXPLORER building requirements from repository', async () => {
+      const cloning = BuildingEntity.create({
+        id: 'b_cf',
+        city_id,
+        code: BuildingCode.CLONING_FACTORY,
+        level: 2
+      })
+      const building_list = jest.fn().mockResolvedValue([ cloning ])
+      const technology_list = jest.fn().mockResolvedValue([])
+      const repository = {
+        building: { list: building_list },
+        technology: { list: technology_list }
+      } as unknown as Repository
+      setRepositoryMock(repository)
+  
+      const levels = await AppService.getTroopRequirementLevels({
+        city_id,
+        player_id,
+        troop_code: TroopCode.EXPLORER
+      })
+  
+      expect(levels.technology).toEqual({})
+      expect(levels.building[BuildingCode.CLONING_FACTORY]).toBe(2)
+      expect(building_list).toHaveBeenCalledWith({
+        city_id,
+        codes: [ BuildingCode.CLONING_FACTORY ]
+      })
+    })
+  })
+  
+  describe('selectCityFirstCell', () => {
+    const coords_taken: Coordinates = {
+      x: 10,
+      y: 20,
+      sector: 1 
+    }
+    const coords_free: Coordinates = {
+      x: 11,
+      y: 20,
+      sector: 1 
+    }
+    const assigned_cell = CellEntity.create({
+      id: 'cell_taken',
+      coordinates: coords_taken,
+      type: CellType.RUINS,
+      resource_coefficient: {
+        plastic: 1,
+        mushroom: 0.5 
+      }
+    }).assign({ city_id: 'c1' })
+    const free_cell = CellEntity.create({
+      id: 'cell_free',
+      coordinates: coords_free,
+      type: CellType.LAKE,
+      resource_coefficient: {
+        plastic: 1,
+        mushroom: 1 
+      }
+    })
+  
+    beforeEach(() => {
+      jest.spyOn(WorldService, 'getRandomCoordinates')
+        .mockReturnValueOnce(coords_taken)
+        .mockReturnValueOnce(coords_free)
+      const getCell = jest.fn()
+        .mockResolvedValueOnce(assigned_cell)
+        .mockResolvedValueOnce(free_cell)
+      const repository = { cell: { getCell } } as unknown as Repository
+      setRepositoryMock(repository)
+    })
+  
+    it('skips assigned cells until an unassigned cell is found', async () => {
+      const cell = await AppService.selectCityFirstCell()
+      expect(cell).toBe(free_cell)
+    })
+  })
+  
+  describe('getCellsAround', () => {
+    const center: Coordinates = {
+      x: 5,
+      y: 7,
+      sector: 2 
+    }
+    const expected_neighbors: Coordinates[] = [
+      {
+        x: 4,
+        y: 7,
+        sector: 2 
+      },
+      {
+        x: 5,
+        y: 6,
+        sector: 2 
+      },
+      {
+        x: 6,
+        y: 7,
+        sector: 2 
+      },
+      {
+        x: 5,
+        y: 8,
+        sector: 2 
+      }
+    ]
+  
+    beforeEach(() => {
+      const getCell = jest.fn().mockImplementation(({ coordinates }: { coordinates: Coordinates }) => Promise.resolve(CellEntity.create({
+        id: `cell_${coordinates.x}_${coordinates.y}`,
+        coordinates,
+        type: CellType.LAKE,
+        resource_coefficient: {
+          plastic: 1,
+          mushroom: 1 
+        }
+      })))
+      const repository = { cell: { getCell } } as unknown as Repository
+      setRepositoryMock(repository)
+    })
+  
+    it('fetches the four orthogonal neighbors', async () => {
+      const repository = Factory.getRepository() as unknown as { cell: { getCell: jest.Mock } }
+      await AppService.getCellsAround({ coordinates: center })
+  
+      const requested = repository.cell.getCell.mock.calls.map((call: [{ coordinates: Coordinates }]) => call[0].coordinates)
+      expect(requested).toEqual(expect.arrayContaining(expected_neighbors))
+      expect(requested).toHaveLength(4)
+    })
+  })
+  
 })
