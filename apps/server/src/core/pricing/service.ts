@@ -18,6 +18,7 @@ import {
   REPLICATION_CATALYST_REDUCTION_PER_LEVEL,
   troop_costs
 } from '#core/pricing/constant/troop'
+import { scaleGameDurationSeconds } from '#shared/game-time-scale'
 import { Resource } from '#shared/resource'
 
 export class PricingService {
@@ -54,7 +55,7 @@ export class PricingService {
         plastic: cost.plastic * count,
         mushroom: cost.mushroom * count
       },
-      duration: reduced_duration
+      duration: scaleGameDurationSeconds(reduced_duration)
     }
   }
 
@@ -82,10 +83,10 @@ export class PricingService {
       code,
       level: level,
       resource: {
-        plastic: this.computeLevelCost(plastic, level),
-        mushroom: this.computeLevelCost(mushroom, level)
+        plastic: this.computeLevelResourceCost(plastic, level),
+        mushroom: this.computeLevelResourceCost(mushroom, level)
       },
-      duration: this.computeLevelCost(duration, level, architecture_reduction)
+      duration: this.computeLevelDurationCost(duration, level, architecture_reduction)
     }
   }
 
@@ -132,10 +133,10 @@ export class PricingService {
       code,
       level: level,
       resource: {
-        plastic: this.computeLevelCost(plastic, level),
-        mushroom: this.computeLevelCost(mushroom, level)
+        plastic: this.computeLevelResourceCost(plastic, level),
+        mushroom: this.computeLevelResourceCost(mushroom, level)
       },
-      duration: this.computeLevelCost(duration, level, research_lab_reduction)
+      duration: this.computeLevelDurationCost(duration, level, research_lab_reduction)
     }
   }
 
@@ -149,8 +150,18 @@ export class PricingService {
     return Math.pow(1-1/reduction_percent_per_level, level)
   }
 
-  private static computeLevelCost(cost: LevelCost, level: number, reduction = 1): number {
+  private static computeLevelResourceCost(cost: LevelCost, level: number): number {
     const base_level_cost = cost.base * Math.pow(cost.multiplier, level - 1)
-    return Math.ceil(base_level_cost * reduction)
+    return Math.ceil(base_level_cost)
+  }
+
+  private static computeLevelDurationCost(
+    cost: LevelCost,
+    level: number,
+    reduction: number
+  ): number {
+    const base_level_cost = cost.base * Math.pow(cost.multiplier, level - 1)
+    const raw_seconds = Math.ceil(base_level_cost * reduction)
+    return scaleGameDurationSeconds(raw_seconds)
   }
 }

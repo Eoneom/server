@@ -5,6 +5,7 @@ import { troop_characteristics } from '#core/troop/constant/characteristic'
 import { TroopEntity } from '#core/troop/entity'
 import { MovementEntity } from '#core/troop/movement/entity'
 import { Coordinates } from '#core/world/value/coordinates'
+import { scaleGameDurationMs } from '#shared/game-time-scale'
 import { id } from '#shared/identification'
 import { TroopCount } from '#core/troop/type'
 
@@ -172,7 +173,7 @@ export class TroopService {
     troop_codes: TroopCode[]
   }): number {
     const slowest_speed = this.getSlowestSpeed({ troop_codes })
-    return distance / slowest_speed
+    return scaleGameDurationMs(distance / slowest_speed)
   }
 
   static getSlowestSpeed({ troop_codes }: { troop_codes: TroopCode[] }): number {

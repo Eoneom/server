@@ -5,6 +5,7 @@ import { warehouses_capacity } from '#core/building/constant/warehouse-capacity'
 import { BuildingEntity } from '#core/building/entity'
 import { FAKE_ID } from '#shared/identification'
 import { Resource } from '#shared/resource'
+import { gameTimeScale } from '#shared/game-time-scale'
 
 export class BuildingService {
   static init({ city_id }: { city_id: string }): BuildingEntity[] {
@@ -40,7 +41,8 @@ export class BuildingService {
     const coefficient = code === BuildingCode.MUSHROOM_FARM ? coefficients.mushroom : coefficients.plastic
     const coefficient_value = base_value * coefficient
 
-    return Math.round(coefficient_value * 100) / 100
+    const per_game_second = Math.round(coefficient_value * 100) / 100
+    return Math.round(per_game_second * gameTimeScale * 100) / 100
   }
 
   static getWarehouseCapacity({

@@ -17,4 +17,6 @@ dist
 # Local data files
 
 containers/data
+
+.env
 coverage

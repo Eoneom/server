@@ -6,7 +6,12 @@ import { errorMiddleware } from '#web/middleware/error'
 import { Factory } from '#adapter/factory'
 
 const http = express()
-const port = 3000
+const rawPort = Number.parseInt(
+  process.env.HTTP_PORT ?? '3000',
+  10
+)
+const port =
+  Number.isFinite(rawPort) && rawPort > 0 ? rawPort : 3000
 const logger = Factory.getLogger('web:http')
 
 http.use(cors())

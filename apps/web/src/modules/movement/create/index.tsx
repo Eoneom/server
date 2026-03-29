@@ -84,7 +84,7 @@ export const MovementCreate: React.FC = () => {
 
   return <form id="movement-creation" onSubmit={(event) => onSubmit(event)}>
     <div id="troop-selection">
-      <h2>Troopes à envoyer</h2>
+      <h2>Troupes à envoyer</h2>
       <MovementCreateTroops
         troops={troops}
         selectedTroops={selectedTroops}

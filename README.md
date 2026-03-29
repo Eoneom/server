@@ -1,4 +1,4 @@
-# Eoneom game server
+# Eoneom game
 
 Proof-of-concept web strategy game. This repository is a **Yarn 4** monorepo: the HTTP API lives in `apps/server` (`@eoneom/server`), the React client in `apps/web` (`@eoneom/web`), and the shared TypeScript client in `packages/api-client`.
 
@@ -57,6 +57,23 @@ Root `package.json` exposes convenience scripts that delegate to the `@eoneom/se
    ```
 
 The API listens on **port 3000**. Endpoints are wired in `apps/server/src/web/router.ts`.
+
+### Environment variables
+
+Copy [`apps/server/.env.example`](apps/server/.env.example) to `apps/server/.env` and edit there. The server loads that file on startup (before other modules read configuration).
+
+| Variable | Description |
+| -------- | ----------- |
+| `GAME_TIME_SCALE` | Optional **speed multiplier** (`1` = default). For example `2` makes the game **twice as fast**: wait times (recruitment, building upgrades, technology research, troop movement) are shortened, and **production earnings** (`BuildingService` rates used for gathering and warehouse timers) are multiplied by the same factor. Invalid, empty, or non-positive values fall back to `1`. |
+| `MONGODB_URI` | MongoDB connection string (default `mongodb://localhost:27017/`). |
+| `MONGODB_DB_NAME` | Database name (default `eoneom`). |
+| `HTTP_PORT` | API listen port (default `3000`). |
+
+Example from the repository root without a `.env` file:
+
+```bash
+GAME_TIME_SCALE=2 yarn server:start
+```
 
 ### Tests
 

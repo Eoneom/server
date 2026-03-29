@@ -18,7 +18,7 @@ export const MovementDetails: React.FC<Props> = ({ movement }) => {
       Arrivée : {formatCoordinates(movement.destination)}
     </p>
 
-    <h3>Troopes</h3>
+    <h3>Troupes</h3>
     <ul>
       {movement.troops.map(troop => {
         const { name } = TroopTranslations[troop.code]
