@@ -9,6 +9,7 @@ interface OngoingRecruitment {
   finish_at: number
   remaining_count: number
   last_progress: number
+  started_at: number
 }
 
 type TroopEntityProps = BaseEntity & {
@@ -102,7 +103,8 @@ export class TroopEntity extends BaseEntity {
       ongoing_recruitment: {
         finish_at: recruitment_time + duration * 1000,
         remaining_count: count,
-        last_progress: recruitment_time
+        last_progress: recruitment_time,
+        started_at: recruitment_time
       }
     })
   }
@@ -138,7 +140,8 @@ export class TroopEntity extends BaseEntity {
       ongoing_recruitment: {
         finish_at: ongoing_recruitment.finish_at,
         remaining_count: ongoing_recruitment.remaining_count - count_since_last,
-        last_progress: count_since_last ? progress_time : ongoing_recruitment.last_progress
+        last_progress: count_since_last ? progress_time : ongoing_recruitment.last_progress,
+        started_at: ongoing_recruitment.started_at
       }
     })
   }

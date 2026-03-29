@@ -14,12 +14,14 @@ describe('cancelTechnology', () => {
   let repository: Pick<Repository, 'technology'>
 
   beforeEach(() => {
+    const started = now()
     technology = TechnologyEntity.create({
       ...TechnologyEntity.init({
         player_id,
         code: TechnologyCode.ARCHITECTURE
       }),
-      research_at: now() + 1000 * 60
+      research_at: started + 1000 * 60,
+      research_started_at: started
     })
 
     technologyUpdateOne = jest.fn().mockResolvedValue(undefined)

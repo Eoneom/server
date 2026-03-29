@@ -84,7 +84,8 @@ export class MongoTechnologyRepository
       player_id: document.player_id.toString(),
       code: document.code,
       level: document.level,
-      research_at: document.research_at
+      research_at: document.research_at,
+      research_started_at: document.research_started_at
     })
   }
 }

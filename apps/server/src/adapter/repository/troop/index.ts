@@ -76,7 +76,8 @@ export class MongoTroopRepository
       ongoing_recruitment: document.ongoing_recruitment ? {
         remaining_count: document.ongoing_recruitment.remaining_count,
         finish_at: document.ongoing_recruitment.finish_at,
-        last_progress: document.ongoing_recruitment.last_progress
+        last_progress: document.ongoing_recruitment.last_progress,
+        started_at: document.ongoing_recruitment.started_at
       } : null
     })
   }

@@ -1,16 +1,16 @@
 import { GenericQuery } from '#query/generic'
-import { BuildingEntity } from '#core/building/entity'
 import { CityError } from '#core/city/error'
 import { BuildingService } from '#core/building/service'
+import { PricingService } from '#core/pricing/service'
+import { TechnologyCode } from '#core/technology/constant/code'
+import { BuildingListDataResponse } from '@eoneom/api-client/src/endpoints/building/list'
 
 export interface ListBuildingRequest {
   city_id: string,
   player_id: string
 }
 
-export interface ListBuildingQueryResponse {
-  buildings: BuildingEntity[],
-}
+export type ListBuildingQueryResponse = BuildingListDataResponse
 
 export class BuildingListQuery extends GenericQuery<ListBuildingRequest, ListBuildingQueryResponse> {
   constructor() {
@@ -26,8 +26,38 @@ export class BuildingListQuery extends GenericQuery<ListBuildingRequest, ListBui
       throw new Error(CityError.NOT_OWNER)
     }
 
-    const buildings = await this.repository.building.list({ city_id })
+    const [buildings, architecture] = await Promise.all([
+      this.repository.building.list({ city_id }),
+      this.repository.technology.get({
+        player_id,
+        code: TechnologyCode.ARCHITECTURE
+      }),
+    ])
 
-    return { buildings: BuildingService.sortBuildings({ buildings }) }
+    const sorted = BuildingService.sortBuildings({ buildings })
+    const response_buildings: BuildingListDataResponse['buildings'] = sorted.map(building => {
+      const upgrade_at = building.upgrade_at
+      if (upgrade_at == null) {
+        return {
+          id: building.id,
+          code: building.code,
+          level: building.level,
+        }
+      }
+      const { duration } = PricingService.getBuildingLevelCost({
+        level: building.level + 1,
+        code: building.code,
+        architecture_level: architecture.level
+      })
+      return {
+        id: building.id,
+        code: building.code,
+        level: building.level,
+        upgrade_at,
+        upgrade_started_at: upgrade_at - duration * 1000
+      }
+    })
+
+    return { buildings: response_buildings }
   }
 }

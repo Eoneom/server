@@ -55,11 +55,10 @@ const response_mapper = ({
   cost,
   requirement
 }: TechnologyGetQueryResponse): TechnologyGetDataResponse => {
-  return {
+  const base = {
     id: technology.id,
     code: technology.code,
     level: technology.level,
-    research_at: technology.research_at ?? undefined,
     research_cost: {
       plastic: cost.resource.plastic,
       mushroom: cost.resource.mushroom,
@@ -67,4 +66,12 @@ const response_mapper = ({
     },
     requirement
   }
+  if (technology.research_at != null && technology.research_started_at != null) {
+    return {
+      ...base,
+      research_at: technology.research_at,
+      research_started_at: technology.research_started_at,
+    }
+  }
+  return base
 }

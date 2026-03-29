@@ -33,7 +33,8 @@ export const technologySlice = createSlice({
 })
 
 export const selectTechnologies = (state: RootState) => state.technology.technologies
-export const selectTechnologyInProgress = (state: RootState) => state.technology.technologies.find(technology => technology.research_at)
+export const selectTechnologyInProgress = (state: RootState) =>
+  state.technology.technologies.find((t): t is Extract<TechnologyItem, { research_at: number }> => 'research_at' in t)
 
 export const selectTechnology = (state: RootState) => state.technology.technology
 

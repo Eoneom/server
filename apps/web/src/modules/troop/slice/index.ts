@@ -43,7 +43,7 @@ const troopSlice = createSlice({
         state.movement = action.payload
       })
       .addCase(createMovement.fulfilled, () => {
-        toast.success('Les troopes sont en route')
+        toast.success('Les troupes sont en route')
       })
       .addMatcher(isRejected, (_, action) => {
         toast.error(action.payload as string)

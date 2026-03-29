@@ -17,6 +17,9 @@ class OngoingRecruitment {
 
   @prop({ required: true })
   public last_progress!: number
+
+  @prop({ required: true })
+  public started_at!: number
 }
 
 @modelOptions({ schemaOptions: { collection: 'troups' } })

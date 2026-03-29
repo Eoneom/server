@@ -36,6 +36,6 @@ export const BuildingTranslations: Record<BuildingCode, BuildingTranslation> = {
   [BuildingCode.CLONING_FACTORY]: {
     name: 'Usine de clonage',
     description: 'La reproduction sexuée est trop complexe et trop longue ce qui rendrait les humains vulnérables. La solution la plus pratique reste le clonage.',
-    effect: 'Débloque les troopes et réduit le temps de recrutement de 10% par niveau'
+    effect: 'Débloque les troupes et réduit le temps de recrutement de 10% par niveau'
   }
 }

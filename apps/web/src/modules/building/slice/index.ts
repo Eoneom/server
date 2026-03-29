@@ -34,7 +34,8 @@ export const buildingSlice = createSlice({
 
 export const selectBuildings = (state: RootState) => state.building.buildings
 export const selectTotalBuildingsLevel = (state: RootState) => state.building.buildings.reduce((acc, { level }) => acc + level, 0)
-export const selectBuildingInProgress = (state: RootState) => state.building.buildings.find(building => building.upgrade_at)
+export const selectBuildingInProgress = (state: RootState) =>
+  state.building.buildings.find((b): b is Extract<BuildingItem, { upgrade_at: number }> => 'upgrade_at' in b)
 
 export const selectBuilding = (state: RootState) => state.building.building
 export const selectBuildingCode = (state: RootState) => state.building.building?.code

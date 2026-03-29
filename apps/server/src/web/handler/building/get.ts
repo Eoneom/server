@@ -58,11 +58,11 @@ const response_mapper = ({
   cost,
   requirement,
   metadata,
+  upgrade_started_at,
 }: BuildingGetQueryResponse): BuildingGetDataResponse => {
-  return {
+  const base = {
     code: building.code,
     level: building.level,
-    upgrade_at: building.upgrade_at ?? undefined,
     upgrade_cost: {
       plastic: cost.resource.plastic,
       mushroom: cost.resource.mushroom,
@@ -73,5 +73,14 @@ const response_mapper = ({
       technologies: requirement.technologies
     },
     metadata
+  }
+  const upgrade_at = building.upgrade_at
+  if (upgrade_at == null || upgrade_started_at == null) {
+    return base
+  }
+  return {
+    ...base,
+    upgrade_at,
+    upgrade_started_at,
   }
 }

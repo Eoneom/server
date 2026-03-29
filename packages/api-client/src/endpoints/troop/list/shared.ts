@@ -10,6 +10,7 @@ export interface TroopListDataResponse {
       finish_at: number
       remaining_count: number
       duration_per_unit: number
+      started_at: number
     }
   }[]
 }

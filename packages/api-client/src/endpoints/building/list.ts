@@ -5,13 +5,22 @@ export interface BuildingListRequest {
   city_id: string
 }
 
+export type BuildingListEntry =
+  | {
+      id: string
+      code: BuildingCode
+      level: number
+      upgrade_at: number
+      upgrade_started_at: number
+    }
+  | {
+      id: string
+      code: BuildingCode
+      level: number
+    }
+
 export interface BuildingListDataResponse {
-  buildings: {
-    id: string
-    code: BuildingCode
-    level: number
-    upgrade_at?: number
-  }[]
+  buildings: BuildingListEntry[]
 }
 
 export type BuildingListResponse = GenericResponse<BuildingListDataResponse>

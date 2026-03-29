@@ -164,5 +164,7 @@ describe('researchTechnology', () => {
     const updated_technology = technologyUpdateOne.mock.calls[0][0]
     assert.ok(!technology.research_at)
     assert.ok(updated_technology.research_at)
+    assert.ok(updated_technology.research_started_at)
+    assert.ok(updated_technology.research_at > updated_technology.research_started_at)
   })
 })

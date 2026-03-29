@@ -7,7 +7,7 @@ export interface TechnologyGetRequest {
   technology_code: TechnologyCode
 }
 
-export interface TechnologyGetDataResponse {
+type TechnologyGetBase = {
   id: string
   code: TechnologyCode
   level: number
@@ -16,8 +16,14 @@ export interface TechnologyGetDataResponse {
     mushroom: number
     duration: number
   }
-  research_at?: number
   requirement: Requirement
 }
+
+export type TechnologyGetDataResponse =
+  | (TechnologyGetBase & {
+      research_at: number
+      research_started_at: number
+    })
+  | TechnologyGetBase
 
 export type TechnologyGetResponse = GenericResponse<TechnologyGetDataResponse>

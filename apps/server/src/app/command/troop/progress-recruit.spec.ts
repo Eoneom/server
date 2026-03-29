@@ -37,6 +37,7 @@ describe('progressTroopRecruitment', () => {
         remaining_count: 1000,
         last_progress: troop_creation_time,
         finish_at: troop_creation_time + 10000,
+        started_at: troop_creation_time,
       },
     })
 

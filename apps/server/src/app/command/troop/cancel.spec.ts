@@ -41,6 +41,7 @@ describe('cancelTroop', () => {
         finish_at: last_progress + 1000 * remaining_count * troop_costs[code].duration,
         remaining_count,
         last_progress,
+        started_at: last_progress,
       },
     })
 

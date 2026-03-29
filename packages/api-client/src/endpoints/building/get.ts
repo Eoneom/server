@@ -7,7 +7,7 @@ export interface BuildingGetRequest {
   building_code: BuildingCode
 }
 
-interface BaseBuilding {
+type BaseBuilding = {
   code: BuildingCode
   level: number
   upgrade_cost: {
@@ -15,10 +15,12 @@ interface BaseBuilding {
     mushroom: number
     duration: number
   }
-  upgrade_at?: number
   requirement: Requirement
   metadata: Record<string, unknown>
-}
+} & (
+  | { upgrade_at: number; upgrade_started_at: number }
+  | { upgrade_at?: undefined; upgrade_started_at?: undefined }
+)
 
 export type WarehouseBuilding = BaseBuilding & { metadata: { current_capacity: number, next_capacity: number } }
 export const isWarehouseBuilding = (b: BaseBuilding): b is WarehouseBuilding => {

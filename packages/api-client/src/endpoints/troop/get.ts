@@ -13,6 +13,7 @@ export interface TroopGetDataResponse {
   ongoing_recruitment?: {
     finish_at: number
     remaining_count: number
+    started_at: number
   }
   cost: {
     plastic: number

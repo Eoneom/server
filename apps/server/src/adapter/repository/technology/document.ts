@@ -17,6 +17,9 @@ class Technology {
 
   @prop()
   public research_at?: number
+
+  @prop()
+  public research_started_at?: number
 }
 
 export type TechnologyDocument = Document & Technology

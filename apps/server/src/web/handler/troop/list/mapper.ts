@@ -14,7 +14,8 @@ export const troopListResponseMapper = ({
       ongoing_recruitment: troop.ongoing_recruitment ? {
         finish_at: troop.ongoing_recruitment.finish_at,
         remaining_count: troop.ongoing_recruitment.remaining_count,
-        duration_per_unit: cost.duration
+        duration_per_unit: cost.duration,
+        started_at: troop.ongoing_recruitment.started_at
       } : undefined,
     }
   })

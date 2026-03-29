@@ -1,5 +1,16 @@
 import { Coordinates } from '@eoneom/api-client'
 
+export const formatDurationMmSs = (totalSeconds: number): string => {
+  const s = Math.max(0, Math.floor(totalSeconds))
+  const hours = Math.floor(s / 3600)
+  const minutes = Math.floor((s % 3600) / 60)
+  const secs = s % 60
+  if (hours > 0) {
+    return `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+  }
+  return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+}
+
 export const formatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600)
   const secondsWithoutHours = seconds % 3600

@@ -24,6 +24,7 @@ export interface BuildingGetQueryResponse {
   cost: LevelCostValue
   requirement: RequirementValue
   metadata: Record<string, unknown>
+  upgrade_started_at?: number
 }
 
 export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, BuildingGetQueryResponse> {
@@ -62,11 +63,14 @@ export class BuildingGetQuery extends GenericQuery<BuildingGetQueryRequest, Buil
       level: building.level + 1,
       architecture_level: architecture.level
     })
+    const upgrade_at = building.upgrade_at
     return {
       building,
       requirement,
       metadata,
       cost,
+      upgrade_started_at:
+        upgrade_at != null ? upgrade_at - cost.duration * 1000 : undefined,
     }
   }
 

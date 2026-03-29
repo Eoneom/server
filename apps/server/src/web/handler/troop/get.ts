@@ -40,7 +40,8 @@ export const troopGetHandler = async (
       count: troop.count,
       ongoing_recruitment: troop.ongoing_recruitment ? {
         finish_at: troop.ongoing_recruitment.finish_at,
-        remaining_count: troop.ongoing_recruitment.remaining_count
+        remaining_count: troop.ongoing_recruitment.remaining_count,
+        started_at: troop.ongoing_recruitment.started_at
       } : undefined,
       cost: {
         plastic: cost.resource.plastic,

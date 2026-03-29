@@ -2,10 +2,10 @@ import React, { useMemo } from 'react'
 
 import { TechnologyListItem } from '#technology/list/item'
 import { TechnologyTranslations } from '#technology/translations'
-import { formatTime } from '#helpers/transform'
 import { Button } from '#ui/button'
+import { CountdownProgress } from '#ui/countdown-progress'
 import { List } from '#ui/list'
-import { useTimer } from '#hook/timer'
+import { useCountdownProgress } from '#hook/countdown-progress'
 import { useAppDispatch, useAppSelector } from '#store/type'
 import { selectTechnologyInProgress, selectTechnologies, selectTechnology } from '#technology/slice'
 import { cancelTechnology, finishResearch } from '#technology/slice/thunk'
@@ -17,13 +17,18 @@ export const TechnologyList: React.FC = () => {
   const technologies = useAppSelector(selectTechnologies)
   const inProgress = useAppSelector(selectTechnologyInProgress)
 
-  const { remainingTime } = useTimer({
+  const { remainingSeconds, elapsedProgress } = useCountdownProgress({
     onDone: () => dispatch(finishResearch()),
-    doneAt: inProgress?.research_at
+    endAt: inProgress?.research_at,
+    startAt: inProgress?.research_started_at
   })
 
   const inProgressComponent = inProgress && <>
-    <p>En cours: {TechnologyTranslations[inProgress.code].name} <strong>{formatTime(remainingTime)}</strong></p>
+    <CountdownProgress
+      summary={<>En cours: {TechnologyTranslations[inProgress.code].name}</>}
+      elapsedProgress={elapsedProgress}
+      remainingSeconds={remainingSeconds}
+    />
     <Button onClick={() => dispatch(cancelTechnology())}>Annuler</Button>
   </>
 
