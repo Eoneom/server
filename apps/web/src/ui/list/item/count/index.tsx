@@ -7,6 +7,10 @@ interface Props {
   name: string
   count: number
   onSelect: () => void
+  image?: {
+    src: string
+    alt: string
+  }
 }
 
 export const ListItemCount: React.FC<Props> = ({ count, ...props }) => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import { TechnologyItem } from '#types'
+import { technologyImageSrc } from '#technology/image'
 import { TechnologyTranslations } from '#technology/translations'
 import { ListItemLevel } from '#ui/list/item/level'
 import { useAppDispatch } from '#store/type'
@@ -19,6 +20,10 @@ export const TechnologyListItem: React.FC<Props> = ({ active, technologyItem }) 
     active={active}
     name={name}
     level={technologyItem.level}
+    image={{
+      src: technologyImageSrc(technologyItem.code),
+      alt: '',
+    }}
     onSelect={() => dispatch(getTechnology(technologyItem.code))}
   />
 }

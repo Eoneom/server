@@ -7,6 +7,10 @@ interface Props {
   level: number
   active: boolean
   onSelect: () => void
+  image?: {
+    src: string
+    alt: string
+  }
 }
 
 export const ListItemLevel: React.FC<Props> = ({ level, ...props }) => {

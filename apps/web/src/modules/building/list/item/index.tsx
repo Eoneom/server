@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { BuildingItem } from '#types'
+import { buildingImageSrc } from '#building/image'
 import { BuildingTranslations } from '#building/translations'
 import { ListItemLevel } from '#ui/list/item/level'
 import { useAppDispatch } from '#store/type'
@@ -19,6 +20,10 @@ export const BuildingListItem: React.FC<Props> = ({ buildingItem, active }) => {
     name={name}
     active={active}
     level={buildingItem.level}
+    image={{
+      src: buildingImageSrc(buildingItem.code),
+      alt: '',
+    }}
     onSelect={() => dispatch(getBuilding(buildingItem.code))}
   />
 }
