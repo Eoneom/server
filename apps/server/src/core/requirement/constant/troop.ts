@@ -29,5 +29,23 @@ export const TroopRequirement: Record<TroopCode, RequirementValue> = {
       }
     ],
     technologies: []
+  },
+  [TroopCode.FARMER]: {
+    buildings: [
+      {
+        code: BuildingCode.CLONING_FACTORY,
+        level: 3
+      }
+    ],
+    technologies: []
+  },
+  [TroopCode.RECYCLER]: {
+    buildings: [
+      {
+        code: BuildingCode.CLONING_FACTORY,
+        level: 3
+      }
+    ],
+    technologies: []
   }
 }

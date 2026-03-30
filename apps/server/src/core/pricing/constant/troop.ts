@@ -19,5 +19,15 @@ export const troop_costs: Record<TroopCode, CountCosts> = {
     plastic: 3000,
     mushroom: 2000,
     duration: 240
+  },
+  [TroopCode.FARMER]: {
+    plastic: 1000,
+    mushroom: 2000,
+    duration: 100
+  },
+  [TroopCode.RECYCLER]: {
+    plastic: 2000,
+    mushroom: 1000,
+    duration: 100
   }
 }

@@ -21,5 +21,15 @@ export const TroopTranslations: Record<TroopCode, TroopTranslation> = {
     name: 'Transporteur léger',
     description: '',
     effect: ''
+  },
+  [TroopCode.FARMER]: {
+    name: 'Fermier',
+    description: 'Unité spécialisée dans la production de champignons sur les avant postes.',
+    effect: 'Récolte des champignons.'
+  },
+  [TroopCode.RECYCLER]: {
+    name: 'Recycleur',
+    description: 'Unité dédiée à la récupération et à la valorisation du plastique sur les avant postes.',
+    effect: 'Récolte du plastique.'
   }
 }

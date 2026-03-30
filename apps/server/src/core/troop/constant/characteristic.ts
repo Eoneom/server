@@ -17,5 +17,13 @@ export const troop_characteristics: Record<TroopCode, TroopCharacteristic> = {
   [TroopCode.LIGHT_TRANSPORTER]: {
     speed: 1,
     transport_capacity: 10000
+  },
+  [TroopCode.FARMER]: {
+    speed: 1,
+    transport_capacity: 200
+  },
+  [TroopCode.RECYCLER]: {
+    speed: 1,
+    transport_capacity: 200
   }
 }
