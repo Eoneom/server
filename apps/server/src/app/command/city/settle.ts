@@ -4,6 +4,7 @@ import { BuildingService } from '#core/building/service'
 import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { CityService } from '#core/city/service'
+import { OutpostType } from '#core/outpost/constant/type'
 import { OutpostError } from '#core/outpost/error'
 import { TroopCode } from '#core/troop/constant/code'
 import { TroopService } from '#core/troop/service'
@@ -43,6 +44,10 @@ export async function citySettle({
 
   if (!outpost.isOwnedBy(player_id)) {
     throw new Error(OutpostError.NOT_OWNER)
+  }
+
+  if (outpost.type === OutpostType.PERMANENT) {
+    throw new Error(CityError.CANNOT_SETTLE_ON_PERMANENT_OUTPOST)
   }
 
   if (does_city_exist) {

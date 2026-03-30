@@ -4,6 +4,10 @@ import {
   OutpostGetResponse
 } from './get'
 import { OutpostListResponse } from './list'
+import {
+  OutpostSetPermanentRequest,
+  OutpostSetPermanentResponse
+} from './set-permanent'
 
 export class OutpostEndpoint {
   private fetcher: Fetcher
@@ -18,5 +22,12 @@ export class OutpostEndpoint {
 
   list(token: string): Promise<OutpostListResponse> {
     return this.fetcher.get('/outpost', { token })
+  }
+
+  setPermanent(token: string, body: OutpostSetPermanentRequest): Promise<OutpostSetPermanentResponse> {
+    return this.fetcher.put('/outpost/permanent', {
+      token,
+      body
+    })
   }
 }

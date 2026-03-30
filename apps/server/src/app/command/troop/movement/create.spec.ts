@@ -180,4 +180,25 @@ describe('createTroopMovement', () => {
     assert.strictEqual(troopDelete.mock.calls.length, 0)
     assert.strictEqual(troopUpdateOne.mock.calls.length, 1)
   })
+
+  it('should not delete permanent outpost when cell is fully emptied', async () => {
+    const permanent_outpost = OutpostEntity.create({
+      id: 'outpost_id',
+      player_id,
+      cell_id,
+      type: OutpostType.PERMANENT,
+    })
+    searchByCell = jest.fn().mockResolvedValue(permanent_outpost)
+    repository.outpost = {
+      searchByCell,
+      delete: outpostDelete,
+    } as unknown as Repository['outpost']
+
+    const result = await callCreate([ { code: TroopCode.EXPLORER, count: 10 } ])
+
+    assert.strictEqual(result.deleted_outpost_id, undefined)
+    assert.strictEqual(outpostDelete.mock.calls.length, 0)
+    assert.strictEqual(troopDelete.mock.calls.length, 0)
+    assert.strictEqual(troopUpdateOne.mock.calls.length, 1)
+  })
 })

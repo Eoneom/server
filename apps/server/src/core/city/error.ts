@@ -5,5 +5,6 @@ export enum CityError {
   NOT_ENOUGH_SPACE = 'city:not-enough-space',
   NOT_OWNER = 'city:not-owner',
   LIMIT_REACHED = 'city:limit-reached',
-  NO_SETTLER_AVAILABLE = 'city:no-settler-available'
+  NO_SETTLER_AVAILABLE = 'city:no-settler-available',
+  CANNOT_SETTLE_ON_PERMANENT_OUTPOST = 'city:cannot-settle-on-permanent-outpost'
 }

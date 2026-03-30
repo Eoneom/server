@@ -35,4 +35,11 @@ export class OutpostEntity extends BaseEntity {
   isOwnedBy(player_id: string): boolean {
     return this.player_id === player_id
   }
+
+  setPermanent(): OutpostEntity {
+    return OutpostEntity.create({
+      ...this,
+      type: OutpostType.PERMANENT
+    })
+  }
 }

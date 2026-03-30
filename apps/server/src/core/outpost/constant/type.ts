@@ -1,3 +1,4 @@
 export enum OutpostType {
-  TEMPORARY = 'temporary'
+  TEMPORARY = 'temporary',
+  PERMANENT = 'permanent'
 }

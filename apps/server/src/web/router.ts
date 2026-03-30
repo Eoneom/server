@@ -26,6 +26,7 @@ import { worldGetSectorHandler } from '#web/handler/world/get-sector'
 import { technologyGetHandler } from '#web/handler/technology/get'
 import { outpostListHandler } from '#web/handler/outpost/list'
 import { outpostGetHandler } from '#web/handler/outpost/get'
+import { outpostSetPermanentHandler } from '#web/handler/outpost/set-permanent'
 import { communicationGetReportHandler } from '#web/handler/communication/report/get'
 import { communicationCountUnreadReportHandler } from '#web/handler/communication/report/count-unread'
 import { communicationMarkReportHandler } from '#web/handler/communication/report/mark'
@@ -81,6 +82,7 @@ export const router = (): Router => {
 
   r.get('/outpost', authMiddleware, outpostListHandler)
   r.get('/outpost/:outpost_id', authMiddleware, outpostGetHandler)
+  r.put('/outpost/permanent', authMiddleware, outpostSetPermanentHandler)
 
   r.get('/sector/:sector', authMiddleware, worldGetSectorHandler)
 

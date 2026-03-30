@@ -192,6 +192,24 @@ describe('citySettle', () => {
     )
   })
 
+  it('should prevent player from settling a city from permanent outpost', async () => {
+    repository.outpost.getById = jest.fn().mockResolvedValue(
+      OutpostEntity.create({
+        ...outpost,
+        type: OutpostType.PERMANENT
+      })
+    )
+
+    await assert.rejects(
+      () => citySettle({
+        outpost_id,
+        player_id,
+        city_name
+      }),
+      new RegExp(CityError.CANNOT_SETTLE_ON_PERMANENT_OUTPOST)
+    )
+  })
+
   it('should prevent player from settling a city when there is no settler available', async () => {
     repository.troop.getInCell = jest.fn().mockResolvedValue(
       TroopEntity.create({
