@@ -199,7 +199,7 @@ export const getMovement = createAppAsyncThunk('troop/movement/get', async (id: 
   return res.data
 })
 
-export const finishMovement = createAppAsyncThunk('troop/movement/finish', async (_, { dispatch, getState, rejectWithValue }) => {
+export const finishMovement = createAppAsyncThunk('troop/movement/finish', async (_, { getState, rejectWithValue }) => {
   const token = selectToken(getState())
   if (!token) {
     throw rejectWithValue('no token')
@@ -208,10 +208,5 @@ export const finishMovement = createAppAsyncThunk('troop/movement/finish', async
   const res = await client.troop.finishMovement(token)
   if (isError(res)) {
     throw rejectWithValue(res.error_code)
-  }
-
-  const isOutpostCreated = Boolean(res.data?.is_outpost_created)
-  if (isOutpostCreated) {
-    dispatch(listOutposts())
   }
 })

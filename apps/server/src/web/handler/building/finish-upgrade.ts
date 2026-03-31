@@ -23,7 +23,7 @@ export const buildingFinishUpgradeHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await sagaFinishUpgrade({
+    void sagaFinishUpgrade({
       player_id,
       city_id
     })

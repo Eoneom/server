@@ -20,11 +20,16 @@ export type TroopMovementFinishedPayload = {
   player_id: string
 }
 
+export type OutpostCreatedPayload = {
+  player_id: string
+}
+
 export type AppEventMap = {
   [AppEvent.CityResourcesGathered]: CityResourcesGatheredPayload
   [AppEvent.BuildingUpgradeFinished]: BuildingUpgradeFinishedPayload
   [AppEvent.TechnologyResearchFinished]: TechnologyResearchFinishedPayload
   [AppEvent.TroopMovementFinished]: TroopMovementFinishedPayload
+  [AppEvent.OutpostCreated]: OutpostCreatedPayload
 }
 
 export class AppEventBus extends EventEmitter {

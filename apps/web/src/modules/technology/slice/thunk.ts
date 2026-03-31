@@ -74,7 +74,7 @@ export const researchTechnology = createAppAsyncThunk('technology/research', asy
   dispatch(refreshCity())
 })
 
-export const finishResearch = createAppAsyncThunk('technology/finish', async (_, { getState, dispatch, rejectWithValue }) => {
+export const finishResearch = createAppAsyncThunk('technology/finish', async (_, { getState, rejectWithValue }) => {
   const token = selectToken(getState())
   if (!token) {
     return

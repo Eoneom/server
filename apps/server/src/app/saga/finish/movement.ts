@@ -9,11 +9,11 @@ import { AppEvent } from '#core/events'
 
 export const sagaFinishMovement = async ({ player_id }: {
   player_id: string
-}): Promise<{ is_outpost_created: boolean }> => {
+}): Promise<void> => {
   const key = `finish-movement-${player_id}`
   const lock = Factory.getLock()
   if (lock.has(key)) {
-    return { is_outpost_created: false }
+    return
   }
 
   lock.set(key)
@@ -32,9 +32,11 @@ export const sagaFinishMovement = async ({ player_id }: {
     Factory.getEventBus().emit(AppEvent.TroopMovementFinished, { player_id })
   }
 
-  lock.delete(key)
+  if (is_outpost_created) {
+    Factory.getEventBus().emit(AppEvent.OutpostCreated, { player_id })
+  }
 
-  return { is_outpost_created }
+  lock.delete(key)
 }
 
 const finishMovement = async ({

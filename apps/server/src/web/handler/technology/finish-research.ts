@@ -12,7 +12,7 @@ export const technologyFinishResearchHandler = async (
 ) => {
   try {
     const player_id = getPlayerIdFromContext(res)
-    await finishTechnologyResearch({ player_id })
+    void finishTechnologyResearch({ player_id })
 
     return res.json({ status: 'ok' })
   } catch (err) {
