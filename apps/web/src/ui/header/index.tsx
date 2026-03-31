@@ -21,7 +21,7 @@ export const Header: React.FC = () => {
         <HeaderTitle to={to} text={text} />
       </div>
       <div className="app-header__resources">
-        <HeaderResources city={city} />
+        <HeaderResources city={city} outpost={outpost} />
       </div>
     </header>
   )

@@ -1,7 +1,8 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 
-import type { City } from '#types'
+import type { City, Outpost } from '#types'
+import { OutpostType } from '@eoneom/api-client'
 
 import { HeaderResources } from './index'
 
@@ -22,16 +23,36 @@ const minimalCity = (overrides: Partial<City> = {}): City => ({
   ...overrides,
 })
 
+const minimalOutpost = (overrides: Partial<Outpost> = {}): Outpost => ({
+  id: 'out-1',
+  coordinates: { sector: 5, x: 6, y: 7 },
+  type: OutpostType.TEMPORARY,
+  plastic: 42,
+  mushroom: 13,
+  ...overrides,
+})
+
 describe('HeaderResources', () => {
-  it('renders empty list without city', () => {
-    render(<HeaderResources city={null} />)
+  it('renders empty list without city or outpost', () => {
+    render(<HeaderResources city={null} outpost={null} />)
     expect(screen.getByRole('list')).toBeInTheDocument()
     expect(screen.queryAllByRole('listitem')).toHaveLength(0)
   })
 
   it('renders two resource rows with progress bars when city is set', () => {
-    render(<HeaderResources city={minimalCity()} />)
+    render(<HeaderResources city={minimalCity()} outpost={null} />)
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
+    expect(screen.getAllByRole('progressbar')).toHaveLength(2)
+  })
+
+  it('renders two resource rows without progress bars when outpost is set', () => {
+    render(<HeaderResources city={null} outpost={minimalOutpost()} />)
+    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+    expect(screen.queryAllByRole('progressbar')).toHaveLength(0)
+  })
+
+  it('prefers city over outpost', () => {
+    render(<HeaderResources city={minimalCity()} outpost={minimalOutpost()} />)
     expect(screen.getAllByRole('progressbar')).toHaveLength(2)
   })
 })

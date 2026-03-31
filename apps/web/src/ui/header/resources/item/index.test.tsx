@@ -12,6 +12,18 @@ describe('HeaderResourcesItem', () => {
     icon: <span aria-hidden>icon</span>,
   }
 
+  it('does not render a progress bar when warehouse_capacity is omitted', () => {
+    render(
+      <ul>
+        <HeaderResourcesItem
+          value={50}
+          icon={<span aria-hidden>icon</span>}
+        />
+      </ul>,
+    )
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
+  })
+
   it('sets progress max to warehouse_capacity', () => {
     render(
       <ul>

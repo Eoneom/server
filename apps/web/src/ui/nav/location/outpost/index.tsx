@@ -29,11 +29,11 @@ export const NavLocationOutposts: React.FC<Props> = ({ outposts }) => {
   return (
     <section className="nav-location-section">
       <h3>Avant-postes</h3>
-      {Boolean(temporaries.length) && (
+      {Boolean(permanents.length) && (
         <>
-          <h5>Temporaires</h5>
+          <h5>Permanents</h5>
           <ul>
-            {temporaries.map(outpost => (
+            {permanents.map(outpost => (
               <NavLocationItem
                 key={outpost.id}
                 to={`/outpost/${outpost.id}`}
@@ -44,11 +44,11 @@ export const NavLocationOutposts: React.FC<Props> = ({ outposts }) => {
           </ul>
         </>
       )}
-      {Boolean(permanents.length) && (
+      {Boolean(temporaries.length) && (
         <>
-          <h5>Permanents</h5>
+          <h5>Temporaires</h5>
           <ul>
-            {permanents.map(outpost => (
+            {temporaries.map(outpost => (
               <NavLocationItem
                 key={outpost.id}
                 to={`/outpost/${outpost.id}`}

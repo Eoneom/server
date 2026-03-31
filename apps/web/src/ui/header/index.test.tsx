@@ -122,4 +122,15 @@ describe('Header', () => {
     })
     expect(screen.getAllByRole('progressbar')).toHaveLength(2)
   })
+
+  it('with outpost, shows two resource items without progress bars', () => {
+    renderHeader({
+      outpost: {
+        outpost: minimalOutpost({ plastic: 100, mushroom: 200 }),
+        outposts: [],
+      },
+    })
+    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+    expect(screen.queryAllByRole('progressbar')).toHaveLength(0)
+  })
 })
