@@ -263,7 +263,7 @@ describe('finishTroopBaseMovement', () => {
     assert.strictEqual(delete_ids.length, 2)
     assert.strictEqual(delete_ids[0], movement_troop_id)
 
-    assert.strictEqual(troopUpdateOne.mock.calls.length, 3)
+    assert.strictEqual(troopUpdateOne.mock.calls.length, Object.values(TroopCode).length)
 
     const updated_troops = troopUpdateOne.mock.calls.map(([ t ]) => t)
     const updated_explorer = updated_troops.find(t => t.code === TroopCode.EXPLORER)

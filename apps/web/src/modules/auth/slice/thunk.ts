@@ -1,6 +1,8 @@
 import { resetToken, selectToken, setToken } from '#auth/slice'
 import { client } from '#helpers/api'
 import { isError } from '#helpers/assertion'
+import { wsClient } from '#helpers/websocket'
+import { registerCityWsListeners } from '#city/slice/ws-listener'
 import { createAppAsyncThunk } from '#store/type'
 
 export const retrieveStoredToken = createAppAsyncThunk('auth/retrieveStoredToken', async (_, { dispatch }) => {
@@ -10,6 +12,8 @@ export const retrieveStoredToken = createAppAsyncThunk('auth/retrieveStoredToken
   }
 
   dispatch(setToken(storedToken))
+  registerCityWsListeners()
+  wsClient.connect(storedToken)
 })
 
 export const login = createAppAsyncThunk('auth/login', async (playerName: string, { dispatch, rejectWithValue }) => {
@@ -28,6 +32,8 @@ export const login = createAppAsyncThunk('auth/login', async (playerName: string
   window.localStorage.setItem('token', token)
 
   dispatch(setToken(token))
+  registerCityWsListeners()
+  wsClient.connect(token)
 })
 
 export const logout = createAppAsyncThunk('auth/logout', async (_, { dispatch, getState, rejectWithValue }) => {
@@ -43,6 +49,7 @@ export const logout = createAppAsyncThunk('auth/logout', async (_, { dispatch, g
 
   window.localStorage.removeItem('token')
 
+  wsClient.disconnect()
   dispatch(resetToken())
 })
 

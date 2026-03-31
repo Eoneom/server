@@ -24,6 +24,7 @@
     "@types/node": "^18.7.13",
     "@types/node-cron": "^3.0.11",
     "@types/uuid": "^9.0.2",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "eslint": "^8.33.0",
@@ -42,7 +43,8 @@
     "mongoose": "~6.7.2",
     "node-cron": "^3.0.3",
     "pino": "^8.15.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.20.0"
   },
   "imports": {
     "#adapter/*": {

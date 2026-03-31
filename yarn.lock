@@ -2294,6 +2294,7 @@ __metadata:
     "@types/node": "npm:^18.7.13"
     "@types/node-cron": "npm:^3.0.11"
     "@types/uuid": "npm:^9.0.2"
+    "@types/ws": "npm:^8.18.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.51.0"
     "@typescript-eslint/parser": "npm:^5.51.0"
     body-parser: "npm:^1.20.1"
@@ -2309,6 +2310,7 @@ __metadata:
     ts-jest: "npm:^29.1.1"
     typescript: "npm:^4.7.4"
     uuid: "npm:^9.0.0"
+    ws: "npm:^8.20.0"
   languageName: unknown
   linkType: soft
 
@@ -4641,7 +4643,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8.5.5":
+"@types/ws@npm:^8.18.1, @types/ws@npm:^8.5.5":
   version: 8.18.1
   resolution: "@types/ws@npm:8.18.1"
   dependencies:
@@ -16855,7 +16857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.13.0":
+"ws@npm:^8.13.0, ws@npm:^8.20.0":
   version: 8.20.0
   resolution: "ws@npm:8.20.0"
   peerDependencies:

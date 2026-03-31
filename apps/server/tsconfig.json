@@ -16,6 +16,9 @@
       "#app/*": [
         "./src/app/*"
       ],
+      "@eoneom/api-client": [
+        "../../packages/api-client/src/index.ts"
+      ],
       "@eoneom/api-client/*": [
         "../../packages/api-client/*"
       ],

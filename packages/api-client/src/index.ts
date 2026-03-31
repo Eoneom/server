@@ -17,6 +17,7 @@ export { MovementAction } from '@server-core/troop/constant/movement-action'
 
 export * from './endpoints/shared/coordinates'
 export * from './endpoints'
+export * from './events'
 export * from './response'
 
 export class Client {

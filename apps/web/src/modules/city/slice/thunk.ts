@@ -6,7 +6,7 @@ import { selectToken } from '#auth/slice'
 import { listOutposts } from '#outpost/slice/thunk'
 import { resetOutpost, selectOutpostId } from '#outpost/slice'
 
-export const gatherCity = createAppAsyncThunk('city/gather', async (_, { getState, dispatch, rejectWithValue }) => {
+export const gatherCity = createAppAsyncThunk('city/gather', async (_, { getState, rejectWithValue }) => {
   const token = selectToken(getState())
   if (!token) {
     throw rejectWithValue('empty token')
@@ -18,8 +18,6 @@ export const gatherCity = createAppAsyncThunk('city/gather', async (_, { getStat
   }
 
   await client.city.gather(token, { city_id: cityId })
-
-  dispatch(getCity(cityId))
 })
 
 export const refreshCity = createAppAsyncThunk('city/refresh', async (_, { getState, dispatch, rejectWithValue }) => {

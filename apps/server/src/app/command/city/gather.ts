@@ -1,5 +1,6 @@
 import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
+import { AppEvent } from '#core/events'
 
 export interface CityGatherRequest {
   city_id: string
@@ -48,4 +49,6 @@ export async function cityGather({
   }
 
   await repository.resource_stock.updateOne(updated_stock)
+
+  Factory.getEventBus().emit(AppEvent.CityResourcesGathered, { city_id, player_id })
 }

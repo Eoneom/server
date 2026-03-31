@@ -4,10 +4,12 @@ import { AppLogger } from '#app/port/logger'
 import { loggerAdapter } from '#adapter/logger'
 import { Lock } from '#app/port/lock'
 import { LockInMemory } from '#adapter/lock'
+import { AppEventBus } from '#app/event-bus'
 
 export class Factory {
   private static repository: Repository
   private static lock: Lock
+  private static eventBus: AppEventBus
 
   static getRepository(): Repository {
     if (!this.repository) {
@@ -27,5 +29,13 @@ export class Factory {
     }
 
     return this.lock
+  }
+
+  static getEventBus(): AppEventBus {
+    if (!this.eventBus) {
+      this.eventBus = new AppEventBus({ logger: this.getLogger('event-bus') })
+    }
+
+    return this.eventBus
   }
 }

@@ -1,9 +1,11 @@
+import { createServer } from 'http'
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import { router } from '#web/router'
 import { errorMiddleware } from '#web/middleware/error'
 import { Factory } from '#adapter/factory'
+import { setupWebSocketServer } from '#web/ws'
 
 const http = express()
 const rawPort = Number.parseInt(
@@ -21,7 +23,10 @@ export const launchServer = () => {
   http.use(router())
   http.use(errorMiddleware)
 
-  http.listen(port, () => {
+  const server = createServer(http)
+  setupWebSocketServer(server)
+
+  server.listen(port, () => {
     logger.info('awesome server listening', { port })
   })
 }
