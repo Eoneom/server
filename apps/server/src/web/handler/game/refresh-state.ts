@@ -4,14 +4,14 @@ import {
   Response
 } from 'express'
 import {
-  CityGatherRequest, CityGatherResponse
-} from '@eoneom/api-client/src/endpoints/city/gather'
+  GameRefreshStateRequest, GameRefreshStateResponse
+} from '@eoneom/api-client/src/endpoints/game/refresh-state'
 import { getPlayerIdFromContext } from '#web/helpers'
-import { sagaGather } from '#app/saga/gather'
+import { sagaRefreshGameState } from '#app/saga/game/refresh-state'
 
-export const cityGatherHandler = async (
-  req: Request<CityGatherRequest>,
-  res: Response<CityGatherResponse>,
+export const gameRefreshStateHandler = async (
+  req: Request<GameRefreshStateRequest>,
+  res: Response<GameRefreshStateResponse>,
   next: NextFunction
 ) => {
   const city_id = req.body.city_id
@@ -24,7 +24,7 @@ export const cityGatherHandler = async (
 
   try {
     const player_id = getPlayerIdFromContext(res)
-    await sagaGather({
+    void sagaRefreshGameState({
       city_id,
       player_id
     })

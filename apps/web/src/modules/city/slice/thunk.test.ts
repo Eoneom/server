@@ -1,12 +1,10 @@
-import { gatherCity, getCity, refreshCity } from './thunk'
+import { getCity, refreshCity } from './thunk'
 
-const mockGather = jest.fn()
 const mockGet = jest.fn()
 
 jest.mock('#helpers/api', () => ({
   client: {
     city: {
-      gather: (...args: unknown[]) => mockGather(...args),
       get: (...args: unknown[]) => mockGet(...args),
     },
   },
@@ -19,29 +17,6 @@ const makeGetState = (overrides: { cityId?: string | null; token?: string | null
     city: { city: cityId ? { id: cityId } : null },
   })
 }
-
-describe('gatherCity', () => {
-  beforeEach(() => {
-    mockGather.mockReset()
-  })
-
-  it('calls client.city.gather with the token and cityId from state', async () => {
-    mockGather.mockResolvedValue({ status: 'ok' })
-    const dispatch = jest.fn()
-
-    await gatherCity()(dispatch, makeGetState() as never, undefined)
-
-    expect(mockGather).toHaveBeenCalledWith('my-token', { city_id: 'city-id' })
-  })
-
-  it('does not call the API when cityId is null', async () => {
-    const dispatch = jest.fn()
-
-    await gatherCity()(dispatch, makeGetState({ cityId: null }) as never, undefined)
-
-    expect(mockGather).not.toHaveBeenCalled()
-  })
-})
 
 describe('getCity', () => {
   beforeEach(() => {

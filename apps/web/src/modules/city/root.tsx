@@ -1,5 +1,6 @@
 import { selectCityId } from '#city/slice'
-import { gatherCity, getCity } from '#city/slice/thunk'
+import { getCity } from '#city/slice/thunk'
+import { refreshGameState } from '#game/refresh-state/thunk'
 import { useAppDispatch, useAppSelector } from '#store/type'
 import React, { useEffect } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
@@ -18,10 +19,10 @@ export const CityRoot: React.FC = () => {
   }, [cityIdFromParams])
 
   useEffect(() => {
-    dispatch(gatherCity())
+    dispatch(refreshGameState())
 
     const interval = setInterval(() => {
-      dispatch(gatherCity())
+      dispatch(refreshGameState())
     }, 3000)
 
     return () => clearInterval(interval)
