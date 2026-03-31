@@ -81,7 +81,7 @@ describe('Header', () => {
   it('shows city name and city link when city is set', () => {
     const city = minimalCity({ id: 'c-99', name: 'Metro' })
     renderHeader({
-      city: { city, cities: [] },
+      city: { city, cities: [], cities_count_limit: 0 },
     })
     const link = screen.getByRole('link', { name: 'Metro' })
     expect(link).toHaveAttribute('href', '/city/c-99')
@@ -100,7 +100,7 @@ describe('Header', () => {
 
   it('prefers city over outpost for title and link', () => {
     renderHeader({
-      city: { city: minimalCity({ id: 'c-1', name: 'OnlyCity' }), cities: [] },
+      city: { city: minimalCity({ id: 'c-1', name: 'OnlyCity' }), cities: [], cities_count_limit: 0 },
       outpost: {
         outpost: minimalOutpost({ id: 'o-9' }),
         outposts: [],
@@ -118,7 +118,7 @@ describe('Header', () => {
 
   it('with city, shows resource progress bars', () => {
     renderHeader({
-      city: { city: minimalCity(), cities: [] },
+      city: { city: minimalCity(), cities: [], cities_count_limit: 0 },
     })
     expect(screen.getAllByRole('progressbar')).toHaveLength(2)
   })

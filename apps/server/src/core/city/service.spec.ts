@@ -1,6 +1,12 @@
 import { CityService } from '#core/city/service'
 
 describe('CityService', () => {
+  describe('getCountLimit', () => {
+    it('returns the city count limit', () => {
+      expect(CityService.getCountLimit()).toBeGreaterThan(0)
+    })
+  })
+
   describe('computeWarehouseFullInSeconds', () => {
     it('returns 0 when no space remains', () => {
       expect(

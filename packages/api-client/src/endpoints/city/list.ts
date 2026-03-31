@@ -5,6 +5,7 @@ export interface CityListDataResponse {
     id: string
     name: string
   }[]
+  count_limit: number
 }
 
 export type CityListResponse = GenericResponse<CityListDataResponse>

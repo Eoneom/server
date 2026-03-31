@@ -58,7 +58,10 @@ export const listCities = createAppAsyncThunk('city/list', async (_, { getState,
     throw rejectWithValue('there is no city here 😬')
   }
 
-  return res.data?.cities ?? null
+  return {
+    cities: data.cities,
+    count_limit: data.count_limit
+  }
 })
 
 export const settleCity = createAppAsyncThunk('city/settle', async (name: string, { getState, dispatch, rejectWithValue }) => {

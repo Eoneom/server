@@ -1,11 +1,13 @@
-import { getCity, refreshCity } from './thunk'
+import { getCity, listCities, refreshCity } from './thunk'
 
 const mockGet = jest.fn()
+const mockList = jest.fn()
 
 jest.mock('#helpers/api', () => ({
   client: {
     city: {
       get: (...args: unknown[]) => mockGet(...args),
+      list: (...args: unknown[]) => mockList(...args),
     },
   },
 }))
@@ -17,6 +19,35 @@ const makeGetState = (overrides: { cityId?: string | null; token?: string | null
     city: { city: cityId ? { id: cityId } : null },
   })
 }
+
+const makeListGetState = (token = 'my-token') => () => ({
+  auth: { token },
+})
+
+describe('listCities', () => {
+  beforeEach(() => {
+    mockList.mockReset()
+  })
+
+  it('returns cities and count_limit on success', async () => {
+    const cities = [{ id: 'c1', name: 'Alpha' }]
+    mockList.mockResolvedValue({ status: 'ok', data: { cities, count_limit: 5 } })
+    const dispatch = jest.fn()
+
+    const result = await listCities()(dispatch, makeListGetState() as never, undefined)
+
+    expect(result.payload).toEqual({ cities, count_limit: 5 })
+  })
+
+  it('rejects with error_code when the response is an error', async () => {
+    mockList.mockResolvedValue({ status: 'nok', error_code: 'city:list_failed' })
+    const dispatch = jest.fn()
+
+    const result = await listCities()(dispatch, makeListGetState() as never, undefined)
+
+    expect(result.payload).toBe('city:list_failed')
+  })
+})
 
 describe('getCity', () => {
   beforeEach(() => {

@@ -13,7 +13,8 @@ const queryResult = {
   cities: [
     { id: 'c1', name: 'Aliceton' },
     { id: 'c2', name: 'Bobburg' }
-  ]
+  ],
+  count_limit: 5
 }
 
 describe('cityListHandler', () => {
@@ -58,7 +59,8 @@ describe('cityListHandler', () => {
         cities: [
           { id: 'c1', name: 'Aliceton' },
           { id: 'c2', name: 'Bobburg' }
-        ]
+        ],
+        count_limit: 5
       }
     })
   })

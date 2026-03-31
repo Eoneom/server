@@ -7,11 +7,13 @@ import { toast } from 'react-toastify'
 interface CityState {
   city: City | null,
   cities: CityItem[]
+  cities_count_limit: number
 }
 
 const initialState: CityState = {
   city: null,
   cities: [],
+  cities_count_limit: 0,
 }
 
 export const citySlice = createSlice({
@@ -25,7 +27,9 @@ export const citySlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(listCities.fulfilled, (state, action) => {
-        state.cities = action.payload ?? []
+        if (!action.payload) return
+        state.cities = action.payload.cities
+        state.cities_count_limit = action.payload.count_limit
       })
       .addCase(getCity.fulfilled, (state, action) => {
         state.city = action.payload
@@ -43,5 +47,6 @@ export const selectCityId = (state: RootState) => state.city.city?.id
 export const selectCityCoordinates = (state: RootState) => state.city.city?.coordinates
 
 export const selectAllCities = (state: RootState) => state.city.cities
+export const selectCityCountLimit = (state: RootState) => state.city.cities_count_limit
 
 export const citySliceReducer = citySlice.reducer

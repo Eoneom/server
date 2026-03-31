@@ -7,6 +7,10 @@ import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 
 export class CityService {
+  static getCountLimit(): number {
+    return CITY_COUNT_LIMIT
+  }
+
   static isLimitReached(cities_count: number): boolean {
     return cities_count >= CITY_COUNT_LIMIT
   }
