@@ -93,13 +93,45 @@ yarn workspace @eoneom/server test
 
 Additional scripts (lint, watch build, coverage) are defined only on `apps/server/package.json` — use `yarn workspace @eoneom/server <script>` for those.
 
+## Launch the web app (from root scripts)
+
+Root `package.json` exposes convenience scripts that delegate to the `@eoneom/web` workspace.
+
+Start the development server (hot-reload, no automatic browser open):
+
+```bash
+yarn web:start
+```
+
+The React app listens on **port 3001** and expects the API on **port 3000**.
+
+Build a production bundle:
+
+```bash
+yarn web:build
+```
+
+### Tests
+
+```bash
+yarn web:test
+```
+
+### Workspace equivalents
+
+```bash
+yarn workspace @eoneom/web start
+yarn workspace @eoneom/web build
+yarn workspace @eoneom/web test:ci
+```
+
+Additional scripts (coverage, eject) are defined only on `apps/web/package.json` — use `yarn workspace @eoneom/web <script>` for those.
+
 ## Other root scripts
 
-| Script            | Purpose                                      |
-| ----------------- | -------------------------------------------- |
-| `yarn client:build` | Build `@eoneom/api-client` (shared package) |
-| `yarn web:start`  | Start the React app (`@eoneom/web`, port **3001**) |
-| `yarn web:build`  | Production build of the web app            |
+| Script              | Purpose                                        |
+| ------------------- | ---------------------------------------------- |
+| `yarn client:build` | Build `@eoneom/api-client` (shared package)    |
 
 Typical full-stack local setup: MongoDB running, `yarn server:start` in one terminal, `yarn web:start` in another (API on 3000, UI on 3001).
 
@@ -158,6 +190,23 @@ Scheduled tasks that invoke app commands and queries.
 
 Small helpers and types that avoid heavy port indirection.
 
+### Event bus
+
+`apps/server/src/app/event-bus.ts` exposes `AppEventBus`, a typed `EventEmitter` singleton (accessed via `Factory.getEventBus()`). Commands and sagas emit domain events after persisting their side-effects; the Web layer subscribes to those events to push real-time updates to connected clients.
+
+Current events (`apps/server/src/core/events.ts`):
+
+| Event | Emitted by | Payload |
+| ----- | ---------- | ------- |
+| `city:resources-gathered` | `gather` command | `city_id`, `player_id` |
+| `building:upgrade-finished` | `finish-upgrade` command | `city_id`, `player_id` |
+| `technology:research-finished` | `finish-research` command | `player_id` |
+| `troop:movement-finished` | `finish/movement` saga | `player_id` |
+| `outpost:created` | `finish/movement` saga | `player_id` |
+| `outpost:deleted` | `troop/movement/create` command | `player_id`, `outpost_id` |
+
 ### Web
 
 `http` boots Express, middleware, and the router. **Handlers** map routes to command/query behavior.
+
+`ws.ts` opens a WebSocket server on the same port. After a player authenticates via the token query parameter, their connection is stored in memory. The server subscribes to all `AppEventBus` events and forwards the relevant payload to the matching player's socket. The React client (`apps/web/src/helpers/websocket.ts`) connects on login and dispatches Redux actions through per-module WS listeners (e.g. `registerTroopWsListeners`) when messages arrive.
