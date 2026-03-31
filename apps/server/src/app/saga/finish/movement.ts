@@ -5,6 +5,7 @@ import { sagaFinishBase } from '#app/saga/finish/base'
 import { sagaFinishExplore } from '#app/saga/finish/explore'
 import { MovementAction } from '#core/troop/constant/movement-action'
 import { TroopError } from '#core/troop/error'
+import { AppEvent } from '#core/events'
 
 export const sagaFinishMovement = async ({ player_id }: {
   player_id: string
@@ -25,6 +26,10 @@ export const sagaFinishMovement = async ({ player_id }: {
       movement_id
     })
     is_outpost_created ||= result.is_outpost_created
+  }
+
+  if (movement_ids.length > 0) {
+    Factory.getEventBus().emit(AppEvent.TroopMovementFinished, { player_id })
   }
 
   lock.delete(key)

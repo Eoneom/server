@@ -1,6 +1,7 @@
 import { Factory } from '#adapter/factory'
 import { BuildingCode } from '#core/building/constant/code'
 import { CityError } from '#core/city/error'
+import { AppEvent } from '#core/events'
 import assert from 'assert'
 
 export interface BuildingFinishUpgradeRequest {
@@ -39,6 +40,8 @@ export async function finishBuildingUpgrade({
   const building = building_to_finish.finishUpgrade()
 
   await repository.building.updateOne(building)
+
+  Factory.getEventBus().emit(AppEvent.BuildingUpgradeFinished, { city_id, player_id })
 
   return {
     code: building.code,

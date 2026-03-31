@@ -42,4 +42,25 @@ export function setupWebSocketServer(server: Server): void {
       ws.send(JSON.stringify({ type: AppEvent.CityResourcesGathered, city_id }))
     }
   })
+
+  eventBus.on(AppEvent.BuildingUpgradeFinished, ({ city_id, player_id }) => {
+    const ws = connections.get(player_id)
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: AppEvent.BuildingUpgradeFinished, city_id }))
+    }
+  })
+
+  eventBus.on(AppEvent.TechnologyResearchFinished, ({ player_id }) => {
+    const ws = connections.get(player_id)
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: AppEvent.TechnologyResearchFinished }))
+    }
+  })
+
+  eventBus.on(AppEvent.TroopMovementFinished, ({ player_id }) => {
+    const ws = connections.get(player_id)
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: AppEvent.TroopMovementFinished }))
+    }
+  })
 }

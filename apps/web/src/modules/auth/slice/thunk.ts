@@ -3,6 +3,9 @@ import { client } from '#helpers/api'
 import { isError } from '#helpers/assertion'
 import { wsClient } from '#helpers/websocket'
 import { registerCityWsListeners } from '#city/slice/ws-listener'
+import { registerBuildingWsListeners } from '#building/slice/ws-listener'
+import { registerTechnologyWsListeners } from '#technology/slice/ws-listener'
+import { registerTroopWsListeners } from '#troop/slice/ws-listener'
 import { createAppAsyncThunk } from '#store/type'
 
 export const retrieveStoredToken = createAppAsyncThunk('auth/retrieveStoredToken', async (_, { dispatch }) => {
@@ -13,6 +16,9 @@ export const retrieveStoredToken = createAppAsyncThunk('auth/retrieveStoredToken
 
   dispatch(setToken(storedToken))
   registerCityWsListeners()
+  registerBuildingWsListeners()
+  registerTechnologyWsListeners()
+  registerTroopWsListeners()
   wsClient.connect(storedToken)
 })
 
@@ -33,6 +39,9 @@ export const login = createAppAsyncThunk('auth/login', async (playerName: string
 
   dispatch(setToken(token))
   registerCityWsListeners()
+  registerBuildingWsListeners()
+  registerTechnologyWsListeners()
+  registerTroopWsListeners()
   wsClient.connect(token)
 })
 

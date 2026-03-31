@@ -88,9 +88,6 @@ export const finishBuildingUpgrade = createAppAsyncThunk('building/finish', asyn
   if (buildingCode) {
     dispatch(getBuilding(buildingCode))
   }
-
-  dispatch(listBuildings())
-  dispatch(refreshCity())
 })
 
 export const cancelBuildingUpgrade = createAppAsyncThunk('building/cancel', async (_, { dispatch, getState, rejectWithValue }) => {

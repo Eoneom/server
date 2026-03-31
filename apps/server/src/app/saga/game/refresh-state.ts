@@ -6,6 +6,7 @@ import {
   isWarehouseBuildingCode
 } from '#core/building/helper'
 import { now } from '#shared/time'
+import { sagaFinishMovement } from '../finish/movement'
 
 export const sagaRefreshGameState = async ({
   player_id,
@@ -15,6 +16,9 @@ export const sagaRefreshGameState = async ({
   city_id: string
 }) => {
   await finishTechnologyResearch({ player_id })
+
+  await sagaFinishMovement({ player_id })
+
   const upgrade_result = await finishBuildingUpgrade({
     player_id,
     city_id

@@ -214,6 +214,4 @@ export const finishMovement = createAppAsyncThunk('troop/movement/finish', async
   if (isOutpostCreated) {
     dispatch(listOutposts())
   }
-
-  dispatch(listMovements())
 })

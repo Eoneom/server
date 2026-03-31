@@ -1,4 +1,5 @@
 import { Factory } from '#adapter/factory'
+import { AppEvent } from '#core/events'
 
 export interface FinishTechnologyResearchParams {
   player_id: string
@@ -18,4 +19,6 @@ export async function finishTechnologyResearch({
   }
 
   await repository.technology.updateOne(technology_to_finish.finishResearch())
+
+  Factory.getEventBus().emit(AppEvent.TechnologyResearchFinished, { player_id })
 }

@@ -84,6 +84,4 @@ export const finishResearch = createAppAsyncThunk('technology/finish', async (_,
   if (isError(res)) {
     throw rejectWithValue(res.error_code)
   }
-
-  dispatch(listTechnologies())
 })
