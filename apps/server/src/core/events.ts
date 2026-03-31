@@ -4,4 +4,5 @@ export enum AppEvent {
   TechnologyResearchFinished = 'technology:research-finished',
   TroopMovementFinished = 'troop:movement-finished',
   OutpostCreated = 'outpost:created',
+  OutpostDeleted = 'outpost:deleted',
 }

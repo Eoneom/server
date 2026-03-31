@@ -38,7 +38,7 @@ class WsClient {
     if (!this.handlers.has(type)) {
       this.handlers.set(type, [])
     }
-    this.handlers.get(type)!.push(handler as WsEventHandler)
+    this.handlers.get(type)?.push(handler as WsEventHandler)
   }
 }
 

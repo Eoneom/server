@@ -3,6 +3,7 @@ import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
 import { OutpostType } from '#core/outpost/constant/type'
 import { OutpostEntity } from '#core/outpost/entity'
+import { AppEvent } from '#core/events'
 import { TroopCode } from '#core/troop/constant/code'
 import { MovementAction } from '#core/troop/constant/movement-action'
 import { TroopEntity } from '#core/troop/entity'
@@ -75,6 +76,7 @@ describe('createTroopMovement', () => {
     }
 
     jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: jest.fn() } as any)
   })
 
   afterEach(() => {
@@ -159,6 +161,39 @@ describe('createTroopMovement', () => {
     assert.strictEqual(outpostDelete.mock.calls[0][0], outpost_id)
     assert.strictEqual(troopDelete.mock.calls[0][0], origin_troop.id)
     assert.strictEqual(troopUpdateOne.mock.calls.length, 0)
+  })
+
+  it('should emit OutpostDeleted event when temporary outpost is deleted', async () => {
+    const outpost_id = 'outpost_id'
+    const mockEmit = jest.fn()
+    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
+
+    const temporary_outpost = OutpostEntity.create({
+      id: outpost_id,
+      player_id,
+      cell_id,
+      type: OutpostType.TEMPORARY,
+    })
+    searchByCell = jest.fn().mockResolvedValue(temporary_outpost)
+    repository.outpost = {
+      searchByCell,
+      delete: outpostDelete,
+    } as unknown as Repository['outpost']
+
+    await callCreate([ { code: TroopCode.EXPLORER, count: 10 } ])
+
+    assert.strictEqual(mockEmit.mock.calls.length, 1)
+    assert.strictEqual(mockEmit.mock.calls[0][0], AppEvent.OutpostDeleted)
+    assert.deepStrictEqual(mockEmit.mock.calls[0][1], { player_id, outpost_id })
+  })
+
+  it('should not emit OutpostDeleted event when no outpost is deleted', async () => {
+    const mockEmit = jest.fn()
+    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
+
+    await callCreate([ { code: TroopCode.EXPLORER, count: 5 } ])
+
+    assert.strictEqual(mockEmit.mock.calls.length, 0)
   })
 
   it('should not delete outpost when temporary outpost remains garrisoned after partial move', async () => {

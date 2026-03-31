@@ -1,4 +1,5 @@
 import { Factory } from '#adapter/factory'
+import { AppEvent } from '#core/events'
 import { OutpostType } from '#core/outpost/constant/type'
 import { OutpostEntity } from '#core/outpost/entity'
 import { MovementAction } from '#core/troop/constant/movement-action'
@@ -40,8 +41,6 @@ export async function createTroopMovement({
     cell_id: origin_cell.id,
     player_id,
   })
-
-  const outpost = await repository.outpost.searchByCell({ cell_id: origin_cell.id })
 
   const have_enough_troops = TroopService.haveEnoughTroops({
     origin_troops,
@@ -91,6 +90,8 @@ export async function createTroopMovement({
     troops_to_delete: TroopEntity[]
   })
 
+  const outpost = await repository.outpost.searchByCell({ cell_id: origin_cell.id })
+
   if (outpost?.type === OutpostType.TEMPORARY && TroopService.areTroopsEmpty({ troops: updated_origin_troops })) {
     save = {
       type: 'delete',
@@ -127,6 +128,10 @@ export async function createTroopMovement({
   }
 
   await Promise.all(promises)
+
+  if (deleted_outpost_id) {
+    Factory.getEventBus().emit(AppEvent.OutpostDeleted, { player_id, outpost_id: deleted_outpost_id })
+  }
 
   return { deleted_outpost_id }
 }

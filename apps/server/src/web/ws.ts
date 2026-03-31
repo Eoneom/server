@@ -70,4 +70,11 @@ export function setupWebSocketServer(server: Server): void {
       ws.send(JSON.stringify({ type: AppEvent.OutpostCreated }))
     }
   })
+
+  eventBus.on(AppEvent.OutpostDeleted, ({ player_id, outpost_id }) => {
+    const ws = connections.get(player_id)
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: AppEvent.OutpostDeleted, outpost_id }))
+    }
+  })
 }

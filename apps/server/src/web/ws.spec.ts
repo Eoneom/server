@@ -136,4 +136,95 @@ describe('setupWebSocketServer', () => {
 
     expect(mockWs.send).not.toHaveBeenCalled()
   })
+
+  it('forwards BuildingUpgradeFinished event with city_id to the connected player WebSocket', async () => {
+    const player_id = 'player-4'
+    const city_id = 'city-2'
+    ;(authorizeAuth as jest.Mock).mockResolvedValue({ player_id })
+    const mockWs = makeMockWs(WebSocket.OPEN)
+
+    await connectionHandler(mockWs, makeReq('/?token=valid-token'))
+
+    const eventHandler = capturedEventListeners.get(AppEvent.BuildingUpgradeFinished)
+    eventHandler?.({ city_id, player_id })
+
+    expect(mockWs.send).toHaveBeenCalledWith(
+      JSON.stringify({ type: AppEvent.BuildingUpgradeFinished, city_id })
+    )
+  })
+
+  it('forwards TechnologyResearchFinished event to the connected player WebSocket', async () => {
+    const player_id = 'player-5'
+    ;(authorizeAuth as jest.Mock).mockResolvedValue({ player_id })
+    const mockWs = makeMockWs(WebSocket.OPEN)
+
+    await connectionHandler(mockWs, makeReq('/?token=valid-token'))
+
+    const eventHandler = capturedEventListeners.get(AppEvent.TechnologyResearchFinished)
+    eventHandler?.({ player_id })
+
+    expect(mockWs.send).toHaveBeenCalledWith(
+      JSON.stringify({ type: AppEvent.TechnologyResearchFinished })
+    )
+  })
+
+  it('forwards TroopMovementFinished event to the connected player WebSocket', async () => {
+    const player_id = 'player-6'
+    ;(authorizeAuth as jest.Mock).mockResolvedValue({ player_id })
+    const mockWs = makeMockWs(WebSocket.OPEN)
+
+    await connectionHandler(mockWs, makeReq('/?token=valid-token'))
+
+    const eventHandler = capturedEventListeners.get(AppEvent.TroopMovementFinished)
+    eventHandler?.({ player_id })
+
+    expect(mockWs.send).toHaveBeenCalledWith(
+      JSON.stringify({ type: AppEvent.TroopMovementFinished })
+    )
+  })
+
+  it('forwards OutpostCreated event to the connected player WebSocket', async () => {
+    const player_id = 'player-7'
+    ;(authorizeAuth as jest.Mock).mockResolvedValue({ player_id })
+    const mockWs = makeMockWs(WebSocket.OPEN)
+
+    await connectionHandler(mockWs, makeReq('/?token=valid-token'))
+
+    const eventHandler = capturedEventListeners.get(AppEvent.OutpostCreated)
+    eventHandler?.({ player_id })
+
+    expect(mockWs.send).toHaveBeenCalledWith(
+      JSON.stringify({ type: AppEvent.OutpostCreated })
+    )
+  })
+
+  it('forwards OutpostDeleted event with outpost_id to the connected player WebSocket', async () => {
+    const player_id = 'player-8'
+    const outpost_id = 'outpost-1'
+    ;(authorizeAuth as jest.Mock).mockResolvedValue({ player_id })
+    const mockWs = makeMockWs(WebSocket.OPEN)
+
+    await connectionHandler(mockWs, makeReq('/?token=valid-token'))
+
+    const eventHandler = capturedEventListeners.get(AppEvent.OutpostDeleted)
+    eventHandler?.({ player_id, outpost_id })
+
+    expect(mockWs.send).toHaveBeenCalledWith(
+      JSON.stringify({ type: AppEvent.OutpostDeleted, outpost_id })
+    )
+  })
+
+  it('does not forward an event to a different player WebSocket', async () => {
+    const player_id = 'player-9'
+    const other_player_id = 'player-10'
+    ;(authorizeAuth as jest.Mock).mockResolvedValue({ player_id })
+    const mockWs = makeMockWs(WebSocket.OPEN)
+
+    await connectionHandler(mockWs, makeReq('/?token=valid-token'))
+
+    const eventHandler = capturedEventListeners.get(AppEvent.CityResourcesGathered)
+    eventHandler?.({ city_id: 'city-1', player_id: other_player_id })
+
+    expect(mockWs.send).not.toHaveBeenCalled()
+  })
 })
