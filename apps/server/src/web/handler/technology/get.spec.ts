@@ -1,0 +1,79 @@
+import { Request, Response, NextFunction } from 'express'
+import { technologyGetHandler } from './get'
+import { TechnologyGetQuery } from '#query/technology/get'
+
+type MockRes = {
+  status: jest.Mock
+  json: jest.Mock
+  send: jest.Mock
+  locals: Record<string, unknown>
+}
+
+const queryResult = {
+  technology: {
+    id: 't1',
+    code: 'ARCHERY',
+    level: 2,
+    research_at: undefined,
+    research_started_at: undefined
+  },
+  cost: { resource: { plastic: 200, mushroom: 100 }, duration: 7200 },
+  requirement: { buildings: [], technologies: [] }
+}
+
+describe('technologyGetHandler', () => {
+  let req: Partial<Request>
+  let res: MockRes
+  let next: jest.Mock
+
+  beforeEach(() => {
+    req = { params: { city_id: 'c1', technology_code: 'ARCHERY' } }
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      locals: { player_id: 'p1' }
+    }
+    next = jest.fn()
+    jest.spyOn(TechnologyGetQuery.prototype, 'run').mockResolvedValue(queryResult as any)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('returns 400 when city_id is missing', async () => {
+    req.params = { technology_code: 'ARCHERY' }
+    await technologyGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not_found' })
+  })
+
+  it('returns 400 when technology_code is missing', async () => {
+    req.params = { city_id: 'c1' }
+    await technologyGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'technology_code:not_found' })
+  })
+
+  it('calls next with error when query throws', async () => {
+    const error = new Error('query error')
+    jest.spyOn(TechnologyGetQuery.prototype, 'run').mockRejectedValue(error)
+    await technologyGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
+    expect(next).toHaveBeenCalledWith(error)
+  })
+
+  it('returns technology data on success', async () => {
+    await technologyGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'ok',
+      data: {
+        id: 't1',
+        code: 'ARCHERY',
+        level: 2,
+        research_cost: { plastic: 200, mushroom: 100, duration: 7200 },
+        requirement: { buildings: [], technologies: [] }
+      }
+    })
+  })
+})
