@@ -1,13 +1,14 @@
-import { selectBuildings } from '#building/slice'
-import { useAppSelector } from '#store/type'
-import { selectTechnologies } from '#technology/slice'
+import { useParams } from 'react-router-dom'
+import { useListBuildings } from '#building/hooks'
+import { useListTechnologies } from '#technology/hooks'
 import { BuildingItem, TechnologyItem } from '#types'
 import { Requirement } from '@eoneom/api-client'
 import { useMemo } from 'react'
 
 export const useRequirement = ({ requirement }: { requirement: Requirement }) => {
-  const buildings = useAppSelector(selectBuildings)
-  const technologies = useAppSelector(selectTechnologies)
+  const { cityId } = useParams()
+  const { data: buildings = [] } = useListBuildings(cityId)
+  const { data: technologies = [] } = useListTechnologies()
 
   const isRequirementMet = useMemo(() => {
     return areRequirementsMet({ requirement, technologies, buildings })
@@ -25,7 +26,6 @@ const areRequirementsMet = ({
   buildings: BuildingItem[]
   technologies: TechnologyItem[]
 }): boolean => {
-
   const buildingRequirementMet = requirement.buildings.every(
     r => buildings.some(({ code, level }) => r.code === code && level >= r.level)
   )

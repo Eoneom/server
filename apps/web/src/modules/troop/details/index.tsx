@@ -7,30 +7,36 @@ import { LayoutDetailsContent } from '#ui/layout/details/content'
 import { Cost } from '#cost/index'
 import { hasEnoughResources } from '#city/helper'
 import { useRequirement } from '#requirement/hook'
-import { useAppSelector } from '#store/type'
-import { selectCity } from '#city/slice'
-import { selectTroop, selectTroopInProgress } from '#troop/slice'
+import { useGetCity } from '#city/hooks'
+import { useListCityTroops } from '#troop/hooks'
+import { Troop, TroopItem } from '#types'
 
-export const TroopDetails: React.FC = () => {
-  const city = useAppSelector(selectCity)
-  const troop = useAppSelector(selectTroop)
-  const inProgress = useAppSelector(selectTroopInProgress)
+type TroopWithRecruitment = TroopItem & { ongoing_recruitment: NonNullable<TroopItem['ongoing_recruitment']> }
+
+interface Props {
+  cityId: string | null
+  troop: Troop
+}
+
+export const TroopDetails: React.FC<Props> = ({ cityId, troop }) => {
+  const { data: city } = useGetCity(cityId)
+  const { data: troops = [] } = useListCityTroops(cityId)
   const [count, setCount] = useState(1)
-
-  if (!troop) {
-    return null
-  }
 
   const { name, description, effect } = TroopTranslations[troop.code]
   const numberCount = Number.isNaN(count) ? 1 : count
-  const plasticCost = numberCount*troop.cost.plastic
-  const mushroomCost = numberCount*troop.cost.mushroom
+  const plasticCost = numberCount * troop.cost.plastic
+  const mushroomCost = numberCount * troop.cost.mushroom
 
   const { isRequirementMet } = useRequirement({ requirement: troop.requirement })
 
+  const inProgress = troops.find(
+    (t): t is TroopWithRecruitment => Boolean(t.ongoing_recruitment)
+  )
+
   const canRecruit = !inProgress &&
     hasEnoughResources({
-      city,
+      city: city ?? null,
       cost: {
         plastic: plasticCost,
         mushroom: mushroomCost
@@ -44,6 +50,8 @@ export const TroopDetails: React.FC = () => {
       <p>{effect}</p>
 
       <TroopDetailsRecruit
+        cityId={cityId}
+        troop={troop}
         canRecruit={canRecruit}
         count={count}
         onChange={value => setCount(value)}
@@ -56,7 +64,7 @@ export const TroopDetails: React.FC = () => {
       <Cost
         plastic={plasticCost}
         mushroom={mushroomCost}
-        duration={numberCount*troop.cost.duration}
+        duration={numberCount * troop.cost.duration}
       />
     </aside>
   </>

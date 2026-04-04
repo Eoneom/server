@@ -9,6 +9,7 @@ const webSrc = path.join(__dirname, 'src')
 const jestHashAliases: Record<string, string> = {
   '^#helpers/(.*)$': `${webSrc}/helpers/$1`,
   '^#hook/(.*)$': `${webSrc}/hook/$1`,
+  '^#location/(.*)$': `${webSrc}/modules/location/$1`,
   '^#auth/(.*)$': `${webSrc}/modules/auth/$1`,
   '^#building/(.*)$': `${webSrc}/modules/building/$1`,
   '^#city/(.*)$': `${webSrc}/modules/city/$1`,
@@ -19,7 +20,6 @@ const jestHashAliases: Record<string, string> = {
   '^#movement/(.*)$': `${webSrc}/modules/movement/$1`,
   '^#outpost/(.*)$': `${webSrc}/modules/outpost/$1`,
   '^#requirement/(.*)$': `${webSrc}/modules/requirement/$1`,
-  '^#store/(.*)$': `${webSrc}/store/$1`,
   '^#technology/(.*)$': `${webSrc}/modules/technology/$1`,
   '^#troop/(.*)$': `${webSrc}/modules/troop/$1`,
   '^#types$': `${webSrc}/types/index.ts`,
@@ -80,6 +80,7 @@ module.exports = {
     alias: {
       '#helpers': path.resolve(__dirname, 'src/helpers'),
       '#hook': path.resolve(__dirname, 'src/hook'),
+      '#location': path.resolve(__dirname, 'src/modules/location'),
       '#auth': path.resolve(__dirname, 'src/modules/auth'),
       '#building': path.resolve(__dirname, 'src/modules/building'),
       '#city': path.resolve(__dirname, 'src/modules/city'),
@@ -90,7 +91,6 @@ module.exports = {
       '#movement': path.resolve(__dirname, 'src/modules/movement'),
       '#outpost': path.resolve(__dirname, 'src/modules/outpost'),
       '#requirement': path.resolve(__dirname, 'src/modules/requirement'),
-      '#store': path.resolve(__dirname, 'src/store'),
       '#technology': path.resolve(__dirname, 'src/modules/technology'),
       '#troop': path.resolve(__dirname, 'src/modules/troop'),
       '#types': path.resolve(__dirname, 'src/types'),

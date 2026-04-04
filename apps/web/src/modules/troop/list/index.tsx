@@ -1,24 +1,30 @@
 import React, { useMemo } from 'react'
+
 import { TroopListItem } from '#troop/list/item'
 import { TroopListInProgress } from '#troop/list/in-progress'
 import { List } from '#ui/list'
-import { useAppSelector } from '#store/type'
-import { selectTroop, selectTroops } from '#troop/slice'
+import { useListCityTroops } from '#troop/hooks'
 
-export const TroopList: React.FC = () => {
-  const troops = useAppSelector(selectTroops)
-  const selectedTroop = useAppSelector(selectTroop)
+interface Props {
+  cityId: string | null
+  selectedTroopId: string | null
+  onSelect: (id: string) => void
+}
+
+export const TroopList: React.FC<Props> = ({ cityId, selectedTroopId, onSelect }) => {
+  const { data: troops = [] } = useListCityTroops(cityId)
 
   const items = useMemo(() => {
     return troops.map(troop => <TroopListItem
-      active={selectedTroop?.code === troop.code}
+      active={selectedTroopId === troop.id}
       key={troop.id}
       troop={troop}
+      onSelect={onSelect}
     />)
-  }, [selectedTroop?.code, troops])
+  }, [selectedTroopId, troops, onSelect])
 
   return <List
-    inProgress={<TroopListInProgress />}
+    inProgress={<TroopListInProgress cityId={cityId} />}
     items={items}
   />
 }

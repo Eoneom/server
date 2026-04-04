@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { BuildingCode } from '@eoneom/api-client'
 
 import { BuildingListItem } from '#building/list/item'
 import { BuildingTranslations } from '#building/translations'
@@ -6,24 +7,32 @@ import { Button } from '#ui/button'
 import { CountdownProgress } from '#ui/countdown-progress'
 import { List } from '#ui/list'
 import { useCountdownProgress } from '#hook/countdown-progress'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { cancelBuildingUpgrade, finishBuildingUpgrade } from '#building/slice/thunk'
-import { selectBuilding, selectBuildingInProgress, selectBuildings } from '#building/slice'
+import { useListBuildings, useFinishBuildingUpgrade, useCancelBuildingUpgrade } from '#building/hooks'
+import { BuildingItem } from '#types'
 
-export const BuildingList: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const inProgress = useAppSelector(selectBuildingInProgress)
-  const building = useAppSelector(selectBuilding)
-  const buildings = useAppSelector(selectBuildings)
+interface Props {
+  cityId: string | null
+  selectedCode: BuildingCode | null
+  onSelect: (code: BuildingCode) => void
+}
+
+export const BuildingList: React.FC<Props> = ({ cityId, selectedCode, onSelect }) => {
+  const { data: buildings = [] } = useListBuildings(cityId)
+  const finishUpgrade = useFinishBuildingUpgrade(cityId)
+  const cancelUpgrade = useCancelBuildingUpgrade(cityId)
+
+  const inProgress = buildings.find(
+    (b): b is Extract<BuildingItem, { upgrade_at: number }> => 'upgrade_at' in b
+  )
 
   const { remainingSeconds, elapsedProgress, reset } = useCountdownProgress({
-    onDone: () => dispatch(finishBuildingUpgrade()),
+    onDone: () => finishUpgrade.mutate(),
     endAt: inProgress?.upgrade_at,
     startAt: inProgress?.upgrade_started_at
   })
 
   const handleCancel = () => {
-    dispatch(cancelBuildingUpgrade())
+    cancelUpgrade.mutate()
     reset()
   }
 
@@ -38,11 +47,12 @@ export const BuildingList: React.FC = () => {
 
   const items = useMemo(() => buildings.map(buildingItem =>
     <BuildingListItem
-      active={building?.code === buildingItem.code}
+      active={buildingItem.code === selectedCode}
       key={buildingItem.id}
       buildingItem={buildingItem}
+      onSelect={onSelect}
     />
-  ), [building?.code, buildings])
+  ), [selectedCode, buildings, onSelect])
 
   return <List
     inProgress={inProgressComponent}

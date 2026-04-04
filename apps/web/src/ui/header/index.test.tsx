@@ -1,20 +1,14 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { Provider } from 'react-redux'
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { render, screen, act } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
-
-import { authSliceReducer } from '#auth/slice'
-import { buildingSliceReducer } from '#building/slice'
-import { citySliceReducer } from '#city/slice'
-import { reportSliceReducer } from '#communication/report/slice'
-import { outpostSliceReducer } from '#outpost/slice'
-import { technologySliceReducer } from '#technology/slice'
-import { troopSliceReducer } from '#troop/slice'
-import type { RootState } from '#store/index'
-import type { City } from '#types'
-import type { Outpost } from '#types'
 import { OutpostType } from '@server-core/outpost/constant/type'
+
+import type { City, Outpost } from '#types'
+import { AuthProvider } from '#auth/context'
+import { LocationProvider, useLocation } from '#location/context'
+import { cityKeys } from '#city/hooks'
+import { outpostKeys } from '#outpost/hooks'
 
 import { Header } from './index'
 
@@ -44,31 +38,46 @@ const minimalOutpost = (overrides: Partial<Outpost> = {}): Outpost => ({
   ...overrides,
 })
 
-const headerTestRootReducer = combineReducers({
-  auth: authSliceReducer,
-  building: buildingSliceReducer,
-  city: citySliceReducer,
-  outpost: outpostSliceReducer,
-  report: reportSliceReducer,
-  technology: technologySliceReducer,
-  troop: troopSliceReducer,
-})
-
-function createTestStore(partial?: Partial<RootState>) {
-  return configureStore({
-    reducer: headerTestRootReducer,
-    preloadedState: partial,
-  })
+const SetLocation: React.FC<{ cityId?: string; outpostId?: string }> = ({ cityId, outpostId }) => {
+  const { setCity, setOutpost } = useLocation()
+  React.useLayoutEffect(() => {
+    if (cityId) setCity(cityId)
+    else if (outpostId) setOutpost(outpostId)
+  }, [cityId, outpostId, setCity, setOutpost])
+  return null
 }
 
-function renderHeader(partial?: Partial<RootState>) {
-  const store = createTestStore(partial)
+interface RenderOptions {
+  city?: City
+  outpost?: Outpost
+  cityId?: string
+  outpostId?: string
+}
+
+function renderHeader({ city, outpost, cityId, outpostId }: RenderOptions = {}) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+
+  if (city && cityId) {
+    queryClient.setQueryData(cityKeys.detail(cityId), city)
+  }
+  if (outpost && outpostId) {
+    queryClient.setQueryData(outpostKeys.detail(outpostId), outpost)
+  }
+
   return render(
-    <Provider store={store}>
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    </Provider>,
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <LocationProvider>
+          {cityId && <SetLocation cityId={cityId} />}
+          {outpostId && <SetLocation outpostId={outpostId} />}
+          <MemoryRouter>
+            <Header />
+          </MemoryRouter>
+        </LocationProvider>
+      </AuthProvider>
+    </QueryClientProvider>,
   )
 }
 
@@ -78,58 +87,48 @@ describe('Header', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Eoneom' })).toBeInTheDocument()
   })
 
-  it('shows city name and city link when city is set', () => {
+  it('shows city name and city link when city is set', async () => {
     const city = minimalCity({ id: 'c-99', name: 'Metro' })
-    renderHeader({
-      city: { city, cities: [], cities_count_limit: 0 },
-    })
+    renderHeader({ city, cityId: 'c-99' })
+    await act(async () => {})
     const link = screen.getByRole('link', { name: 'Metro' })
     expect(link).toHaveAttribute('href', '/city/c-99')
   })
 
-  it('shows formatted coordinates and outpost link when only outpost is set', () => {
-    renderHeader({
-      outpost: {
-        outpost: minimalOutpost({ id: 'o-42', coordinates: { sector: 3, x: 1, y: 9 } }),
-        outposts: [],
-      },
-    })
+  it('shows formatted coordinates and outpost link when only outpost is set', async () => {
+    const outpost = minimalOutpost({ id: 'o-42', coordinates: { sector: 3, x: 1, y: 9 } })
+    renderHeader({ outpost, outpostId: 'o-42' })
+    await act(async () => {})
     const link = screen.getByRole('link', { name: '3.1.9' })
     expect(link).toHaveAttribute('href', '/outpost/o-42')
   })
 
-  it('prefers city over outpost for title and link', () => {
-    renderHeader({
-      city: { city: minimalCity({ id: 'c-1', name: 'OnlyCity' }), cities: [], cities_count_limit: 0 },
-      outpost: {
-        outpost: minimalOutpost({ id: 'o-9' }),
-        outposts: [],
-      },
-    })
+  it('prefers city over outpost for title and link', async () => {
+    const city = minimalCity({ id: 'c-1', name: 'OnlyCity' })
+    renderHeader({ city, cityId: 'c-1' })
+    await act(async () => {})
     expect(screen.getByRole('link', { name: 'OnlyCity' })).toHaveAttribute('href', '/city/c-1')
   })
 
-  it('when neither city nor outpost, title link is empty and href is /outpost/undefined', () => {
+  it('when neither city nor outpost, title link is empty and href is /outpost/undefined', async () => {
     renderHeader()
+    await act(async () => {})
     const link = screen.getByRole('link')
     expect(link).toHaveTextContent('')
     expect(link).toHaveAttribute('href', '/outpost/undefined')
   })
 
-  it('with city, shows resource progress bars', () => {
-    renderHeader({
-      city: { city: minimalCity(), cities: [], cities_count_limit: 0 },
-    })
+  it('with city, shows resource progress bars', async () => {
+    const city = minimalCity()
+    renderHeader({ city, cityId: city.id })
+    await act(async () => {})
     expect(screen.getAllByRole('progressbar')).toHaveLength(2)
   })
 
-  it('with outpost, shows two resource items without progress bars', () => {
-    renderHeader({
-      outpost: {
-        outpost: minimalOutpost({ plastic: 100, mushroom: 200 }),
-        outposts: [],
-      },
-    })
+  it('with outpost, shows two resource items without progress bars', async () => {
+    const outpost = minimalOutpost({ plastic: 100, mushroom: 200 })
+    renderHeader({ outpost, outpostId: outpost.id })
+    await act(async () => {})
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
     expect(screen.queryAllByRole('progressbar')).toHaveLength(0)
   })

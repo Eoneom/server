@@ -1,24 +1,23 @@
+import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { BuildingCode } from '@eoneom/api-client'
+
 import { BuildingList } from '#building/list'
 import { BuildingDetails } from '#building/details'
 import { LayoutPage } from '#ui/layout/page'
-import React, { useEffect } from 'react'
-import { selectCityId } from '#city/slice'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { listTechnologies } from '#technology/slice/thunk'
-import { listBuildings } from '#building/slice/thunk'
-import { selectBuilding } from '#building/slice'
+import { useGetBuilding } from '#building/hooks'
+import { Building } from '#types'
 
 export const BuildingPage: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const cityId = useAppSelector(selectCityId)
-  const building = useAppSelector(selectBuilding)
+  const { cityId } = useParams()
+  const [selectedCode, setSelectedCode] = useState<BuildingCode | null>(null)
+  const { data: building } = useGetBuilding(cityId, selectedCode)
 
-  useEffect(() => {
-    dispatch(listBuildings())
-    dispatch(listTechnologies())
-  }, [cityId])
-
-  return <LayoutPage details={building && <BuildingDetails building={building}/>}>
-    <BuildingList />
+  return <LayoutPage details={building && <BuildingDetails building={building as Building} />}>
+    <BuildingList
+      cityId={cityId ?? null}
+      selectedCode={selectedCode}
+      onSelect={setSelectedCode}
+    />
   </LayoutPage>
 }

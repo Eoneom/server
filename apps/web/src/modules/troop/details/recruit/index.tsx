@@ -1,21 +1,28 @@
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectTroop, selectTroopInProgress } from '#troop/slice'
-import { recruitTroop } from '#troop/slice/thunk'
-import { Button } from '#ui/button'
 import React from 'react'
 
+import { useRecruitTroop, useListCityTroops } from '#troop/hooks'
+import { Button } from '#ui/button'
+import { Troop, TroopItem } from '#types'
+
+type TroopWithRecruitment = TroopItem & { ongoing_recruitment: NonNullable<TroopItem['ongoing_recruitment']> }
+
 interface Props {
+  cityId: string | null
+  troop: Troop
   count: number
   onChange: (count: number) => void
   canRecruit: boolean
 }
 
-export const TroopDetailsRecruit: React.FC<Props> = ({ onChange, count, canRecruit }) => {
-  const dispatch = useAppDispatch()
-  const inProgress = useAppSelector(selectTroopInProgress)
-  const troop = useAppSelector(selectTroop)
+export const TroopDetailsRecruit: React.FC<Props> = ({ cityId, troop, onChange, count, canRecruit }) => {
+  const { data: troops = [] } = useListCityTroops(cityId)
+  const recruit = useRecruitTroop(cityId)
 
-  if (inProgress || !troop) {
+  const inProgress = troops.find(
+    (t): t is TroopWithRecruitment => Boolean(t.ongoing_recruitment)
+  )
+
+  if (inProgress) {
     return null
   }
 
@@ -37,11 +44,11 @@ export const TroopDetailsRecruit: React.FC<Props> = ({ onChange, count, canRecru
       <Button
         disabled={!canRecruit}
         onClick={() => {
-          dispatch(recruitTroop({ code: troop.code, count }))
+          recruit.mutate({ code: troop.code, count })
           onChange(1)
         }}
       >
-          Recruter
+        Recruter
       </Button>
     </>
   )

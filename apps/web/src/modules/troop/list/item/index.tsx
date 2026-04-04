@@ -1,18 +1,17 @@
 import React from 'react'
+
 import { TroopItem } from '#types'
 import { troopImageSrc } from '#troop/image'
 import { TroopTranslations } from '#troop/translations'
 import { ListItemCount } from '#ui/list/item/count'
-import { useAppDispatch } from '#store/type'
-import { getTroop } from '#troop/slice/thunk'
 
 interface Props {
   active: boolean
   troop: TroopItem
+  onSelect: (id: string) => void
 }
 
-export const TroopListItem: React.FC<Props> = ({ active, troop }) => {
-  const dispatch = useAppDispatch()
+export const TroopListItem: React.FC<Props> = ({ active, troop, onSelect }) => {
   return <ListItemCount
     active={active}
     name={TroopTranslations[troop.code].name}
@@ -21,6 +20,6 @@ export const TroopListItem: React.FC<Props> = ({ active, troop }) => {
       src: troopImageSrc(troop.code),
       alt: '',
     }}
-    onSelect={() => dispatch(getTroop(troop.id))}
+    onSelect={() => onSelect(troop.id)}
   />
 }

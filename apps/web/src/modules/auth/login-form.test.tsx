@@ -1,16 +1,24 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { Provider } from 'react-redux'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { AuthProvider } from '#auth/context'
 
 import { AuthLoginForm } from './login-form'
-import { store } from '#store/index'
 
-const renderWithStore = (ui: React.ReactElement) =>
-  render(<Provider store={store}>{ui}</Provider>)
+const renderLoginForm = (ui: React.ReactElement) => {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        {ui}
+      </AuthProvider>
+    </QueryClientProvider>
+  )
+}
 
 describe('AuthLoginForm', () => {
   it('renders name field and submit', () => {
-    renderWithStore(<AuthLoginForm />)
+    renderLoginForm(<AuthLoginForm />)
 
     expect(screen.getByPlaceholderText('Nom')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Se connecter' })).toBeInTheDocument()

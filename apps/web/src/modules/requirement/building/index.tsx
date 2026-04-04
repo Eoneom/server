@@ -1,15 +1,17 @@
 import { Requirement } from '@eoneom/api-client'
 import React from 'react'
+import { useParams } from 'react-router-dom'
+
 import { BuildingTranslations } from '#building/translations'
-import { useAppSelector } from '#store/type'
-import { selectBuildings } from '#building/slice'
+import { useListBuildings } from '#building/hooks'
 
 interface Props {
   requirement: Requirement['buildings'][number]
 }
 
 export const RequirementBuilding: React.FC<Props> = ({ requirement }) => {
-  const buildings = useAppSelector(selectBuildings)
+  const { cityId } = useParams()
+  const { data: buildings = [] } = useListBuildings(cityId)
   const requiredBuildingLevel = buildings.find(building => building.code === requirement.code)?.level ?? 0
   const isMetClassName = requiredBuildingLevel >= requirement.level ? 'success' : 'danger'
 

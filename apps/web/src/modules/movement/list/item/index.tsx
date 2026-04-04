@@ -6,32 +6,29 @@ import { useTimer } from '#hook/timer'
 import { MovementActionLabels } from '#movement/translations'
 import { MovementItem } from '#types'
 import { getUrlPrefix } from '#helpers/url'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectCityId } from '#city/slice'
-import { countUnreadReports } from '#communication/report/slice/thunk'
-import { selectOutpostId } from '#outpost/slice'
-import { finishMovement } from '#troop/slice/thunk'
+import { useLocation } from '#location/context'
+import { useFinishMovement } from '#troop/hooks'
+import { useQueryClient } from '@tanstack/react-query'
+import { reportKeys } from '#communication/report/hooks'
 
 interface Props {
   movement: MovementItem
 }
 
 export const MovementListItem: React.FC<Props> = ({ movement }) => {
-  const dispatch = useAppDispatch()
-  const cityId = useAppSelector(selectCityId)
-  const outpostId = useAppSelector(selectOutpostId)
+  const { cityId, outpostId } = useLocation()
+  const finishMovement = useFinishMovement()
+  const queryClient = useQueryClient()
 
   const { remainingTime } = useTimer({
     onDone: async () => {
-      dispatch(finishMovement())
-
-      dispatch(countUnreadReports())
+      finishMovement.mutate()
+      queryClient.invalidateQueries({ queryKey: reportKeys.unreadCount })
     },
     doneAt: movement.arrive_at
   })
 
   const urlPrefix = getUrlPrefix({ cityId, outpostId })
-
   const actionLabel = MovementActionLabels[movement.action]
 
   return (

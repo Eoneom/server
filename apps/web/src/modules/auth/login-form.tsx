@@ -1,13 +1,11 @@
-import { selectToken } from '#auth/slice'
-import { login } from '#auth/slice/thunk'
-import { useAppDispatch, useAppSelector } from '#store/type'
 import React, { FormEvent, useState } from 'react'
 import { toast } from 'react-toastify'
 
+import { useLogin } from '#auth/hooks'
+
 export const AuthLoginForm: React.FC = () => {
   const [playerName, setPlayerName] = useState('')
-  const token = useAppSelector(selectToken)
-  const dispatch = useAppDispatch()
+  const { mutate: login } = useLogin()
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.stopPropagation()
@@ -18,11 +16,7 @@ export const AuthLoginForm: React.FC = () => {
       return
     }
 
-    dispatch(login(playerName))
-  }
-
-  if (token) {
-    return null
+    login(playerName)
   }
 
   return <form onSubmit={onSubmit}>

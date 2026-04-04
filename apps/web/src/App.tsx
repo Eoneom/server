@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
@@ -6,38 +6,21 @@ import { AuthLoginForm } from '#auth/login-form'
 import { Header } from '#ui/header'
 import { NavMenu } from '#ui/nav/menu'
 import { NavLocation } from '#ui/nav/location'
-import { useAppDispatch, useAppSelector } from './store/type'
-import { listCities } from '#city/slice/thunk'
-import { retrieveStoredToken } from '#auth/slice/thunk'
-import { selectToken } from '#auth/slice'
-import { countUnreadReports } from '#communication/report/slice/thunk'
-import { listOutposts } from '#outpost/slice/thunk'
-import { selectAllCities } from '#city/slice'
+import { useAuth } from '#auth/context'
+import { useInitStoredToken } from '#auth/hooks'
+import { useListCities } from '#city/hooks'
 
 const App: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const token = useAppSelector(selectToken)
-  const cities = useAppSelector(selectAllCities)
+  useInitStoredToken()
 
-  useEffect(() => {
-    dispatch(retrieveStoredToken())
-  }, [])
-
-  useEffect(() => {
-    if (!token) {
-      return
-    }
-
-    dispatch(listOutposts())
-    dispatch(listCities())
-    dispatch(countUnreadReports())
-  }, [token])
+  const { token } = useAuth()
+  const { data: citiesData } = useListCities()
 
   if (!token) {
     return <AuthLoginForm />
   }
 
-  if (!cities.length) {
+  if (!citiesData?.cities.length) {
     return <>Loading</>
   }
 

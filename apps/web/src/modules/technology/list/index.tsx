@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { TechnologyCode } from '@eoneom/api-client'
 
 import { TechnologyListItem } from '#technology/list/item'
 import { TechnologyTranslations } from '#technology/translations'
@@ -6,19 +7,25 @@ import { Button } from '#ui/button'
 import { CountdownProgress } from '#ui/countdown-progress'
 import { List } from '#ui/list'
 import { useCountdownProgress } from '#hook/countdown-progress'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectTechnologyInProgress, selectTechnologies, selectTechnology } from '#technology/slice'
-import { cancelTechnology, finishResearch } from '#technology/slice/thunk'
+import { useListTechnologies, useFinishResearch, useCancelTechnology } from '#technology/hooks'
+import { TechnologyItem } from '#types'
 
-export const TechnologyList: React.FC = () => {
-  const dispatch = useAppDispatch()
+interface Props {
+  selectedCode: TechnologyCode | null
+  onSelect: (code: TechnologyCode) => void
+}
 
-  const technology = useAppSelector(selectTechnology)
-  const technologies = useAppSelector(selectTechnologies)
-  const inProgress = useAppSelector(selectTechnologyInProgress)
+export const TechnologyList: React.FC<Props> = ({ selectedCode, onSelect }) => {
+  const { data: technologies = [] } = useListTechnologies()
+  const finishResearch = useFinishResearch()
+  const cancelTechnology = useCancelTechnology()
+
+  const inProgress = technologies.find(
+    (t): t is Extract<TechnologyItem, { research_at: number }> => 'research_at' in t
+  )
 
   const { remainingSeconds, elapsedProgress } = useCountdownProgress({
-    onDone: () => dispatch(finishResearch()),
+    onDone: () => finishResearch.mutate(),
     endAt: inProgress?.research_at,
     startAt: inProgress?.research_started_at
   })
@@ -29,16 +36,17 @@ export const TechnologyList: React.FC = () => {
       elapsedProgress={elapsedProgress}
       remainingSeconds={remainingSeconds}
     />
-    <Button onClick={() => dispatch(cancelTechnology())}>Annuler</Button>
+    <Button onClick={() => cancelTechnology.mutate()}>Annuler</Button>
   </>
 
   const items = useMemo(() => {
     return technologies.map(technologyItem => <TechnologyListItem
-      active={technologyItem.code === technology?.code}
+      active={technologyItem.code === selectedCode}
       key={technologyItem.id}
       technologyItem={technologyItem}
+      onSelect={onSelect}
     />)
-  }, [technology, technologies])
+  }, [selectedCode, technologies, onSelect])
 
   return <List
     inProgress={inProgressComponent}

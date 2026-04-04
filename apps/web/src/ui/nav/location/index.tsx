@@ -1,14 +1,16 @@
 import React from 'react'
 import { NavLocationCities } from '#ui/nav/location/city'
 import { NavLocationOutposts } from '#ui/nav/location/outpost'
-import { useAppSelector } from '#store/type'
-import { selectAllCities, selectCityCountLimit } from '#city/slice'
-import { selectOutposts } from '#outpost/slice'
+import { useListCities } from '#city/hooks'
+import { useListOutposts } from '#outpost/hooks'
 
 export const NavLocation: React.FC = () => {
-  const cities = useAppSelector(selectAllCities)
-  const cityCountLimit = useAppSelector(selectCityCountLimit)
-  const outposts = useAppSelector(selectOutposts)
+  const { data: citiesData } = useListCities()
+  const { data: outpostsData } = useListOutposts()
+
+  const cities = citiesData?.cities ?? []
+  const cityCountLimit = citiesData?.count_limit ?? 0
+  const outposts = outpostsData ?? []
 
   return <nav id="location">
     { Boolean(cities.length) && <NavLocationCities cities={cities} countLimit={cityCountLimit} /> }

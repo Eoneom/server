@@ -6,8 +6,7 @@ import {
   transformDecimals,
   transformHourlyEarnings
 } from '#helpers/transform'
-import { selectCity } from '#city/slice'
-import { useAppSelector } from '#store/type'
+import { useGetCity } from '#city/hooks'
 import { IconMushroom } from '#ui/icon/mushroom'
 import { IconPlastic } from '#ui/icon/plastic'
 
@@ -26,14 +25,14 @@ const warehouseFillPercent = (capacity: number, spaceRemaining: number): number 
 }
 
 export const CityPage: React.FC = () => {
-  const { cityId: cityIdFromParams } = useParams()
-  const city = useAppSelector(selectCity)
+  const { cityId } = useParams()
+  const { data: city } = useGetCity(cityId)
 
-  if (!cityIdFromParams) {
+  if (!cityId) {
     return null
   }
 
-  if (!city || city.id !== cityIdFromParams) {
+  if (!city || city.id !== cityId) {
     return (
       <section id="content" className="city-page">
         <p className="city-page__loading">Chargement…</p>

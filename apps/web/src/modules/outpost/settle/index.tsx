@@ -1,29 +1,29 @@
-import { useAppSelector } from '#store/type'
-import { selectTroops } from '#troop/slice'
 import { TroopCode } from '@eoneom/api-client'
 import React, { useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+import { useListOutpostTroops } from '#troop/hooks'
 
 interface Props {
   onSettle: (cityName: string) => void
 }
 
 export const OutpostSettle: React.FC<Props> = ({ onSettle }) => {
-  const [ cityName, setCityName ] = useState('')
-  const troops = useAppSelector(selectTroops)
+  const { outpostId } = useParams()
+  const [cityName, setCityName] = useState('')
+  const { data: troops = [] } = useListOutpostTroops(outpostId)
+
   const settler = useMemo(() => {
     return troops.find(troop => troop.code === TroopCode.SETTLER)
-  }, [ troops ])
+  }, [troops])
 
   const disabled = useMemo(() => {
     return (settler?.count ?? 0) === 0
-  }, [ settler ])
+  }, [settler])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!cityName) {
-      return
-    }
-
+    if (!cityName) return
     onSettle(cityName)
   }
 

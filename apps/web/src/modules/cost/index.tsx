@@ -1,12 +1,12 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 
 import { formatTime, transformDecimals } from '#helpers/transform'
 import { IconPlastic } from '#ui/icon/plastic'
 import { IconMushroom } from '#ui/icon/mushroom'
 import { ResourceItem } from '#ui/resource-item'
 import { IconDuration } from '#ui/icon/duration'
-import { useAppSelector } from '#store/type'
-import { selectCity } from '#city/slice'
+import { useGetCity } from '#city/hooks'
 
 interface Props {
   plastic: number
@@ -16,7 +16,9 @@ interface Props {
 }
 
 export const Cost: React.FC<Props> = ({ plastic, mushroom, duration, action }) => {
-  const city = useAppSelector(selectCity)
+  const { cityId } = useParams()
+  const { data: city } = useGetCity(cityId)
+
   const plasticClassName = plastic > (city?.plastic ?? 0) ? 'danger' : 'success'
   const mushroomClassName = mushroom > (city?.mushroom ?? 0) ? 'danger' : 'success'
 

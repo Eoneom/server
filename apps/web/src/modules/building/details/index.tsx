@@ -1,4 +1,5 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 
 import { Building } from '#types'
 import { BuildingTranslations } from '#building/translations'
@@ -7,15 +8,15 @@ import { LayoutDetailsContent } from '#ui/layout/details/content'
 import { Cost } from '#cost/index'
 import { BuildingDetailsMetadata } from '#building/details/metadata'
 import { BuildingDetailsUpgrade } from '#building/details/upgrade'
-import { useAppSelector } from '#store/type'
-import { selectCity } from '#city/slice'
+import { useGetCity } from '#city/hooks'
 
 interface Props {
   building: Building
 }
 
 export const BuildingDetails: React.FC<Props> = ({ building }) => {
-  const city = useAppSelector(selectCity)
+  const { cityId } = useParams()
+  const { data: city } = useGetCity(cityId)
   const { name, description, effect } = BuildingTranslations[building.code]
 
   return <>

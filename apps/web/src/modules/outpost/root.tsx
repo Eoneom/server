@@ -1,53 +1,41 @@
-import { resetCity, selectAllCities } from '#city/slice'
-import { useAppDispatch, useAppSelector } from '#store/type'
 import React, { useEffect } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
-import { selectToken } from '#auth/slice'
-import { getOutpost } from '#outpost/slice/thunk'
-import { selectOutpostId, selectOutposts } from '#outpost/slice'
-import { getCity } from '#city/slice/thunk'
 import { toast } from 'react-toastify'
-import { listTroops } from '#troop/slice/thunk'
+
+import { useLocation } from '#location/context'
+import { useListOutposts, useGetOutpost } from '#outpost/hooks'
+import { useListCities } from '#city/hooks'
+import { useGetCity } from '#city/hooks'
 
 export const OutpostRoot: React.FC = () => {
   const { outpostId } = useParams()
-  const dispatch = useAppDispatch()
+  const { setOutpost, setCity } = useLocation()
   const navigate = useNavigate()
 
-  const cities = useAppSelector(selectAllCities)
-  const token = useAppSelector(selectToken)
-  const selectedOutpostId = useAppSelector(selectOutpostId)
-  const outposts = useAppSelector(selectOutposts)
+  const { data: outpost } = useGetOutpost(outpostId)
+  const { data: outposts } = useListOutposts()
+  const { data: citiesData } = useListCities()
+  const firstCityId = citiesData?.cities[0]?.id
+  useGetCity(firstCityId)
 
   useEffect(() => {
-    if (!outpostId || !token) {
-      return
-    }
+    if (!outpostId) return
+    setOutpost(outpostId)
+  }, [outpostId, setOutpost])
 
-    dispatch(resetCity())
-    dispatch(getOutpost(outpostId)).then(() => {
-      dispatch(listTroops())
-    })
-  }, [outpostId, token])
-
-  // unstable way to handle outpost deletion and redirection
-  // TODO: improve with an init feature to be sure initial data is loaded before redirecting
+  // redirect if outpost no longer exists
   useEffect(() => {
-    const outpostExists = outposts.some(outpost => outpost.id === outpostId)
+    if (!outposts || !outpostId) return
+    const outpostExists = outposts.some(o => o.id === outpostId)
+    if (!outpostExists && outpost === undefined) return  // still loading
     if (!outpostExists) {
-      const cityId = cities[0]?.id
-      if (!cityId) {
-        return
-      }
-
+      const cityId = citiesData?.cities[0]?.id
+      if (!cityId) return
       toast.warn('L\'avant poste temporaire a été supprimé')
-      dispatch(getCity(cityId))
+      setCity(cityId)
       navigate(`/city/${cityId}`)
     }
+  }, [outposts, outpostId, outpost, citiesData, setCity, navigate])
 
-  }, [outpostId, selectedOutpostId])
-
-  return <>
-    <Outlet />
-  </>
+  return <Outlet />
 }

@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import { MovementAction, TroopCode } from '@eoneom/api-client'
 
-import { selectCityCoordinates } from '#city/slice'
-import { selectOutpostCoordinates } from '#outpost/slice'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectTroops } from '#troop/slice'
-import { createMovement } from '#troop/slice/thunk'
+import { useGetCity } from '#city/hooks'
+import { useGetOutpost } from '#outpost/hooks'
+import { useListTroops, useCreateMovement } from '#troop/hooks'
 import { TroopTranslations } from '#troop/translations'
 import { Button } from '#ui/button'
 
@@ -19,39 +18,33 @@ interface Props {
 }
 
 export const MapDetailsActionBase: React.FC<Props> = ({ coordinates }) => {
-  const dispatch = useAppDispatch()
-
-  const troops = useAppSelector(selectTroops)
-  const cityCoordinates = useAppSelector(selectCityCoordinates)
-  const outpostCoordinates = useAppSelector(selectOutpostCoordinates)
+  const { cityId, outpostId } = useParams()
+  const { data: city } = useGetCity(cityId)
+  const { data: outpost } = useGetOutpost(outpostId)
+  const { data: troops = [] } = useListTroops(cityId, outpostId)
+  const createMovement = useCreateMovement()
 
   const [troopsToBase, setTroopsToBase] = useState<Partial<Record<TroopCode, number>>>({})
 
   const handleBase = () => {
-    const origin = cityCoordinates ?? outpostCoordinates
-    if (!origin) {
-      return
-    }
+    const origin = city?.coordinates ?? outpost?.coordinates
+    if (!origin) return
 
     const finalTroops = Object.entries(troopsToBase)
       .filter(([, value]) => value)
-      .map(([key, value]) => {
-        return {
-          code: key as TroopCode,
-          count: value
-        }
-      })
+      .map(([key, value]) => ({
+        code: key as TroopCode,
+        count: value as number
+      }))
 
-    if (!finalTroops.length) {
-      return
-    }
+    if (!finalTroops.length) return
 
-    dispatch(createMovement({
+    createMovement.mutate({
       action: MovementAction.BASE,
       origin,
       destination: coordinates,
       troops: finalTroops
-    }))
+    })
   }
 
   return (

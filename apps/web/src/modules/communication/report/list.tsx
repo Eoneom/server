@@ -1,25 +1,26 @@
-import { getReport, listReports } from '#communication/report/slice/thunk'
-import {
-  selectReportCurrentPage,
-  selectReportsPageSize,
-  selectReportsTotal
-} from '#communication/report/slice'
 import { formatCoordinates, formatDate } from '#helpers/transform'
 import { Button } from '#ui/button'
-import { useAppDispatch, useAppSelector } from '#store/type'
 import { ReportItem } from '#types'
 import classNames from 'classnames'
 import React from 'react'
 
 interface Props {
   reports: ReportItem[]
+  currentPage: number
+  total: number
+  pageSize: number
+  onPageChange: (page: number) => void
+  onReportSelect: (reportId: string) => void
 }
 
-export const ReportList: React.FC<Props> = ({ reports }) => {
-  const dispatch = useAppDispatch()
-  const currentPage = useAppSelector(selectReportCurrentPage)
-  const total = useAppSelector(selectReportsTotal)
-  const pageSize = useAppSelector(selectReportsPageSize)
+export const ReportList: React.FC<Props> = ({
+  reports,
+  currentPage,
+  total,
+  pageSize,
+  onPageChange,
+  onReportSelect,
+}) => {
   const totalPages = pageSize > 0 ? Math.ceil(total / pageSize) : 0
   const canPrev = currentPage > 1
   const canNext = totalPages > 0 && currentPage < totalPages
@@ -34,13 +35,13 @@ export const ReportList: React.FC<Props> = ({ reports }) => {
           <div className="report-list__pagination-actions">
             <Button
               disabled={!canPrev}
-              onClick={() => dispatch(listReports({ page: currentPage - 1 }))}
+              onClick={() => onPageChange(currentPage - 1)}
             >
               Précédente
             </Button>
             <Button
               disabled={!canNext}
-              onClick={() => dispatch(listReports({ page: currentPage + 1 }))}
+              onClick={() => onPageChange(currentPage + 1)}
             >
               Suivante
             </Button>
@@ -54,7 +55,7 @@ export const ReportList: React.FC<Props> = ({ reports }) => {
             className={classNames('report-list__item', {
               'report-list__item--unread': !report.was_read
             })}
-            onClick={() => dispatch(getReport(report.id))}
+            onClick={() => onReportSelect(report.id)}
           >
             <div className="report-list__meta">
               <span className="report-list__type">{report.type}</span>

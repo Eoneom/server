@@ -1,10 +1,10 @@
 import { AppEvent } from '@eoneom/api-client'
 import { wsClient } from '#helpers/websocket'
-import { store } from '#store/index'
-import { listTechnologies } from './thunk'
+import { queryClient } from '#helpers/query-client'
+import { technologyKeys } from '#technology/hooks'
 
 export function registerTechnologyWsListeners(): void {
   wsClient.on(AppEvent.TechnologyResearchFinished, () => {
-    store.dispatch(listTechnologies())
+    queryClient.invalidateQueries({ queryKey: technologyKeys.all })
   })
 }

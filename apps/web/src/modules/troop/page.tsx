@@ -1,30 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import { LayoutPage } from '#ui/layout/page'
 import { TroopList } from '#troop/list'
 import { TroopDetails } from '#troop/details'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectCityId } from '#city/slice'
-import { listBuildings } from '#building/slice/thunk'
-import { listTroops } from '#troop/slice/thunk'
-import { selectTroop } from '#troop/slice'
+import { useGetTroop } from '#troop/hooks'
+import { Troop } from '#types'
 
 export const TroopPage: React.FC = () => {
-  const dispatch = useAppDispatch()
+  const { cityId } = useParams()
+  const [selectedTroopId, setSelectedTroopId] = useState<string | null>(null)
+  const { data: troop } = useGetTroop(selectedTroopId)
 
-  const troop = useAppSelector(selectTroop)
-  const cityId = useAppSelector(selectCityId)
-
-  useEffect(() => {
-    if (!cityId) {
-      return
-    }
-
-    dispatch(listTroops())
-    dispatch(listBuildings())
-  }, [cityId])
-
-  return <LayoutPage details={troop && <TroopDetails />}>
-    <TroopList />
+  return <LayoutPage details={troop && <TroopDetails cityId={cityId ?? null} troop={troop as Troop} />}>
+    <TroopList
+      cityId={cityId ?? null}
+      selectedTroopId={selectedTroopId}
+      onSelect={setSelectedTroopId}
+    />
   </LayoutPage>
 }

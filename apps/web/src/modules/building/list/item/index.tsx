@@ -1,19 +1,18 @@
 import React from 'react'
+import { BuildingCode } from '@eoneom/api-client'
 
 import { BuildingItem } from '#types'
 import { buildingImageSrc } from '#building/image'
 import { BuildingTranslations } from '#building/translations'
 import { ListItemLevel } from '#ui/list/item/level'
-import { useAppDispatch } from '#store/type'
-import { getBuilding } from '#building/slice/thunk'
 
 interface Props {
   buildingItem: BuildingItem
   active: boolean
+  onSelect: (code: BuildingCode) => void
 }
 
-export const BuildingListItem: React.FC<Props> = ({ buildingItem, active }) => {
-  const dispatch = useAppDispatch()
+export const BuildingListItem: React.FC<Props> = ({ buildingItem, active, onSelect }) => {
   const { name } = BuildingTranslations[buildingItem.code]
 
   return <ListItemLevel
@@ -24,6 +23,6 @@ export const BuildingListItem: React.FC<Props> = ({ buildingItem, active }) => {
       src: buildingImageSrc(buildingItem.code),
       alt: '',
     }}
-    onSelect={() => dispatch(getBuilding(buildingItem.code))}
+    onSelect={() => onSelect(buildingItem.code)}
   />
 }

@@ -1,21 +1,32 @@
 import React from 'react'
+
 import { TroopTranslations } from '#troop/translations'
 import { Button } from '#ui/button'
 import { CountdownProgress } from '#ui/countdown-progress'
 import { useCountdownProgress } from '#hook/countdown-progress'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectTroopInProgress } from '#troop/slice'
-import { cancelTroop, progressRecruitTroop } from '#troop/slice/thunk'
+import { useListCityTroops, useCancelTroop, useProgressRecruitTroop } from '#troop/hooks'
+import { TroopItem } from '#types'
 
-export const TroopListInProgress: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const inProgress = useAppSelector(selectTroopInProgress)
+type TroopWithRecruitment = TroopItem & { ongoing_recruitment: NonNullable<TroopItem['ongoing_recruitment']> }
+
+interface Props {
+  cityId: string | null
+}
+
+export const TroopListInProgress: React.FC<Props> = ({ cityId }) => {
+  const { data: troops = [] } = useListCityTroops(cityId)
+  const cancelTroop = useCancelTroop(cityId)
+  const progressRecruit = useProgressRecruitTroop(cityId)
+
+  const inProgress = troops.find(
+    (t): t is TroopWithRecruitment => Boolean(t.ongoing_recruitment)
+  )
 
   const { remainingSeconds, elapsedProgress, reset } = useCountdownProgress({
     endAt: inProgress?.ongoing_recruitment?.finish_at,
     startAt: inProgress?.ongoing_recruitment?.started_at,
-    onDone: () => dispatch(progressRecruitTroop()),
-    onTick: () => dispatch(progressRecruitTroop()),
+    onDone: () => progressRecruit.mutate(),
+    onTick: () => progressRecruit.mutate(),
     tickDuration: inProgress?.ongoing_recruitment?.duration_per_unit
   })
 
@@ -24,7 +35,7 @@ export const TroopListInProgress: React.FC = () => {
   }
 
   const handleCancel = () => {
-    dispatch(cancelTroop())
+    cancelTroop.mutate()
     reset()
   }
 
@@ -32,7 +43,7 @@ export const TroopListInProgress: React.FC = () => {
     <CountdownProgress
       summary={
         <>
-          En cours: {inProgress.ongoing_recruitment?.remaining_count}{' '}
+          En cours: {inProgress.ongoing_recruitment.remaining_count}{' '}
           {TroopTranslations[inProgress.code].name}
         </>
       }

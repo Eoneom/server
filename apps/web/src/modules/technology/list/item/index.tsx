@@ -1,19 +1,18 @@
 import React from 'react'
+import { TechnologyCode } from '@eoneom/api-client'
+
 import { TechnologyItem } from '#types'
 import { technologyImageSrc } from '#technology/image'
 import { TechnologyTranslations } from '#technology/translations'
 import { ListItemLevel } from '#ui/list/item/level'
-import { useAppDispatch } from '#store/type'
-import { getTechnology } from '#technology/slice/thunk'
 
 interface Props {
   active: boolean
   technologyItem: TechnologyItem
+  onSelect: (code: TechnologyCode) => void
 }
 
-export const TechnologyListItem: React.FC<Props> = ({ active, technologyItem }) => {
-  const dispatch = useAppDispatch()
-
+export const TechnologyListItem: React.FC<Props> = ({ active, technologyItem, onSelect }) => {
   const { name } = TechnologyTranslations[technologyItem.code]
 
   return <ListItemLevel
@@ -24,6 +23,6 @@ export const TechnologyListItem: React.FC<Props> = ({ active, technologyItem }) 
       src: technologyImageSrc(technologyItem.code),
       alt: '',
     }}
-    onSelect={() => dispatch(getTechnology(technologyItem.code))}
+    onSelect={() => onSelect(technologyItem.code)}
   />
 }

@@ -3,18 +3,14 @@ import { NavLink } from 'react-router-dom'
 
 import { getActiveClassName } from '#helpers/classname'
 import { getUrlPrefix } from '#helpers/url'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectCityId } from '#city/slice'
-import { logout } from '#auth/slice/thunk'
-import { selectUnreadReportCount } from '#communication/report/slice'
-import { selectOutpostId } from '#outpost/slice'
+import { useLocation } from '#location/context'
+import { useLogout } from '#auth/hooks'
+import { useCountUnreadReports } from '#communication/report/hooks'
 
 export const NavMenu: React.FC = () => {
-  const dispatch = useAppDispatch()
-
-  const unreadCount = useAppSelector(selectUnreadReportCount)
-  const cityId = useAppSelector(selectCityId)
-  const outpostId = useAppSelector(selectOutpostId)
+  const { mutate: logout } = useLogout()
+  const { cityId, outpostId } = useLocation()
+  const { data: unreadCount } = useCountUnreadReports()
 
   const urlPrefix = getUrlPrefix({ cityId, outpostId })
 
@@ -66,7 +62,7 @@ export const NavMenu: React.FC = () => {
         <ul>
           <li>
             <NavLink className={getActiveClassName} to={'report'}>
-              Rapport ({unreadCount})
+              Rapport ({unreadCount ?? 0})
             </NavLink>
           </li>
           <li className="nav-menu-placeholder">Messagerie</li>
@@ -82,7 +78,7 @@ export const NavMenu: React.FC = () => {
               to={'logout'}
               onClick={e => {
                 e.preventDefault()
-                dispatch(logout())
+                logout()
               }}
             >
               Se déconnecter

@@ -20,6 +20,9 @@
       "#hook/*": [
         "./src/hook/*"
       ],
+      "#location/*": [
+        "./src/modules/location/*"
+      ],
       "#auth/*": [
         "./src/modules/auth/*"
       ],
@@ -49,9 +52,6 @@
       ],
       "#requirement/*": [
         "./src/modules/requirement/*"
-      ],
-      "#store/*": [
-        "./src/store/*"
       ],
       "#technology/*": [
         "./src/modules/technology/*"

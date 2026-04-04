@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 
 import { MovementAction, TroopCode } from '@eoneom/api-client'
 
@@ -6,10 +7,9 @@ import { Button } from '#ui/button'
 import { LayoutDetailsContent } from '#ui/layout/details/content'
 import { MapDetailsActionBase } from '#map/details/action/base'
 import { Sector } from '#types'
-import { useAppDispatch, useAppSelector } from '#store/type'
-import { selectCity } from '#city/slice'
-import { selectOutpostCoordinates } from '#outpost/slice'
-import { createMovement } from '#troop/slice/thunk'
+import { useGetCity } from '#city/hooks'
+import { useGetOutpost } from '#outpost/hooks'
+import { useCreateMovement } from '#troop/hooks'
 
 interface Props {
   coordinates: {
@@ -20,16 +20,13 @@ interface Props {
 }
 
 export const MapDetails: React.FC<Props> = ({ coordinates, sector }) => {
-  const dispatch = useAppDispatch()
-
-  const city = useAppSelector(selectCity)
-  const outpostCoordinates = useAppSelector(selectOutpostCoordinates)
+  const { cityId, outpostId } = useParams()
+  const { data: city } = useGetCity(cityId)
+  const { data: outpost } = useGetOutpost(outpostId)
+  const createMovement = useCreateMovement()
 
   const selectedCell = useMemo(() => {
-    if (!coordinates) {
-      return null
-    }
-
+    if (!coordinates) return null
     return sector.cells.find(cell =>
       cell.coordinates.x === coordinates.x &&
       cell.coordinates.y === coordinates.y
@@ -37,24 +34,16 @@ export const MapDetails: React.FC<Props> = ({ coordinates, sector }) => {
   }, [sector, coordinates])
 
   const handleExplore = () => {
-    if (!sector || !coordinates) {
-      return
-    }
+    if (!sector || !coordinates) return
+    const origin = city ? city.coordinates : outpost?.coordinates
+    if (!origin) return
 
-    const origin = city ? city.coordinates : outpostCoordinates
-    if (!origin) {
-      return
-    }
-
-    dispatch(createMovement({
+    createMovement.mutate({
       action: MovementAction.EXPLORE,
       origin,
       destination: { sector: sector.id, x: coordinates.x, y: coordinates.y },
-      troops: [{
-        code: TroopCode.EXPLORER,
-        count: 1
-      }]
-    }))
+      troops: [{ code: TroopCode.EXPLORER, count: 1 }]
+    })
   }
 
   const isCityTile =
