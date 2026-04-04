@@ -15,13 +15,13 @@ export const troopKeys = {
   movement: (id: string) => ['movement', id] as const,
 }
 
-export const useListCityTroops = (cityId: string | null | undefined) => {
+export const useListCityTroops = (cityId: string) => {
   const { token } = useAuth()
 
   return useQuery({
-    queryKey: troopKeys.cityList(cityId ?? ''),
+    queryKey: troopKeys.cityList(cityId),
     queryFn: async () => {
-      if (!token || !cityId) throw new Error('no token or city id')
+      if (!token) throw new Error('no token')
       const res = await client.troop.listCity(token, { city_id: cityId })
       if (isError(res)) throw new Error(res.error_code)
       if (!res.data) throw new Error('no data')
@@ -31,13 +31,13 @@ export const useListCityTroops = (cityId: string | null | undefined) => {
   })
 }
 
-export const useListOutpostTroops = (outpostId: string | null | undefined) => {
+export const useListOutpostTroops = (outpostId: string) => {
   const { token } = useAuth()
 
   return useQuery({
-    queryKey: troopKeys.outpostList(outpostId ?? ''),
+    queryKey: troopKeys.outpostList(outpostId),
     queryFn: async () => {
-      if (!token || !outpostId) throw new Error('no token or outpost id')
+      if (!token) throw new Error('no token')
       const res = await client.troop.listOutpost(token, { outpost_id: outpostId })
       if (isError(res)) throw new Error(res.error_code)
       if (!res.data) throw new Error('no data')
@@ -48,9 +48,10 @@ export const useListOutpostTroops = (outpostId: string | null | undefined) => {
 }
 
 export const useListTroops = (
-  cityId: string | null | undefined,
-  outpostId: string | null | undefined
+  scope: { cityId: string; outpostId?: never } | { cityId?: never; outpostId: string }
 ) => {
+  const cityId = 'cityId' in scope && scope.cityId ? scope.cityId : ''
+  const outpostId = 'outpostId' in scope && scope.outpostId ? scope.outpostId : ''
   const cityQuery = useListCityTroops(cityId)
   const outpostQuery = useListOutpostTroops(outpostId)
   return cityId ? cityQuery : outpostQuery
@@ -72,7 +73,7 @@ export const useGetTroop = (troopId: string | null | undefined) => {
   })
 }
 
-export const useRecruitTroop = (cityId: string | null | undefined) => {
+export const useRecruitTroop = (cityId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 
@@ -90,7 +91,7 @@ export const useRecruitTroop = (cityId: string | null | undefined) => {
   })
 }
 
-export const useProgressRecruitTroop = (cityId: string | null | undefined) => {
+export const useProgressRecruitTroop = (cityId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 
@@ -107,7 +108,7 @@ export const useProgressRecruitTroop = (cityId: string | null | undefined) => {
   })
 }
 
-export const useCancelTroop = (cityId: string | null | undefined) => {
+export const useCancelTroop = (cityId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 

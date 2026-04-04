@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, screen, act } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MemoryRouter } from 'react-router-dom'
 import { OutpostType } from '@server-core/outpost/constant/type'
 
 import type { City, Outpost } from '#types'
@@ -11,6 +10,14 @@ import { cityKeys } from '#city/hooks'
 import { outpostKeys } from '#outpost/hooks'
 
 import { Header } from './index'
+
+jest.mock('@tanstack/react-router', () => ({
+  Link: ({ to, children, ...props }: { to: string; children: React.ReactNode }) => (
+    <a href={to} {...props}>
+      {children}
+    </a>
+  ),
+}))
 
 const minimalCity = (overrides: Partial<City> = {}): City => ({
   id: 'city-1',
@@ -72,9 +79,7 @@ function renderHeader({ city, outpost, cityId, outpostId }: RenderOptions = {}) 
         <LocationProvider>
           {cityId && <SetLocation cityId={cityId} />}
           {outpostId && <SetLocation outpostId={outpostId} />}
-          <MemoryRouter>
-            <Header />
-          </MemoryRouter>
+          <Header />
         </LocationProvider>
       </AuthProvider>
     </QueryClientProvider>,

@@ -10,7 +10,7 @@ import { TroopItem } from '#types'
 type TroopWithRecruitment = TroopItem & { ongoing_recruitment: NonNullable<TroopItem['ongoing_recruitment']> }
 
 interface Props {
-  cityId: string | null
+  cityId: string
 }
 
 export const TroopListInProgress: React.FC<Props> = ({ cityId }) => {

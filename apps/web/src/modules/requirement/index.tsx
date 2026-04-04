@@ -4,12 +4,14 @@ import { RequirementTechnology } from '#requirement/technology'
 import { Requirement as RequirementValue } from '@eoneom/api-client'
 
 interface Props {
+  cityId: string
   requirements?: RequirementValue
   building_levels_used?: number
   building_levels_capacity?: number
 }
 
 export const Requirement: React.FC<Props> = ({
+  cityId,
   requirements,
   building_levels_used,
   building_levels_capacity,
@@ -17,6 +19,7 @@ export const Requirement: React.FC<Props> = ({
   const requirement_elements = [
     ...(requirements?.buildings ?? []).map(requirement => <RequirementBuilding
       key={requirement.code}
+      cityId={cityId}
       requirement={requirement}
     />),
     ...(requirements?.technologies ?? []).map(requirement => <RequirementTechnology

@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 
 import { formatTime, transformDecimals } from '#helpers/transform'
 import { IconPlastic } from '#ui/icon/plastic'
@@ -9,14 +8,14 @@ import { IconDuration } from '#ui/icon/duration'
 import { useGetCity } from '#city/hooks'
 
 interface Props {
+  cityId: string
   plastic: number
   mushroom: number
   duration: number
   action?: React.ReactNode
 }
 
-export const Cost: React.FC<Props> = ({ plastic, mushroom, duration, action }) => {
-  const { cityId } = useParams()
+export const Cost: React.FC<Props> = ({ cityId, plastic, mushroom, duration, action }) => {
   const { data: city } = useGetCity(cityId)
 
   const plasticClassName = plastic > (city?.plastic ?? 0) ? 'danger' : 'success'

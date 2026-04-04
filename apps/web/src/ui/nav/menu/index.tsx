@@ -1,8 +1,7 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, useLocation as useRouterLocation } from '@tanstack/react-router'
 
 import { getActiveClassName } from '#helpers/classname'
-import { getUrlPrefix } from '#helpers/url'
 import { useLocation } from '#location/context'
 import { useLogout } from '#auth/hooks'
 import { useCountUnreadReports } from '#communication/report/hooks'
@@ -10,9 +9,16 @@ import { useCountUnreadReports } from '#communication/report/hooks'
 export const NavMenu: React.FC = () => {
   const { mutate: logout } = useLogout()
   const { cityId, outpostId } = useLocation()
+  const { pathname } = useRouterLocation()
   const { data: unreadCount } = useCountUnreadReports()
-
-  const urlPrefix = getUrlPrefix({ cityId, outpostId })
+  const RouterLink = Link as React.ComponentType<{
+    to: string
+    params?: Record<string, string>
+    className?: string
+    children: React.ReactNode
+  }>
+  const getLinkClassName = (href: string) =>
+    getActiveClassName({ isActive: pathname === href || pathname.startsWith(`${href}/`) })
 
   return (
     <nav id="menu">
@@ -21,19 +27,31 @@ export const NavMenu: React.FC = () => {
           <h2>Ville</h2>
           <ul>
             <li>
-              <NavLink className={getActiveClassName} to={`/city/${cityId}/building`}>
+              <RouterLink
+                to="/city/$cityId/building"
+                params={{ cityId }}
+                className={getLinkClassName(`/city/${cityId}/building`)}
+              >
                 Construction
-              </NavLink>
+              </RouterLink>
             </li>
             <li>
-              <NavLink className={getActiveClassName} to={`/city/${cityId}/technology`}>
+              <RouterLink
+                to="/city/$cityId/technology"
+                params={{ cityId }}
+                className={getLinkClassName(`/city/${cityId}/technology`)}
+              >
                 Recherche
-              </NavLink>
+              </RouterLink>
             </li>
             <li>
-              <NavLink className={getActiveClassName} to={`/city/${cityId}/troop`}>
+              <RouterLink
+                to="/city/$cityId/troop"
+                params={{ cityId }}
+                className={getLinkClassName(`/city/${cityId}/troop`)}
+              >
                 Recrutement
-              </NavLink>
+              </RouterLink>
             </li>
           </ul>
         </section>
@@ -43,14 +61,42 @@ export const NavMenu: React.FC = () => {
         <h2>Monde</h2>
         <ul>
           <li>
-            <NavLink className={getActiveClassName} to={`${urlPrefix}/map`}>
-              Carte
-            </NavLink>
+            {cityId ? (
+              <RouterLink
+                to="/city/$cityId/map"
+                params={{ cityId }}
+                className={getLinkClassName(`/city/${cityId}/map`)}
+              >
+                Carte
+              </RouterLink>
+            ) : outpostId ? (
+              <RouterLink
+                to="/outpost/$outpostId/map"
+                params={{ outpostId }}
+                className={getLinkClassName(`/outpost/${outpostId}/map`)}
+              >
+                Carte
+              </RouterLink>
+            ) : null}
           </li>
           <li>
-            <NavLink className={getActiveClassName} to={`${urlPrefix}/movement`}>
-              Déplacement
-            </NavLink>
+            {cityId ? (
+              <RouterLink
+                to="/city/$cityId/movement"
+                params={{ cityId }}
+                className={getLinkClassName(`/city/${cityId}/movement`)}
+              >
+                Déplacement
+              </RouterLink>
+            ) : outpostId ? (
+              <RouterLink
+                to="/outpost/$outpostId/movement"
+                params={{ outpostId }}
+                className={getLinkClassName(`/outpost/${outpostId}/movement`)}
+              >
+                Déplacement
+              </RouterLink>
+            ) : null}
           </li>
           <li className="nav-menu-placeholder">Alliance</li>
           <li className="nav-menu-placeholder">Empire</li>
@@ -61,9 +107,12 @@ export const NavMenu: React.FC = () => {
         <h2>Messages</h2>
         <ul>
           <li>
-            <NavLink className={getActiveClassName} to={'report'}>
+            <RouterLink
+              to="/report"
+              className={getLinkClassName('/report')}
+            >
               Rapport ({unreadCount ?? 0})
-            </NavLink>
+            </RouterLink>
           </li>
           <li className="nav-menu-placeholder">Messagerie</li>
         </ul>
@@ -74,15 +123,16 @@ export const NavMenu: React.FC = () => {
         <ul>
           <li className="nav-menu-placeholder">Paramètres</li>
           <li>
-            <NavLink
-              to={'logout'}
+            <button
+              type="button"
+              className="nav-menu-logout"
               onClick={e => {
                 e.preventDefault()
                 logout()
               }}
             >
               Se déconnecter
-            </NavLink>
+            </button>
           </li>
         </ul>
       </section>

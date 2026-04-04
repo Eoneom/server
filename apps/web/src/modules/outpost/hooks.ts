@@ -42,18 +42,18 @@ export const useGetOutpost = (outpostId: string | null | undefined) => {
   })
 }
 
-export const useSetOutpostPermanent = (outpostId: string | null | undefined) => {
+export const useSetOutpostPermanent = (outpostId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async () => {
-      if (!outpostId || !token) throw new Error('no outpost or token')
+      if (!token) throw new Error('no token')
       const res = await client.outpost.setPermanent(token, { outpost_id: outpostId })
       if (isError(res)) throw new Error(res.error_code)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: outpostKeys.detail(outpostId ?? '') })
+      queryClient.invalidateQueries({ queryKey: outpostKeys.detail(outpostId) })
       queryClient.invalidateQueries({ queryKey: outpostKeys.all })
     },
     onError: (err: Error) => toast.error(err.message),

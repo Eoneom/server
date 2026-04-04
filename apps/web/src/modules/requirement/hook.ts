@@ -1,12 +1,16 @@
-import { useParams } from 'react-router-dom'
 import { useListBuildings } from '#building/hooks'
 import { useListTechnologies } from '#technology/hooks'
 import { BuildingItem, TechnologyItem } from '#types'
 import { Requirement } from '@eoneom/api-client'
 import { useMemo } from 'react'
 
-export const useRequirement = ({ requirement }: { requirement: Requirement }) => {
-  const { cityId } = useParams()
+export const useRequirement = ({
+  cityId,
+  requirement
+}: {
+  cityId: string
+  requirement: Requirement
+}) => {
   const { data: buildings = [] } = useListBuildings(cityId)
   const { data: technologies = [] } = useListTechnologies()
 

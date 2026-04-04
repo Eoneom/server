@@ -7,7 +7,7 @@ import { Troop, TroopItem } from '#types'
 type TroopWithRecruitment = TroopItem & { ongoing_recruitment: NonNullable<TroopItem['ongoing_recruitment']> }
 
 interface Props {
-  cityId: string | null
+  cityId: string
   troop: Troop
   count: number
   onChange: (count: number) => void

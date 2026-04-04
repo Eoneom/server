@@ -12,7 +12,6 @@ export const Header: React.FC = () => {
   const { data: outpost } = useGetOutpost(outpostId)
 
   const text = city ? city.name : outpost ? formatCoordinates(outpost.coordinates) : ''
-  const to = city ? `/city/${city.id}` : `/outpost/${outpost?.id}`
 
   return (
     <header className="app-header">
@@ -20,7 +19,11 @@ export const Header: React.FC = () => {
         <h3>Eoneom</h3>
       </div>
       <div className="app-header__context">
-        <HeaderTitle to={to} text={text} />
+        <HeaderTitle
+          text={text}
+          cityId={city?.id}
+          outpostId={city ? undefined : outpost?.id}
+        />
       </div>
       <div className="app-header__resources">
         <HeaderResources city={city ?? null} outpost={outpost ?? null} />

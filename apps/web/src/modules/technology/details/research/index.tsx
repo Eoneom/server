@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 
 import { hasEnoughResources } from '#city/helper'
 import { Technology, TechnologyItem } from '#types'
@@ -9,15 +8,15 @@ import { useGetCity } from '#city/hooks'
 import { useListTechnologies, useResearchTechnology } from '#technology/hooks'
 
 interface Props {
+  cityId: string
   technology: Technology
 }
 
-export const TechnologyDetailsResearch: React.FC<Props> = ({ technology }) => {
-  const { cityId } = useParams()
+export const TechnologyDetailsResearch: React.FC<Props> = ({ cityId, technology }) => {
   const { data: city } = useGetCity(cityId)
   const { data: technologies = [] } = useListTechnologies()
   const research = useResearchTechnology(cityId)
-  const { isRequirementMet } = useRequirement({ requirement: technology.requirement })
+  const { isRequirementMet } = useRequirement({ cityId, requirement: technology.requirement })
 
   const inProgress = technologies.find(
     (t): t is Extract<TechnologyItem, { research_at: number }> => 'research_at' in t

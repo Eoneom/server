@@ -14,7 +14,7 @@ import { Troop, TroopItem } from '#types'
 type TroopWithRecruitment = TroopItem & { ongoing_recruitment: NonNullable<TroopItem['ongoing_recruitment']> }
 
 interface Props {
-  cityId: string | null
+  cityId: string
   troop: Troop
 }
 
@@ -28,7 +28,7 @@ export const TroopDetails: React.FC<Props> = ({ cityId, troop }) => {
   const plasticCost = numberCount * troop.cost.plastic
   const mushroomCost = numberCount * troop.cost.mushroom
 
-  const { isRequirementMet } = useRequirement({ requirement: troop.requirement })
+  const { isRequirementMet } = useRequirement({ cityId, requirement: troop.requirement })
 
   const inProgress = troops.find(
     (t): t is TroopWithRecruitment => Boolean(t.ongoing_recruitment)
@@ -60,8 +60,9 @@ export const TroopDetails: React.FC<Props> = ({ cityId, troop }) => {
     </LayoutDetailsContent>
 
     <aside id="requirement">
-      <Requirement requirements={troop.requirement} />
+      <Requirement cityId={cityId} requirements={troop.requirement} />
       <Cost
+        cityId={cityId}
         plastic={plasticCost}
         mushroom={mushroomCost}
         duration={numberCount * troop.cost.duration}

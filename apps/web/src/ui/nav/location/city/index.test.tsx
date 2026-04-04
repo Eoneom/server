@@ -1,8 +1,31 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { NavLocationCities } from './index'
+
+jest.mock('@tanstack/react-router', () => ({
+  Link: ({
+    to,
+    params,
+    children,
+    ...props
+  }: {
+    to: string
+    params?: Record<string, string>
+    children: React.ReactNode
+  }) => (
+    <a
+      href={Object.entries(params ?? {}).reduce(
+        (href, [key, value]) => href.replace(`$${key}`, value),
+        to
+      )}
+      {...props}
+    >
+      {children}
+    </a>
+  ),
+  useLocation: () => ({ pathname: '/' }),
+}))
 
 const cities = [
   { id: 'c1', name: 'Alpha' },
@@ -11,21 +34,13 @@ const cities = [
 
 describe('NavLocationCities', () => {
   it('renders Villes heading with current count and limit', () => {
-    render(
-      <MemoryRouter>
-        <NavLocationCities cities={cities} countLimit={5} />
-      </MemoryRouter>,
-    )
+    render(<NavLocationCities cities={cities} countLimit={5} />)
 
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Villes 2/5')
   })
 
   it('renders a link for each city', () => {
-    render(
-      <MemoryRouter>
-        <NavLocationCities cities={cities} countLimit={5} />
-      </MemoryRouter>,
-    )
+    render(<NavLocationCities cities={cities} countLimit={5} />)
 
     const links = screen.getAllByRole('link')
     expect(links).toHaveLength(2)

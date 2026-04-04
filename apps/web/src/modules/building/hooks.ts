@@ -12,7 +12,7 @@ export const buildingKeys = {
   detail: (cityId: string, code: BuildingCode) => ['building', cityId, code] as const,
 }
 
-export const useListBuildings = (cityId: string | null | undefined) => {
+export const useListBuildings = (cityId: string) => {
   const { token } = useAuth()
 
   return useQuery({
@@ -29,13 +29,13 @@ export const useListBuildings = (cityId: string | null | undefined) => {
 }
 
 export const useGetBuilding = (
-  cityId: string | null | undefined,
+  cityId: string,
   code: BuildingCode | null | undefined
 ) => {
   const { token } = useAuth()
 
   return useQuery({
-    queryKey: buildingKeys.detail(cityId ?? '', code ?? ('' as BuildingCode)),
+    queryKey: buildingKeys.detail(cityId, code ?? ('' as BuildingCode)),
     queryFn: async () => {
       if (!token || !cityId || !code) throw new Error('no token or city id')
       const res = await client.building.get(token, { city_id: cityId, building_code: code })
@@ -47,56 +47,56 @@ export const useGetBuilding = (
   })
 }
 
-export const useUpgradeBuilding = (cityId: string | null | undefined) => {
+export const useUpgradeBuilding = (cityId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (code: BuildingCode) => {
-      if (!cityId || !token) throw new Error('no city id or token')
+      if (!token) throw new Error('no token')
       const res = await client.building.upgrade(token, { city_id: cityId, building_code: code })
       if (isError(res)) throw new Error(res.error_code)
       return code
     },
     onSuccess: (code) => {
-      queryClient.invalidateQueries({ queryKey: buildingKeys.list(cityId ?? '') })
-      queryClient.invalidateQueries({ queryKey: buildingKeys.detail(cityId ?? '', code) })
-      queryClient.invalidateQueries({ queryKey: cityKeys.detail(cityId ?? '') })
+      queryClient.invalidateQueries({ queryKey: buildingKeys.list(cityId) })
+      queryClient.invalidateQueries({ queryKey: buildingKeys.detail(cityId, code) })
+      queryClient.invalidateQueries({ queryKey: cityKeys.detail(cityId) })
     },
     onError: (err: Error) => toast.error(err.message),
   })
 }
 
-export const useFinishBuildingUpgrade = (cityId: string | null | undefined) => {
+export const useFinishBuildingUpgrade = (cityId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async () => {
-      if (!cityId || !token) throw new Error('no city id or token')
+      if (!token) throw new Error('no token')
       const res = await client.building.finishUpgrade(token, { city_id: cityId })
       if (isError(res)) throw new Error(res.error_code)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: buildingKeys.list(cityId ?? '') })
+      queryClient.invalidateQueries({ queryKey: buildingKeys.list(cityId) })
     },
     onError: (err: Error) => toast.error(err.message),
   })
 }
 
-export const useCancelBuildingUpgrade = (cityId: string | null | undefined) => {
+export const useCancelBuildingUpgrade = (cityId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async () => {
-      if (!cityId || !token) throw new Error('no city id or token')
+      if (!token) throw new Error('no token')
       const res = await client.building.cancel(token, { city_id: cityId })
       if (isError(res)) throw new Error(res.error_code)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: buildingKeys.list(cityId ?? '') })
-      queryClient.invalidateQueries({ queryKey: cityKeys.detail(cityId ?? '') })
+      queryClient.invalidateQueries({ queryKey: buildingKeys.list(cityId) })
+      queryClient.invalidateQueries({ queryKey: cityKeys.detail(cityId) })
     },
     onError: (err: Error) => toast.error(err.message),
   })

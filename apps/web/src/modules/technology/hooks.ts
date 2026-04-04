@@ -18,7 +18,7 @@ export const useListTechnologies = () => {
   return useQuery({
     queryKey: technologyKeys.all,
     queryFn: async () => {
-      if (!token) throw new Error('empty token')
+      if (!token) throw new Error('no token')
       const res = await client.technology.list(token)
       if (isError(res)) throw new Error(res.error_code)
       return res.data?.technologies ?? []
@@ -28,15 +28,15 @@ export const useListTechnologies = () => {
 }
 
 export const useGetTechnology = (
-  cityId: string | null | undefined,
+  cityId: string,
   code: TechnologyCode | null | undefined
 ) => {
   const { token } = useAuth()
 
   return useQuery({
-    queryKey: technologyKeys.detail(cityId ?? '', code ?? ('' as TechnologyCode)),
+    queryKey: technologyKeys.detail(cityId, code ?? ('' as TechnologyCode)),
     queryFn: async () => {
-      if (!token || !cityId || !code) throw new Error('no cityId or token')
+      if (!token || !code) throw new Error('no token or code')
       const res = await client.technology.get(token, { city_id: cityId, technology_code: code })
       if (isError(res)) throw new Error(res.error_code)
       if (!res.data) throw new Error('no data')
@@ -46,19 +46,19 @@ export const useGetTechnology = (
   })
 }
 
-export const useResearchTechnology = (cityId: string | null | undefined) => {
+export const useResearchTechnology = (cityId: string) => {
   const { token } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (code: TechnologyCode) => {
-      if (!cityId || !token) throw new Error('no city id or token')
+      if (!token) throw new Error('no token')
       const res = await client.technology.research(token, { city_id: cityId, technology_code: code })
       if (isError(res)) throw new Error(res.error_code)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: technologyKeys.all })
-      queryClient.invalidateQueries({ queryKey: cityKeys.detail(cityId ?? '') })
+      queryClient.invalidateQueries({ queryKey: cityKeys.detail(cityId) })
     },
     onError: (err: Error) => toast.error(err.message),
   })
@@ -70,7 +70,7 @@ export const useFinishResearch = () => {
 
   return useMutation({
     mutationFn: async () => {
-      if (!token) throw new Error('empty token')
+      if (!token) throw new Error('no token')
       const res = await client.technology.finishResearch(token)
       if (isError(res)) throw new Error(res.error_code)
     },
@@ -87,7 +87,7 @@ export const useCancelTechnology = () => {
 
   return useMutation({
     mutationFn: async () => {
-      if (!token) throw new Error('empty token')
+      if (!token) throw new Error('no token')
       const res = await client.technology.cancel(token)
       if (isError(res)) throw new Error(res.error_code)
     },

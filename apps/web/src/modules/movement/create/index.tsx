@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { Coordinates, MovementAction, OutpostType, TroopCode } from '@eoneom/api-client'
 
 import { MovementCreateAction } from './action'
@@ -15,12 +14,15 @@ import { estimateMovement } from '../api/estimate'
 import { useAuth } from '#auth/context'
 import { useCreateMovement } from '#troop/hooks'
 
-export const MovementCreate: React.FC = () => {
-  const { cityId, outpostId } = useParams()
+type MovementCreateProps =
+  | { cityId: string; outpostId?: never }
+  | { cityId?: never; outpostId: string }
+
+export const MovementCreate: React.FC<MovementCreateProps> = ({ cityId, outpostId }) => {
   const { token } = useAuth()
   const { data: city } = useGetCity(cityId)
   const { data: outpost } = useGetOutpost(outpostId)
-  const { data: troops = [] } = useListTroops(cityId, outpostId)
+  const { data: troops = [] } = useListTroops(cityId ? { cityId } : { outpostId: outpostId as string })
   const createMovement = useCreateMovement()
 
   const [ selectedTroops, setSelectedTroops ] = useState<Partial<Record<TroopCode, number>>>({})

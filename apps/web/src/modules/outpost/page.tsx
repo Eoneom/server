@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 
 import { formatCoordinates } from '#helpers/transform'
 import { useGetOutpost, useSetOutpostPermanent } from '#outpost/hooks'
@@ -8,8 +7,11 @@ import { OutpostSettle } from '#outpost/settle'
 import { Button } from '#ui/button'
 import { OutpostType } from '@eoneom/api-client'
 
-export const OutpostPage: React.FC = () => {
-  const { outpostId } = useParams()
+type OutpostPageProps = {
+  outpostId: string
+}
+
+export const OutpostPage: React.FC<OutpostPageProps> = ({ outpostId }) => {
   const { data: outpost } = useGetOutpost(outpostId)
   const setPermanent = useSetOutpostPermanent(outpostId)
   const settleCity = useSettleCity()
@@ -20,7 +22,7 @@ export const OutpostPage: React.FC = () => {
       <Button onClick={() => setPermanent.mutate()}>
         Rendre permanent
       </Button>
-      <OutpostSettle onSettle={name => settleCity.mutate(name)} />
+      <OutpostSettle outpostId={outpostId} onSettle={name => settleCity.mutate(name)} />
     </>)}
   </section> : null
 }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 
 import {
   formatCoordinates,
@@ -9,6 +8,10 @@ import {
 import { useGetCity } from '#city/hooks'
 import { IconMushroom } from '#ui/icon/mushroom'
 import { IconPlastic } from '#ui/icon/plastic'
+
+type CityPageProps = {
+  cityId: string
+}
 
 const formatTerrainCoeff = (value: number): string => {
   return `×${value.toFixed(2)}`
@@ -24,13 +27,8 @@ const warehouseFillPercent = (capacity: number, spaceRemaining: number): number 
   return Math.min(100, Math.max(0, (used / capacity) * 100))
 }
 
-export const CityPage: React.FC = () => {
-  const { cityId } = useParams()
+export const CityPage: React.FC<CityPageProps> = ({ cityId }) => {
   const { data: city } = useGetCity(cityId)
-
-  if (!cityId) {
-    return null
-  }
 
   if (!city || city.id !== cityId) {
     return (

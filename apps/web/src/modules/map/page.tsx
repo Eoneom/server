@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
 
 import { MapCanvas } from '#map/canvas'
 import { MapDetails } from '#map/details'
@@ -9,11 +8,14 @@ import { useGetOutpost } from '#outpost/hooks'
 import { useListTroops } from '#troop/hooks'
 import { LayoutPage } from '#ui/layout/page'
 
-export const MapPage: React.FC = () => {
-  const { cityId, outpostId } = useParams()
+type MapPageProps =
+  | { cityId: string; outpostId?: never }
+  | { cityId?: never; outpostId: string }
+
+export const MapPage: React.FC<MapPageProps> = ({ cityId, outpostId }) => {
   const { data: city } = useGetCity(cityId)
   const { data: outpost } = useGetOutpost(outpostId)
-  useListTroops(cityId, outpostId)
+  useListTroops(cityId ? { cityId } : { outpostId: outpostId as string })
 
   const cityCoordinates = city?.coordinates ?? null
   const outpostCoordinates = outpost?.coordinates ?? null
@@ -29,8 +31,14 @@ export const MapPage: React.FC = () => {
 
   const details = useMemo(() => {
     if (!selectedCoordinates || !sector) return null
-    return <MapDetails coordinates={selectedCoordinates} sector={sector}/>
-  }, [selectedCoordinates, sector])
+    if (cityId) {
+      return <MapDetails cityId={cityId} coordinates={selectedCoordinates} sector={sector} />
+    }
+    if (!outpostId) {
+      return null
+    }
+    return <MapDetails outpostId={outpostId} coordinates={selectedCoordinates} sector={sector} />
+  }, [cityId, outpostId, selectedCoordinates, sector])
 
   return <LayoutPage details={details}>
     {sector && (

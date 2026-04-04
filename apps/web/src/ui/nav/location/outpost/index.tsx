@@ -36,7 +36,8 @@ export const NavLocationOutposts: React.FC<Props> = ({ outposts }) => {
             {permanents.map(outpost => (
               <NavLocationItem
                 key={outpost.id}
-                to={`/outpost/${outpost.id}`}
+                kind="outpost"
+                outpostId={outpost.id}
                 text={formatCoordinates(outpost.coordinates)}
                 linkClassName="nav-location-link--coords"
               />
@@ -51,7 +52,8 @@ export const NavLocationOutposts: React.FC<Props> = ({ outposts }) => {
             {temporaries.map(outpost => (
               <NavLocationItem
                 key={outpost.id}
-                to={`/outpost/${outpost.id}`}
+                kind="outpost"
+                outpostId={outpost.id}
                 text={formatCoordinates(outpost.coordinates)}
                 linkClassName="nav-location-link--coords"
               />

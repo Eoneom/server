@@ -1,15 +1,14 @@
 import { TroopCode } from '@eoneom/api-client'
 import React, { useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
 
 import { useListOutpostTroops } from '#troop/hooks'
 
 interface Props {
+  outpostId: string
   onSettle: (cityName: string) => void
 }
 
-export const OutpostSettle: React.FC<Props> = ({ onSettle }) => {
-  const { outpostId } = useParams()
+export const OutpostSettle: React.FC<Props> = ({ outpostId, onSettle }) => {
   const [cityName, setCityName] = useState('')
   const { data: troops = [] } = useListOutpostTroops(outpostId)
 

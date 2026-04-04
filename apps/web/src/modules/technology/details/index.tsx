@@ -7,23 +7,24 @@ import { Cost } from '#cost/index'
 import { TechnologyDetailsResearch } from '#technology/details/research'
 
 interface Props {
+  cityId: string
   technology: Technology
 }
 
-export const TechnologyDetails: React.FC<Props> = ({ technology }) => {
+export const TechnologyDetails: React.FC<Props> = ({ cityId, technology }) => {
   const { name, description, effect } = TechnologyTranslations[technology.code]
 
   return <>
     <LayoutDetailsContent>
       <h2>{name}</h2>
       <p>{effect}</p>
-      <TechnologyDetailsResearch technology={technology}/>
+      <TechnologyDetailsResearch cityId={cityId} technology={technology}/>
       <p className='description'>{description}</p>
     </LayoutDetailsContent>
 
     <article id="requirement">
-      <Requirement requirements={technology.requirement} />
-      <Cost {...technology.research_cost}/>
+      <Requirement cityId={cityId} requirements={technology.requirement} />
+      <Cost cityId={cityId} {...technology.research_cost}/>
     </article>
   </>
 }

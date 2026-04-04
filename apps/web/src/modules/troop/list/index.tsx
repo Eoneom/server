@@ -6,7 +6,7 @@ import { List } from '#ui/list'
 import { useListCityTroops } from '#troop/hooks'
 
 interface Props {
-  cityId: string | null
+  cityId: string
   selectedTroopId: string | null
   onSelect: (id: string) => void
 }

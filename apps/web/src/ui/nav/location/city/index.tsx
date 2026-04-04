@@ -14,7 +14,7 @@ export const NavLocationCities: React.FC<Props> = ({ cities, countLimit }) => {
       <h3>Villes {cities.length}/{countLimit}</h3>
       <ul>
         {cities.map(city => (
-          <NavLocationItem key={city.id} to={`/city/${city.id}`} text={city.name} />
+          <NavLocationItem key={city.id} kind="city" cityId={city.id} text={city.name} />
         ))}
       </ul>
     </section>

@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-import { Outlet, useParams } from 'react-router-dom'
+import { Outlet } from '@tanstack/react-router'
 
 import { useLocation } from '#location/context'
 import { useGameStateRefresh } from '#game/hooks'
 
-export const CityRoot: React.FC = () => {
-  const { cityId } = useParams()
+type CityRootProps = {
+  cityId: string
+}
+
+export const CityRoot: React.FC<CityRootProps> = ({ cityId }) => {
   const { setCity } = useLocation()
 
   useEffect(() => {
-    if (!cityId) return
     setCity(cityId)
   }, [cityId, setCity])
 

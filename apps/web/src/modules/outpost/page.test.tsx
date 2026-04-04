@@ -3,7 +3,6 @@ import { render, screen, act, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OutpostType } from '@eoneom/api-client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 import { AuthProvider } from '#auth/context'
 import { LocationProvider } from '#location/context'
@@ -46,11 +45,7 @@ function renderWithOutpost(outpost: Outpost | null) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <LocationProvider>
-          <MemoryRouter initialEntries={[outpost ? `/outpost/${outpost.id}` : '/outpost/test']}>
-            <Routes>
-              <Route path="/outpost/:outpostId" element={<OutpostPage />} />
-            </Routes>
-          </MemoryRouter>
+          <OutpostPage outpostId="o1" />
         </LocationProvider>
       </AuthProvider>
     </QueryClientProvider>

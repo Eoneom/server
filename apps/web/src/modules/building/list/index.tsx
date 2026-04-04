@@ -11,7 +11,7 @@ import { useListBuildings, useFinishBuildingUpgrade, useCancelBuildingUpgrade } 
 import { BuildingItem } from '#types'
 
 interface Props {
-  cityId: string | null
+  cityId: string
   selectedCode: BuildingCode | null
   onSelect: (code: BuildingCode) => void
 }

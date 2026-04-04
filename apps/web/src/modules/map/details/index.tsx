@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { useParams } from 'react-router-dom'
 
 import { MovementAction, TroopCode } from '@eoneom/api-client'
 
@@ -11,7 +10,10 @@ import { useGetCity } from '#city/hooks'
 import { useGetOutpost } from '#outpost/hooks'
 import { useCreateMovement } from '#troop/hooks'
 
-interface Props {
+type Props =
+  | { cityId: string; outpostId?: never }
+  | { cityId?: never; outpostId: string }
+interface BaseProps {
   coordinates: {
     x: number
     y: number
@@ -19,8 +21,7 @@ interface Props {
   sector: Sector
 }
 
-export const MapDetails: React.FC<Props> = ({ coordinates, sector }) => {
-  const { cityId, outpostId } = useParams()
+export const MapDetails: React.FC<Props & BaseProps> = ({ cityId, outpostId, coordinates, sector }) => {
   const { data: city } = useGetCity(cityId)
   const { data: outpost } = useGetOutpost(outpostId)
   const createMovement = useCreateMovement()
@@ -68,9 +69,17 @@ export const MapDetails: React.FC<Props> = ({ coordinates, sector }) => {
         </div>
       )}
       {selectedCell && selectedCell.characteristic && sector && (
-        <MapDetailsActionBase
-          coordinates={{ sector: sector.id, x: coordinates.x, y: coordinates.y }}
-        />
+        cityId
+          ? <MapDetailsActionBase
+            cityId={cityId}
+            coordinates={{ sector: sector.id, x: coordinates.x, y: coordinates.y }}
+          />
+          : outpostId
+            ? <MapDetailsActionBase
+              outpostId={outpostId}
+              coordinates={{ sector: sector.id, x: coordinates.x, y: coordinates.y }}
+            />
+            : null
       )}
     </div>
   </LayoutDetailsContent>

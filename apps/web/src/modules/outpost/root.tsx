@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Outlet, useNavigate, useParams } from 'react-router-dom'
+import { Outlet, useNavigate } from '@tanstack/react-router'
 import { toast } from 'react-toastify'
 
 import { useLocation } from '#location/context'
@@ -7,8 +7,11 @@ import { useListOutposts, useGetOutpost } from '#outpost/hooks'
 import { useListCities } from '#city/hooks'
 import { useGetCity } from '#city/hooks'
 
-export const OutpostRoot: React.FC = () => {
-  const { outpostId } = useParams()
+type OutpostRootProps = {
+  outpostId: string
+}
+
+export const OutpostRoot: React.FC<OutpostRootProps> = ({ outpostId }) => {
   const { setOutpost, setCity } = useLocation()
   const navigate = useNavigate()
 
@@ -19,13 +22,12 @@ export const OutpostRoot: React.FC = () => {
   useGetCity(firstCityId)
 
   useEffect(() => {
-    if (!outpostId) return
     setOutpost(outpostId)
   }, [outpostId, setOutpost])
 
   // redirect if outpost no longer exists
   useEffect(() => {
-    if (!outposts || !outpostId) return
+    if (!outposts) return
     const outpostExists = outposts.some(o => o.id === outpostId)
     if (!outpostExists && outpost === undefined) return  // still loading
     if (!outpostExists) {
@@ -33,7 +35,7 @@ export const OutpostRoot: React.FC = () => {
       if (!cityId) return
       toast.warn('L\'avant poste temporaire a été supprimé')
       setCity(cityId)
-      navigate(`/city/${cityId}`)
+      navigate({ to: `/city/${cityId}` })
     }
   }, [outposts, outpostId, outpost, citiesData, setCity, navigate])
 

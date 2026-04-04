@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { BuildingCode } from '@eoneom/api-client'
 
 import { BuildingList } from '#building/list'
@@ -8,14 +7,17 @@ import { LayoutPage } from '#ui/layout/page'
 import { useGetBuilding } from '#building/hooks'
 import { Building } from '#types'
 
-export const BuildingPage: React.FC = () => {
-  const { cityId } = useParams()
+type BuildingPageProps = {
+  cityId: string
+}
+
+export const BuildingPage: React.FC<BuildingPageProps> = ({ cityId }) => {
   const [selectedCode, setSelectedCode] = useState<BuildingCode | null>(null)
   const { data: building } = useGetBuilding(cityId, selectedCode)
 
-  return <LayoutPage details={building && <BuildingDetails building={building as Building} />}>
+  return <LayoutPage details={building && <BuildingDetails cityId={cityId} building={building as Building} />}>
     <BuildingList
-      cityId={cityId ?? null}
+      cityId={cityId}
       selectedCode={selectedCode}
       onSelect={setSelectedCode}
     />

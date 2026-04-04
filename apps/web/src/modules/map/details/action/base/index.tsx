@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
 
 import { MovementAction, TroopCode } from '@eoneom/api-client'
 
@@ -9,7 +8,10 @@ import { useListTroops, useCreateMovement } from '#troop/hooks'
 import { TroopTranslations } from '#troop/translations'
 import { Button } from '#ui/button'
 
-interface Props {
+type Props =
+  | { cityId: string; outpostId?: never }
+  | { cityId?: never; outpostId: string }
+interface BaseProps {
   coordinates: {
     x: number
     y: number
@@ -17,11 +19,10 @@ interface Props {
   }
 }
 
-export const MapDetailsActionBase: React.FC<Props> = ({ coordinates }) => {
-  const { cityId, outpostId } = useParams()
+export const MapDetailsActionBase: React.FC<Props & BaseProps> = ({ cityId, outpostId, coordinates }) => {
   const { data: city } = useGetCity(cityId)
   const { data: outpost } = useGetOutpost(outpostId)
-  const { data: troops = [] } = useListTroops(cityId, outpostId)
+  const { data: troops = [] } = useListTroops(cityId ? { cityId } : { outpostId: outpostId as string })
   const createMovement = useCreateMovement()
 
   const [troopsToBase, setTroopsToBase] = useState<Partial<Record<TroopCode, number>>>({})
