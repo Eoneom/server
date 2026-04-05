@@ -48,8 +48,7 @@ export default defineConfig({
     environment: 'node',
     include: [ 'src/**/*.spec.ts' ],
     globals: true,
-    fileParallelism: false,
-    maxWorkers: 1,
+    fileParallelism: true,
     coverage: {
       provider: 'v8',
       reporter: [ 'text', 'lcov' ],
