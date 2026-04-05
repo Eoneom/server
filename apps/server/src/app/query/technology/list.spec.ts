@@ -24,12 +24,12 @@ describe('TechnologyListQuery', () => {
         level: 1
       })
     ]
-    repository = { technology: { list: jest.fn().mockResolvedValue(technologies) } as unknown as Repository['technology'] }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    repository = { technology: { list: vi.fn().mockResolvedValue(technologies) } as unknown as Repository['technology'] }
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns sorted technologies', async () => {

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import {
   AppService, NEUTRAL_CELL_COEFFICIENTS 
 } from '#app/service'
@@ -17,7 +18,7 @@ import { WorldService } from '#core/world/service'
 
 describe('AppService', () => {
   const setRepositoryMock = (repository: Repository) => {
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository)
   }
 
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe('AppService', () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   describe('getCityProductionBreakdown', () => {
@@ -49,7 +50,7 @@ describe('AppService', () => {
     beforeEach(() => {
       const repository = {
         building: {
-          getLevel: jest.fn().mockImplementation(({ code }: { code: BuildingCode }) => {
+          getLevel: vi.fn().mockImplementation(({ code }: { code: BuildingCode }) => {
             if (code === BuildingCode.MUSHROOM_FARM) {
               return 2
             }
@@ -59,7 +60,7 @@ describe('AppService', () => {
             return 0
           })
         },
-        cell: { getCityCell: jest.fn().mockResolvedValue(city_cell) }
+        cell: { getCityCell: vi.fn().mockResolvedValue(city_cell) }
       } as unknown as Repository
   
       setRepositoryMock(repository)
@@ -118,7 +119,7 @@ describe('AppService', () => {
     })
   
     beforeEach(() => {
-      const repository = { cell: { getCell: jest.fn().mockResolvedValue(cell) } } as unknown as Repository
+      const repository = { cell: { getCell: vi.fn().mockResolvedValue(cell) } } as unknown as Repository
       setRepositoryMock(repository)
     })
   
@@ -132,7 +133,7 @@ describe('AppService', () => {
     const city_id = 'city_max_levels'
   
     beforeEach(() => {
-      const repository = { cell: { getCityCellsCount: jest.fn().mockResolvedValue(7) } } as unknown as Repository
+      const repository = { cell: { getCityCellsCount: vi.fn().mockResolvedValue(7) } } as unknown as Repository
       setRepositoryMock(repository)
     })
   
@@ -148,7 +149,7 @@ describe('AppService', () => {
     beforeEach(() => {
       const repository = {
         building: {
-          getLevel: jest.fn().mockImplementation(({ code }: { code: BuildingCode }) => {
+          getLevel: vi.fn().mockImplementation(({ code }: { code: BuildingCode }) => {
             if (code === BuildingCode.MUSHROOM_WAREHOUSE) {
               return 3
             }
@@ -180,12 +181,12 @@ describe('AppService', () => {
     const player_id = 'player_req_b'
   
     afterEach(() => {
-      jest.restoreAllMocks()
+      vi.restoreAllMocks()
     })
   
     it('calls list with empty code lists and returns empty maps for MUSHROOM_FARM', async () => {
-      const building_list = jest.fn().mockResolvedValue([])
-      const technology_list = jest.fn().mockResolvedValue([])
+      const building_list = vi.fn().mockResolvedValue([])
+      const technology_list = vi.fn().mockResolvedValue([])
       const repository = {
         building: { list: building_list },
         technology: { list: technology_list }
@@ -219,8 +220,8 @@ describe('AppService', () => {
         code: TechnologyCode.ARCHITECTURE,
         level: 4
       })
-      const building_list = jest.fn().mockResolvedValue([])
-      const technology_list = jest.fn().mockResolvedValue([ architecture ])
+      const building_list = vi.fn().mockResolvedValue([])
+      const technology_list = vi.fn().mockResolvedValue([ architecture ])
       const repository = {
         building: { list: building_list },
         technology: { list: technology_list }
@@ -253,13 +254,13 @@ describe('AppService', () => {
         code: BuildingCode.RESEARCH_LAB,
         level: 6
       })
-      const building_list = jest.fn().mockResolvedValue([ research_lab ])
-      const technology_list = jest.fn().mockResolvedValue([])
+      const building_list = vi.fn().mockResolvedValue([ research_lab ])
+      const technology_list = vi.fn().mockResolvedValue([])
       const repository = {
         building: { list: building_list },
         technology: { list: technology_list }
       } as unknown as Repository
-      jest.spyOn(Factory, 'getRepository').mockReturnValue(repository)
+      vi.spyOn(Factory, 'getRepository').mockReturnValue(repository)
   
       const levels = await AppService.getTechnologyRequirementLevels({
         city_id,
@@ -288,8 +289,8 @@ describe('AppService', () => {
         code: BuildingCode.CLONING_FACTORY,
         level: 2
       })
-      const building_list = jest.fn().mockResolvedValue([ cloning ])
-      const technology_list = jest.fn().mockResolvedValue([])
+      const building_list = vi.fn().mockResolvedValue([ cloning ])
+      const technology_list = vi.fn().mockResolvedValue([])
       const repository = {
         building: { list: building_list },
         technology: { list: technology_list }
@@ -342,10 +343,10 @@ describe('AppService', () => {
     })
   
     beforeEach(() => {
-      jest.spyOn(WorldService, 'getRandomCoordinates')
+      vi.spyOn(WorldService, 'getRandomCoordinates')
         .mockReturnValueOnce(coords_taken)
         .mockReturnValueOnce(coords_free)
-      const getCell = jest.fn()
+      const getCell = vi.fn()
         .mockResolvedValueOnce(assigned_cell)
         .mockResolvedValueOnce(free_cell)
       const repository = { cell: { getCell } } as unknown as Repository
@@ -388,7 +389,7 @@ describe('AppService', () => {
     ]
   
     beforeEach(() => {
-      const getCell = jest.fn().mockImplementation(({ coordinates }: { coordinates: Coordinates }) => Promise.resolve(CellEntity.create({
+      const getCell = vi.fn().mockImplementation(({ coordinates }: { coordinates: Coordinates }) => Promise.resolve(CellEntity.create({
         id: `cell_${coordinates.x}_${coordinates.y}`,
         coordinates,
         type: CellType.LAKE,
@@ -402,10 +403,11 @@ describe('AppService', () => {
     })
   
     it('fetches the four orthogonal neighbors', async () => {
-      const repository = Factory.getRepository() as unknown as { cell: { getCell: jest.Mock } }
+      const repository = Factory.getRepository() as unknown as { cell: { getCell: MockInstance } }
       await AppService.getCellsAround({ coordinates: center })
   
-      const requested = repository.cell.getCell.mock.calls.map((call: [{ coordinates: Coordinates }]) => call[0].coordinates)
+      const calls = repository.cell.getCell.mock.calls as Array<[ { coordinates: Coordinates } ]>
+      const requested = calls.map(([ call ]) => call.coordinates)
       expect(requested).toEqual(expect.arrayContaining(expected_neighbors))
       expect(requested).toHaveLength(4)
     })

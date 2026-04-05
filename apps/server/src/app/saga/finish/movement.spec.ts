@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest'
 import assert from 'assert'
 import { sagaFinishMovement } from './movement'
 import { sagaFinishBase } from '#app/saga/finish/base'
@@ -10,49 +11,53 @@ import { TroopError } from '#core/troop/error'
 import { AppEvent } from '#core/events'
 import { Lock } from '#app/port/lock'
 
-jest.mock('#app/saga/finish/base')
-jest.mock('#app/saga/finish/explore')
-jest.mock('#query/troop/movement/list-finished')
-jest.mock('#query/troop/movement/get-action')
+vi.mock('#app/saga/finish/base')
+vi.mock('#app/saga/finish/explore')
+vi.mock('#query/troop/movement/list-finished')
+vi.mock('#query/troop/movement/get-action')
 
 describe('sagaFinishMovement', () => {
   const player_id = 'player_id'
   const key = `finish-movement-${player_id}`
 
   let lock: Lock
-  let emit: jest.Mock
-  let listFinishedRun: jest.Mock
-  let getActionRun: jest.Mock
+  let emit: MockInstance
+  let listFinishedRun: MockInstance
+  let getActionRun: MockInstance
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     lock = {
-      has: jest.fn().mockReturnValue(false),
-      set: jest.fn(),
-      delete: jest.fn(),
+      has: vi.fn().mockReturnValue(false),
+      set: vi.fn(),
+      delete: vi.fn(),
     }
-    emit = jest.fn()
+    emit = vi.fn()
 
-    jest.spyOn(Factory, 'getLock').mockReturnValue(lock)
-    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit } as never)
+    vi.spyOn(Factory, 'getLock').mockReturnValue(lock)
+    vi.spyOn(Factory, 'getEventBus').mockReturnValue({ emit } as never)
 
-    listFinishedRun = jest.fn().mockResolvedValue({ movement_ids: [] })
-    getActionRun = jest.fn().mockResolvedValue({ action: MovementAction.BASE })
+    listFinishedRun = vi.fn().mockResolvedValue({ movement_ids: [] })
+    getActionRun = vi.fn().mockResolvedValue({ action: MovementAction.BASE })
 
-    ;(TroopMovementListFinishedQuery as jest.Mock).mockImplementation(() => ({ run: listFinishedRun }))
-    ;(TroopMovementGetActionQuery as jest.Mock).mockImplementation(() => ({ run: getActionRun }))
+    ;(TroopMovementListFinishedQuery as MockInstance).mockImplementation(function () {
+      return { run: listFinishedRun }
+    })
+    ;(TroopMovementGetActionQuery as MockInstance).mockImplementation(function () {
+      return { run: getActionRun }
+    })
 
-    ;(sagaFinishBase as jest.Mock).mockResolvedValue({ is_outpost_created: false })
-    ;(sagaFinishExplore as jest.Mock).mockResolvedValue(undefined)
+    ;(sagaFinishBase as MockInstance).mockResolvedValue({ is_outpost_created: false })
+    ;(sagaFinishExplore as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns early without running queries when lock is already held', async () => {
-    ;(lock.has as jest.Mock).mockReturnValue(true)
+    ;(lock.has as MockInstance).mockReturnValue(true)
 
     await sagaFinishMovement({ player_id })
 
@@ -63,15 +68,15 @@ describe('sagaFinishMovement', () => {
   it('acquires the lock with the player-specific key', async () => {
     await sagaFinishMovement({ player_id })
 
-    assert.strictEqual((lock.has as jest.Mock).mock.calls[0][0], key)
-    assert.strictEqual((lock.set as jest.Mock).mock.calls[0][0], key)
+    assert.strictEqual((lock.has as MockInstance).mock.calls[0][0], key)
+    assert.strictEqual((lock.set as MockInstance).mock.calls[0][0], key)
   })
 
   it('releases the lock after completion', async () => {
     await sagaFinishMovement({ player_id })
 
-    assert.strictEqual((lock.delete as jest.Mock).mock.calls.length, 1)
-    assert.strictEqual((lock.delete as jest.Mock).mock.calls[0][0], key)
+    assert.strictEqual((lock.delete as MockInstance).mock.calls.length, 1)
+    assert.strictEqual((lock.delete as MockInstance).mock.calls[0][0], key)
   })
 
   it('does not emit events when no movements are finished', async () => {
@@ -88,9 +93,9 @@ describe('sagaFinishMovement', () => {
 
     await sagaFinishMovement({ player_id })
 
-    assert.strictEqual((sagaFinishBase as jest.Mock).mock.calls.length, 1)
-    assert.deepStrictEqual((sagaFinishBase as jest.Mock).mock.calls[0][0], { player_id, movement_id: 'm1' })
-    assert.strictEqual((sagaFinishExplore as jest.Mock).mock.calls.length, 0)
+    assert.strictEqual((sagaFinishBase as MockInstance).mock.calls.length, 1)
+    assert.deepStrictEqual((sagaFinishBase as MockInstance).mock.calls[0][0], { player_id, movement_id: 'm1' })
+    assert.strictEqual((sagaFinishExplore as MockInstance).mock.calls.length, 0)
   })
 
   it('calls sagaFinishExplore for EXPLORE movements', async () => {
@@ -99,9 +104,9 @@ describe('sagaFinishMovement', () => {
 
     await sagaFinishMovement({ player_id })
 
-    assert.strictEqual((sagaFinishExplore as jest.Mock).mock.calls.length, 1)
-    assert.deepStrictEqual((sagaFinishExplore as jest.Mock).mock.calls[0][0], { player_id, movement_id: 'm1' })
-    assert.strictEqual((sagaFinishBase as jest.Mock).mock.calls.length, 0)
+    assert.strictEqual((sagaFinishExplore as MockInstance).mock.calls.length, 1)
+    assert.deepStrictEqual((sagaFinishExplore as MockInstance).mock.calls[0][0], { player_id, movement_id: 'm1' })
+    assert.strictEqual((sagaFinishBase as MockInstance).mock.calls.length, 0)
   })
 
   it('emits TroopMovementFinished when at least one movement is processed', async () => {
@@ -118,7 +123,7 @@ describe('sagaFinishMovement', () => {
   it('emits OutpostCreated when an outpost is created', async () => {
     listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
     getActionRun.mockResolvedValue({ action: MovementAction.BASE })
-    ;(sagaFinishBase as jest.Mock).mockResolvedValue({ is_outpost_created: true })
+    ;(sagaFinishBase as MockInstance).mockResolvedValue({ is_outpost_created: true })
 
     await sagaFinishMovement({ player_id })
 
@@ -131,7 +136,7 @@ describe('sagaFinishMovement', () => {
 
   it('does not emit OutpostCreated when no outpost is created', async () => {
     listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
-    ;(sagaFinishBase as jest.Mock).mockResolvedValue({ is_outpost_created: false })
+    ;(sagaFinishBase as MockInstance).mockResolvedValue({ is_outpost_created: false })
 
     await sagaFinishMovement({ player_id })
 
@@ -155,6 +160,6 @@ describe('sagaFinishMovement', () => {
 
     await sagaFinishMovement({ player_id })
 
-    assert.strictEqual((sagaFinishBase as jest.Mock).mock.calls.length, 3)
+    assert.strictEqual((sagaFinishBase as MockInstance).mock.calls.length, 3)
   })
 })

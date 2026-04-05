@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { gameRefreshStateHandler } from './refresh-state'
 import { sagaRefreshGameState } from '#app/saga/game/refresh-state'
 
-jest.mock('#app/saga/game/refresh-state')
+vi.mock('#app/saga/game/refresh-state')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('gameRefreshStateHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { city_id: 'c1' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(sagaRefreshGameState as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(sagaRefreshGameState as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when city_id is missing', async () => {

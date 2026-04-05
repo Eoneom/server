@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { troopProgressRecruitHandler } from './progress-recruit'
 import { progressTroopRecruitment } from '#app/command/troop/progress-recruit'
 
-jest.mock('#app/command/troop/progress-recruit')
+vi.mock('#app/command/troop/progress-recruit')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('troopProgressRecruitHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { city_id: 'c1' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    jest.mocked(progressTroopRecruitment).mockResolvedValue({ recruit_count: 5 })
+    next = vi.fn()
+    vi.mocked(progressTroopRecruitment).mockResolvedValue({ recruit_count: 5 })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when city_id is missing', async () => {
@@ -41,7 +42,7 @@ describe('troopProgressRecruitHandler', () => {
 
   it('calls next with error when command throws', async () => {
     const error = new Error('recruit error')
-    jest.mocked(progressTroopRecruitment).mockRejectedValue(error)
+    vi.mocked(progressTroopRecruitment).mockRejectedValue(error)
     await troopProgressRecruitHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import assert from 'assert'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -11,13 +12,13 @@ describe('outpostSetPermanent', () => {
   const player_id = 'player_id'
   const cell_id = 'cell_id'
 
-  let updateOne: jest.Mock
-  let getById: jest.Mock
+  let updateOne: MockInstance
+  let getById: MockInstance
   let repository: Pick<Repository, 'outpost'>
 
   beforeEach(() => {
-    updateOne = jest.fn().mockResolvedValue(undefined)
-    getById = jest.fn().mockResolvedValue(OutpostEntity.create({
+    updateOne = vi.fn().mockResolvedValue(undefined)
+    getById = vi.fn().mockResolvedValue(OutpostEntity.create({
       id: outpost_id,
       player_id,
       cell_id,
@@ -31,11 +32,11 @@ describe('outpostSetPermanent', () => {
       } as unknown as Repository['outpost']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should reject when player does not own outpost', async () => {

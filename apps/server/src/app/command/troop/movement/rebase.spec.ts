@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { rebaseTroopMovement } from '#app/command/troop/movement/rebase'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -16,10 +17,10 @@ describe('rebaseTroopMovement', () => {
 
   let initial_base_movement: MovementEntity
   let initial_movement_troops: TroopEntity[]
-  let movementDelete: jest.Mock
-  let movementCreate: jest.Mock
-  let troopUpdateOne: jest.Mock
-  let reportCreate: jest.Mock
+  let movementDelete: MockInstance
+  let movementCreate: MockInstance
+  let troopUpdateOne: MockInstance
+  let reportCreate: MockInstance
   let repository: Pick<Repository, 'troop' | 'movement' | 'report'>
 
   beforeEach(() => {
@@ -51,18 +52,18 @@ describe('rebaseTroopMovement', () => {
       }),
     ]
 
-    movementDelete = jest.fn().mockResolvedValue(undefined)
-    movementCreate = jest.fn().mockResolvedValue(undefined)
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    reportCreate = jest.fn().mockResolvedValue(undefined)
+    movementDelete = vi.fn().mockResolvedValue(undefined)
+    movementCreate = vi.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
+    reportCreate = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       troop: {
-        listByMovement: jest.fn().mockResolvedValue(initial_movement_troops),
+        listByMovement: vi.fn().mockResolvedValue(initial_movement_troops),
         updateOne: troopUpdateOne,
       } as unknown as Repository['troop'],
       movement: {
-        getById: jest.fn().mockResolvedValue(initial_base_movement),
+        getById: vi.fn().mockResolvedValue(initial_base_movement),
         delete: movementDelete,
         create: movementCreate,
       } as unknown as Repository['movement'],
@@ -71,15 +72,15 @@ describe('rebaseTroopMovement', () => {
       } as unknown as Repository['report'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent player from rebasing another player troops', async () => {
-    repository.movement.getById = jest.fn().mockResolvedValue(MovementEntity.create({
+    repository.movement.getById = vi.fn().mockResolvedValue(MovementEntity.create({
       ...initial_base_movement,
       player_id: 'another_player_id',
     }))

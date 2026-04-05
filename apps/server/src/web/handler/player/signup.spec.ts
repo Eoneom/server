@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { signupHandler } from './signup'
 import { signupAuth } from '#command/auth/signup'
 
-jest.mock('#command/auth/signup')
+vi.mock('#command/auth/signup')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('signupHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { player_name: 'alice', city_name: 'Aliceton' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: {}
     }
-    next = jest.fn()
-    jest.mocked(signupAuth).mockResolvedValue({ player_id: 'p1', city_id: 'c1' })
+    next = vi.fn()
+    vi.mocked(signupAuth).mockResolvedValue({ player_id: 'p1', city_id: 'c1' })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when player_name is missing', async () => {
@@ -48,7 +49,7 @@ describe('signupHandler', () => {
 
   it('calls next with error when signupAuth throws', async () => {
     const error = new Error('signup error')
-    jest.mocked(signupAuth).mockRejectedValue(error)
+    vi.mocked(signupAuth).mockRejectedValue(error)
     await signupHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

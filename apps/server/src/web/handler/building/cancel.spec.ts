@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { buildingCancelHandler } from './cancel'
 import { cancelBuilding } from '#command/building/cancel'
 
-jest.mock('#command/building/cancel')
+vi.mock('#command/building/cancel')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('buildingCancelHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { city_id: 'c1' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(cancelBuilding as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(cancelBuilding as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when city_id is missing', async () => {
@@ -41,7 +42,7 @@ describe('buildingCancelHandler', () => {
 
   it('calls next with error when cancelBuilding throws', async () => {
     const error = new Error('cancel error')
-    ;(cancelBuilding as jest.Mock).mockRejectedValue(error)
+    ;(cancelBuilding as MockInstance).mockRejectedValue(error)
     await buildingCancelHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { cityGather } from './gather'
 import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
@@ -18,8 +19,8 @@ describe('cityGather', () => {
   let city: CityEntity
   let city_cell: ReturnType<typeof testCityCell>
   let stock: ReturnType<typeof testResourceStock>
-  let stockUpdateOne: jest.Mock
-  let mockEmit: jest.Mock
+  let stockUpdateOne: MockInstance
+  let mockEmit: MockInstance
   let repository: Pick<Repository, 'city' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
@@ -36,36 +37,36 @@ describe('cityGather', () => {
       last_mushroom_gather: 0
     })
 
-    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
-    mockEmit = jest.fn()
+    stockUpdateOne = vi.fn().mockResolvedValue(undefined)
+    mockEmit = vi.fn()
 
     repository = {
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       cell: {
-        getCityCell: jest.fn().mockResolvedValue(city_cell)
+        getCityCell: vi.fn().mockResolvedValue(city_cell)
       } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: jest.fn().mockImplementation(() => Promise.resolve(stock)),
+        getByCellId: vi.fn().mockImplementation(() => Promise.resolve(stock)),
         updateOne: stockUpdateOne
       } as unknown as Repository['resource_stock']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
-    jest.spyOn(AppService, 'getCityEarningsBySecond').mockResolvedValue({
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
+    vi.spyOn(AppService, 'getCityEarningsBySecond').mockResolvedValue({
       plastic: 100,
       mushroom: 100
     })
-    jest.spyOn(AppService, 'getCityWarehousesCapacity').mockResolvedValue({
+    vi.spyOn(AppService, 'getCityWarehousesCapacity').mockResolvedValue({
       plastic: 30000,
       mushroom: 30000
     })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent player to gather resource in another player city', async () => {
@@ -90,7 +91,7 @@ describe('cityGather', () => {
       last_plastic_gather: gather_at_time + 10 * 1000,
       last_mushroom_gather: gather_at_time + 10 * 1000
     })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(blocked)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(blocked)
 
     await cityGather({
       city_id: city.id,
@@ -109,11 +110,11 @@ describe('cityGather', () => {
     const mushroom_warehouse_capacity = STARTING_MUSHROOM + 2
     const gather_at_time = now()
 
-    jest.spyOn(AppService, 'getCityEarningsBySecond').mockResolvedValue({
+    vi.spyOn(AppService, 'getCityEarningsBySecond').mockResolvedValue({
       plastic: plastic_earnings,
       mushroom: mushroom_earnings
     })
-    jest.spyOn(AppService, 'getCityWarehousesCapacity').mockResolvedValue({
+    vi.spyOn(AppService, 'getCityWarehousesCapacity').mockResolvedValue({
       plastic: plastic_warehouse_capacity,
       mushroom: mushroom_warehouse_capacity
     })
@@ -125,7 +126,7 @@ describe('cityGather', () => {
       last_plastic_gather: gather_at_time - time_elapsed * 1000,
       last_mushroom_gather: gather_at_time - time_elapsed * 1000
     })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(seeded)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(seeded)
 
     await cityGather({
       city_id: city.id,
@@ -145,7 +146,7 @@ describe('cityGather', () => {
     const mushroom_earnings = 150
     const gather_at_time = now()
 
-    jest.spyOn(AppService, 'getCityEarningsBySecond').mockResolvedValue({
+    vi.spyOn(AppService, 'getCityEarningsBySecond').mockResolvedValue({
       plastic: plastic_earnings,
       mushroom: mushroom_earnings
     })
@@ -157,7 +158,7 @@ describe('cityGather', () => {
       last_plastic_gather: gather_at_time - time_elapsed * 1000,
       last_mushroom_gather: gather_at_time - time_elapsed * 1000
     })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(seeded)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(seeded)
 
     await cityGather({
       city_id: city.id,
@@ -182,7 +183,7 @@ describe('cityGather', () => {
       last_plastic_gather: gather_at_time - time_elapsed * 1000,
       last_mushroom_gather: gather_at_time - time_elapsed * 1000
     })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(seeded)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(seeded)
 
     await cityGather({
       city_id: city.id,
@@ -204,7 +205,7 @@ describe('cityGather', () => {
       last_plastic_gather: gather_at_time + 10 * 1000,
       last_mushroom_gather: gather_at_time + 10 * 1000
     })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(blocked)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(blocked)
 
     await cityGather({
       city_id: city.id,

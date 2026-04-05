@@ -1,11 +1,12 @@
+import type { MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { buildingListHandler } from './list'
 import { BuildingListQuery } from '#query/building/list'
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
@@ -14,22 +15,22 @@ const queryData = [{ code: 'SAWMILL', level: 1 }]
 describe('buildingListHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { params: { city_id: 'c1' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    jest.spyOn(BuildingListQuery.prototype, 'run').mockResolvedValue(queryData as any)
+    next = vi.fn()
+    vi.spyOn(BuildingListQuery.prototype, 'run').mockResolvedValue(queryData as any)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when city_id is missing', async () => {
@@ -41,7 +42,7 @@ describe('buildingListHandler', () => {
 
   it('calls next with error when query throws', async () => {
     const error = new Error('query error')
-    jest.spyOn(BuildingListQuery.prototype, 'run').mockRejectedValue(error)
+    vi.spyOn(BuildingListQuery.prototype, 'run').mockRejectedValue(error)
     await buildingListHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

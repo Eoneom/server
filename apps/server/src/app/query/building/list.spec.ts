@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { BuildingListQuery } from '#app/query/building/list'
 import type { BuildingListEntry } from '@eoneom/api-client/src/endpoints/building/list'
 import { Factory } from '#adapter/factory'
@@ -43,20 +44,20 @@ describe('BuildingListQuery', () => {
     })
 
     repository = {
-      city: { get: jest.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
       building: {
-        list: jest.fn().mockResolvedValue([
+        list: vi.fn().mockResolvedValue([
           b_upgrade,
           b_idle 
         ]) 
       } as unknown as Repository['building'],
-      technology: { get: jest.fn().mockResolvedValue(architecture) } as unknown as Repository['technology']
+      technology: { get: vi.fn().mockResolvedValue(architecture) } as unknown as Repository['technology']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when city is not owned by player', async () => {
@@ -64,7 +65,7 @@ describe('BuildingListQuery', () => {
       name: 'x',
       player_id: 'other'
     })
-    ;(repository.city.get as jest.Mock).mockResolvedValue(other)
+    ;(repository.city.get as MockInstance).mockResolvedValue(other)
 
     await expect(new BuildingListQuery().run({
       city_id: other.id,

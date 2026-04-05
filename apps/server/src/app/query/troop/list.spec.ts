@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { TroopListQuery } from '#app/query/troop/list'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -49,21 +50,21 @@ describe('TroopListQuery', () => {
     })
 
     repository = {
-      city: { get: jest.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
       cell: {
-        getCityCell: jest.fn().mockResolvedValue(cell),
-        getById: jest.fn()
+        getCityCell: vi.fn().mockResolvedValue(cell),
+        getById: vi.fn()
       } as unknown as Repository['cell'],
-      troop: { listInCell: jest.fn().mockResolvedValue([ troop ]) } as unknown as Repository['troop'],
-      building: { getLevel: jest.fn().mockResolvedValue(1) } as unknown as Repository['building'],
-      technology: { getLevel: jest.fn().mockResolvedValue(0) } as unknown as Repository['technology'],
+      troop: { listInCell: vi.fn().mockResolvedValue([ troop ]) } as unknown as Repository['troop'],
+      building: { getLevel: vi.fn().mockResolvedValue(1) } as unknown as Repository['building'],
+      technology: { getLevel: vi.fn().mockResolvedValue(0) } as unknown as Repository['technology'],
       outpost: {} as unknown as Repository['outpost']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when city is not owned by player', async () => {
@@ -71,7 +72,7 @@ describe('TroopListQuery', () => {
       name: 'x',
       player_id: 'other'
     })
-    ;(repository.city.get as jest.Mock).mockResolvedValue(other_city)
+    ;(repository.city.get as MockInstance).mockResolvedValue(other_city)
 
     await expect(new TroopListQuery().run({
       location: {
@@ -110,7 +111,7 @@ describe('TroopListQuery', () => {
       cell_id: 'cell_o',
       type: OutpostType.TEMPORARY
     })
-    repository.outpost = { getById: jest.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost']
+    repository.outpost = { getById: vi.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost']
 
     await expect(new TroopListQuery().run({
       location: {
@@ -128,8 +129,8 @@ describe('TroopListQuery', () => {
       cell_id: cell.id,
       type: OutpostType.TEMPORARY
     })
-    repository.outpost = { getById: jest.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost']
-    ;(repository.cell.getById as jest.Mock).mockResolvedValue(cell)
+    repository.outpost = { getById: vi.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost']
+    ;(repository.cell.getById as MockInstance).mockResolvedValue(cell)
 
     const result = await new TroopListQuery().run({
       location: {

@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { loginHandler } from './login'
 import { loginAuth } from '#command/auth/login'
 
-jest.mock('#command/auth/login')
+vi.mock('#command/auth/login')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('loginHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { player_name: 'alice' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: {}
     }
-    next = jest.fn()
-    jest.mocked(loginAuth).mockResolvedValue({ token: 'tok123' })
+    next = vi.fn()
+    vi.mocked(loginAuth).mockResolvedValue({ token: 'tok123' })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when player_name is missing', async () => {
@@ -41,7 +42,7 @@ describe('loginHandler', () => {
 
   it('calls next with error when loginAuth throws', async () => {
     const error = new Error('auth error')
-    jest.mocked(loginAuth).mockRejectedValue(error)
+    vi.mocked(loginAuth).mockRejectedValue(error)
     await loginHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

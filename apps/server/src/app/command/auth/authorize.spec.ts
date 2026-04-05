@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { authorizeAuth } from './authorize'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -15,13 +16,13 @@ describe('authorizeAuth', () => {
     last_action_at: 100
   })
 
-  let authGet: jest.Mock
-  let authUpdateOne: jest.Mock
+  let authGet: MockInstance
+  let authUpdateOne: MockInstance
   let repository: Pick<Repository, 'auth'>
 
   beforeEach(() => {
-    authGet = jest.fn().mockResolvedValue(auth)
-    authUpdateOne = jest.fn().mockResolvedValue(undefined)
+    authGet = vi.fn().mockResolvedValue(auth)
+    authUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       auth: {
@@ -30,11 +31,11 @@ describe('authorizeAuth', () => {
       } as unknown as Repository['auth']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should reject when auth is not found', async () => {

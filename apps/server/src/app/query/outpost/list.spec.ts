@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { OutpostListQuery } from '#app/query/outpost/list'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -13,17 +14,17 @@ describe('OutpostListQuery', () => {
 
   beforeEach(() => {
     repository = {
-      outpost: { list: jest.fn().mockResolvedValue([]) } as unknown as Repository['outpost'],
-      cell: { getById: jest.fn() } as unknown as Repository['cell'],
+      outpost: { list: vi.fn().mockResolvedValue([]) } as unknown as Repository['outpost'],
+      cell: { getById: vi.fn() } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: jest.fn()
+        getByCellId: vi.fn()
       } as unknown as Repository['resource_stock']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns empty outposts and cells', async () => {
@@ -60,9 +61,9 @@ describe('OutpostListQuery', () => {
       plastic: 1,
       mushroom: 2
     })
-    ;(repository.outpost.list as jest.Mock).mockResolvedValue([ outpost ])
-    ;(repository.cell.getById as jest.Mock).mockResolvedValue(cell)
-    ;(repository.resource_stock.getByCellId as jest.Mock).mockResolvedValue(stock)
+    ;(repository.outpost.list as MockInstance).mockResolvedValue([ outpost ])
+    ;(repository.cell.getById as MockInstance).mockResolvedValue(cell)
+    ;(repository.resource_stock.getByCellId as MockInstance).mockResolvedValue(stock)
 
     const result = await new OutpostListQuery().run({ player_id })
 

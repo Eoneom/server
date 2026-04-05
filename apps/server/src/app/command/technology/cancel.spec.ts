@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { cancelTechnology } from './cancel'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -10,7 +11,7 @@ import assert from 'assert'
 describe('cancelTechnology', () => {
   const player_id = 'player_id'
   let technology: TechnologyEntity
-  let technologyUpdateOne: jest.Mock
+  let technologyUpdateOne: MockInstance
   let repository: Pick<Repository, 'technology'>
 
   beforeEach(() => {
@@ -24,24 +25,24 @@ describe('cancelTechnology', () => {
       research_started_at: started
     })
 
-    technologyUpdateOne = jest.fn().mockResolvedValue(undefined)
+    technologyUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       technology: {
-        getInProgress: jest.fn().mockResolvedValue(technology),
+        getInProgress: vi.fn().mockResolvedValue(technology),
         updateOne: technologyUpdateOne
       } as unknown as Repository['technology']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should assert that there is a technology in progress', async () => {
-    repository.technology.getInProgress = jest.fn().mockResolvedValue(null)
+    repository.technology.getInProgress = vi.fn().mockResolvedValue(null)
 
     await assert.rejects(
       () => cancelTechnology({ player_id }),

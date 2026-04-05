@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { cancelBuilding } from '#app/command/building/cancel'
 import {
   STARTING_MUSHROOM,
@@ -21,8 +22,8 @@ describe('cancelBuilding', () => {
   let city_cell: ReturnType<typeof testCityCell>
   let stock: ReturnType<typeof testResourceStock>
   let building: BuildingEntity
-  let stockUpdateOne: jest.Mock
-  let buildingUpdateOne: jest.Mock
+  let stockUpdateOne: MockInstance
+  let buildingUpdateOne: MockInstance
   let repository: Pick<Repository, 'building' | 'city' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
@@ -45,31 +46,31 @@ describe('cancelBuilding', () => {
       upgrade_at: now() + 1000 * 60
     })
 
-    buildingUpdateOne = jest.fn().mockResolvedValue(undefined)
-    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
+    buildingUpdateOne = vi.fn().mockResolvedValue(undefined)
+    stockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       building: {
-        getInProgress: jest.fn().mockResolvedValue(building),
+        getInProgress: vi.fn().mockResolvedValue(building),
         updateOne: buildingUpdateOne
       } as unknown as Repository['building'],
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       cell: {
-        getCityCell: jest.fn().mockResolvedValue(city_cell)
+        getCityCell: vi.fn().mockResolvedValue(city_cell)
       } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: jest.fn().mockResolvedValue(stock),
+        getByCellId: vi.fn().mockResolvedValue(stock),
         updateOne: stockUpdateOne
       } as unknown as Repository['resource_stock']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent player from cancelling other player buildings', async () => {
@@ -83,7 +84,7 @@ describe('cancelBuilding', () => {
   })
 
   it('should assert that there is a building in progress', async () => {
-    repository.building.getInProgress = jest.fn().mockResolvedValue(null)
+    repository.building.getInProgress = vi.fn().mockResolvedValue(null)
 
     await assert.rejects(
       () => cancelBuilding({

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { createTroopMovement } from '#app/command/troop/movement/create'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -21,13 +22,13 @@ describe('createTroopMovement', () => {
 
   let origin_troop: TroopEntity
   let cell: CellEntity
-  let troopCreate: jest.Mock
-  let troopUpdateOne: jest.Mock
-  let troopDelete: jest.Mock
-  let movementCreate: jest.Mock
-  let outpostDelete: jest.Mock
-  let searchByCell: jest.Mock
-  let listInCell: jest.Mock
+  let troopCreate: MockInstance
+  let troopUpdateOne: MockInstance
+  let troopDelete: MockInstance
+  let movementCreate: MockInstance
+  let outpostDelete: MockInstance
+  let searchByCell: MockInstance
+  let listInCell: MockInstance
   let repository: Pick<Repository, 'cell' | 'troop' | 'outpost' | 'movement'>
 
   beforeEach(() => {
@@ -48,17 +49,17 @@ describe('createTroopMovement', () => {
       resource_coefficient: { plastic: 0.1, mushroom: 0.1 },
     })
 
-    troopCreate = jest.fn().mockResolvedValue(undefined)
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    troopDelete = jest.fn().mockResolvedValue(undefined)
-    movementCreate = jest.fn().mockResolvedValue(undefined)
-    outpostDelete = jest.fn().mockResolvedValue(undefined)
-    searchByCell = jest.fn().mockResolvedValue(null)
-    listInCell = jest.fn().mockResolvedValue([ origin_troop ])
+    troopCreate = vi.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
+    troopDelete = vi.fn().mockResolvedValue(undefined)
+    movementCreate = vi.fn().mockResolvedValue(undefined)
+    outpostDelete = vi.fn().mockResolvedValue(undefined)
+    searchByCell = vi.fn().mockResolvedValue(null)
+    listInCell = vi.fn().mockResolvedValue([ origin_troop ])
 
     repository = {
       cell: {
-        getCell: jest.fn().mockResolvedValue(cell),
+        getCell: vi.fn().mockResolvedValue(cell),
       } as unknown as Repository['cell'],
       troop: {
         listInCell,
@@ -75,12 +76,12 @@ describe('createTroopMovement', () => {
       } as unknown as Repository['movement'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: jest.fn() } as any)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: vi.fn() } as any)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   async function callCreate(move_troops: { code: TroopCode; count: number }[]) {
@@ -94,7 +95,7 @@ describe('createTroopMovement', () => {
   }
 
   it('should reject when origin does not have enough troops', async () => {
-    listInCell = jest.fn().mockResolvedValue([
+    listInCell = vi.fn().mockResolvedValue([
       TroopEntity.create({
         ...origin_troop,
         count: 3,
@@ -149,7 +150,7 @@ describe('createTroopMovement', () => {
       cell_id,
       type: OutpostType.TEMPORARY,
     })
-    searchByCell = jest.fn().mockResolvedValue(temporary_outpost)
+    searchByCell = vi.fn().mockResolvedValue(temporary_outpost)
     repository.outpost = {
       searchByCell,
       delete: outpostDelete,
@@ -165,8 +166,8 @@ describe('createTroopMovement', () => {
 
   it('should emit OutpostDeleted event when temporary outpost is deleted', async () => {
     const outpost_id = 'outpost_id'
-    const mockEmit = jest.fn()
-    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
+    const mockEmit = vi.fn()
+    vi.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
 
     const temporary_outpost = OutpostEntity.create({
       id: outpost_id,
@@ -174,7 +175,7 @@ describe('createTroopMovement', () => {
       cell_id,
       type: OutpostType.TEMPORARY,
     })
-    searchByCell = jest.fn().mockResolvedValue(temporary_outpost)
+    searchByCell = vi.fn().mockResolvedValue(temporary_outpost)
     repository.outpost = {
       searchByCell,
       delete: outpostDelete,
@@ -188,8 +189,8 @@ describe('createTroopMovement', () => {
   })
 
   it('should not emit OutpostDeleted event when no outpost is deleted', async () => {
-    const mockEmit = jest.fn()
-    jest.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
+    const mockEmit = vi.fn()
+    vi.spyOn(Factory, 'getEventBus').mockReturnValue({ emit: mockEmit } as any)
 
     await callCreate([ { code: TroopCode.EXPLORER, count: 5 } ])
 
@@ -203,7 +204,7 @@ describe('createTroopMovement', () => {
       cell_id,
       type: OutpostType.TEMPORARY,
     })
-    searchByCell = jest.fn().mockResolvedValue(temporary_outpost)
+    searchByCell = vi.fn().mockResolvedValue(temporary_outpost)
     repository.outpost = {
       searchByCell,
       delete: outpostDelete,
@@ -223,7 +224,7 @@ describe('createTroopMovement', () => {
       cell_id,
       type: OutpostType.PERMANENT,
     })
-    searchByCell = jest.fn().mockResolvedValue(permanent_outpost)
+    searchByCell = vi.fn().mockResolvedValue(permanent_outpost)
     repository.outpost = {
       searchByCell,
       delete: outpostDelete,

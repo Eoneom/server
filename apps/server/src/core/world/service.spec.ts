@@ -53,11 +53,11 @@ describe('WorldService', () => {
 
   describe('getRandomCoordinates', () => {
     afterEach(() => {
-      jest.restoreAllMocks()
+      vi.restoreAllMocks()
     })
 
     it('maps minimum random values to minimum coordinate and sector', () => {
-      jest.spyOn(Math, 'random').mockReturnValue(0)
+      vi.spyOn(Math, 'random').mockReturnValue(0)
       expect(WorldService.getRandomCoordinates()).toEqual({
         x: 1,
         y: 1,
@@ -66,7 +66,7 @@ describe('WorldService', () => {
     })
 
     it('maps maximum random values to maximum coordinate and sector', () => {
-      jest.spyOn(Math, 'random').mockReturnValue(0.9999)
+      vi.spyOn(Math, 'random').mockReturnValue(0.9999)
       expect(WorldService.getRandomCoordinates()).toEqual({
         x: SECTOR_SIZE,
         y: SECTOR_SIZE,

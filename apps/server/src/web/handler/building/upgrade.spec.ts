@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { buildingUpgradeHandler } from './upgrade'
 import { sagaUpgradeBuilding } from '#app/saga/upgrade-building'
 
-jest.mock('#app/saga/upgrade-building')
+vi.mock('#app/saga/upgrade-building')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('buildingUpgradeHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { city_id: 'c1', building_code: 'SAWMILL' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(sagaUpgradeBuilding as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(sagaUpgradeBuilding as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when city_id is missing', async () => {
@@ -48,7 +49,7 @@ describe('buildingUpgradeHandler', () => {
 
   it('calls next with error when saga throws', async () => {
     const error = new Error('upgrade error')
-    ;(sagaUpgradeBuilding as jest.Mock).mockRejectedValue(error)
+    ;(sagaUpgradeBuilding as MockInstance).mockRejectedValue(error)
     await buildingUpgradeHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

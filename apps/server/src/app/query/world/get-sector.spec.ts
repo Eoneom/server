@@ -27,9 +27,9 @@ describe('WorldGetSectorQuery', () => {
       })
     ]
     repository = {
-      cell: { getSector: jest.fn().mockResolvedValue(cells) } as unknown as Repository['cell'],
+      cell: { getSector: vi.fn().mockResolvedValue(cells) } as unknown as Repository['cell'],
       exploration: {
-        get: jest.fn().mockResolvedValue({
+        get: vi.fn().mockResolvedValue({
           cell_ids: [
             'c1',
             'c2' 
@@ -37,11 +37,11 @@ describe('WorldGetSectorQuery', () => {
         }) 
       } as unknown as Repository['exploration']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns sector cells and explored ids', async () => {

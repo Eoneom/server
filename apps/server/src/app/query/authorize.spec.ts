@@ -15,12 +15,12 @@ describe('AuthorizeQuery', () => {
   let repository: Pick<Repository, 'auth'>
 
   beforeEach(() => {
-    repository = { auth: { get: jest.fn().mockResolvedValue(auth) } as unknown as Repository['auth'] }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    repository = { auth: { get: vi.fn().mockResolvedValue(auth) } as unknown as Repository['auth'] }
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns player_id from auth', async () => {

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { upgradeBuilding } from '#app/command/building/upgrade'
 import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
 import { AppService } from '#app/service'
@@ -20,8 +21,8 @@ describe('upgradeBuilding', () => {
   let stock: ReturnType<typeof testResourceStock>
   let building: BuildingEntity
   let architecture: TechnologyEntity
-  let stockUpdateOne: jest.Mock
-  let buildingUpdateOne: jest.Mock
+  let stockUpdateOne: MockInstance
+  let buildingUpdateOne: MockInstance
   let repository: Pick<Repository, 'building' | 'city' | 'technology' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
@@ -48,23 +49,23 @@ describe('upgradeBuilding', () => {
       level: 0
     })
 
-    buildingUpdateOne = jest.fn().mockResolvedValue(undefined)
-    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
+    buildingUpdateOne = vi.fn().mockResolvedValue(undefined)
+    stockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       building: {
-        get: jest.fn().mockResolvedValue(building),
-        isInProgress: jest.fn().mockResolvedValue(false),
-        getTotalLevels: jest.fn().mockResolvedValue(1),
-        list: jest.fn().mockResolvedValue([]),
+        get: vi.fn().mockResolvedValue(building),
+        isInProgress: vi.fn().mockResolvedValue(false),
+        getTotalLevels: vi.fn().mockResolvedValue(1),
+        list: vi.fn().mockResolvedValue([]),
         updateOne: buildingUpdateOne
       } as unknown as Repository['building'],
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       technology: {
-        get: jest.fn().mockResolvedValue(architecture),
-        list: jest.fn().mockResolvedValue([
+        get: vi.fn().mockResolvedValue(architecture),
+        list: vi.fn().mockResolvedValue([
           TechnologyEntity.create({
             id: 'arch_tech',
             code: TechnologyCode.ARCHITECTURE,
@@ -74,20 +75,20 @@ describe('upgradeBuilding', () => {
         ])
       } as unknown as Repository['technology'],
       cell: {
-        getCityCellsCount: jest.fn().mockResolvedValue(10),
-        getCityCell: jest.fn().mockResolvedValue(city_cell)
+        getCityCellsCount: vi.fn().mockResolvedValue(10),
+        getCityCell: vi.fn().mockResolvedValue(city_cell)
       } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: jest.fn().mockResolvedValue(stock),
+        getByCellId: vi.fn().mockResolvedValue(stock),
         updateOne: stockUpdateOne
       } as unknown as Repository['resource_stock']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent a player to upgrade building in another player city', async () => {
@@ -107,7 +108,7 @@ describe('upgradeBuilding', () => {
       plastic: 0,
       mushroom: 0
     })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(broke)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(broke)
 
     await assert.rejects(
       () => upgradeBuilding({
@@ -120,7 +121,7 @@ describe('upgradeBuilding', () => {
   })
 
   it('should prevent a player to upgrade if another building is in progress', async () => {
-    repository.building.isInProgress = jest.fn().mockResolvedValue(true)
+    repository.building.isInProgress = vi.fn().mockResolvedValue(true)
 
     await assert.rejects(
       () => upgradeBuilding({
@@ -133,8 +134,8 @@ describe('upgradeBuilding', () => {
   })
 
   it('should prevent a player to upgrade if there is no more space in the city', async () => {
-    repository.building.getTotalLevels = jest.fn().mockResolvedValue(10)
-    jest.spyOn(AppService, 'getCityMaximumBuildingLevels').mockResolvedValue(10)
+    repository.building.getTotalLevels = vi.fn().mockResolvedValue(10)
+    vi.spyOn(AppService, 'getCityMaximumBuildingLevels').mockResolvedValue(10)
 
     await assert.rejects(
       () => upgradeBuilding({
@@ -147,7 +148,7 @@ describe('upgradeBuilding', () => {
   })
 
   it('should prevent player to research if technology requirements are not met', async () => {
-    repository.technology.list = jest.fn().mockResolvedValue([])
+    repository.technology.list = vi.fn().mockResolvedValue([])
 
     await assert.rejects(
       () => upgradeBuilding({
@@ -184,7 +185,7 @@ describe('upgradeBuilding', () => {
   })
 
   it('should take less time to upgrade with an increase architecture level', async () => {
-    repository.technology.get = jest
+    repository.technology.get = vi
       .fn()
       .mockResolvedValueOnce(
         TechnologyEntity.create({

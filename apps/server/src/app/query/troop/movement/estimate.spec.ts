@@ -30,12 +30,12 @@ describe('TroopMovementEstimateQuery', () => {
         mushroom: 1 
       }
     })
-    repository = { cell: { getCell: jest.fn().mockResolvedValue(cell) } as unknown as Repository['cell'] }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    repository = { cell: { getCell: vi.fn().mockResolvedValue(cell) } as unknown as Repository['cell'] }
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns distance, duration in seconds, and speed', async () => {

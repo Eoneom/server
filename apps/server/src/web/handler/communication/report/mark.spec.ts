@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { communicationMarkReportHandler } from './mark'
 import { markCommunicationReport } from '#app/command/communication/report/mark'
 
-jest.mock('#app/command/communication/report/mark')
+vi.mock('#app/command/communication/report/mark')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('communicationMarkReportHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { report_id: 'r1', was_read: true } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(markCommunicationReport as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(markCommunicationReport as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when report_id is missing', async () => {
@@ -55,7 +56,7 @@ describe('communicationMarkReportHandler', () => {
 
   it('calls next with error when command throws', async () => {
     const error = new Error('mark error')
-    ;(markCommunicationReport as jest.Mock).mockRejectedValue(error)
+    ;(markCommunicationReport as MockInstance).mockRejectedValue(error)
     await communicationMarkReportHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

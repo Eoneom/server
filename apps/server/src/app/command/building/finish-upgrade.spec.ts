@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { finishBuildingUpgrade } from '#app/command/building/finish-upgrade'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -12,7 +13,7 @@ describe('finishBuildingUpgrade', () => {
   const player_id = 'player_id'
   let city: CityEntity
   let building_to_finish: BuildingEntity
-  let buildingUpdateOne: jest.Mock
+  let buildingUpdateOne: MockInstance
   let repository: Pick<Repository, 'building' | 'city'>
 
   beforeEach(() => {
@@ -28,23 +29,23 @@ describe('finishBuildingUpgrade', () => {
       upgrade_at: now()
     })
 
-    buildingUpdateOne = jest.fn().mockResolvedValue(undefined)
+    buildingUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       building: {
-        getUpgradeDone: jest.fn().mockResolvedValue(building_to_finish),
+        getUpgradeDone: vi.fn().mockResolvedValue(building_to_finish),
         updateOne: buildingUpdateOne
       } as unknown as Repository['building'],
       city: {
-        get: jest.fn().mockResolvedValue(city)
+        get: vi.fn().mockResolvedValue(city)
       } as unknown as Repository['city']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent a player to upgrade building in another player city', async () => {
@@ -58,7 +59,7 @@ describe('finishBuildingUpgrade', () => {
   })
 
   it('should not return any update if there is no building in progress', async () => {
-    repository.building.getUpgradeDone = jest.fn().mockResolvedValue(null)
+    repository.building.getUpgradeDone = vi.fn().mockResolvedValue(null)
 
     const result = await finishBuildingUpgrade({
       city_id: city.id,

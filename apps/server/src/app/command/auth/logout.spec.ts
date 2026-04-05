@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { logoutAuth } from './logout'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -14,13 +15,13 @@ describe('logoutAuth', () => {
     last_action_at: 100
   })
 
-  let authGet: jest.Mock
-  let authDelete: jest.Mock
+  let authGet: MockInstance
+  let authDelete: MockInstance
   let repository: Pick<Repository, 'auth'>
 
   beforeEach(() => {
-    authGet = jest.fn().mockResolvedValue(auth)
-    authDelete = jest.fn().mockResolvedValue(undefined)
+    authGet = vi.fn().mockResolvedValue(auth)
+    authDelete = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       auth: {
@@ -29,11 +30,11 @@ describe('logoutAuth', () => {
       } as unknown as Repository['auth']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should delete auth when token resolves', async () => {

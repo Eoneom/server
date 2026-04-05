@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { TroopMovementGetQuery } from '#app/query/troop/movement/get'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -43,14 +44,14 @@ describe('TroopMovementGetQuery', () => {
       })
     ]
     repository = {
-      movement: { getById: jest.fn().mockResolvedValue(movement) } as unknown as Repository['movement'],
-      troop: { listByMovement: jest.fn().mockResolvedValue(troops) } as unknown as Repository['troop']
+      movement: { getById: vi.fn().mockResolvedValue(movement) } as unknown as Repository['movement'],
+      troop: { listByMovement: vi.fn().mockResolvedValue(troops) } as unknown as Repository['troop']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when movement is not owned by player', async () => {
@@ -58,7 +59,7 @@ describe('TroopMovementGetQuery', () => {
       ...movement,
       player_id: 'other'
     })
-    ;(repository.movement.getById as jest.Mock).mockResolvedValue(other)
+    ;(repository.movement.getById as MockInstance).mockResolvedValue(other)
 
     await expect(new TroopMovementGetQuery().run({
       player_id,

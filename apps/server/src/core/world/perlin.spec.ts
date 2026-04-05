@@ -2,12 +2,12 @@ import { PerlinService } from '#core/world/perlin'
 
 describe('PerlinService', () => {
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   describe('with deterministic random (gradient (1, 0))', () => {
     beforeEach(() => {
-      jest.spyOn(Math, 'random').mockReturnValue(0)
+      vi.spyOn(Math, 'random').mockReturnValue(0)
     })
 
     it('returns 0 at cell center (0.5, 0.5)', () => {

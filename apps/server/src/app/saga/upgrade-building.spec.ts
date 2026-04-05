@@ -1,11 +1,12 @@
+import { vi, type MockInstance } from 'vitest'
 import assert from 'assert'
 import { sagaUpgradeBuilding } from './upgrade-building'
 import { finishTechnologyResearch } from '#app/command/technology/finish-research'
 import { upgradeBuilding } from '#app/command/building/upgrade'
 import { BuildingCode } from '#core/building/constant/code'
 
-jest.mock('#app/command/technology/finish-research')
-jest.mock('#app/command/building/upgrade')
+vi.mock('#app/command/technology/finish-research')
+vi.mock('#app/command/building/upgrade')
 
 describe('sagaUpgradeBuilding', () => {
   const player_id = 'player_id'
@@ -13,33 +14,33 @@ describe('sagaUpgradeBuilding', () => {
   const building_code = BuildingCode.RESEARCH_LAB
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    ;(finishTechnologyResearch as jest.Mock).mockResolvedValue(undefined)
-    ;(upgradeBuilding as jest.Mock).mockResolvedValue(undefined)
+    vi.clearAllMocks()
+    ;(finishTechnologyResearch as MockInstance).mockResolvedValue(undefined)
+    ;(upgradeBuilding as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('calls finishTechnologyResearch with player_id', async () => {
     await sagaUpgradeBuilding({ player_id, city_id, building_code })
 
-    assert.strictEqual((finishTechnologyResearch as jest.Mock).mock.calls.length, 1)
-    assert.deepStrictEqual((finishTechnologyResearch as jest.Mock).mock.calls[0][0], { player_id })
+    assert.strictEqual((finishTechnologyResearch as MockInstance).mock.calls.length, 1)
+    assert.deepStrictEqual((finishTechnologyResearch as MockInstance).mock.calls[0][0], { player_id })
   })
 
   it('calls upgradeBuilding with correct args', async () => {
     await sagaUpgradeBuilding({ player_id, city_id, building_code })
 
-    assert.strictEqual((upgradeBuilding as jest.Mock).mock.calls.length, 1)
-    assert.deepStrictEqual((upgradeBuilding as jest.Mock).mock.calls[0][0], { player_id, city_id, building_code })
+    assert.strictEqual((upgradeBuilding as MockInstance).mock.calls.length, 1)
+    assert.deepStrictEqual((upgradeBuilding as MockInstance).mock.calls[0][0], { player_id, city_id, building_code })
   })
 
   it('calls finishTechnologyResearch before upgradeBuilding', async () => {
     const order: string[] = []
-    ;(finishTechnologyResearch as jest.Mock).mockImplementation(async () => { order.push('finish') })
-    ;(upgradeBuilding as jest.Mock).mockImplementation(async () => { order.push('upgrade') })
+    ;(finishTechnologyResearch as MockInstance).mockImplementation(async () => { order.push('finish') })
+    ;(upgradeBuilding as MockInstance).mockImplementation(async () => { order.push('upgrade') })
 
     await sagaUpgradeBuilding({ player_id, city_id, building_code })
 
@@ -47,14 +48,14 @@ describe('sagaUpgradeBuilding', () => {
   })
 
   it('propagates errors from finishTechnologyResearch', async () => {
-    ;(finishTechnologyResearch as jest.Mock).mockRejectedValue(new Error('finish error'))
+    ;(finishTechnologyResearch as MockInstance).mockRejectedValue(new Error('finish error'))
 
     await assert.rejects(() => sagaUpgradeBuilding({ player_id, city_id, building_code }), /finish error/)
-    assert.strictEqual((upgradeBuilding as jest.Mock).mock.calls.length, 0)
+    assert.strictEqual((upgradeBuilding as MockInstance).mock.calls.length, 0)
   })
 
   it('propagates errors from upgradeBuilding', async () => {
-    ;(upgradeBuilding as jest.Mock).mockRejectedValue(new Error('upgrade error'))
+    ;(upgradeBuilding as MockInstance).mockRejectedValue(new Error('upgrade error'))
 
     await assert.rejects(() => sagaUpgradeBuilding({ player_id, city_id, building_code }), /upgrade error/)
   })

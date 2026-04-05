@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import assert from 'assert'
 import { finishTroopBaseMovement } from '#app/command/troop/movement/finish/base'
 import { Factory } from '#adapter/factory'
@@ -33,12 +34,12 @@ describe('finishTroopBaseMovement', () => {
   let movement_troop_settler: TroopEntity
   let destination_troop_explorer: TroopEntity
 
-  let movementDelete: jest.Mock
-  let troopUpdateOne: jest.Mock
-  let troopDelete: jest.Mock
-  let reportCreate: jest.Mock
-  let outpostCreate: jest.Mock
-  let ensureWorldStockForCell: jest.Mock
+  let movementDelete: MockInstance
+  let troopUpdateOne: MockInstance
+  let troopDelete: MockInstance
+  let reportCreate: MockInstance
+  let outpostCreate: MockInstance
+  let ensureWorldStockForCell: MockInstance
   let repository: Pick<
     Repository,
     'troop' | 'movement' | 'cell' | 'outpost' | 'report' | 'resource_stock'
@@ -53,37 +54,37 @@ describe('finishTroopBaseMovement', () => {
     outpost_exists: boolean
     existing_outposts_count: number
   }) {
-    movementDelete = jest.fn().mockResolvedValue(undefined)
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    troopDelete = jest.fn().mockResolvedValue(undefined)
-    reportCreate = jest.fn().mockResolvedValue(undefined)
-    outpostCreate = jest.fn().mockResolvedValue(undefined)
-    ensureWorldStockForCell = jest.fn().mockResolvedValue(undefined)
+    movementDelete = vi.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
+    troopDelete = vi.fn().mockResolvedValue(undefined)
+    reportCreate = vi.fn().mockResolvedValue(undefined)
+    outpostCreate = vi.fn().mockResolvedValue(undefined)
+    ensureWorldStockForCell = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       troop: {
-        listByMovement: jest.fn().mockResolvedValue([
+        listByMovement: vi.fn().mockResolvedValue([
           movement_troop_explorer,
           movement_troop_settler,
         ]),
-        listInCell: jest.fn().mockResolvedValue([ destination_troop_explorer ]),
+        listInCell: vi.fn().mockResolvedValue([ destination_troop_explorer ]),
         updateOne: troopUpdateOne,
         delete: troopDelete,
       } as unknown as Repository['troop'],
       movement: {
-        getById: jest.fn().mockResolvedValue(movement),
+        getById: vi.fn().mockResolvedValue(movement),
         delete: movementDelete,
       } as unknown as Repository['movement'],
       cell: {
-        getCell: jest.fn().mockResolvedValue({
+        getCell: vi.fn().mockResolvedValue({
           id: destination_cell_id,
           coordinates: destination,
           city_id: city_exists ? 'some_city' : undefined,
         }),
       } as unknown as Repository['cell'],
       outpost: {
-        existsOnCell: jest.fn().mockResolvedValue(outpost_exists),
-        countForPlayer: jest.fn().mockResolvedValue(existing_outposts_count),
+        existsOnCell: vi.fn().mockResolvedValue(outpost_exists),
+        countForPlayer: vi.fn().mockResolvedValue(existing_outposts_count),
         create: outpostCreate,
       } as unknown as Repository['outpost'],
       report: {
@@ -94,7 +95,7 @@ describe('finishTroopBaseMovement', () => {
       } as unknown as Repository['resource_stock'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   }
 
   beforeEach(() => {
@@ -139,7 +140,7 @@ describe('finishTroopBaseMovement', () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent a player for finishing a movement of another player', async () => {
@@ -148,7 +149,7 @@ describe('finishTroopBaseMovement', () => {
       outpost_exists: false,
       existing_outposts_count: 0,
     })
-    repository.movement.getById = jest.fn().mockResolvedValue(MovementEntity.create({
+    repository.movement.getById = vi.fn().mockResolvedValue(MovementEntity.create({
       ...movement,
       player_id: 'another_player_id',
     }))
@@ -168,7 +169,7 @@ describe('finishTroopBaseMovement', () => {
       outpost_exists: false,
       existing_outposts_count: 0,
     })
-    repository.movement.getById = jest.fn().mockResolvedValue(MovementEntity.create({
+    repository.movement.getById = vi.fn().mockResolvedValue(MovementEntity.create({
       ...movement,
       arrive_at: now() + 10000,
     }))

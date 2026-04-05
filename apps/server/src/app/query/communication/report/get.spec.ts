@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { CommunicationGetReportQuery } from '#app/query/communication/report/get'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -30,12 +31,12 @@ describe('CommunicationGetReportQuery', () => {
       recorded_at: 0,
       was_read: false
     })
-    repository = { report: { getById: jest.fn().mockResolvedValue(report) } as unknown as Repository['report'] }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    repository = { report: { getById: vi.fn().mockResolvedValue(report) } as unknown as Repository['report'] }
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when report is not owned by player', async () => {
@@ -43,7 +44,7 @@ describe('CommunicationGetReportQuery', () => {
       ...report,
       player_id: 'other'
     })
-    ;(repository.report.getById as jest.Mock).mockResolvedValue(other)
+    ;(repository.report.getById as MockInstance).mockResolvedValue(other)
 
     await expect(new CommunicationGetReportQuery().run({
       player_id,

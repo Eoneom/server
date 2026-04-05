@@ -19,14 +19,14 @@ describe('TechnologyGetQuery', () => {
       level: 0
     })
     repository = {
-      technology: { get: jest.fn().mockResolvedValue(technology) } as unknown as Repository['technology'],
-      building: { getLevel: jest.fn().mockResolvedValue(1) } as unknown as Repository['building']
+      technology: { get: vi.fn().mockResolvedValue(technology) } as unknown as Repository['technology'],
+      building: { getLevel: vi.fn().mockResolvedValue(1) } as unknown as Repository['building']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns technology, cost and requirement using research lab level', async () => {

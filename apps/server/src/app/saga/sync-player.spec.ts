@@ -1,33 +1,34 @@
+import { vi, type MockInstance } from 'vitest'
 import assert from 'assert'
 import { sagaSyncPlayer } from './sync-player'
 import { sagaRefreshGameState } from '#app/saga/game/refresh-state'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
 
-jest.mock('#app/saga/game/refresh-state')
-jest.mock('#adapter/factory', () => ({
+vi.mock('#app/saga/game/refresh-state')
+vi.mock('#adapter/factory', () => ({
   Factory: {
-    getLogger: jest.fn().mockReturnValue({ info: jest.fn() }),
-    getRepository: jest.fn(),
+    getLogger: vi.fn().mockReturnValue({ info: vi.fn() }),
+    getRepository: vi.fn(),
   }
 }))
 
 describe('sagaSyncPlayer', () => {
   const player_id = 'player_id'
-  let cityList: jest.Mock
+  let cityList: MockInstance
   let repository: Pick<Repository, 'city'>
 
   beforeEach(() => {
-    cityList = jest.fn().mockResolvedValue([])
+    cityList = vi.fn().mockResolvedValue([])
     repository = {
       city: { list: cityList } as unknown as Repository['city']
     }
-    ;(Factory.getRepository as jest.Mock).mockReturnValue(repository)
-    ;(sagaRefreshGameState as jest.Mock).mockResolvedValue(undefined)
+    ;(Factory.getRepository as MockInstance).mockReturnValue(repository)
+    ;(sagaRefreshGameState as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('lists cities for the given player', async () => {
@@ -42,7 +43,7 @@ describe('sagaSyncPlayer', () => {
 
     await sagaSyncPlayer({ player_id })
 
-    assert.strictEqual((sagaRefreshGameState as jest.Mock).mock.calls.length, 0)
+    assert.strictEqual((sagaRefreshGameState as MockInstance).mock.calls.length, 0)
   })
 
   it('calls sagaRefreshGameState for each city', async () => {
@@ -54,8 +55,8 @@ describe('sagaSyncPlayer', () => {
 
     await sagaSyncPlayer({ player_id })
 
-    assert.strictEqual((sagaRefreshGameState as jest.Mock).mock.calls.length, 2)
-    const call_args = (sagaRefreshGameState as jest.Mock).mock.calls.map(([arg]) => arg)
+    assert.strictEqual((sagaRefreshGameState as MockInstance).mock.calls.length, 2)
+    const call_args = (sagaRefreshGameState as MockInstance).mock.calls.map(([arg]) => arg)
     assert.ok(call_args.some(arg => arg.player_id === player_id && arg.city_id === 'city_1'))
     assert.ok(call_args.some(arg => arg.player_id === player_id && arg.city_id === 'city_2'))
   })

@@ -1,11 +1,12 @@
+import type { MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { troopListMovementHandler } from './list'
 import { TroopMovementListQuery } from '#query/troop/movement/list'
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
@@ -24,27 +25,27 @@ const queryResult = {
 describe('troopListMovementHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = {}
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    jest.spyOn(TroopMovementListQuery.prototype, 'run').mockResolvedValue(queryResult as any)
+    next = vi.fn()
+    vi.spyOn(TroopMovementListQuery.prototype, 'run').mockResolvedValue(queryResult as any)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('calls next with error when query throws', async () => {
     const error = new Error('query error')
-    jest.spyOn(TroopMovementListQuery.prototype, 'run').mockRejectedValue(error)
+    vi.spyOn(TroopMovementListQuery.prototype, 'run').mockRejectedValue(error)
     await troopListMovementHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

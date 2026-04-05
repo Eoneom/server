@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { troopRecruitHandler } from './recruit'
 import { sagaRecruitTroop } from '#app/saga/troop-recruit'
 
-jest.mock('#app/saga/troop-recruit')
+vi.mock('#app/saga/troop-recruit')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('troopRecruitHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { city_id: 'c1', count: 10, troop_code: 'WARRIOR' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(sagaRecruitTroop as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(sagaRecruitTroop as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when city_id is missing', async () => {
@@ -55,7 +56,7 @@ describe('troopRecruitHandler', () => {
 
   it('calls next with error when saga throws', async () => {
     const error = new Error('recruit error')
-    ;(sagaRecruitTroop as jest.Mock).mockRejectedValue(error)
+    ;(sagaRecruitTroop as MockInstance).mockRejectedValue(error)
     await troopRecruitHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

@@ -1,13 +1,14 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { troopCreateMovementHandler } from './create'
 import { createTroopMovement } from '#app/command/troop/movement/create'
 
-jest.mock('#app/command/troop/movement/create')
+vi.mock('#app/command/troop/movement/create')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
@@ -18,22 +19,22 @@ const troops = { WARRIOR: 5 }
 describe('troopCreateMovementHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { origin, destination, troops, action: 'ATTACK' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    jest.mocked(createTroopMovement).mockResolvedValue({ deleted_outpost_id: undefined })
+    next = vi.fn()
+    vi.mocked(createTroopMovement).mockResolvedValue({ deleted_outpost_id: undefined })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when origin is missing', async () => {
@@ -66,7 +67,7 @@ describe('troopCreateMovementHandler', () => {
 
   it('calls next with error when command throws', async () => {
     const error = new Error('movement error')
-    jest.mocked(createTroopMovement).mockRejectedValue(error)
+    vi.mocked(createTroopMovement).mockRejectedValue(error)
     await troopCreateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { logoutHandler } from './logout'
 import { logoutAuth } from '#command/auth/logout'
 
-jest.mock('#command/auth/logout')
+vi.mock('#command/auth/logout')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('logoutHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { headers: { authorization: 'Bearer token123' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: {}
     }
-    next = jest.fn()
-    ;(logoutAuth as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(logoutAuth as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('rejects when authorization header is missing', async () => {
@@ -41,7 +42,7 @@ describe('logoutHandler', () => {
 
   it('calls next with error when logoutAuth throws', async () => {
     const error = new Error('logout error')
-    ;(logoutAuth as jest.Mock).mockRejectedValue(error)
+    ;(logoutAuth as MockInstance).mockRejectedValue(error)
     await logoutHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

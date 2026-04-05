@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { citySettle } from './settle'
 import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
@@ -35,12 +36,12 @@ describe('citySettle', () => {
   let cell: CellEntity
   let cells_around_city: CellEntity[]
 
-  let outpostDelete: jest.Mock
-  let cityCreate: jest.Mock
-  let buildingCreate: jest.Mock
-  let troopUpdateOne: jest.Mock
-  let cellUpdateOne: jest.Mock
-  let explorationUpdateOne: jest.Mock
+  let outpostDelete: MockInstance
+  let cityCreate: MockInstance
+  let buildingCreate: MockInstance
+  let troopUpdateOne: MockInstance
+  let cellUpdateOne: MockInstance
+  let explorationUpdateOne: MockInstance
   let repository: Pick<Repository, 'outpost' | 'city' | 'exploration' | 'cell' | 'troop' | 'building'>
 
   beforeEach(() => {
@@ -119,33 +120,33 @@ describe('citySettle', () => {
       })
     ]
 
-    outpostDelete = jest.fn().mockResolvedValue(undefined)
-    cityCreate = jest.fn().mockResolvedValue(undefined)
-    buildingCreate = jest.fn().mockResolvedValue(undefined)
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    cellUpdateOne = jest.fn().mockResolvedValue(undefined)
-    explorationUpdateOne = jest.fn().mockResolvedValue(undefined)
+    outpostDelete = vi.fn().mockResolvedValue(undefined)
+    cityCreate = vi.fn().mockResolvedValue(undefined)
+    buildingCreate = vi.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
+    cellUpdateOne = vi.fn().mockResolvedValue(undefined)
+    explorationUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       outpost: {
-        getById: jest.fn().mockResolvedValue(outpost),
+        getById: vi.fn().mockResolvedValue(outpost),
         delete: outpostDelete
       } as unknown as Repository['outpost'],
       city: {
-        count: jest.fn().mockResolvedValue(0),
-        exist: jest.fn().mockResolvedValue(false),
+        count: vi.fn().mockResolvedValue(0),
+        exist: vi.fn().mockResolvedValue(false),
         create: cityCreate
       } as unknown as Repository['city'],
       exploration: {
-        get: jest.fn().mockResolvedValue(exploration),
+        get: vi.fn().mockResolvedValue(exploration),
         updateOne: explorationUpdateOne
       } as unknown as Repository['exploration'],
       cell: {
-        getById: jest.fn().mockResolvedValue(cell),
+        getById: vi.fn().mockResolvedValue(cell),
         updateOne: cellUpdateOne
       } as unknown as Repository['cell'],
       troop: {
-        getInCell: jest.fn().mockResolvedValue(settler_troop),
+        getInCell: vi.fn().mockResolvedValue(settler_troop),
         updateOne: troopUpdateOne
       } as unknown as Repository['troop'],
       building: {
@@ -153,16 +154,16 @@ describe('citySettle', () => {
       } as unknown as Repository['building']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(AppService, 'getCellsAround').mockResolvedValue(cells_around_city)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(AppService, 'getCellsAround').mockResolvedValue(cells_around_city)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent player from settling a city if limit is reached', async () => {
-    repository.city.count = jest.fn().mockResolvedValue(10000)
+    repository.city.count = vi.fn().mockResolvedValue(10000)
 
     await assert.rejects(
       () => citySettle({
@@ -175,7 +176,7 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city on another player outpost', async () => {
-    repository.outpost.getById = jest.fn().mockResolvedValue(
+    repository.outpost.getById = vi.fn().mockResolvedValue(
       OutpostEntity.create({
         ...outpost,
         player_id: 'another_player_id'
@@ -193,7 +194,7 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city from permanent outpost', async () => {
-    repository.outpost.getById = jest.fn().mockResolvedValue(
+    repository.outpost.getById = vi.fn().mockResolvedValue(
       OutpostEntity.create({
         ...outpost,
         type: OutpostType.PERMANENT
@@ -211,7 +212,7 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city when there is no settler available', async () => {
-    repository.troop.getInCell = jest.fn().mockResolvedValue(
+    repository.troop.getInCell = vi.fn().mockResolvedValue(
       TroopEntity.create({
         ...settler_troop,
         count: 0
@@ -229,7 +230,7 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city with an existing name', async () => {
-    repository.city.exist = jest.fn().mockResolvedValue(true)
+    repository.city.exist = vi.fn().mockResolvedValue(true)
 
     await assert.rejects(
       () => citySettle({

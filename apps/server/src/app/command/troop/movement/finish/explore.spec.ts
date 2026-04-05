@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import assert from 'assert'
 import { finishTroopExploreMovement } from '#app/command/troop/movement/finish/explore'
 import { AppService } from '#app/service'
@@ -22,11 +23,11 @@ describe('finishTroopExploreMovement', () => {
   let movement: MovementEntity
   let troop: TroopEntity
   let exploration: ExplorationEntity
-  let movementDelete: jest.Mock
-  let movementCreate: jest.Mock
-  let troopUpdateOne: jest.Mock
-  let explorationUpdateOne: jest.Mock
-  let reportCreate: jest.Mock
+  let movementDelete: MockInstance
+  let movementCreate: MockInstance
+  let troopUpdateOne: MockInstance
+  let explorationUpdateOne: MockInstance
+  let reportCreate: MockInstance
   let repository: Pick<Repository, 'troop' | 'movement' | 'exploration' | 'report'>
 
   beforeEach(() => {
@@ -63,24 +64,24 @@ describe('finishTroopExploreMovement', () => {
       cell_ids: [ already_explored_cell_id ],
     })
 
-    movementDelete = jest.fn().mockResolvedValue(undefined)
-    movementCreate = jest.fn().mockResolvedValue(undefined)
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    explorationUpdateOne = jest.fn().mockResolvedValue(undefined)
-    reportCreate = jest.fn().mockResolvedValue(undefined)
+    movementDelete = vi.fn().mockResolvedValue(undefined)
+    movementCreate = vi.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
+    explorationUpdateOne = vi.fn().mockResolvedValue(undefined)
+    reportCreate = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       troop: {
-        listByMovement: jest.fn().mockResolvedValue([ troop ]),
+        listByMovement: vi.fn().mockResolvedValue([ troop ]),
         updateOne: troopUpdateOne,
       } as unknown as Repository['troop'],
       movement: {
-        getById: jest.fn().mockResolvedValue(movement),
+        getById: vi.fn().mockResolvedValue(movement),
         delete: movementDelete,
         create: movementCreate,
       } as unknown as Repository['movement'],
       exploration: {
-        get: jest.fn().mockResolvedValue(exploration),
+        get: vi.fn().mockResolvedValue(exploration),
         updateOne: explorationUpdateOne,
       } as unknown as Repository['exploration'],
       report: {
@@ -88,16 +89,16 @@ describe('finishTroopExploreMovement', () => {
       } as unknown as Repository['report'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(AppService, 'getExploredCellIds').mockResolvedValue([ cell_id ])
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(AppService, 'getExploredCellIds').mockResolvedValue([ cell_id ])
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent a player for finishing a movement of another player', async () => {
-    repository.movement.getById = jest.fn().mockResolvedValue(MovementEntity.create({
+    repository.movement.getById = vi.fn().mockResolvedValue(MovementEntity.create({
       ...movement,
       player_id: 'another_player_id',
     }))
@@ -112,7 +113,7 @@ describe('finishTroopExploreMovement', () => {
   })
 
   it('should prevent a player from finishing a movement when arrive at date is in the future', async () => {
-    repository.movement.getById = jest.fn().mockResolvedValue(MovementEntity.create({
+    repository.movement.getById = vi.fn().mockResolvedValue(MovementEntity.create({
       ...movement,
       arrive_at: now() + 10000,
     }))

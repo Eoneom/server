@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { progressTroopRecruitment } from '#app/command/troop/progress-recruit'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -14,7 +15,7 @@ describe('progressTroopRecruitment', () => {
   const cell_id = 'cell_id'
   let city: CityEntity
   let troop: TroopEntity
-  let troopUpdateOne: jest.Mock
+  let troopUpdateOne: MockInstance
   let repository: Pick<Repository, 'cell' | 'city' | 'troop'>
 
   beforeEach(() => {
@@ -37,26 +38,26 @@ describe('progressTroopRecruitment', () => {
       },
     })
 
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       cell: {
-        getCityCell: jest.fn().mockResolvedValue({ id: cell_id }),
+        getCityCell: vi.fn().mockResolvedValue({ id: cell_id }),
       } as unknown as Repository['cell'],
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       troop: {
-        getInProgress: jest.fn().mockResolvedValue(troop),
+        getInProgress: vi.fn().mockResolvedValue(troop),
         updateOne: troopUpdateOne,
       } as unknown as Repository['troop'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent player to progress recruitment in another player city', async () => {
@@ -70,7 +71,7 @@ describe('progressTroopRecruitment', () => {
   })
 
   it('should prevent player to progress when there is not current recruitment', async () => {
-    repository.troop.getInProgress = jest.fn().mockResolvedValue(null)
+    repository.troop.getInProgress = vi.fn().mockResolvedValue(null)
 
     await assert.rejects(
       () => progressTroopRecruitment({

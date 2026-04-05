@@ -16,12 +16,12 @@ describe('CityListQuery', () => {
         player_id
       })
     ]
-    repository = { city: { list: jest.fn().mockResolvedValue(cities) } as unknown as Repository['city'] }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    repository = { city: { list: vi.fn().mockResolvedValue(cities) } as unknown as Repository['city'] }
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns cities from repository', async () => {

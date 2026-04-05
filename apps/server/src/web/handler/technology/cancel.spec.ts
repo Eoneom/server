@@ -1,40 +1,41 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { technologyCancelHandler } from './cancel'
 import { cancelTechnology } from '#command/technology/cancel'
 
-jest.mock('#command/technology/cancel')
+vi.mock('#command/technology/cancel')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('technologyCancelHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = {}
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(cancelTechnology as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(cancelTechnology as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('calls next with error when command throws', async () => {
     const error = new Error('cancel error')
-    ;(cancelTechnology as jest.Mock).mockRejectedValue(error)
+    ;(cancelTechnology as MockInstance).mockRejectedValue(error)
     await technologyCancelHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

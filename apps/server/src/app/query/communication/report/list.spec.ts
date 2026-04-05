@@ -32,14 +32,14 @@ describe('CommunicationListReportQuery', () => {
     ]
     repository = {
       report: {
-        list: jest.fn().mockResolvedValue({ reports, total: reports.length })
+        list: vi.fn().mockResolvedValue({ reports, total: reports.length })
       } as unknown as Repository['report']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns reports for player on page 1', async () => {

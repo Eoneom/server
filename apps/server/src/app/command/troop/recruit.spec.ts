@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { recruitTroop } from '#app/command/troop/recruit'
 import { AppService } from '#app/service'
 import { Factory } from '#adapter/factory'
@@ -20,8 +21,8 @@ describe('recruitTroop', () => {
   let city_cell: ReturnType<typeof testCityCell>
   let stock: ReturnType<typeof testResourceStock>
   let troop: TroopEntity
-  let troopUpdateOne: jest.Mock
-  let stockUpdateOne: jest.Mock
+  let troopUpdateOne: MockInstance
+  let stockUpdateOne: MockInstance
   let repository: Pick<Repository, 'cell' | 'city' | 'building' | 'technology' | 'troop' | 'resource_stock'>
 
   beforeEach(() => {
@@ -41,42 +42,42 @@ describe('recruitTroop', () => {
       code: TroopCode.EXPLORER,
     })
 
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
+    stockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       cell: {
-        getCityCell: jest.fn().mockResolvedValue(city_cell),
+        getCityCell: vi.fn().mockResolvedValue(city_cell),
       } as unknown as Repository['cell'],
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       building: {
-        getLevel: jest.fn().mockResolvedValue(0),
+        getLevel: vi.fn().mockResolvedValue(0),
       } as unknown as Repository['building'],
       technology: {
-        getLevel: jest.fn().mockResolvedValue(0),
+        getLevel: vi.fn().mockResolvedValue(0),
       } as unknown as Repository['technology'],
       troop: {
-        getInCell: jest.fn().mockResolvedValue(troop),
-        isInProgress: jest.fn().mockResolvedValue(false),
+        getInCell: vi.fn().mockResolvedValue(troop),
+        isInProgress: vi.fn().mockResolvedValue(false),
         updateOne: troopUpdateOne,
       } as unknown as Repository['troop'],
       resource_stock: {
-        getByCellId: jest.fn().mockResolvedValue(stock),
+        getByCellId: vi.fn().mockResolvedValue(stock),
         updateOne: stockUpdateOne,
       } as unknown as Repository['resource_stock'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(AppService, 'getTroopRequirementLevels').mockResolvedValue({
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(AppService, 'getTroopRequirementLevels').mockResolvedValue({
       building: { [BuildingCode.CLONING_FACTORY]: 1 },
       technology: {},
     })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent player to recruit in another player city', async () => {
@@ -93,7 +94,7 @@ describe('recruitTroop', () => {
 
   it('should prevent player to recruit when city does not have enough resources', async () => {
     const broke = testResourceStock({ cell_id, plastic: 0, mushroom: 0 })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(broke)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(broke)
 
     await assert.rejects(
       () => recruitTroop({
@@ -107,7 +108,7 @@ describe('recruitTroop', () => {
   })
 
   it('should prevent player to recruit when recruitment is already in progress', async () => {
-    repository.troop.isInProgress = jest.fn().mockResolvedValue(true)
+    repository.troop.isInProgress = vi.fn().mockResolvedValue(true)
 
     await assert.rejects(
       () => recruitTroop({
@@ -121,7 +122,7 @@ describe('recruitTroop', () => {
   })
 
   it('should prevent player to recruit if building requirements are not met', async () => {
-    jest.spyOn(AppService, 'getTroopRequirementLevels').mockResolvedValue({
+    vi.spyOn(AppService, 'getTroopRequirementLevels').mockResolvedValue({
       building: {},
       technology: {},
     })

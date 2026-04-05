@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { markCommunicationReport } from './mark'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -25,7 +26,7 @@ describe('markCommunicationReport', () => {
     mushroom: 2
   }
   let report: ReportEntity
-  let reportUpdateOne: jest.Mock
+  let reportUpdateOne: MockInstance
   let repository: Pick<Repository, 'report'>
 
   beforeEach(() => {
@@ -41,20 +42,20 @@ describe('markCommunicationReport', () => {
       was_read: false
     })
 
-    reportUpdateOne = jest.fn().mockResolvedValue(undefined)
+    reportUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       report: {
-        getById: jest.fn().mockResolvedValue(report),
+        getById: vi.fn().mockResolvedValue(report),
         updateOne: reportUpdateOne
       } as unknown as Repository['report']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent another player from changing the report read status', async () => {

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { cancelTroop } from '#app/command/troop/cancel'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -24,8 +25,8 @@ describe('cancelTroop', () => {
   let city_cell: ReturnType<typeof testCityCell>
   let stock: ReturnType<typeof testResourceStock>
   let troop: TroopEntity
-  let troopUpdateOne: jest.Mock
-  let stockUpdateOne: jest.Mock
+  let troopUpdateOne: MockInstance
+  let stockUpdateOne: MockInstance
   let repository: Pick<Repository, 'cell' | 'city' | 'troop' | 'resource_stock'>
 
   beforeEach(() => {
@@ -58,31 +59,31 @@ describe('cancelTroop', () => {
       },
     })
 
-    troopUpdateOne = jest.fn().mockResolvedValue(undefined)
-    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
+    troopUpdateOne = vi.fn().mockResolvedValue(undefined)
+    stockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       cell: {
-        getCityCell: jest.fn().mockResolvedValue(city_cell),
+        getCityCell: vi.fn().mockResolvedValue(city_cell),
       } as unknown as Repository['cell'],
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       troop: {
-        getInProgress: jest.fn().mockResolvedValue(troop),
+        getInProgress: vi.fn().mockResolvedValue(troop),
         updateOne: troopUpdateOne,
       } as unknown as Repository['troop'],
       resource_stock: {
-        getByCellId: jest.fn().mockResolvedValue(stock),
+        getByCellId: vi.fn().mockResolvedValue(stock),
         updateOne: stockUpdateOne,
       } as unknown as Repository['resource_stock'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent player from cancelling other player troops', async () => {
@@ -96,7 +97,7 @@ describe('cancelTroop', () => {
   })
 
   it('should assert that there is a troop in progress', async () => {
-    repository.troop.getInProgress = jest.fn().mockResolvedValue(null)
+    repository.troop.getInProgress = vi.fn().mockResolvedValue(null)
 
     await assert.rejects(
       () => cancelTroop({

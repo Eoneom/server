@@ -7,16 +7,17 @@ import { CellEntity } from '#core/world/cell/entity'
 import { CellType } from '#core/world/value/cell-type'
 import * as time from '#shared/time'
 import { testResourceStock } from '../../test-support/resource-stock'
+import type { MockInstance } from 'vitest'
 
 describe('CityGetQuery', () => {
   const player_id = 'player_id'
   let city: CityEntity
   let cell: CellEntity
   let repository: Pick<Repository, 'building' | 'city' | 'cell' | 'resource_stock'>
-  let nowSpy: jest.SpiedFunction<typeof time.now>
+  let nowSpy: MockInstance
 
   beforeEach(() => {
-    nowSpy = jest.spyOn(time, 'now').mockReturnValue(0)
+    nowSpy = vi.spyOn(time, 'now').mockReturnValue(0)
     city = CityEntity.initCity({
       name: 'dummy',
       player_id
@@ -31,36 +32,36 @@ describe('CityGetQuery', () => {
 
     repository = {
       building: {
-        getTotalLevels: jest.fn().mockResolvedValue(7),
+        getTotalLevels: vi.fn().mockResolvedValue(7),
       } as unknown as Repository['building'],
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       cell: {
-        getCityCell: jest.fn().mockResolvedValue(cell),
+        getCityCell: vi.fn().mockResolvedValue(cell),
       } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: jest.fn().mockResolvedValue(
+        getByCellId: vi.fn().mockResolvedValue(
           testResourceStock({ cell_id: cell.id, plastic: 0, mushroom: 0 })
         ),
       } as unknown as Repository['resource_stock'],
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(AppService, 'getCityProductionBreakdown').mockResolvedValue({
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(AppService, 'getCityProductionBreakdown').mockResolvedValue({
       earnings_per_second: { plastic: 1, mushroom: 2 },
       pre_cell_earnings_per_second: { plastic: 1, mushroom: 2 },
       cell_resource_coefficient: { plastic: 1, mushroom: 1 }
     })
-    jest.spyOn(AppService, 'getCityMaximumBuildingLevels').mockResolvedValue(42)
-    jest.spyOn(AppService, 'getCityWarehousesCapacity').mockResolvedValue({
+    vi.spyOn(AppService, 'getCityMaximumBuildingLevels').mockResolvedValue(42)
+    vi.spyOn(AppService, 'getCityWarehousesCapacity').mockResolvedValue({
       plastic: 100,
       mushroom: 100
     })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns building_levels_used from getTotalLevels', async () => {

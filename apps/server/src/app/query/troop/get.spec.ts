@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { TroopGetQuery } from '#app/query/troop/get'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -25,16 +26,16 @@ describe('TroopGetQuery', () => {
       ongoing_recruitment: null
     })
     repository = {
-      troop: { getById: jest.fn().mockResolvedValue(troop_no_cell) } as unknown as Repository['troop'],
-      technology: { getLevel: jest.fn().mockResolvedValue(0) } as unknown as Repository['technology'],
-      cell: { getById: jest.fn() } as unknown as Repository['cell'],
-      building: { getLevel: jest.fn() } as unknown as Repository['building']
+      troop: { getById: vi.fn().mockResolvedValue(troop_no_cell) } as unknown as Repository['troop'],
+      technology: { getLevel: vi.fn().mockResolvedValue(0) } as unknown as Repository['technology'],
+      cell: { getById: vi.fn() } as unknown as Repository['cell'],
+      building: { getLevel: vi.fn() } as unknown as Repository['building']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when troop is not owned by player', async () => {
@@ -42,7 +43,7 @@ describe('TroopGetQuery', () => {
       ...troop_no_cell,
       player_id: 'other'
     })
-    ;(repository.troop.getById as jest.Mock).mockResolvedValue(other)
+    ;(repository.troop.getById as MockInstance).mockResolvedValue(other)
 
     await expect(new TroopGetQuery().run({
       troop_id,
@@ -86,9 +87,9 @@ describe('TroopGetQuery', () => {
       movement_id: null,
       ongoing_recruitment: null
     })
-    ;(repository.troop.getById as jest.Mock).mockResolvedValue(troop_in_city)
-    repository.cell = { getById: jest.fn().mockResolvedValue(cell) } as unknown as Repository['cell']
-    repository.building = { getLevel: jest.fn().mockResolvedValue(3) } as unknown as Repository['building']
+    ;(repository.troop.getById as MockInstance).mockResolvedValue(troop_in_city)
+    repository.cell = { getById: vi.fn().mockResolvedValue(cell) } as unknown as Repository['cell']
+    repository.building = { getLevel: vi.fn().mockResolvedValue(3) } as unknown as Repository['building']
 
     await new TroopGetQuery().run({
       troop_id,

@@ -1,38 +1,39 @@
+import type { MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { communicationCountUnreadReportHandler } from './count-unread'
 import { CommunicationCountUnreadReportQuery } from '#query/communication/report/count-unread'
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('communicationCountUnreadReportHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = {}
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    jest.spyOn(CommunicationCountUnreadReportQuery.prototype, 'run').mockResolvedValue({ count: 3 } as any)
+    next = vi.fn()
+    vi.spyOn(CommunicationCountUnreadReportQuery.prototype, 'run').mockResolvedValue({ count: 3 } as any)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('calls next with error when query throws', async () => {
     const error = new Error('query error')
-    jest.spyOn(CommunicationCountUnreadReportQuery.prototype, 'run').mockRejectedValue(error)
+    vi.spyOn(CommunicationCountUnreadReportQuery.prototype, 'run').mockRejectedValue(error)
     await communicationCountUnreadReportHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

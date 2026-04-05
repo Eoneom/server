@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { outpostSetPermanentHandler } from './set-permanent'
 import { outpostSetPermanent } from '#app/command/outpost/set-permanent'
 
-jest.mock('#app/command/outpost/set-permanent')
+vi.mock('#app/command/outpost/set-permanent')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('outpostSetPermanentHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { outpost_id: 'o1' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(outpostSetPermanent as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(outpostSetPermanent as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when outpost_id is missing', async () => {
@@ -41,7 +42,7 @@ describe('outpostSetPermanentHandler', () => {
 
   it('calls next with error when command throws', async () => {
     const error = new Error('command error')
-    ;(outpostSetPermanent as jest.Mock).mockRejectedValue(error)
+    ;(outpostSetPermanent as MockInstance).mockRejectedValue(error)
     await outpostSetPermanentHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

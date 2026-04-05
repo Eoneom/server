@@ -7,12 +7,12 @@ describe('CommunicationCountUnreadReportQuery', () => {
   let repository: Pick<Repository, 'report'>
 
   beforeEach(() => {
-    repository = { report: { count: jest.fn().mockResolvedValue(7) } as unknown as Repository['report'] }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    repository = { report: { count: vi.fn().mockResolvedValue(7) } as unknown as Repository['report'] }
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns unread count from repository', async () => {

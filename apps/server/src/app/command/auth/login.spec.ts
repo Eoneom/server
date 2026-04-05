@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { loginAuth } from './login'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -9,13 +10,13 @@ describe('loginAuth', () => {
   const player_name = 'player_name'
   const player = PlayerEntity.create({ id: 'player_id', name: player_name })
 
-  let getByName: jest.Mock
-  let authCreate: jest.Mock
+  let getByName: MockInstance
+  let authCreate: MockInstance
   let repository: Pick<Repository, 'player' | 'auth'>
 
   beforeEach(() => {
-    getByName = jest.fn().mockResolvedValue(player)
-    authCreate = jest.fn().mockResolvedValue(undefined)
+    getByName = vi.fn().mockResolvedValue(player)
+    authCreate = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       player: {
@@ -26,11 +27,11 @@ describe('loginAuth', () => {
       } as unknown as Repository['auth']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should reject when player is not found', async () => {

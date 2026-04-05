@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { OutpostGetQuery } from '#app/query/outpost/get'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -42,17 +43,17 @@ describe('OutpostGetQuery', () => {
       }
     })
     repository = {
-      outpost: { getById: jest.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost'],
-      cell: { getById: jest.fn().mockResolvedValue(cell) } as unknown as Repository['cell'],
+      outpost: { getById: vi.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost'],
+      cell: { getById: vi.fn().mockResolvedValue(cell) } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: jest.fn().mockResolvedValue(stock)
+        getByCellId: vi.fn().mockResolvedValue(stock)
       } as unknown as Repository['resource_stock']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when outpost is not owned by player', async () => {
@@ -60,7 +61,7 @@ describe('OutpostGetQuery', () => {
       ...outpost,
       player_id: 'other'
     })
-    ;(repository.outpost.getById as jest.Mock).mockResolvedValue(other)
+    ;(repository.outpost.getById as MockInstance).mockResolvedValue(other)
 
     await expect(new OutpostGetQuery().run({
       player_id,

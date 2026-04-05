@@ -3,11 +3,11 @@ import { AppEvent } from '#core/events'
 import { AppLogger } from './port/logger'
 
 const makeLogger = (): AppLogger => ({
-  info: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-  debug: jest.fn(),
-  child: jest.fn(),
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
+  child: vi.fn(),
 } as unknown as AppLogger)
 
 describe('AppEventBus', () => {
@@ -28,7 +28,7 @@ describe('AppEventBus', () => {
   })
 
   it('delivers the payload to a registered listener', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     const payload = { city_id: 'city-1', player_id: 'player-1' }
 
     bus.on(AppEvent.CityResourcesGathered, listener)
@@ -39,7 +39,7 @@ describe('AppEventBus', () => {
   })
 
   it('does not call a listener after it has been removed via off', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     const payload = { city_id: 'city-1', player_id: 'player-1' }
 
     bus.on(AppEvent.CityResourcesGathered, listener)

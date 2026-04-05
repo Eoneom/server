@@ -26,12 +26,12 @@ describe('TroopMovementGetActionQuery', () => {
       },
       arrive_at: 50_000
     })
-    repository = { movement: { getById: jest.fn().mockResolvedValue(movement) } as unknown as Repository['movement'] }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    repository = { movement: { getById: vi.fn().mockResolvedValue(movement) } as unknown as Repository['movement'] }
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns movement action', async () => {

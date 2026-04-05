@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { finishTechnologyResearch } from './finish-research'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -9,7 +10,7 @@ import assert from 'assert'
 describe('finishTechnologyResearch', () => {
   const player_id = 'player_id'
   let technology_to_finish: TechnologyEntity
-  let technologyUpdateOne: jest.Mock
+  let technologyUpdateOne: MockInstance
   let repository: Pick<Repository, 'technology'>
 
   beforeEach(() => {
@@ -23,24 +24,24 @@ describe('finishTechnologyResearch', () => {
       research_started_at: done_at - 60_000
     })
 
-    technologyUpdateOne = jest.fn().mockResolvedValue(undefined)
+    technologyUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       technology: {
-        getResearchDone: jest.fn().mockResolvedValue(technology_to_finish),
+        getResearchDone: vi.fn().mockResolvedValue(technology_to_finish),
         updateOne: technologyUpdateOne
       } as unknown as Repository['technology']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should not return any update if there is no technology in progress', async () => {
-    repository.technology.getResearchDone = jest.fn().mockResolvedValue(null)
+    repository.technology.getResearchDone = vi.fn().mockResolvedValue(null)
 
     await finishTechnologyResearch({ player_id })
 

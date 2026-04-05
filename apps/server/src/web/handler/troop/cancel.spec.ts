@@ -1,35 +1,36 @@
+import { vi, type MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { troopCancelHandler } from './cancel'
 import { cancelTroop } from '#app/command/troop/cancel'
 
-jest.mock('#app/command/troop/cancel')
+vi.mock('#app/command/troop/cancel')
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
 describe('troopCancelHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { city_id: 'c1' } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: { player_id: 'p1' }
     }
-    next = jest.fn()
-    ;(cancelTroop as jest.Mock).mockResolvedValue(undefined)
+    next = vi.fn()
+    ;(cancelTroop as MockInstance).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when city_id is missing', async () => {
@@ -41,7 +42,7 @@ describe('troopCancelHandler', () => {
 
   it('calls next with error when command throws', async () => {
     const error = new Error('cancel error')
-    ;(cancelTroop as jest.Mock).mockRejectedValue(error)
+    ;(cancelTroop as MockInstance).mockRejectedValue(error)
     await troopCancelHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { signupAuth } from './signup'
 import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
@@ -76,37 +77,37 @@ describe('signupAuth', () => {
     })
   ]
 
-  let playerExist: jest.Mock
-  let cityExist: jest.Mock
-  let playerCreate: jest.Mock
-  let cityCreate: jest.Mock
-  let buildingCreate: jest.Mock
-  let technologyCreate: jest.Mock
-  let cellUpdateOne: jest.Mock
-  let resourceStockGetByCellId: jest.Mock
-  let resourceStockUpdateOne: jest.Mock
-  let troopCreate: jest.Mock
-  let explorationCreate: jest.Mock
+  let playerExist: MockInstance
+  let cityExist: MockInstance
+  let playerCreate: MockInstance
+  let cityCreate: MockInstance
+  let buildingCreate: MockInstance
+  let technologyCreate: MockInstance
+  let cellUpdateOne: MockInstance
+  let resourceStockGetByCellId: MockInstance
+  let resourceStockUpdateOne: MockInstance
+  let troopCreate: MockInstance
+  let explorationCreate: MockInstance
   let repository: Pick<Repository, 'player' | 'city' | 'building' | 'technology' | 'cell' | 'resource_stock' | 'troop' | 'exploration'>
 
   beforeEach(() => {
-    playerExist = jest.fn().mockResolvedValue(false)
-    cityExist = jest.fn().mockResolvedValue(false)
-    playerCreate = jest.fn().mockResolvedValue(undefined)
-    cityCreate = jest.fn().mockResolvedValue(undefined)
-    buildingCreate = jest.fn().mockResolvedValue(undefined)
-    technologyCreate = jest.fn().mockResolvedValue(undefined)
-    cellUpdateOne = jest.fn().mockResolvedValue(undefined)
-    troopCreate = jest.fn().mockResolvedValue(undefined)
-    explorationCreate = jest.fn().mockResolvedValue(undefined)
-    resourceStockGetByCellId = jest.fn().mockImplementation(({ cell_id }: { cell_id: string }) =>
+    playerExist = vi.fn().mockResolvedValue(false)
+    cityExist = vi.fn().mockResolvedValue(false)
+    playerCreate = vi.fn().mockResolvedValue(undefined)
+    cityCreate = vi.fn().mockResolvedValue(undefined)
+    buildingCreate = vi.fn().mockResolvedValue(undefined)
+    technologyCreate = vi.fn().mockResolvedValue(undefined)
+    cellUpdateOne = vi.fn().mockResolvedValue(undefined)
+    troopCreate = vi.fn().mockResolvedValue(undefined)
+    explorationCreate = vi.fn().mockResolvedValue(undefined)
+    resourceStockGetByCellId = vi.fn().mockImplementation(({ cell_id }: { cell_id: string }) =>
       Promise.resolve(testResourceStock({
         cell_id,
         plastic: 123,
         mushroom: 456
       }))
     )
-    resourceStockUpdateOne = jest.fn().mockResolvedValue(undefined)
+    resourceStockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       player: {
@@ -138,13 +139,13 @@ describe('signupAuth', () => {
       } as unknown as Repository['exploration']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(AppService, 'selectCityFirstCell').mockResolvedValue(city_first_cell)
-    jest.spyOn(AppService, 'getCellsAround').mockResolvedValue(cells_around_city)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(AppService, 'selectCityFirstCell').mockResolvedValue(city_first_cell)
+    vi.spyOn(AppService, 'getCellsAround').mockResolvedValue(cells_around_city)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent user from signup with an existing name', async () => {
@@ -177,10 +178,10 @@ describe('signupAuth', () => {
     assert.strictEqual(cityExist.mock.calls.length, 1)
     assert.strictEqual(cityExist.mock.calls[0][0], city_name)
 
-    const select_first_cell = AppService.selectCityFirstCell as jest.Mock
+    const select_first_cell = AppService.selectCityFirstCell as unknown as MockInstance
     assert.strictEqual(select_first_cell.mock.calls.length, 1)
 
-    const get_cells_around = AppService.getCellsAround as jest.Mock
+    const get_cells_around = AppService.getCellsAround as unknown as MockInstance
     assert.strictEqual(get_cells_around.mock.calls.length, 1)
     assert.deepStrictEqual(get_cells_around.mock.calls[0][0], {
       coordinates: city_first_cell.coordinates

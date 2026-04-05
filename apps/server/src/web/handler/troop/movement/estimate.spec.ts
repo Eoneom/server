@@ -1,11 +1,12 @@
+import type { MockInstance } from 'vitest'
 import { Request, Response, NextFunction } from 'express'
 import { troopEstimateMovementHandler } from './estimate'
 import { TroopMovementEstimateQuery } from '#query/troop/movement/estimate'
 
 type MockRes = {
-  status: jest.Mock
-  json: jest.Mock
-  send: jest.Mock
+  status: MockInstance
+  json: MockInstance
+  send: MockInstance
   locals: Record<string, unknown>
 }
 
@@ -16,18 +17,18 @@ const troop_codes = ['WARRIOR']
 describe('troopEstimateMovementHandler', () => {
   let req: Partial<Request>
   let res: MockRes
-  let next: jest.Mock
+  let next: MockInstance
 
   beforeEach(() => {
     req = { body: { origin, destination, troop_codes } }
     res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis(),
+      send: vi.fn().mockReturnThis(),
       locals: {}
     }
-    next = jest.fn()
-    jest.spyOn(TroopMovementEstimateQuery.prototype, 'run').mockResolvedValue({
+    next = vi.fn()
+    vi.spyOn(TroopMovementEstimateQuery.prototype, 'run').mockResolvedValue({
       distance: 5,
       speed: 2,
       duration: 150
@@ -35,7 +36,7 @@ describe('troopEstimateMovementHandler', () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns 400 when origin is missing', async () => {
@@ -61,7 +62,7 @@ describe('troopEstimateMovementHandler', () => {
 
   it('calls next with error when query throws', async () => {
     const error = new Error('query error')
-    jest.spyOn(TroopMovementEstimateQuery.prototype, 'run').mockRejectedValue(error)
+    vi.spyOn(TroopMovementEstimateQuery.prototype, 'run').mockRejectedValue(error)
     await troopEstimateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(next).toHaveBeenCalledWith(error)
   })

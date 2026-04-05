@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { BuildingGetQuery } from '#app/query/building/get'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -34,15 +35,15 @@ describe('BuildingGetQuery', () => {
     })
 
     repository = {
-      city: { get: jest.fn().mockResolvedValue(city) } as unknown as Repository['city'],
-      building: { getInCity: jest.fn().mockResolvedValue(building) } as unknown as Repository['building'],
-      technology: { get: jest.fn().mockResolvedValue(architecture) } as unknown as Repository['technology']
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      building: { getInCity: vi.fn().mockResolvedValue(building) } as unknown as Repository['building'],
+      technology: { get: vi.fn().mockResolvedValue(architecture) } as unknown as Repository['technology']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when city is not owned by player', async () => {
@@ -50,7 +51,7 @@ describe('BuildingGetQuery', () => {
       name: 'x',
       player_id: 'other'
     })
-    ;(repository.city.get as jest.Mock).mockResolvedValue(other)
+    ;(repository.city.get as MockInstance).mockResolvedValue(other)
 
     await expect(new BuildingGetQuery().run({
       city_id: other.id,

@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { generateWorld } from './generate'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -14,15 +15,15 @@ describe('generateWorld', () => {
     resource_coefficient: { plastic: 1, mushroom: 1 }
   })
 
-  let isInitialized: jest.Mock
-  let cellCreate: jest.Mock
-  let stockCreate: jest.Mock
+  let isInitialized: MockInstance
+  let cellCreate: MockInstance
+  let stockCreate: MockInstance
   let repository: Pick<Repository, 'cell' | 'resource_stock'>
 
   beforeEach(() => {
-    isInitialized = jest.fn()
-    cellCreate = jest.fn().mockResolvedValue('persisted_cell_id')
-    stockCreate = jest.fn().mockResolvedValue(undefined)
+    isInitialized = vi.fn()
+    cellCreate = vi.fn().mockResolvedValue('persisted_cell_id')
+    stockCreate = vi.fn().mockResolvedValue(undefined)
     repository = {
       cell: {
         isInitialized,
@@ -32,12 +33,12 @@ describe('generateWorld', () => {
         create: stockCreate
       } as unknown as Repository['resource_stock']
     }
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(WorldService, 'generate').mockReturnValue([ cell ])
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(WorldService, 'generate').mockReturnValue([ cell ])
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('throws when the world is already initialized', async () => {

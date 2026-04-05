@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest'
 import { researchTechnology } from './research'
 import { Factory } from '#adapter/factory'
 import { AppService } from '#app/service'
@@ -20,8 +21,8 @@ describe('researchTechnology', () => {
   let stock: ReturnType<typeof testResourceStock>
   let technology: TechnologyEntity
   let research_lab: BuildingEntity
-  let stockUpdateOne: jest.Mock
-  let technologyUpdateOne: jest.Mock
+  let stockUpdateOne: MockInstance
+  let technologyUpdateOne: MockInstance
   let repository: Pick<Repository, 'city' | 'technology' | 'building' | 'cell' | 'resource_stock'>
 
   beforeEach(() => {
@@ -46,39 +47,39 @@ describe('researchTechnology', () => {
       level: 0
     })
 
-    stockUpdateOne = jest.fn().mockResolvedValue(undefined)
-    technologyUpdateOne = jest.fn().mockResolvedValue(undefined)
+    stockUpdateOne = vi.fn().mockResolvedValue(undefined)
+    technologyUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
       city: {
-        get: jest.fn().mockResolvedValue(city),
+        get: vi.fn().mockResolvedValue(city),
       } as unknown as Repository['city'],
       technology: {
-        get: jest.fn().mockResolvedValue(technology),
-        isInProgress: jest.fn().mockResolvedValue(false),
+        get: vi.fn().mockResolvedValue(technology),
+        isInProgress: vi.fn().mockResolvedValue(false),
         updateOne: technologyUpdateOne
       } as unknown as Repository['technology'],
       building: {
-        get: jest.fn().mockResolvedValue(research_lab)
+        get: vi.fn().mockResolvedValue(research_lab)
       } as unknown as Repository['building'],
       cell: {
-        getCityCell: jest.fn().mockResolvedValue(city_cell)
+        getCityCell: vi.fn().mockResolvedValue(city_cell)
       } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: jest.fn().mockResolvedValue(stock),
+        getByCellId: vi.fn().mockResolvedValue(stock),
         updateOne: stockUpdateOne
       } as unknown as Repository['resource_stock']
     }
 
-    jest.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
-    jest.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
+    vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
+    vi.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
       building: { [BuildingCode.RESEARCH_LAB]: 1 },
       technology: {}
     })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should prevent a player to research technology in another player city', async () => {
@@ -101,7 +102,7 @@ describe('researchTechnology', () => {
       plastic: 0,
       mushroom: 0
     })
-    repository.resource_stock.getByCellId = jest.fn().mockResolvedValue(broke)
+    repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(broke)
 
     await assert.rejects(
       () => researchTechnology({
@@ -117,7 +118,7 @@ describe('researchTechnology', () => {
   })
 
   it('should prevent a player to research if another technology is in progress', async () => {
-    repository.technology.isInProgress = jest.fn().mockResolvedValue(true)
+    repository.technology.isInProgress = vi.fn().mockResolvedValue(true)
 
     await assert.rejects(
       () => researchTechnology({
@@ -133,7 +134,7 @@ describe('researchTechnology', () => {
   })
 
   it('should prevent player to research if building requirements are not met', async () => {
-    jest.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
+    vi.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
       building: {},
       technology: {}
     })
@@ -159,8 +160,8 @@ describe('researchTechnology', () => {
       level: 2,
       research_started_at: undefined
     })
-    repository.technology.get = jest.fn().mockResolvedValue(technology_at_level_2)
-    jest.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
+    repository.technology.get = vi.fn().mockResolvedValue(technology_at_level_2)
+    vi.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
       building: { [BuildingCode.RESEARCH_LAB]: 2 },
       technology: {}
     })
@@ -186,8 +187,8 @@ describe('researchTechnology', () => {
       level: 2,
       research_started_at: undefined
     })
-    repository.technology.get = jest.fn().mockResolvedValue(technology_at_level_2)
-    jest.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
+    repository.technology.get = vi.fn().mockResolvedValue(technology_at_level_2)
+    vi.spyOn(AppService, 'getTechnologyRequirementLevels').mockResolvedValue({
       building: { [BuildingCode.RESEARCH_LAB]: 3 },
       technology: {}
     })
