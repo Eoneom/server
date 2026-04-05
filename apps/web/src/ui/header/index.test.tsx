@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen, act } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { OutpostType } from '@server-core/outpost/constant/type'
+import { vi } from 'vitest'
 
 import type { City, Outpost } from '#types'
 import { AuthProvider } from '#auth/context'
@@ -11,9 +12,24 @@ import { outpostKeys } from '#outpost/hooks'
 
 import { Header } from './index'
 
-jest.mock('@tanstack/react-router', () => ({
-  Link: ({ to, children, ...props }: { to: string; children: React.ReactNode }) => (
-    <a href={to} {...props}>
+vi.mock('@tanstack/react-router', () => ({
+  Link: ({
+    to,
+    params,
+    children,
+    ...props
+  }: {
+    to: string
+    params?: Record<string, string>
+    children: React.ReactNode
+  }) => (
+    <a
+      href={Object.entries(params ?? {}).reduce(
+        (href, [key, value]) => href.replace(`$${key}`, value),
+        to
+      )}
+      {...props}
+    >
       {children}
     </a>
   ),
@@ -115,12 +131,10 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: 'OnlyCity' })).toHaveAttribute('href', '/city/c-1')
   })
 
-  it('when neither city nor outpost, title link is empty and href is /outpost/undefined', async () => {
+  it('when neither city nor outpost, no title link is rendered', async () => {
     renderHeader()
     await act(async () => {})
-    const link = screen.getByRole('link')
-    expect(link).toHaveTextContent('')
-    expect(link).toHaveAttribute('href', '/outpost/undefined')
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
   })
 
   it('with city, shows resource progress bars', async () => {

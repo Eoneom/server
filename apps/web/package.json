@@ -14,24 +14,16 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-konva": "18.2.10",
-    "react-scripts": "5.0.1",
     "react-toastify": "^9.1.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "router:generate": "node ./scripts/router-generate.cjs",
-    "start": "yarn router:generate && PORT=3001 BROWSER=none craco start",
-    "build": "yarn router:generate && craco build",
-    "test": "yarn router:generate && craco test",
-    "test:ci": "yarn router:generate && craco test --watchAll=false",
-    "test:ci:coverage": "yarn router:generate && craco test --watchAll=false --coverage",
-    "eject": "craco eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "start": "yarn router:generate && vite",
+    "build": "yarn router:generate && vite build",
+    "test": "yarn router:generate && vitest",
+    "test:ci": "yarn router:generate && vitest run",
+    "test:ci:coverage": "yarn router:generate && vitest run --coverage"
   },
   "browserslist": {
     "production": [
@@ -46,19 +38,21 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "^7.1.0",
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.18.12",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
+    "@vitejs/plugin-react": "^5.0.4",
     "eslint": "^8.33.0",
     "eslint-plugin-react": "^7.32.2",
-    "typescript": "^4.9.5"
+    "jsdom": "^27.0.1",
+    "typescript": "^4.9.5",
+    "vite": "^7.1.10",
+    "vitest": "^3.2.4"
   }
 }

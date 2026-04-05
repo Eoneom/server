@@ -3,6 +3,7 @@ import { render, screen, act, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OutpostType } from '@eoneom/api-client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { vi } from 'vitest'
 
 import { AuthProvider } from '#auth/context'
 import { LocationProvider } from '#location/context'
@@ -11,20 +12,20 @@ import type { Outpost } from '#types'
 
 import { OutpostPage } from './page'
 
-const mockSettleCity = jest.fn()
-const mockSetPermanent = jest.fn()
+const mockSettleCity = vi.fn()
+const mockSetPermanent = vi.fn()
 
-jest.mock('#outpost/hooks', () => ({
-  ...jest.requireActual('#outpost/hooks'),
+vi.mock('#outpost/hooks', async () => ({
+  ...(await vi.importActual<typeof import('#outpost/hooks')>('#outpost/hooks')),
   useSetOutpostPermanent: () => ({ mutate: mockSetPermanent }),
 }))
 
-jest.mock('#city/hooks', () => ({
-  ...jest.requireActual('#city/hooks'),
+vi.mock('#city/hooks', async () => ({
+  ...(await vi.importActual<typeof import('#city/hooks')>('#city/hooks')),
   useSettleCity: () => ({ mutate: mockSettleCity }),
 }))
 
-jest.mock('#outpost/settle', () => ({
+vi.mock('#outpost/settle', () => ({
   OutpostSettle: ({ onSettle }: { onSettle: (name: string) => void }) => (
     <button onClick={() => onSettle('CityName')}>Settle</button>
   )

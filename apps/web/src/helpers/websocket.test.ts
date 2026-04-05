@@ -1,10 +1,12 @@
 import { wsClient } from './websocket'
+import type { Mock } from 'vitest'
+import { vi } from 'vitest'
 
 type MockWsInstance = {
   onmessage: ((event: { data: string }) => void) | null
   onerror: (() => void) | null
   onclose: (() => void) | null
-  close: jest.Mock
+  close: Mock
 }
 
 let mockWsInstance: MockWsInstance
@@ -14,16 +16,16 @@ beforeEach(() => {
     onmessage: null,
     onerror: null,
     onclose: null,
-    close: jest.fn(),
+    close: vi.fn(),
   }
 
-  global.WebSocket = jest.fn().mockImplementation(() => mockWsInstance) as unknown as typeof WebSocket
+  global.WebSocket = vi.fn().mockImplementation(() => mockWsInstance) as unknown as typeof WebSocket
 
   wsClient.disconnect()
 })
 
 afterEach(() => {
-  jest.restoreAllMocks()
+  vi.restoreAllMocks()
 })
 
 describe('WsClient', () => {
@@ -47,7 +49,7 @@ describe('WsClient', () => {
 
   describe('on / message handling', () => {
     it('calls the registered handler with the parsed payload on a matching message', () => {
-      const handler = jest.fn()
+      const handler = vi.fn()
       wsClient.connect('token')
       wsClient.on('city:event', handler)
 
@@ -58,7 +60,7 @@ describe('WsClient', () => {
     })
 
     it('does not call a handler registered for a different event type', () => {
-      const handler = jest.fn()
+      const handler = vi.fn()
       wsClient.connect('token')
       wsClient.on('other:event', handler)
 

@@ -1,9 +1,10 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import { vi } from 'vitest'
 
 import { HeaderTitle } from './index'
 
-jest.mock('@tanstack/react-router', () => ({
+vi.mock('@tanstack/react-router', () => ({
   Link: ({
     to,
     params,
