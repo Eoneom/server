@@ -41,7 +41,10 @@ export async function finishBuildingUpgrade({
 
   await repository.building.updateOne(building)
 
-  Factory.getEventBus().emit(AppEvent.BuildingUpgradeFinished, { city_id, player_id })
+  Factory.getEventBus().emit(AppEvent.BuildingUpgradeFinished, {
+    city_id,
+    player_id 
+  })
 
   return {
     code: building.code,

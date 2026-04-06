@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { signupHandler } from './signup'
 import { signupAuth } from '#command/auth/signup'
 
@@ -18,7 +22,12 @@ describe('signupHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { body: { player_name: 'alice', city_name: 'Aliceton' } }
+    req = {
+      body: {
+        player_name: 'alice',
+        city_name: 'Aliceton' 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -26,7 +35,10 @@ describe('signupHandler', () => {
       locals: {}
     }
     next = vi.fn()
-    vi.mocked(signupAuth).mockResolvedValue({ player_id: 'p1', city_id: 'c1' })
+    vi.mocked(signupAuth).mockResolvedValue({
+      player_id: 'p1',
+      city_id: 'c1' 
+    })
   })
 
   afterEach(() => {
@@ -37,14 +49,20 @@ describe('signupHandler', () => {
     req.body = { city_name: 'Aliceton' }
     await signupHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'player_name:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'player_name:not-found' 
+    })
   })
 
   it('returns 400 when city_name is missing', async () => {
     req.body = { player_name: 'alice' }
     await signupHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_name:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_name:not-found' 
+    })
   })
 
   it('calls next with error when signupAuth throws', async () => {
@@ -57,6 +75,12 @@ describe('signupHandler', () => {
   it('returns player_id and city_id on success', async () => {
     await signupHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(200)
-    expect(res.send).toHaveBeenCalledWith({ status: 'ok', data: { player_id: 'p1', city_id: 'c1' } })
+    expect(res.send).toHaveBeenCalledWith({
+      status: 'ok',
+      data: {
+        player_id: 'p1',
+        city_id: 'c1' 
+      } 
+    })
   })
 })

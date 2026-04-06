@@ -1,4 +1,6 @@
-import { vi, type MockInstance } from 'vitest'
+import {
+  vi, type MockInstance 
+} from 'vitest'
 import assert from 'assert'
 import { sagaSyncPlayer } from './sync-player'
 import { sagaRefreshGameState } from '#app/saga/game/refresh-state'
@@ -20,9 +22,7 @@ describe('sagaSyncPlayer', () => {
 
   beforeEach(() => {
     cityList = vi.fn().mockResolvedValue([])
-    repository = {
-      city: { list: cityList } as unknown as Repository['city']
-    }
+    repository = { city: { list: cityList } as unknown as Repository['city'] }
     ;(Factory.getRepository as MockInstance).mockReturnValue(repository)
     ;(sagaRefreshGameState as MockInstance).mockResolvedValue(undefined)
   })
@@ -56,7 +56,7 @@ describe('sagaSyncPlayer', () => {
     await sagaSyncPlayer({ player_id })
 
     assert.strictEqual((sagaRefreshGameState as MockInstance).mock.calls.length, 2)
-    const call_args = (sagaRefreshGameState as MockInstance).mock.calls.map(([arg]) => arg)
+    const call_args = (sagaRefreshGameState as MockInstance).mock.calls.map(([ arg ]) => arg)
     assert.ok(call_args.some(arg => arg.player_id === player_id && arg.city_id === 'city_1'))
     assert.ok(call_args.some(arg => arg.player_id === player_id && arg.city_id === 'city_2'))
   })

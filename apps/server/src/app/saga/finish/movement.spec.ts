@@ -1,4 +1,6 @@
-import { vi, type MockInstance } from 'vitest'
+import {
+  vi, type MockInstance 
+} from 'vitest'
 import assert from 'assert'
 import { sagaFinishMovement } from './movement'
 import { sagaFinishBase } from '#app/saga/finish/base'
@@ -57,7 +59,7 @@ describe('sagaFinishMovement', () => {
   })
 
   it('returns early without running queries when lock is already held', async () => {
-    ;(lock.has as MockInstance).mockReturnValue(true)
+    (lock.has as MockInstance).mockReturnValue(true)
 
     await sagaFinishMovement({ player_id })
 
@@ -88,64 +90,70 @@ describe('sagaFinishMovement', () => {
   })
 
   it('calls sagaFinishBase for BASE movements', async () => {
-    listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
+    listFinishedRun.mockResolvedValue({ movement_ids: [ 'm1' ] })
     getActionRun.mockResolvedValue({ action: MovementAction.BASE })
 
     await sagaFinishMovement({ player_id })
 
     assert.strictEqual((sagaFinishBase as MockInstance).mock.calls.length, 1)
-    assert.deepStrictEqual((sagaFinishBase as MockInstance).mock.calls[0][0], { player_id, movement_id: 'm1' })
+    assert.deepStrictEqual((sagaFinishBase as MockInstance).mock.calls[0][0], {
+      player_id,
+      movement_id: 'm1' 
+    })
     assert.strictEqual((sagaFinishExplore as MockInstance).mock.calls.length, 0)
   })
 
   it('calls sagaFinishExplore for EXPLORE movements', async () => {
-    listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
+    listFinishedRun.mockResolvedValue({ movement_ids: [ 'm1' ] })
     getActionRun.mockResolvedValue({ action: MovementAction.EXPLORE })
 
     await sagaFinishMovement({ player_id })
 
     assert.strictEqual((sagaFinishExplore as MockInstance).mock.calls.length, 1)
-    assert.deepStrictEqual((sagaFinishExplore as MockInstance).mock.calls[0][0], { player_id, movement_id: 'm1' })
+    assert.deepStrictEqual((sagaFinishExplore as MockInstance).mock.calls[0][0], {
+      player_id,
+      movement_id: 'm1' 
+    })
     assert.strictEqual((sagaFinishBase as MockInstance).mock.calls.length, 0)
   })
 
   it('emits TroopMovementFinished when at least one movement is processed', async () => {
-    listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
+    listFinishedRun.mockResolvedValue({ movement_ids: [ 'm1' ] })
 
     await sagaFinishMovement({ player_id })
 
-    const emitted_events = emit.mock.calls.map(([event]) => event)
+    const emitted_events = emit.mock.calls.map(([ event ]) => event)
     assert.ok(emitted_events.includes(AppEvent.TroopMovementFinished))
-    const troop_call = emit.mock.calls.find(([event]) => event === AppEvent.TroopMovementFinished)
+    const troop_call = emit.mock.calls.find(([ event ]) => event === AppEvent.TroopMovementFinished)
     assert.deepStrictEqual(troop_call[1], { player_id })
   })
 
   it('emits OutpostCreated when an outpost is created', async () => {
-    listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
+    listFinishedRun.mockResolvedValue({ movement_ids: [ 'm1' ] })
     getActionRun.mockResolvedValue({ action: MovementAction.BASE })
     ;(sagaFinishBase as MockInstance).mockResolvedValue({ is_outpost_created: true })
 
     await sagaFinishMovement({ player_id })
 
-    const emitted_events = emit.mock.calls.map(([event]) => event)
+    const emitted_events = emit.mock.calls.map(([ event ]) => event)
     assert.ok(emitted_events.includes(AppEvent.TroopMovementFinished))
     assert.ok(emitted_events.includes(AppEvent.OutpostCreated))
-    const outpost_call = emit.mock.calls.find(([event]) => event === AppEvent.OutpostCreated)
+    const outpost_call = emit.mock.calls.find(([ event ]) => event === AppEvent.OutpostCreated)
     assert.deepStrictEqual(outpost_call[1], { player_id })
   })
 
   it('does not emit OutpostCreated when no outpost is created', async () => {
-    listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
+    listFinishedRun.mockResolvedValue({ movement_ids: [ 'm1' ] })
     ;(sagaFinishBase as MockInstance).mockResolvedValue({ is_outpost_created: false })
 
     await sagaFinishMovement({ player_id })
 
-    const emitted_events = emit.mock.calls.map(([event]) => event)
+    const emitted_events = emit.mock.calls.map(([ event ]) => event)
     assert.ok(!emitted_events.includes(AppEvent.OutpostCreated))
   })
 
   it('throws when an unknown movement action is encountered', async () => {
-    listFinishedRun.mockResolvedValue({ movement_ids: ['m1'] })
+    listFinishedRun.mockResolvedValue({ movement_ids: [ 'm1' ] })
     getActionRun.mockResolvedValue({ action: 'unknown_action' })
 
     await assert.rejects(
@@ -155,7 +163,13 @@ describe('sagaFinishMovement', () => {
   })
 
   it('processes multiple movements', async () => {
-    listFinishedRun.mockResolvedValue({ movement_ids: ['m1', 'm2', 'm3'] })
+    listFinishedRun.mockResolvedValue({
+      movement_ids: [
+        'm1',
+        'm2',
+        'm3' 
+      ] 
+    })
     getActionRun.mockResolvedValue({ action: MovementAction.BASE })
 
     await sagaFinishMovement({ player_id })

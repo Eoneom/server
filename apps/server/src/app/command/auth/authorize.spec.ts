@@ -42,7 +42,10 @@ describe('authorizeAuth', () => {
     authGet.mockRejectedValue(new Error(AuthError.NOT_FOUND))
 
     await assert.rejects(
-      () => authorizeAuth({ token, action_at }),
+      () => authorizeAuth({
+        token,
+        action_at 
+      }),
       new RegExp(AuthError.NOT_FOUND)
     )
 
@@ -50,7 +53,10 @@ describe('authorizeAuth', () => {
   })
 
   it('should update last action and return player_id', async () => {
-    const result = await authorizeAuth({ token, action_at })
+    const result = await authorizeAuth({
+      token,
+      action_at 
+    })
 
     assert.strictEqual(authGet.mock.calls.length, 1)
     assert.deepStrictEqual(authGet.mock.calls[0][0], { token })

@@ -36,9 +36,7 @@ describe('finishBuildingUpgrade', () => {
         getUpgradeDone: vi.fn().mockResolvedValue(building_to_finish),
         updateOne: buildingUpdateOne
       } as unknown as Repository['building'],
-      city: {
-        get: vi.fn().mockResolvedValue(city)
-      } as unknown as Repository['city']
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city']
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)

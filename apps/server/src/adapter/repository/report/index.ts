@@ -42,7 +42,10 @@ export class MongoReportRepository
     offset: number
   }): Promise<{ reports: ReportEntity[]; total: number }> {
     const filter = { player_id }
-    const [documents, total] = await Promise.all([
+    const [
+      documents,
+      total 
+    ] = await Promise.all([
       this.model.find(filter).sort({ recorded_at: -1 }).skip(offset).limit(limit),
       this.model.countDocuments(filter)
     ])

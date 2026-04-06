@@ -17,6 +17,7 @@ import { sync_task } from '#cron/index'
 
   try {
     await generateWorld()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     if (err.message !== WorldError.ALREADY_EXISTS) {
       logger.error(err.message)

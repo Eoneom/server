@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopRecruitHandler } from './recruit'
 import { sagaRecruitTroop } from '#app/saga/troop-recruit'
 
@@ -18,7 +22,13 @@ describe('troopRecruitHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { body: { city_id: 'c1', count: 10, troop_code: 'WARRIOR' } }
+    req = {
+      body: {
+        city_id: 'c1',
+        count: 10,
+        troop_code: 'WARRIOR' 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -34,24 +44,42 @@ describe('troopRecruitHandler', () => {
   })
 
   it('returns 400 when city_id is missing', async () => {
-    req.body = { count: 10, troop_code: 'WARRIOR' }
+    req.body = {
+      count: 10,
+      troop_code: 'WARRIOR' 
+    }
     await troopRecruitHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not-found' 
+    })
   })
 
   it('returns 400 when count is missing', async () => {
-    req.body = { city_id: 'c1', troop_code: 'WARRIOR' }
+    req.body = {
+      city_id: 'c1',
+      troop_code: 'WARRIOR' 
+    }
     await troopRecruitHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'count:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'count:not-found' 
+    })
   })
 
   it('returns 400 when troop_code is missing', async () => {
-    req.body = { city_id: 'c1', count: 10 }
+    req.body = {
+      city_id: 'c1',
+      count: 10 
+    }
     await troopRecruitHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'troop_code:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'troop_code:not-found' 
+    })
   })
 
   it('calls next with error when saga throws', async () => {
@@ -63,7 +91,12 @@ describe('troopRecruitHandler', () => {
 
   it('calls saga with correct args and returns ok', async () => {
     await troopRecruitHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
-    expect(sagaRecruitTroop).toHaveBeenCalledWith({ city_id: 'c1', count: 10, player_id: 'p1', troop_code: 'WARRIOR' })
+    expect(sagaRecruitTroop).toHaveBeenCalledWith({
+      city_id: 'c1',
+      count: 10,
+      player_id: 'p1',
+      troop_code: 'WARRIOR' 
+    })
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({ status: 'ok' })
   })

@@ -11,7 +11,9 @@ import { TroopCode } from '#core/troop/constant/code'
 import { TroopEntity } from '#core/troop/entity'
 import { TroopError } from '#core/troop/error'
 import assert from 'assert'
-import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
+import {
+  testResourceStock, testCityCell 
+} from '../../test-support/resource-stock'
 
 describe('recruitTroop', () => {
   const player_id = 'player_id'
@@ -30,7 +32,10 @@ describe('recruitTroop', () => {
       name: 'dummy',
       player_id,
     })
-    city_cell = testCityCell({ city_id: city.id, cell_id })
+    city_cell = testCityCell({
+      city_id: city.id,
+      cell_id 
+    })
     stock = testResourceStock({
       cell_id,
       plastic: 100000,
@@ -46,18 +51,10 @@ describe('recruitTroop', () => {
     stockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
-      cell: {
-        getCityCell: vi.fn().mockResolvedValue(city_cell),
-      } as unknown as Repository['cell'],
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
-      building: {
-        getLevel: vi.fn().mockResolvedValue(0),
-      } as unknown as Repository['building'],
-      technology: {
-        getLevel: vi.fn().mockResolvedValue(0),
-      } as unknown as Repository['technology'],
+      cell: { getCityCell: vi.fn().mockResolvedValue(city_cell) } as unknown as Repository['cell'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      building: { getLevel: vi.fn().mockResolvedValue(0) } as unknown as Repository['building'],
+      technology: { getLevel: vi.fn().mockResolvedValue(0) } as unknown as Repository['technology'],
       troop: {
         getInCell: vi.fn().mockResolvedValue(troop),
         isInProgress: vi.fn().mockResolvedValue(false),
@@ -93,7 +90,11 @@ describe('recruitTroop', () => {
   })
 
   it('should prevent player to recruit when city does not have enough resources', async () => {
-    const broke = testResourceStock({ cell_id, plastic: 0, mushroom: 0 })
+    const broke = testResourceStock({
+      cell_id,
+      plastic: 0,
+      mushroom: 0 
+    })
     repository.resource_stock.getByCellId = vi.fn().mockResolvedValue(broke)
 
     await assert.rejects(

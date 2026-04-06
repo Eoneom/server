@@ -28,12 +28,10 @@ describe('PricingService', () => {
       const code = TroopCode.EXPLORER
       const count = 2
       const cost = troop_costs[code]
-      const reduced = Math.ceil(
-        cost.duration *
+      const reduced = Math.ceil(cost.duration *
           count *
           reductionFrom(CLONING_FACTORY_REDUCTION_PER_LEVEL, 0) *
-          reductionFrom(REPLICATION_CATALYST_REDUCTION_PER_LEVEL, 0)
-      )
+          reductionFrom(REPLICATION_CATALYST_REDUCTION_PER_LEVEL, 0))
 
       const result = PricingService.getTroopCost({
         code,
@@ -54,8 +52,7 @@ describe('PricingService', () => {
       const cost = troop_costs[code]
       const cloning_factory_level = 1
       const replication_catalyst_level = 1
-      const reduced = Math.ceil(
-        cost.duration *
+      const reduced = Math.ceil(cost.duration *
           count *
           reductionFrom(
             CLONING_FACTORY_REDUCTION_PER_LEVEL,
@@ -64,8 +61,7 @@ describe('PricingService', () => {
           reductionFrom(
             REPLICATION_CATALYST_REDUCTION_PER_LEVEL,
             replication_catalyst_level
-          )
-      )
+          ))
 
       const result = PricingService.getTroopCost({
         code,
@@ -82,7 +78,9 @@ describe('PricingService', () => {
     it('returns level-1 resources and scaled duration with no architecture bonus', () => {
       const code = BuildingCode.RECYCLING_PLANT
       const level = 1
-      const { plastic, mushroom, duration } = building_costs[code]
+      const {
+        plastic, mushroom, duration 
+      } = building_costs[code]
       const arch = reductionFrom(ARCHITECTURE_REDUCTION_PER_LEVEL, 0)
       const baseDur = duration.base * Math.pow(duration.multiplier, level - 1)
       const rawSeconds = Math.ceil(baseDur * arch)
@@ -109,14 +107,10 @@ describe('PricingService', () => {
     it('shortens duration with architecture level without changing resources', () => {
       const code = BuildingCode.PLASTIC_WAREHOUSE
       const level = 2
-      const { plastic, mushroom, duration } = building_costs[code]
+      const { duration } = building_costs[code]
       const baseDur = duration.base * Math.pow(duration.multiplier, level - 1)
-      const rawNoArch = Math.ceil(
-        baseDur * reductionFrom(ARCHITECTURE_REDUCTION_PER_LEVEL, 0)
-      )
-      const rawWithArch = Math.ceil(
-        baseDur * reductionFrom(ARCHITECTURE_REDUCTION_PER_LEVEL, 1)
-      )
+      const rawNoArch = Math.ceil(baseDur * reductionFrom(ARCHITECTURE_REDUCTION_PER_LEVEL, 0))
+      const rawWithArch = Math.ceil(baseDur * reductionFrom(ARCHITECTURE_REDUCTION_PER_LEVEL, 1))
 
       const without = PricingService.getBuildingLevelCost({
         code,
@@ -141,7 +135,9 @@ describe('PricingService', () => {
     it('returns level cost with no research lab reduction', () => {
       const code = TechnologyCode.ARCHITECTURE
       const level = 1
-      const { plastic, mushroom, duration } = technology_costs[code]
+      const {
+        plastic, mushroom, duration 
+      } = technology_costs[code]
       const lab = reductionFrom(RESEARCH_LABEL_REDUCTION_PER_LEVEL, 0)
       const baseDur = duration.base * Math.pow(duration.multiplier, level - 1)
       const rawSeconds = Math.ceil(baseDur * lab)
@@ -170,12 +166,8 @@ describe('PricingService', () => {
       const level = 1
       const { duration } = technology_costs[code]
       const baseDur = duration.base * Math.pow(duration.multiplier, level - 1)
-      const raw0 = Math.ceil(
-        baseDur * reductionFrom(RESEARCH_LABEL_REDUCTION_PER_LEVEL, 0)
-      )
-      const raw1 = Math.ceil(
-        baseDur * reductionFrom(RESEARCH_LABEL_REDUCTION_PER_LEVEL, 1)
-      )
+      const raw0 = Math.ceil(baseDur * reductionFrom(RESEARCH_LABEL_REDUCTION_PER_LEVEL, 0))
+      const raw1 = Math.ceil(baseDur * reductionFrom(RESEARCH_LABEL_REDUCTION_PER_LEVEL, 1))
 
       const a = PricingService.getTechnologyLevelCost({
         code,
@@ -203,7 +195,10 @@ describe('PricingService', () => {
         level,
         architecture_level: 0
       })
-      const refund = PricingService.getBuildingUpgradeRefund({ code, level })
+      const refund = PricingService.getBuildingUpgradeRefund({
+        code,
+        level 
+      })
 
       assert.strictEqual(
         refund.plastic,

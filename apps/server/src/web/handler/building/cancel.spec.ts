@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { buildingCancelHandler } from './cancel'
 import { cancelBuilding } from '#command/building/cancel'
 
@@ -37,7 +41,10 @@ describe('buildingCancelHandler', () => {
     req.body = {}
     await buildingCancelHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not-found' 
+    })
   })
 
   it('calls next with error when cancelBuilding throws', async () => {
@@ -49,7 +56,10 @@ describe('buildingCancelHandler', () => {
 
   it('returns ok on success', async () => {
     await buildingCancelHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
-    expect(cancelBuilding).toHaveBeenCalledWith({ player_id: 'p1', city_id: 'c1' })
+    expect(cancelBuilding).toHaveBeenCalledWith({
+      player_id: 'p1',
+      city_id: 'c1' 
+    })
     expect(res.json).toHaveBeenCalledWith({ status: 'ok' })
   })
 })

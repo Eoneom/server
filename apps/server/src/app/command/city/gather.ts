@@ -29,11 +29,14 @@ export async function cityGather({
     AppService.getCityWarehousesCapacity({ city_id })
   ])
 
-  const stock = await repository.resource_stock.getByCellId({
-    cell_id: city_cell.id
-  })
+  const stock = await repository.resource_stock.getByCellId({ cell_id: city_cell.id })
 
-  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
+  AppService.assertCityResourceStockContext({
+    city,
+    city_cell,
+    stock,
+    player_id 
+  })
 
   const {
     stock: updated_stock,
@@ -50,5 +53,8 @@ export async function cityGather({
 
   await repository.resource_stock.updateOne(updated_stock)
 
-  Factory.getEventBus().emit(AppEvent.CityResourcesGathered, { city_id, player_id })
+  Factory.getEventBus().emit(AppEvent.CityResourcesGathered, {
+    city_id,
+    player_id 
+  })
 }

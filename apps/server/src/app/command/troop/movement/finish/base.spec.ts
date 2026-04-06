@@ -87,12 +87,8 @@ describe('finishTroopBaseMovement', () => {
         countForPlayer: vi.fn().mockResolvedValue(existing_outposts_count),
         create: outpostCreate,
       } as unknown as Repository['outpost'],
-      report: {
-        create: reportCreate,
-      } as unknown as Repository['report'],
-      resource_stock: {
-        ensureWorldStockForCell,
-      } as unknown as Repository['resource_stock'],
+      report: { create: reportCreate } as unknown as Repository['report'],
+      resource_stock: { ensureWorldStockForCell } as unknown as Repository['resource_stock'],
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)

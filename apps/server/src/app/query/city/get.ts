@@ -55,9 +55,7 @@ export class CityGetQuery extends GenericQuery<CityGetQueryRequest, CityGetQuery
       this.repository.building.getTotalLevels({ city_id: city.id }),
     ])
 
-    const stock_row = await this.repository.resource_stock.getByCellId({
-      cell_id: cell.id
-    })
+    const stock_row = await this.repository.resource_stock.getByCellId({ cell_id: cell.id })
 
     AppService.assertResourceStockMatchesCityCell({
       city,

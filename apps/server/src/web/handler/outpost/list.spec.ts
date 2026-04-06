@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { outpostListHandler } from './list'
 import { OutpostListQuery } from '#query/outpost/list'
 
@@ -11,9 +13,30 @@ type MockRes = {
 }
 
 const queryResult = {
-  outposts: [{ id: 'o1', type: 'STANDARD', cell_id: 'cell1' }],
-  cells: [{ id: 'cell1', coordinates: { x: 2, y: 4, sector: 0 } }],
-  resource_stocks: [{ cell_id: 'cell1', plastic: 200, mushroom: 100 }]
+  outposts: [
+    {
+      id: 'o1',
+      type: 'STANDARD',
+      cell_id: 'cell1' 
+    } 
+  ],
+  cells: [
+    {
+      id: 'cell1',
+      coordinates: {
+        x: 2,
+        y: 4,
+        sector: 0 
+      } 
+    } 
+  ],
+  resource_stocks: [
+    {
+      cell_id: 'cell1',
+      plastic: 200,
+      mushroom: 100 
+    } 
+  ]
 }
 
 describe('outpostListHandler', () => {
@@ -58,7 +81,11 @@ describe('outpostListHandler', () => {
         outposts: [
           {
             id: 'o1',
-            coordinates: { x: 2, y: 4, sector: 0 },
+            coordinates: {
+              x: 2,
+              y: 4,
+              sector: 0 
+            },
             type: 'STANDARD',
             plastic: 200,
             mushroom: 100

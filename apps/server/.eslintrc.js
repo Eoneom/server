@@ -13,6 +13,15 @@ module.exports = {
     'sourceType': 'module',
   },
   'plugins': [ '@typescript-eslint' ],
+  'overrides': [
+    {
+      'files': [ '*.spec.ts', '**/*.spec.ts' ],
+      'rules': {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
+      }
+    }
+  ],
   'rules': {
     'array-bracket-spacing': [
       'error',

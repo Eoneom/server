@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopCreateMovementHandler } from './create'
 import { createTroopMovement } from '#app/command/troop/movement/create'
 
@@ -12,8 +16,16 @@ type MockRes = {
   locals: Record<string, unknown>
 }
 
-const origin = { x: 0, y: 0, sector: 0 }
-const destination = { x: 1, y: 1, sector: 0 }
+const origin = {
+  x: 0,
+  y: 0,
+  sector: 0 
+}
+const destination = {
+  x: 1,
+  y: 1,
+  sector: 0 
+}
 const troops = { WARRIOR: 5 }
 
 describe('troopCreateMovementHandler', () => {
@@ -22,7 +34,14 @@ describe('troopCreateMovementHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { body: { origin, destination, troops, action: 'ATTACK' } }
+    req = {
+      body: {
+        origin,
+        destination,
+        troops,
+        action: 'ATTACK' 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -38,31 +57,59 @@ describe('troopCreateMovementHandler', () => {
   })
 
   it('returns 400 when origin is missing', async () => {
-    req.body = { destination, troops, action: 'ATTACK' }
+    req.body = {
+      destination,
+      troops,
+      action: 'ATTACK' 
+    }
     await troopCreateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'origin:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'origin:not-found' 
+    })
   })
 
   it('returns 400 when destination is missing', async () => {
-    req.body = { origin, troops, action: 'ATTACK' }
+    req.body = {
+      origin,
+      troops,
+      action: 'ATTACK' 
+    }
     await troopCreateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'destination:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'destination:not-found' 
+    })
   })
 
   it('returns 400 when troops is missing', async () => {
-    req.body = { origin, destination, action: 'ATTACK' }
+    req.body = {
+      origin,
+      destination,
+      action: 'ATTACK' 
+    }
     await troopCreateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'troops:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'troops:not-found' 
+    })
   })
 
   it('returns 400 when action is missing', async () => {
-    req.body = { origin, destination, troops }
+    req.body = {
+      origin,
+      destination,
+      troops 
+    }
     await troopCreateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'action:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'action:not-found' 
+    })
   })
 
   it('calls next with error when command throws', async () => {
@@ -82,6 +129,9 @@ describe('troopCreateMovementHandler', () => {
       move_troops: troops
     })
     expect(res.status).toHaveBeenCalledWith(200)
-    expect(res.json).toHaveBeenCalledWith({ status: 'ok', data: { deleted_outpost_id: undefined } })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'ok',
+      data: { deleted_outpost_id: undefined } 
+    })
   })
 })

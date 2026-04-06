@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { outpostGetHandler } from './get'
 import { OutpostGetQuery } from '#query/outpost/get'
 
@@ -11,9 +13,21 @@ type MockRes = {
 }
 
 const queryResult = {
-  outpost: { id: 'o1', type: 'STANDARD' },
-  cell: { coordinates: { x: 3, y: 5, sector: 1 } },
-  resource_stock: { plastic: 150, mushroom: 75 }
+  outpost: {
+    id: 'o1',
+    type: 'STANDARD' 
+  },
+  cell: {
+    coordinates: {
+      x: 3,
+      y: 5,
+      sector: 1 
+    } 
+  },
+  resource_stock: {
+    plastic: 150,
+    mushroom: 75 
+  }
 }
 
 describe('outpostGetHandler', () => {
@@ -41,7 +55,10 @@ describe('outpostGetHandler', () => {
     req.params = {}
     await outpostGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'outpost_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'outpost_id:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -57,7 +74,11 @@ describe('outpostGetHandler', () => {
       status: 'ok',
       data: {
         id: 'o1',
-        coordinates: { x: 3, y: 5, sector: 1 },
+        coordinates: {
+          x: 3,
+          y: 5,
+          sector: 1 
+        },
         type: 'STANDARD',
         plastic: 150,
         mushroom: 75

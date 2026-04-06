@@ -12,9 +12,16 @@ export function testCityCell({
 }): CellEntity {
   return CellEntity.create({
     id: cell_id,
-    coordinates: { x: 1, y: 1, sector: 1 },
+    coordinates: {
+      x: 1,
+      y: 1,
+      sector: 1 
+    },
     type: CellType.LAKE,
-    resource_coefficient: { plastic: 1, mushroom: 1 },
+    resource_coefficient: {
+      plastic: 1,
+      mushroom: 1 
+    },
     city_id
   })
 }
@@ -57,12 +64,19 @@ export function testCityWithStock({
   city_cell: CellEntity
   stock: ResourceStockEntity
 } {
-  const city = CityEntity.initCity({ name: 'c', player_id })
+  const city = CityEntity.initCity({
+    name: 'c',
+    player_id 
+  })
   const city_cell = testCityCell({ city_id: city.id })
   const stock = testResourceStock({
     cell_id: city_cell.id,
     plastic,
     mushroom
   })
-  return { city, city_cell, stock }
+  return {
+    city,
+    city_cell,
+    stock 
+  }
 }

@@ -39,10 +39,13 @@ export async function cancelTroop({
     replication_catalyst_level: 0,
   })
 
-  const stock = await repository.resource_stock.getByCellId({
-    cell_id: city_cell.id
+  const stock = await repository.resource_stock.getByCellId({ cell_id: city_cell.id })
+  AppService.assertCityResourceStockContext({
+    city,
+    city_cell,
+    stock,
+    player_id 
   })
-  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
   const updated_stock = stock.refund({ resource: troop_costs.resource })
 
   const troop_to_save = updated_troop.cancel()

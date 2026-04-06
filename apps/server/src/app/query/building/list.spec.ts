@@ -65,7 +65,7 @@ describe('BuildingListQuery', () => {
       name: 'x',
       player_id: 'other'
     })
-    ;(repository.city.get as MockInstance).mockResolvedValue(other)
+    ;(repository.city.get as unknown as MockInstance).mockResolvedValue(other)
 
     await expect(new BuildingListQuery().run({
       city_id: other.id,
@@ -80,10 +80,7 @@ describe('BuildingListQuery', () => {
     })
 
     expect(result.buildings).toHaveLength(2)
-    const upgrading = result.buildings.find(
-      (b): b is Extract<BuildingListEntry, { upgrade_at: number }> =>
-        b.id === b_upgrade.id && 'upgrade_at' in b
-    )
+    const upgrading = result.buildings.find((b): b is Extract<BuildingListEntry, { upgrade_at: number }> => b.id === b_upgrade.id && 'upgrade_at' in b)
     expect(upgrading).toBeDefined()
     expect(upgrading!.upgrade_at).toBe(10_000)
     expect(upgrading!.upgrade_started_at).toBeDefined()

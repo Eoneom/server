@@ -26,7 +26,10 @@ export class BuildingListQuery extends GenericQuery<ListBuildingRequest, ListBui
       throw new Error(CityError.NOT_OWNER)
     }
 
-    const [buildings, architecture] = await Promise.all([
+    const [
+      buildings,
+      architecture 
+    ] = await Promise.all([
       this.repository.building.list({ city_id }),
       this.repository.technology.get({
         player_id,

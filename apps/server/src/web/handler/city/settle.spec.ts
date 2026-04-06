@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { citySettleHandler } from './settle'
 import { citySettle } from '#app/command/city/settle'
 
@@ -18,7 +22,12 @@ describe('citySettleHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { body: { outpost_id: 'o1', city_name: 'New City' } }
+    req = {
+      body: {
+        outpost_id: 'o1',
+        city_name: 'New City' 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -37,14 +46,20 @@ describe('citySettleHandler', () => {
     req.body = { city_name: 'New City' }
     await citySettleHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'outpost_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'outpost_id:not-found' 
+    })
   })
 
   it('returns 400 when city_name is missing', async () => {
     req.body = { outpost_id: 'o1' }
     await citySettleHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_name:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_name:not-found' 
+    })
   })
 
   it('calls next with error when command throws', async () => {
@@ -56,7 +71,14 @@ describe('citySettleHandler', () => {
 
   it('returns city_id on success', async () => {
     await citySettleHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
-    expect(citySettle).toHaveBeenCalledWith({ outpost_id: 'o1', player_id: 'p1', city_name: 'New City' })
-    expect(res.json).toHaveBeenCalledWith({ status: 'ok', data: { city_id: 'new-city' } })
+    expect(citySettle).toHaveBeenCalledWith({
+      outpost_id: 'o1',
+      player_id: 'p1',
+      city_name: 'New City' 
+    })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'ok',
+      data: { city_id: 'new-city' } 
+    })
   })
 })

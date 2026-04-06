@@ -32,16 +32,20 @@ export class ResourcesService {
     random?: () => number
   }): ResourceStockState {
     return {
-      plastic: ResourcesService.randomIntInclusive({ max: STARTING_PLASTIC, random }),
-      mushroom: ResourcesService.randomIntInclusive({ max: STARTING_MUSHROOM, random }),
+      plastic: ResourcesService.randomIntInclusive({
+        max: STARTING_PLASTIC,
+        random 
+      }),
+      mushroom: ResourcesService.randomIntInclusive({
+        max: STARTING_MUSHROOM,
+        random 
+      }),
       last_plastic_gather: gather_at,
       last_mushroom_gather: gather_at
     }
   }
 
-  static firstCityCanonicalResourceStockState({
-    gather_at
-  }: {
+  static firstCityCanonicalResourceStockState({ gather_at }: {
     gather_at: number
   }): ResourceStockState {
     return {
@@ -52,9 +56,7 @@ export class ResourcesService {
     }
   }
 
-  static emptyResourceStockState({
-    gather_at
-  }: {
+  static emptyResourceStockState({ gather_at }: {
     gather_at: number
   }): ResourceStockState {
     return {
@@ -118,7 +120,10 @@ export class ResourcesService {
       }
     }
 
-    return { next, updated }
+    return {
+      next,
+      updated 
+    }
   }
 
   static purchaseResourceStock({

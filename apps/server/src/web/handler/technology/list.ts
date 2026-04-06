@@ -42,7 +42,7 @@ const response_mapper = ({ technologies }: TechnologyListQueryResponse): Technol
       code: technology.code,
       level: technology.level,
       research_at: technology.research_at,
-      research_started_at: technology.research_started_at!,
+      research_started_at: technology.research_started_at,
     }
   })
 

@@ -92,11 +92,12 @@ export class RequirementService {
     technology_level: number
   ): RequirementValue {
     return {
-      buildings: requirement.buildings.map((b) =>
-        b.code === BuildingCode.RESEARCH_LAB
-          ? { ...b, level: b.level + technology_level }
-          : b
-      ),
+      buildings: requirement.buildings.map((b) => b.code === BuildingCode.RESEARCH_LAB
+        ? {
+          ...b,
+          level: b.level + technology_level 
+        }
+        : b),
       technologies: requirement.technologies
     }
   }

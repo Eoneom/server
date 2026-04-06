@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopEstimateMovementHandler } from './estimate'
 import { TroopMovementEstimateQuery } from '#query/troop/movement/estimate'
 
@@ -10,9 +12,17 @@ type MockRes = {
   locals: Record<string, unknown>
 }
 
-const origin = { x: 0, y: 0, sector: 0 }
-const destination = { x: 3, y: 4, sector: 0 }
-const troop_codes = ['WARRIOR']
+const origin = {
+  x: 0,
+  y: 0,
+  sector: 0 
+}
+const destination = {
+  x: 3,
+  y: 4,
+  sector: 0 
+}
+const troop_codes = [ 'WARRIOR' ]
 
 describe('troopEstimateMovementHandler', () => {
   let req: Partial<Request>
@@ -20,7 +30,13 @@ describe('troopEstimateMovementHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { body: { origin, destination, troop_codes } }
+    req = {
+      body: {
+        origin,
+        destination,
+        troop_codes 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -40,24 +56,42 @@ describe('troopEstimateMovementHandler', () => {
   })
 
   it('returns 400 when origin is missing', async () => {
-    req.body = { destination, troop_codes }
+    req.body = {
+      destination,
+      troop_codes 
+    }
     await troopEstimateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'origin:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'origin:not-found' 
+    })
   })
 
   it('returns 400 when destination is missing', async () => {
-    req.body = { origin, troop_codes }
+    req.body = {
+      origin,
+      troop_codes 
+    }
     await troopEstimateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'destination:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'destination:not-found' 
+    })
   })
 
   it('returns 400 when troop_codes is missing', async () => {
-    req.body = { origin, destination }
+    req.body = {
+      origin,
+      destination 
+    }
     await troopEstimateMovementHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'troop_codes:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'troop_codes:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -72,7 +106,11 @@ describe('troopEstimateMovementHandler', () => {
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({
       status: 'ok',
-      data: { distance: 5, speed: 2, duration: 150 }
+      data: {
+        distance: 5,
+        speed: 2,
+        duration: 150 
+      }
     })
   })
 })

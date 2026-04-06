@@ -13,7 +13,9 @@ import { CityEntity } from '#core/city/entity'
 import { CityError } from '#core/city/error'
 import { now } from '#shared/time'
 import assert from 'assert'
-import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
+import {
+  testResourceStock, testCityCell 
+} from '../../test-support/resource-stock'
 
 describe('cancelBuilding', () => {
   const player_id = 'player_id'
@@ -54,12 +56,8 @@ describe('cancelBuilding', () => {
         getInProgress: vi.fn().mockResolvedValue(building),
         updateOne: buildingUpdateOne
       } as unknown as Repository['building'],
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
-      cell: {
-        getCityCell: vi.fn().mockResolvedValue(city_cell)
-      } as unknown as Repository['cell'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      cell: { getCityCell: vi.fn().mockResolvedValue(city_cell) } as unknown as Repository['cell'],
       resource_stock: {
         getByCellId: vi.fn().mockResolvedValue(stock),
         updateOne: stockUpdateOne

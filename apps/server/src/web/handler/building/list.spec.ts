@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { buildingListHandler } from './list'
 import { BuildingListQuery } from '#query/building/list'
 
@@ -10,7 +12,12 @@ type MockRes = {
   locals: Record<string, unknown>
 }
 
-const queryData = [{ code: 'SAWMILL', level: 1 }]
+const queryData = [
+  {
+    code: 'SAWMILL',
+    level: 1 
+  } 
+]
 
 describe('buildingListHandler', () => {
   let req: Partial<Request>
@@ -37,7 +44,10 @@ describe('buildingListHandler', () => {
     req.params = {}
     await buildingListHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -49,6 +59,9 @@ describe('buildingListHandler', () => {
 
   it('returns building list on success', async () => {
     await buildingListHandler(req as Request, res as unknown as Response, next as NextFunction)
-    expect(res.json).toHaveBeenCalledWith({ status: 'ok', data: queryData })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'ok',
+      data: queryData 
+    })
   })
 })

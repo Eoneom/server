@@ -10,9 +10,16 @@ import { CellType } from '#core/world/value/cell-type'
 describe('generateWorld', () => {
   const cell = CellEntity.create({
     id: 'cell_id',
-    coordinates: { x: 1, y: 1, sector: 1 },
+    coordinates: {
+      x: 1,
+      y: 1,
+      sector: 1 
+    },
     type: CellType.FOREST,
-    resource_coefficient: { plastic: 1, mushroom: 1 }
+    resource_coefficient: {
+      plastic: 1,
+      mushroom: 1 
+    }
   })
 
   let isInitialized: MockInstance
@@ -29,9 +36,7 @@ describe('generateWorld', () => {
         isInitialized,
         create: cellCreate
       } as unknown as Repository['cell'],
-      resource_stock: {
-        create: stockCreate
-      } as unknown as Repository['resource_stock']
+      resource_stock: { create: stockCreate } as unknown as Repository['resource_stock']
     }
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
     vi.spyOn(WorldService, 'generate').mockReturnValue([ cell ])

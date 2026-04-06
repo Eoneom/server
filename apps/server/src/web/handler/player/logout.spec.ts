@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { logoutHandler } from './logout'
 import { logoutAuth } from '#command/auth/logout'
 
@@ -35,9 +39,7 @@ describe('logoutHandler', () => {
 
   it('rejects when authorization header is missing', async () => {
     req.headers = {}
-    await expect(
-      logoutHandler(req as Request, res as unknown as Response, next as NextFunction)
-    ).rejects.toThrow()
+    await expect(logoutHandler(req as Request, res as unknown as Response, next as NextFunction)).rejects.toThrow()
   })
 
   it('calls next with error when logoutAuth throws', async () => {

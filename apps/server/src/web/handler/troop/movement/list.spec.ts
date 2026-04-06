@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopListMovementHandler } from './list'
 import { TroopMovementListQuery } from '#query/troop/movement/list'
 
@@ -15,8 +17,16 @@ const queryResult = {
     {
       id: 'm1',
       action: 'ATTACK',
-      origin: { sector: 0, x: 0, y: 0 },
-      destination: { sector: 0, x: 3, y: 4 },
+      origin: {
+        sector: 0,
+        x: 0,
+        y: 0 
+      },
+      destination: {
+        sector: 0,
+        x: 3,
+        y: 4 
+      },
       arrive_at: '2026-04-01T12:00:00.000Z'
     }
   ]
@@ -65,8 +75,16 @@ describe('troopListMovementHandler', () => {
           {
             id: 'm1',
             action: 'ATTACK',
-            origin: { sector: 0, x: 0, y: 0 },
-            destination: { sector: 0, x: 3, y: 4 },
+            origin: {
+              sector: 0,
+              x: 0,
+              y: 0 
+            },
+            destination: {
+              sector: 0,
+              x: 3,
+              y: 4 
+            },
             arrive_at: '2026-04-01T12:00:00.000Z'
           }
         ]

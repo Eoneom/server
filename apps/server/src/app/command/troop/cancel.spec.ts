@@ -14,7 +14,9 @@ import { CityError } from '#core/city/error'
 import { now } from '#shared/time'
 import assert from 'assert'
 import { troop_costs } from '#core/pricing/constant/troop'
-import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
+import {
+  testResourceStock, testCityCell 
+} from '../../test-support/resource-stock'
 
 describe('cancelTroop', () => {
   const player_id = 'player_id'
@@ -34,7 +36,10 @@ describe('cancelTroop', () => {
       name: 'dummy',
       player_id,
     })
-    city_cell = testCityCell({ city_id: city.id, cell_id })
+    city_cell = testCityCell({
+      city_id: city.id,
+      cell_id 
+    })
     stock = testResourceStock({
       cell_id,
       plastic: STARTING_PLASTIC,
@@ -63,12 +68,8 @@ describe('cancelTroop', () => {
     stockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
-      cell: {
-        getCityCell: vi.fn().mockResolvedValue(city_cell),
-      } as unknown as Repository['cell'],
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
+      cell: { getCityCell: vi.fn().mockResolvedValue(city_cell) } as unknown as Repository['cell'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
       troop: {
         getInProgress: vi.fn().mockResolvedValue(troop),
         updateOne: troopUpdateOne,

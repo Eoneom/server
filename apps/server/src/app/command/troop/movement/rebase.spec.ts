@@ -67,9 +67,7 @@ describe('rebaseTroopMovement', () => {
         delete: movementDelete,
         create: movementCreate,
       } as unknown as Repository['movement'],
-      report: {
-        create: reportCreate,
-      } as unknown as Repository['report'],
+      report: { create: reportCreate } as unknown as Repository['report'],
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)

@@ -28,7 +28,16 @@ export class CommunicationListReportQuery extends GenericQuery<CommunicationList
   }: CommunicationListReportQueryRequest): Promise<CommunicationListReportQueryResponse> {
     const limit = COMMUNICATION_LIST_REPORT_PAGE_SIZE
     const offset = (normalizePage(page) - 1) * limit
-    const { reports, total } = await this.repository.report.list({ player_id, limit, offset })
-    return { reports, total }
+    const {
+      reports, total 
+    } = await this.repository.report.list({
+      player_id,
+      limit,
+      offset 
+    })
+    return {
+      reports,
+      total 
+    }
   }
 }

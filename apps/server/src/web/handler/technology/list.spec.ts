@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { technologyListHandler } from './list'
 import { TechnologyListQuery } from '#query/technology/list'
 
@@ -12,7 +14,13 @@ type MockRes = {
 
 const queryResult = {
   technologies: [
-    { id: 't1', code: 'ARCHERY', level: 2, research_at: null, research_started_at: null },
+    {
+      id: 't1',
+      code: 'ARCHERY',
+      level: 2,
+      research_at: null,
+      research_started_at: null 
+    },
     {
       id: 't2',
       code: 'METALLURGY',
@@ -63,7 +71,11 @@ describe('technologyListHandler', () => {
       status: 'ok',
       data: {
         technologies: [
-          { id: 't1', code: 'ARCHERY', level: 2 },
+          {
+            id: 't1',
+            code: 'ARCHERY',
+            level: 2 
+          },
           {
             id: 't2',
             code: 'METALLURGY',

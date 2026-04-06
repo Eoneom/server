@@ -149,9 +149,7 @@ describe('citySettle', () => {
         getInCell: vi.fn().mockResolvedValue(settler_troop),
         updateOne: troopUpdateOne
       } as unknown as Repository['troop'],
-      building: {
-        create: buildingCreate
-      } as unknown as Repository['building']
+      building: { create: buildingCreate } as unknown as Repository['building']
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -176,12 +174,10 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city on another player outpost', async () => {
-    repository.outpost.getById = vi.fn().mockResolvedValue(
-      OutpostEntity.create({
-        ...outpost,
-        player_id: 'another_player_id'
-      })
-    )
+    repository.outpost.getById = vi.fn().mockResolvedValue(OutpostEntity.create({
+      ...outpost,
+      player_id: 'another_player_id'
+    }))
 
     await assert.rejects(
       () => citySettle({
@@ -194,12 +190,10 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city from permanent outpost', async () => {
-    repository.outpost.getById = vi.fn().mockResolvedValue(
-      OutpostEntity.create({
-        ...outpost,
-        type: OutpostType.PERMANENT
-      })
-    )
+    repository.outpost.getById = vi.fn().mockResolvedValue(OutpostEntity.create({
+      ...outpost,
+      type: OutpostType.PERMANENT
+    }))
 
     await assert.rejects(
       () => citySettle({
@@ -212,12 +206,10 @@ describe('citySettle', () => {
   })
 
   it('should prevent player from settling a city when there is no settler available', async () => {
-    repository.troop.getInCell = vi.fn().mockResolvedValue(
-      TroopEntity.create({
-        ...settler_troop,
-        count: 0
-      })
-    )
+    repository.troop.getInCell = vi.fn().mockResolvedValue(TroopEntity.create({
+      ...settler_troop,
+      count: 0
+    }))
 
     await assert.rejects(
       () => citySettle({

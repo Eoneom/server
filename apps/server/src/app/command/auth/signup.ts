@@ -53,9 +53,7 @@ export async function signupAuth({
   const gather_at = now()
   const cell = city_first_cell.assign({ city_id: city.id })
   const initial_stock = await repository.resource_stock.getByCellId({ cell_id: cell.id })
-  const stock_for_first_city = initial_stock.withState(
-    ResourcesService.firstCityCanonicalResourceStockState({ gather_at })
-  )
+  const stock_for_first_city = initial_stock.withState(ResourcesService.firstCityCanonicalResourceStockState({ gather_at }))
   const troops = TroopService.init({
     player_id: player.id,
     cell_id: cell.id

@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { cityListHandler } from './list'
 import { CityListQuery } from '#query/city/list'
 
@@ -12,8 +14,14 @@ type MockRes = {
 
 const queryResult = {
   cities: [
-    { id: 'c1', name: 'Aliceton' },
-    { id: 'c2', name: 'Bobburg' }
+    {
+      id: 'c1',
+      name: 'Aliceton' 
+    },
+    {
+      id: 'c2',
+      name: 'Bobburg' 
+    }
   ],
   count_limit: 5
 }
@@ -58,8 +66,14 @@ describe('cityListHandler', () => {
       status: 'ok',
       data: {
         cities: [
-          { id: 'c1', name: 'Aliceton' },
-          { id: 'c2', name: 'Bobburg' }
+          {
+            id: 'c1',
+            name: 'Aliceton' 
+          },
+          {
+            id: 'c2',
+            name: 'Bobburg' 
+          }
         ],
         count_limit: 5
       }

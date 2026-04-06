@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopListCityHandler } from './city'
 import { TroopListQuery } from '#query/troop/list'
 
@@ -19,9 +21,7 @@ const queryResult = {
       ongoing_recruitment: undefined
     }
   ],
-  costs: {
-    WARRIOR: { duration: 120 }
-  }
+  costs: { WARRIOR: { duration: 120 } }
 }
 
 describe('troopListCityHandler', () => {
@@ -49,7 +49,10 @@ describe('troopListCityHandler', () => {
     req.params = {}
     await troopListCityHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -63,7 +66,10 @@ describe('troopListCityHandler', () => {
     await troopListCityHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(TroopListQuery.prototype.run).toHaveBeenCalledWith({
       player_id: 'p1',
-      location: { type: 'city', city_id: 'c1' }
+      location: {
+        type: 'city',
+        city_id: 'c1' 
+      }
     })
     expect(res.json).toHaveBeenCalledWith({
       status: 'ok',

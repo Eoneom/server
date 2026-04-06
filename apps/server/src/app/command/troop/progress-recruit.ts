@@ -20,7 +20,10 @@ export async function progressTroopRecruitment({
   const logger = Factory.getLogger('app:command:troop:progress-recruit')
   logger.info('run')
 
-  const [ city_cell, city ] = await Promise.all([
+  const [
+    city_cell,
+    city 
+  ] = await Promise.all([
     repository.cell.getCityCell({ city_id }),
     repository.city.get(city_id),
   ])

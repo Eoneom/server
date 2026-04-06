@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { gameRefreshStateHandler } from './refresh-state'
 import { sagaRefreshGameState } from '#app/saga/game/refresh-state'
 
@@ -37,7 +41,10 @@ describe('gameRefreshStateHandler', () => {
     req.body = {}
     await gameRefreshStateHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not-found' 
+    })
   })
 
   it('calls next with error when player_id is not in context', async () => {
@@ -48,7 +55,10 @@ describe('gameRefreshStateHandler', () => {
 
   it('fires saga with correct args and returns ok', async () => {
     await gameRefreshStateHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
-    expect(sagaRefreshGameState).toHaveBeenCalledWith({ city_id: 'c1', player_id: 'p1' })
+    expect(sagaRefreshGameState).toHaveBeenCalledWith({
+      city_id: 'c1',
+      player_id: 'p1' 
+    })
     expect(res.json).toHaveBeenCalledWith({ status: 'ok' })
   })
 })

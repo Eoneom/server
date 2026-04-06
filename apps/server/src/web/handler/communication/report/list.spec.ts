@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { communicationListReportHandler } from './list'
 import { CommunicationListReportQuery } from '#query/communication/report/list'
 
@@ -19,7 +21,10 @@ const report = {
   destination: 'dest-coords'
 }
 
-const queryResult = { reports: [report], total: 1 }
+const queryResult = {
+  reports: [ report ],
+  total: 1 
+}
 
 describe('communicationListReportHandler', () => {
   let req: Partial<Request>
@@ -58,13 +63,19 @@ describe('communicationListReportHandler', () => {
   it('defaults to page 1 when page query param is absent', async () => {
     req.query = {}
     await communicationListReportHandler(req as Request, res as unknown as Response, next as NextFunction)
-    expect(CommunicationListReportQuery.prototype.run).toHaveBeenCalledWith({ player_id: 'p1', page: 1 })
+    expect(CommunicationListReportQuery.prototype.run).toHaveBeenCalledWith({
+      player_id: 'p1',
+      page: 1 
+    })
   })
 
   it('parses valid page query param', async () => {
     req.query = { page: '3' }
     await communicationListReportHandler(req as Request, res as unknown as Response, next as NextFunction)
-    expect(CommunicationListReportQuery.prototype.run).toHaveBeenCalledWith({ player_id: 'p1', page: 3 })
+    expect(CommunicationListReportQuery.prototype.run).toHaveBeenCalledWith({
+      player_id: 'p1',
+      page: 3 
+    })
   })
 
   it('returns mapped report list on success', async () => {
@@ -72,7 +83,7 @@ describe('communicationListReportHandler', () => {
     expect(res.json).toHaveBeenCalledWith({
       status: 'ok',
       data: {
-        reports: [report],
+        reports: [ report ],
         total: 1,
         page_size: 10
       }

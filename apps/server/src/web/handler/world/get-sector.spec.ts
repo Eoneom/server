@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { worldGetSectorHandler } from './get-sector'
 import { WorldGetSectorQuery } from '#query/world/get-sector'
 
@@ -14,18 +16,30 @@ const queryResult = {
   cells: [
     {
       id: 'cell1',
-      coordinates: { x: 2, y: 3 },
+      coordinates: {
+        x: 2,
+        y: 3 
+      },
       type: 'PLAIN',
-      resource_coefficient: { plastic: 1.2, mushroom: 0.8 }
+      resource_coefficient: {
+        plastic: 1.2,
+        mushroom: 0.8 
+      }
     },
     {
       id: 'cell2',
-      coordinates: { x: 2, y: 4 },
+      coordinates: {
+        x: 2,
+        y: 4 
+      },
       type: 'FOREST',
-      resource_coefficient: { plastic: 0.5, mushroom: 1.5 }
+      resource_coefficient: {
+        plastic: 0.5,
+        mushroom: 1.5 
+      }
     }
   ],
-  explored_cell_ids: ['cell1']
+  explored_cell_ids: [ 'cell1' ]
 }
 
 describe('worldGetSectorHandler', () => {
@@ -53,7 +67,10 @@ describe('worldGetSectorHandler', () => {
     req.params = {}
     await worldGetSectorHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'sector:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'sector:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -70,14 +87,23 @@ describe('worldGetSectorHandler', () => {
       data: {
         cells: [
           {
-            coordinates: { x: 2, y: 3 },
+            coordinates: {
+              x: 2,
+              y: 3 
+            },
             characteristic: {
               type: 'PLAIN',
-              resource_coefficient: { plastic: 1.2, mushroom: 0.8 }
+              resource_coefficient: {
+                plastic: 1.2,
+                mushroom: 0.8 
+              }
             }
           },
           {
-            coordinates: { x: 2, y: 4 },
+            coordinates: {
+              x: 2,
+              y: 4 
+            },
             characteristic: undefined
           }
         ]

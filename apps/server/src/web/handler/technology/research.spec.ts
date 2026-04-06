@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { technologyResearchHandler } from './research'
 import { sagaResearchTechnology } from '#app/saga/research-technology'
 
@@ -18,7 +22,12 @@ describe('technologyResearchHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { body: { city_id: 'c1', technology_code: 'ARCHERY' } }
+    req = {
+      body: {
+        city_id: 'c1',
+        technology_code: 'ARCHERY' 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -37,14 +46,20 @@ describe('technologyResearchHandler', () => {
     req.body = { technology_code: 'ARCHERY' }
     await technologyResearchHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not-found' 
+    })
   })
 
   it('returns 400 when technology_code is missing', async () => {
     req.body = { city_id: 'c1' }
     await technologyResearchHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'technology_code:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'technology_code:not-found' 
+    })
   })
 
   it('calls next with error when saga throws', async () => {
@@ -56,7 +71,11 @@ describe('technologyResearchHandler', () => {
 
   it('calls saga with correct args and returns ok', async () => {
     await technologyResearchHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
-    expect(sagaResearchTechnology).toHaveBeenCalledWith({ city_id: 'c1', player_id: 'p1', technology_code: 'ARCHERY' })
+    expect(sagaResearchTechnology).toHaveBeenCalledWith({
+      city_id: 'c1',
+      player_id: 'p1',
+      technology_code: 'ARCHERY' 
+    })
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({ status: 'ok' })
   })

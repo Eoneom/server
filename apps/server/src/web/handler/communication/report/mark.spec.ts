@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { communicationMarkReportHandler } from './mark'
 import { markCommunicationReport } from '#app/command/communication/report/mark'
 
@@ -18,7 +22,12 @@ describe('communicationMarkReportHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { body: { report_id: 'r1', was_read: true } }
+    req = {
+      body: {
+        report_id: 'r1',
+        was_read: true 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -37,21 +46,36 @@ describe('communicationMarkReportHandler', () => {
     req.body = { was_read: true }
     await communicationMarkReportHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'report_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'report_id:not-found' 
+    })
   })
 
   it('returns 400 when was_read is undefined', async () => {
-    req.body = { report_id: 'r1', was_read: undefined }
+    req.body = {
+      report_id: 'r1',
+      was_read: undefined 
+    }
     await communicationMarkReportHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'was_read:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'was_read:not-found' 
+    })
   })
 
   it('returns 400 when was_read is null', async () => {
-    req.body = { report_id: 'r1', was_read: null }
+    req.body = {
+      report_id: 'r1',
+      was_read: null 
+    }
     await communicationMarkReportHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'was_read:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'was_read:not-found' 
+    })
   })
 
   it('calls next with error when command throws', async () => {
@@ -63,7 +87,11 @@ describe('communicationMarkReportHandler', () => {
 
   it('calls command with correct args and returns ok', async () => {
     await communicationMarkReportHandler(req as Request, res as unknown as Response, next as NextFunction)
-    expect(markCommunicationReport).toHaveBeenCalledWith({ player_id: 'p1', report_id: 'r1', was_read: true })
+    expect(markCommunicationReport).toHaveBeenCalledWith({
+      player_id: 'p1',
+      report_id: 'r1',
+      was_read: true 
+    })
     expect(res.json).toHaveBeenCalledWith({ status: 'ok' })
   })
 })

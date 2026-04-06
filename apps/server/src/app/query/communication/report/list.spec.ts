@@ -32,7 +32,10 @@ describe('CommunicationListReportQuery', () => {
     ]
     repository = {
       report: {
-        list: vi.fn().mockResolvedValue({ reports, total: reports.length })
+        list: vi.fn().mockResolvedValue({
+          reports,
+          total: reports.length 
+        }) 
       } as unknown as Repository['report']
     }
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -43,16 +46,30 @@ describe('CommunicationListReportQuery', () => {
   })
 
   it('returns reports for player on page 1', async () => {
-    const result = await new CommunicationListReportQuery().run({ player_id, page: 1 })
+    const result = await new CommunicationListReportQuery().run({
+      player_id,
+      page: 1 
+    })
 
     expect(result.reports).toBe(reports)
     expect(result.total).toBe(reports.length)
-    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 10, offset: 0 })
+    expect(repository.report.list).toHaveBeenCalledWith({
+      player_id,
+      limit: 10,
+      offset: 0 
+    })
   })
 
   it('uses offset for page 2', async () => {
-    await new CommunicationListReportQuery().run({ player_id, page: 2 })
+    await new CommunicationListReportQuery().run({
+      player_id,
+      page: 2 
+    })
 
-    expect(repository.report.list).toHaveBeenCalledWith({ player_id, limit: 10, offset: 10 })
+    expect(repository.report.list).toHaveBeenCalledWith({
+      player_id,
+      limit: 10,
+      offset: 10 
+    })
   })
 })

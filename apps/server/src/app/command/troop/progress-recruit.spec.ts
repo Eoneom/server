@@ -41,12 +41,8 @@ describe('progressTroopRecruitment', () => {
     troopUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
-      cell: {
-        getCityCell: vi.fn().mockResolvedValue({ id: cell_id }),
-      } as unknown as Repository['cell'],
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
+      cell: { getCityCell: vi.fn().mockResolvedValue({ id: cell_id }) } as unknown as Repository['cell'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
       troop: {
         getInProgress: vi.fn().mockResolvedValue(troop),
         updateOne: troopUpdateOne,

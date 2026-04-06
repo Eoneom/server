@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { communicationCountUnreadReportHandler } from './count-unread'
 import { CommunicationCountUnreadReportQuery } from '#query/communication/report/count-unread'
 
@@ -46,6 +48,9 @@ describe('communicationCountUnreadReportHandler', () => {
 
   it('returns unread count on success', async () => {
     await communicationCountUnreadReportHandler(req as Request, res as unknown as Response, next as NextFunction)
-    expect(res.json).toHaveBeenCalledWith({ status: 'ok', data: { count: 3 } })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'ok',
+      data: { count: 3 } 
+    })
   })
 })

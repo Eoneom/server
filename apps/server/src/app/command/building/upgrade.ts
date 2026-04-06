@@ -72,10 +72,13 @@ export async function upgradeBuilding({
     code: building.code,
     architecture_level: architecture_technology.level
   })
-  const stock = await repository.resource_stock.getByCellId({
-    cell_id: city_cell.id
+  const stock = await repository.resource_stock.getByCellId({ cell_id: city_cell.id })
+  AppService.assertCityResourceStockContext({
+    city,
+    city_cell,
+    stock,
+    player_id 
   })
-  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
   const updated_stock = stock.purchase({ resource })
   const updated_building = building.launchUpgrade({
     is_building_in_progress,

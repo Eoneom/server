@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { communicationGetReportHandler } from './get'
 import { CommunicationGetReportQuery } from '#query/communication/report/get'
 
@@ -18,7 +20,12 @@ const queryResult = {
     origin: 'origin-coords',
     recorded_at: '2026-03-31T10:00:00.000Z',
     was_read: false,
-    troops: [{ code: 'WARRIOR', count: 5 }]
+    troops: [
+      {
+        code: 'WARRIOR',
+        count: 5 
+      } 
+    ]
   }
 }
 
@@ -47,7 +54,10 @@ describe('communicationGetReportHandler', () => {
     req.params = {}
     await communicationGetReportHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'report_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'report_id:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -68,7 +78,12 @@ describe('communicationGetReportHandler', () => {
         origin: 'origin-coords',
         recorded_at: '2026-03-31T10:00:00.000Z',
         was_read: false,
-        troops: [{ code: 'WARRIOR', count: 5 }]
+        troops: [
+          {
+            code: 'WARRIOR',
+            count: 5 
+          } 
+        ]
       }
     })
   })

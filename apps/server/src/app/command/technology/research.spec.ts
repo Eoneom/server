@@ -12,7 +12,9 @@ import { TechnologyCode } from '#core/technology/constant/code'
 import { TechnologyEntity } from '#core/technology/entity'
 import { TechnologyError } from '#core/technology/error'
 import assert from 'assert'
-import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
+import {
+  testResourceStock, testCityCell 
+} from '../../test-support/resource-stock'
 
 describe('researchTechnology', () => {
   const player_id = 'player_id'
@@ -51,20 +53,14 @@ describe('researchTechnology', () => {
     technologyUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
       technology: {
         get: vi.fn().mockResolvedValue(technology),
         isInProgress: vi.fn().mockResolvedValue(false),
         updateOne: technologyUpdateOne
       } as unknown as Repository['technology'],
-      building: {
-        get: vi.fn().mockResolvedValue(research_lab)
-      } as unknown as Repository['building'],
-      cell: {
-        getCityCell: vi.fn().mockResolvedValue(city_cell)
-      } as unknown as Repository['cell'],
+      building: { get: vi.fn().mockResolvedValue(research_lab) } as unknown as Repository['building'],
+      cell: { getCityCell: vi.fn().mockResolvedValue(city_cell) } as unknown as Repository['cell'],
       resource_stock: {
         getByCellId: vi.fn().mockResolvedValue(stock),
         updateOne: stockUpdateOne

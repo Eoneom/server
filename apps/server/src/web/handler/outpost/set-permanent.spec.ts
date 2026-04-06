@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { outpostSetPermanentHandler } from './set-permanent'
 import { outpostSetPermanent } from '#app/command/outpost/set-permanent'
 
@@ -37,7 +41,10 @@ describe('outpostSetPermanentHandler', () => {
     req.body = {}
     await outpostSetPermanentHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'outpost_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'outpost_id:not-found' 
+    })
   })
 
   it('calls next with error when command throws', async () => {
@@ -49,7 +56,10 @@ describe('outpostSetPermanentHandler', () => {
 
   it('calls command with correct args and returns ok', async () => {
     await outpostSetPermanentHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
-    expect(outpostSetPermanent).toHaveBeenCalledWith({ outpost_id: 'o1', player_id: 'p1' })
+    expect(outpostSetPermanent).toHaveBeenCalledWith({
+      outpost_id: 'o1',
+      player_id: 'p1' 
+    })
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({ status: 'ok' })
   })

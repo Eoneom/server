@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopGetHandler } from './get'
 import { TroopGetQuery } from '#query/troop/get'
 
@@ -11,9 +13,23 @@ type MockRes = {
 }
 
 const queryResult = {
-  troop: { id: 't1', code: 'WARRIOR', count: 10, ongoing_recruitment: undefined },
-  cost: { resource: { plastic: 50, mushroom: 25 }, duration: 1800 },
-  requirement: { buildings: [], technologies: [] }
+  troop: {
+    id: 't1',
+    code: 'WARRIOR',
+    count: 10,
+    ongoing_recruitment: undefined 
+  },
+  cost: {
+    resource: {
+      plastic: 50,
+      mushroom: 25 
+    },
+    duration: 1800 
+  },
+  requirement: {
+    buildings: [],
+    technologies: [] 
+  }
 }
 
 describe('troopGetHandler', () => {
@@ -41,7 +57,10 @@ describe('troopGetHandler', () => {
     req.params = {}
     await troopGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'troop_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'troop_id:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -60,8 +79,15 @@ describe('troopGetHandler', () => {
         code: 'WARRIOR',
         count: 10,
         ongoing_recruitment: undefined,
-        cost: { plastic: 50, mushroom: 25, duration: 1800 },
-        requirement: { buildings: [], technologies: [] }
+        cost: {
+          plastic: 50,
+          mushroom: 25,
+          duration: 1800 
+        },
+        requirement: {
+          buildings: [],
+          technologies: [] 
+        }
       }
     })
   })

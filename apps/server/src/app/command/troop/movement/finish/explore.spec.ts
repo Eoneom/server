@@ -84,9 +84,7 @@ describe('finishTroopExploreMovement', () => {
         get: vi.fn().mockResolvedValue(exploration),
         updateOne: explorationUpdateOne,
       } as unknown as Repository['exploration'],
-      report: {
-        create: reportCreate,
-      } as unknown as Repository['report'],
+      report: { create: reportCreate } as unknown as Repository['report'],
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)

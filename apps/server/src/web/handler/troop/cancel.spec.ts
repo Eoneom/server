@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopCancelHandler } from './cancel'
 import { cancelTroop } from '#app/command/troop/cancel'
 
@@ -37,7 +41,10 @@ describe('troopCancelHandler', () => {
     req.body = {}
     await troopCancelHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not-found' 
+    })
   })
 
   it('calls next with error when command throws', async () => {
@@ -49,7 +56,10 @@ describe('troopCancelHandler', () => {
 
   it('calls command with correct args and returns ok', async () => {
     await troopCancelHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
-    expect(cancelTroop).toHaveBeenCalledWith({ player_id: 'p1', city_id: 'c1' })
+    expect(cancelTroop).toHaveBeenCalledWith({
+      player_id: 'p1',
+      city_id: 'c1' 
+    })
     expect(res.json).toHaveBeenCalledWith({ status: 'ok' })
   })
 })

@@ -3,9 +3,7 @@ import {
   Request,
   Response
 } from 'express'
-import {
-  BuildingListResponse
-} from '@eoneom/api-client/src/endpoints/building/list'
+import { BuildingListResponse } from '@eoneom/api-client/src/endpoints/building/list'
 import { getPlayerIdFromContext } from '#web/helpers'
 import { BuildingListQuery } from '#query/building/list'
 

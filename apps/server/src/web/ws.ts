@@ -1,4 +1,6 @@
-import { WebSocketServer, WebSocket } from 'ws'
+import {
+  WebSocketServer, WebSocket 
+} from 'ws'
 import { Server } from 'http'
 import { authorizeAuth } from '#app/command/auth/authorize'
 import { Factory } from '#adapter/factory'
@@ -22,7 +24,10 @@ export function setupWebSocketServer(server: Server): void {
     }
 
     try {
-      const { player_id } = await authorizeAuth({ token, action_at: now() })
+      const { player_id } = await authorizeAuth({
+        token,
+        action_at: now() 
+      })
 
       connections.set(player_id, ws)
       logger.info('player connected', { player_id })
@@ -36,17 +41,27 @@ export function setupWebSocketServer(server: Server): void {
     }
   })
 
-  eventBus.on(AppEvent.CityResourcesGathered, ({ city_id, player_id }) => {
+  eventBus.on(AppEvent.CityResourcesGathered, ({
+    city_id, player_id 
+  }) => {
     const ws = connections.get(player_id)
     if (ws?.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: AppEvent.CityResourcesGathered, city_id }))
+      ws.send(JSON.stringify({
+        type: AppEvent.CityResourcesGathered,
+        city_id 
+      }))
     }
   })
 
-  eventBus.on(AppEvent.BuildingUpgradeFinished, ({ city_id, player_id }) => {
+  eventBus.on(AppEvent.BuildingUpgradeFinished, ({
+    city_id, player_id 
+  }) => {
     const ws = connections.get(player_id)
     if (ws?.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: AppEvent.BuildingUpgradeFinished, city_id }))
+      ws.send(JSON.stringify({
+        type: AppEvent.BuildingUpgradeFinished,
+        city_id 
+      }))
     }
   })
 
@@ -71,10 +86,15 @@ export function setupWebSocketServer(server: Server): void {
     }
   })
 
-  eventBus.on(AppEvent.OutpostDeleted, ({ player_id, outpost_id }) => {
+  eventBus.on(AppEvent.OutpostDeleted, ({
+    player_id, outpost_id 
+  }) => {
     const ws = connections.get(player_id)
     if (ws?.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: AppEvent.OutpostDeleted, outpost_id }))
+      ws.send(JSON.stringify({
+        type: AppEvent.OutpostDeleted,
+        outpost_id 
+      }))
     }
   })
 }

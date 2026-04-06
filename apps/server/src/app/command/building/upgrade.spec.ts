@@ -1,6 +1,8 @@
 import type { MockInstance } from 'vitest'
 import { upgradeBuilding } from '#app/command/building/upgrade'
-import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
+import {
+  testResourceStock, testCityCell 
+} from '../../test-support/resource-stock'
 import { AppService } from '#app/service'
 import { Factory } from '#adapter/factory'
 import { Repository } from '#app/port/repository/generic'
@@ -60,9 +62,7 @@ describe('upgradeBuilding', () => {
         list: vi.fn().mockResolvedValue([]),
         updateOne: buildingUpdateOne
       } as unknown as Repository['building'],
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
       technology: {
         get: vi.fn().mockResolvedValue(architecture),
         list: vi.fn().mockResolvedValue([
@@ -187,22 +187,18 @@ describe('upgradeBuilding', () => {
   it('should take less time to upgrade with an increase architecture level', async () => {
     repository.technology.get = vi
       .fn()
-      .mockResolvedValueOnce(
-        TechnologyEntity.create({
-          id: architecture.id,
-          code: TechnologyCode.ARCHITECTURE,
-          player_id,
-          level: 0
-        })
-      )
-      .mockResolvedValueOnce(
-        TechnologyEntity.create({
-          id: architecture.id,
-          code: TechnologyCode.ARCHITECTURE,
-          player_id,
-          level: 10
-        })
-      )
+      .mockResolvedValueOnce(TechnologyEntity.create({
+        id: architecture.id,
+        code: TechnologyCode.ARCHITECTURE,
+        player_id,
+        level: 0
+      }))
+      .mockResolvedValueOnce(TechnologyEntity.create({
+        id: architecture.id,
+        code: TechnologyCode.ARCHITECTURE,
+        player_id,
+        level: 10
+      }))
 
     await upgradeBuilding({
       player_id,

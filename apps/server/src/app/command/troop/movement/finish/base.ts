@@ -183,9 +183,7 @@ export async function finishTroopBaseMovement({
   if (finish_save.outpost) {
     save_promises.push(
       repository.outpost.create(finish_save.outpost),
-      repository.resource_stock.ensureWorldStockForCell({
-        cell_id: finish_save.outpost.cell_id
-      }),
+      repository.resource_stock.ensureWorldStockForCell({ cell_id: finish_save.outpost.cell_id }),
     )
   }
   await Promise.all(save_promises)

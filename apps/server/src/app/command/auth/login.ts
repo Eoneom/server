@@ -9,9 +9,7 @@ export interface LoginAuthResult {
   token: string
 }
 
-export async function loginAuth({
-  player_name,
-}: LoginAuthParams): Promise<LoginAuthResult> {
+export async function loginAuth({ player_name }: LoginAuthParams): Promise<LoginAuthResult> {
   const repository = Factory.getRepository()
   const logger = Factory.getLogger('app:command:auth:login')
   logger.info('run')

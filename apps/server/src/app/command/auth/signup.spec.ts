@@ -100,13 +100,11 @@ describe('signupAuth', () => {
     cellUpdateOne = vi.fn().mockResolvedValue(undefined)
     troopCreate = vi.fn().mockResolvedValue(undefined)
     explorationCreate = vi.fn().mockResolvedValue(undefined)
-    resourceStockGetByCellId = vi.fn().mockImplementation(({ cell_id }: { cell_id: string }) =>
-      Promise.resolve(testResourceStock({
-        cell_id,
-        plastic: 123,
-        mushroom: 456
-      }))
-    )
+    resourceStockGetByCellId = vi.fn().mockImplementation(({ cell_id }: { cell_id: string }) => Promise.resolve(testResourceStock({
+      cell_id,
+      plastic: 123,
+      mushroom: 456
+    })))
     resourceStockUpdateOne = vi.fn().mockResolvedValue(undefined)
 
     repository = {
@@ -118,25 +116,15 @@ describe('signupAuth', () => {
         exist: cityExist,
         create: cityCreate
       } as unknown as Repository['city'],
-      building: {
-        create: buildingCreate
-      } as unknown as Repository['building'],
-      technology: {
-        create: technologyCreate
-      } as unknown as Repository['technology'],
-      cell: {
-        updateOne: cellUpdateOne
-      } as unknown as Repository['cell'],
+      building: { create: buildingCreate } as unknown as Repository['building'],
+      technology: { create: technologyCreate } as unknown as Repository['technology'],
+      cell: { updateOne: cellUpdateOne } as unknown as Repository['cell'],
       resource_stock: {
         getByCellId: resourceStockGetByCellId,
         updateOne: resourceStockUpdateOne
       } as unknown as Repository['resource_stock'],
-      troop: {
-        create: troopCreate
-      } as unknown as Repository['troop'],
-      exploration: {
-        create: explorationCreate
-      } as unknown as Repository['exploration']
+      troop: { create: troopCreate } as unknown as Repository['troop'],
+      exploration: { create: explorationCreate } as unknown as Repository['exploration']
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
@@ -152,7 +140,10 @@ describe('signupAuth', () => {
     playerExist.mockResolvedValue(true)
 
     await assert.rejects(
-      () => signupAuth({ player_name, city_name }),
+      () => signupAuth({
+        player_name,
+        city_name 
+      }),
       new RegExp(PlayerError.ALREADY_EXISTS)
     )
 
@@ -163,7 +154,10 @@ describe('signupAuth', () => {
     cityExist.mockResolvedValue(true)
 
     await assert.rejects(
-      () => signupAuth({ player_name, city_name }),
+      () => signupAuth({
+        player_name,
+        city_name 
+      }),
       new RegExp(CityError.ALREADY_EXISTS)
     )
 
@@ -171,7 +165,10 @@ describe('signupAuth', () => {
   })
 
   it('should pass names to exist checks and load surrounding cells from the first city cell', async () => {
-    await signupAuth({ player_name, city_name })
+    await signupAuth({
+      player_name,
+      city_name 
+    })
 
     assert.strictEqual(playerExist.mock.calls.length, 1)
     assert.strictEqual(playerExist.mock.calls[0][0], player_name)
@@ -183,13 +180,14 @@ describe('signupAuth', () => {
 
     const get_cells_around = AppService.getCellsAround as unknown as MockInstance
     assert.strictEqual(get_cells_around.mock.calls.length, 1)
-    assert.deepStrictEqual(get_cells_around.mock.calls[0][0], {
-      coordinates: city_first_cell.coordinates
-    })
+    assert.deepStrictEqual(get_cells_around.mock.calls[0][0], { coordinates: city_first_cell.coordinates })
   })
 
   it('should return player_id and city_id of the created entities', async () => {
-    const result = await signupAuth({ player_name, city_name })
+    const result = await signupAuth({
+      player_name,
+      city_name 
+    })
 
     const created_player = playerCreate.mock.calls[0][0]
     const created_city = cityCreate.mock.calls[0][0]
@@ -198,7 +196,10 @@ describe('signupAuth', () => {
   })
 
   it('should create player and city with the given names and link the city to the player', async () => {
-    await signupAuth({ player_name, city_name })
+    await signupAuth({
+      player_name,
+      city_name 
+    })
 
     const created_player = playerCreate.mock.calls[0][0]
     const created_city = cityCreate.mock.calls[0][0]
@@ -208,7 +209,10 @@ describe('signupAuth', () => {
   })
 
   it('should init all city buildings', async () => {
-    await signupAuth({ player_name, city_name })
+    await signupAuth({
+      player_name,
+      city_name 
+    })
 
     assert.strictEqual(buildingCreate.mock.calls.length, Object.keys(BuildingCode).length)
     const created_city = cityCreate.mock.calls[0][0]
@@ -218,7 +222,10 @@ describe('signupAuth', () => {
   })
 
   it('should init all technologies', async () => {
-    await signupAuth({ player_name, city_name })
+    await signupAuth({
+      player_name,
+      city_name 
+    })
 
     assert.strictEqual(technologyCreate.mock.calls.length, Object.keys(TechnologyCode).length)
     const created_player = playerCreate.mock.calls[0][0]
@@ -228,7 +235,10 @@ describe('signupAuth', () => {
   })
 
   it('should init all city troops', async () => {
-    await signupAuth({ player_name, city_name })
+    await signupAuth({
+      player_name,
+      city_name 
+    })
 
     assert.strictEqual(troopCreate.mock.calls.length, Object.keys(TroopCode).length)
     const created_player = playerCreate.mock.calls[0][0]
@@ -242,7 +252,10 @@ describe('signupAuth', () => {
   })
 
   it('should place the city in the world and apply first-city canonical stock', async () => {
-    await signupAuth({ player_name, city_name })
+    await signupAuth({
+      player_name,
+      city_name 
+    })
 
     assert.strictEqual(cellUpdateOne.mock.calls.length, 1)
     const updated_cell = cellUpdateOne.mock.calls[0][0]
@@ -256,7 +269,10 @@ describe('signupAuth', () => {
   })
 
   it('should init the exploration cells in the world next to the initial city', async () => {
-    await signupAuth({ player_name, city_name })
+    await signupAuth({
+      player_name,
+      city_name 
+    })
 
     assert.strictEqual(explorationCreate.mock.calls.length, 1)
     const exploration = explorationCreate.mock.calls[0][0]

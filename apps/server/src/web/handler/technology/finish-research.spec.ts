@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { technologyFinishResearchHandler } from './finish-research'
 import { finishTechnologyResearch } from '#app/command/technology/finish-research'
 

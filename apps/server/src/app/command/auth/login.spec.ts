@@ -8,7 +8,10 @@ import assert from 'assert'
 
 describe('loginAuth', () => {
   const player_name = 'player_name'
-  const player = PlayerEntity.create({ id: 'player_id', name: player_name })
+  const player = PlayerEntity.create({
+    id: 'player_id',
+    name: player_name 
+  })
 
   let getByName: MockInstance
   let authCreate: MockInstance
@@ -19,12 +22,8 @@ describe('loginAuth', () => {
     authCreate = vi.fn().mockResolvedValue(undefined)
 
     repository = {
-      player: {
-        getByName
-      } as unknown as Repository['player'],
-      auth: {
-        create: authCreate
-      } as unknown as Repository['auth']
+      player: { getByName } as unknown as Repository['player'],
+      auth: { create: authCreate } as unknown as Repository['auth']
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)

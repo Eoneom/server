@@ -35,10 +35,13 @@ export async function cancelBuilding({
     level: building.level
   })
 
-  const stock = await repository.resource_stock.getByCellId({
-    cell_id: city_cell.id
+  const stock = await repository.resource_stock.getByCellId({ cell_id: city_cell.id })
+  AppService.assertCityResourceStockContext({
+    city,
+    city_cell,
+    stock,
+    player_id 
   })
-  AppService.assertCityResourceStockContext({ city, city_cell, stock, player_id })
   const updated_stock = stock.refund({ resource: resource_refund })
   const updated_building = building.cancel()
 

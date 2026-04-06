@@ -20,7 +20,10 @@ describe('AppEventBus', () => {
   })
 
   it('logs the event and payload when emit is called', () => {
-    const payload = { city_id: 'city-1', player_id: 'player-1' }
+    const payload = {
+      city_id: 'city-1',
+      player_id: 'player-1' 
+    }
 
     bus.emit(AppEvent.CityResourcesGathered, payload)
 
@@ -29,7 +32,10 @@ describe('AppEventBus', () => {
 
   it('delivers the payload to a registered listener', () => {
     const listener = vi.fn()
-    const payload = { city_id: 'city-1', player_id: 'player-1' }
+    const payload = {
+      city_id: 'city-1',
+      player_id: 'player-1' 
+    }
 
     bus.on(AppEvent.CityResourcesGathered, listener)
     bus.emit(AppEvent.CityResourcesGathered, payload)
@@ -40,7 +46,10 @@ describe('AppEventBus', () => {
 
   it('does not call a listener after it has been removed via off', () => {
     const listener = vi.fn()
-    const payload = { city_id: 'city-1', player_id: 'player-1' }
+    const payload = {
+      city_id: 'city-1',
+      player_id: 'player-1' 
+    }
 
     bus.on(AppEvent.CityResourcesGathered, listener)
     bus.off(AppEvent.CityResourcesGathered, listener)

@@ -42,7 +42,10 @@ export class ResourceStockEntity extends BaseEntity {
     gather_at: number
     random?: () => number
   }): ResourceStockEntity {
-    const state = ResourcesService.randomResourceStockState({ gather_at, random })
+    const state = ResourcesService.randomResourceStockState({
+      gather_at,
+      random 
+    })
     return ResourceStockEntity.create({
       id: id(),
       cell_id,
@@ -85,7 +88,9 @@ export class ResourceStockEntity extends BaseEntity {
     stock: ResourceStockEntity
     updated: boolean
   } {
-    const { next, updated } = ResourcesService.gatherResourceStock({
+    const {
+      next, updated 
+    } = ResourcesService.gatherResourceStock({
       state: this.toState(),
       gather_at_time,
       earnings_per_second,
@@ -98,12 +103,18 @@ export class ResourceStockEntity extends BaseEntity {
   }
 
   purchase({ resource }: { resource: Resource }): ResourceStockEntity {
-    const next = ResourcesService.purchaseResourceStock({ state: this.toState(), resource })
+    const next = ResourcesService.purchaseResourceStock({
+      state: this.toState(),
+      resource 
+    })
     return this.withState(next)
   }
 
   refund({ resource }: { resource: Resource }): ResourceStockEntity {
-    const next = ResourcesService.refundResourceStock({ state: this.toState(), resource })
+    const next = ResourcesService.refundResourceStock({
+      state: this.toState(),
+      resource 
+    })
     return this.withState(next)
   }
 

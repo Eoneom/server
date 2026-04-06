@@ -130,7 +130,10 @@ export async function createTroopMovement({
   await Promise.all(promises)
 
   if (deleted_outpost_id) {
-    Factory.getEventBus().emit(AppEvent.OutpostDeleted, { player_id, outpost_id: deleted_outpost_id })
+    Factory.getEventBus().emit(AppEvent.OutpostDeleted, {
+      player_id,
+      outpost_id: deleted_outpost_id 
+    })
   }
 
   return { deleted_outpost_id }

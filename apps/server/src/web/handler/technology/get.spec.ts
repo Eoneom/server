@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { technologyGetHandler } from './get'
 import { TechnologyGetQuery } from '#query/technology/get'
 
@@ -18,8 +20,17 @@ const queryResult = {
     research_at: undefined,
     research_started_at: undefined
   },
-  cost: { resource: { plastic: 200, mushroom: 100 }, duration: 7200 },
-  requirement: { buildings: [], technologies: [] }
+  cost: {
+    resource: {
+      plastic: 200,
+      mushroom: 100 
+    },
+    duration: 7200 
+  },
+  requirement: {
+    buildings: [],
+    technologies: [] 
+  }
 }
 
 describe('technologyGetHandler', () => {
@@ -28,7 +39,12 @@ describe('technologyGetHandler', () => {
   let next: MockInstance
 
   beforeEach(() => {
-    req = { params: { city_id: 'c1', technology_code: 'ARCHERY' } }
+    req = {
+      params: {
+        city_id: 'c1',
+        technology_code: 'ARCHERY' 
+      } 
+    }
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -47,14 +63,20 @@ describe('technologyGetHandler', () => {
     req.params = { technology_code: 'ARCHERY' }
     await technologyGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'city_id:not_found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'city_id:not_found' 
+    })
   })
 
   it('returns 400 when technology_code is missing', async () => {
     req.params = { city_id: 'c1' }
     await technologyGetHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'technology_code:not_found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'technology_code:not_found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -72,8 +94,15 @@ describe('technologyGetHandler', () => {
         id: 't1',
         code: 'ARCHERY',
         level: 2,
-        research_cost: { plastic: 200, mushroom: 100, duration: 7200 },
-        requirement: { buildings: [], technologies: [] }
+        research_cost: {
+          plastic: 200,
+          mushroom: 100,
+          duration: 7200 
+        },
+        requirement: {
+          buildings: [],
+          technologies: [] 
+        }
       }
     })
   })

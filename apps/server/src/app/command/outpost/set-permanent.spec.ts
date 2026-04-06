@@ -48,13 +48,19 @@ describe('outpostSetPermanent', () => {
     }))
 
     await assert.rejects(
-      () => outpostSetPermanent({ outpost_id, player_id }),
+      () => outpostSetPermanent({
+        outpost_id,
+        player_id 
+      }),
       new RegExp(OutpostError.NOT_OWNER)
     )
   })
 
   it('should update outpost type to permanent', async () => {
-    await outpostSetPermanent({ outpost_id, player_id })
+    await outpostSetPermanent({
+      outpost_id,
+      player_id 
+    })
 
     assert.strictEqual(updateOne.mock.calls.length, 1)
     assert.strictEqual(updateOne.mock.calls[0][0].type, OutpostType.PERMANENT)
@@ -68,7 +74,10 @@ describe('outpostSetPermanent', () => {
       type: OutpostType.PERMANENT
     }))
 
-    await outpostSetPermanent({ outpost_id, player_id })
+    await outpostSetPermanent({
+      outpost_id,
+      player_id 
+    })
 
     assert.strictEqual(updateOne.mock.calls.length, 0)
   })

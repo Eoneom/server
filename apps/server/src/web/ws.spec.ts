@@ -1,19 +1,19 @@
-import { vi, type MockInstance } from 'vitest'
+import {
+  vi, type MockInstance 
+} from 'vitest'
 vi.mock('ws', () => ({
   WebSocketServer: vi.fn().mockImplementation(function () {
-    return {
-    on: vi.fn(),
-    }
+    return { on: vi.fn() }
   }),
   WebSocket: { OPEN: 1 },
 }))
 
-vi.mock('#app/command/auth/authorize', () => ({
-  authorizeAuth: vi.fn(),
-}))
+vi.mock('#app/command/auth/authorize', () => ({ authorizeAuth: vi.fn() }))
 
 import { setupWebSocketServer } from './ws'
-import { WebSocketServer, WebSocket } from 'ws'
+import {
+  WebSocketServer, WebSocket 
+} from 'ws'
 import { Factory } from '#adapter/factory'
 import { AppEvent } from '#core/events'
 import { authorizeAuth } from '#app/command/auth/authorize'
@@ -69,9 +69,7 @@ describe('setupWebSocketServer', () => {
       (WebSocketServer as unknown as MockInstance).mock.results.length - 1
     ].value
 
-    const connectionCall = (wssInstance.on as MockInstance).mock.calls.find(
-      ([event]) => event === 'connection'
-    )
+    const connectionCall = (wssInstance.on as MockInstance).mock.calls.find(([ event ]) => event === 'connection')
     connectionHandler = connectionCall[1]
   })
 
@@ -88,7 +86,7 @@ describe('setupWebSocketServer', () => {
   })
 
   it('closes the connection when authorization fails', async () => {
-    ;(authorizeAuth as MockInstance).mockRejectedValue(new Error('invalid token'))
+    (authorizeAuth as MockInstance).mockRejectedValue(new Error('invalid token'))
     const mockWs = makeMockWs()
 
     await connectionHandler(mockWs, makeReq('/?token=bad-token'))
@@ -105,11 +103,15 @@ describe('setupWebSocketServer', () => {
     await connectionHandler(mockWs, makeReq('/?token=valid-token'))
 
     const eventHandler = capturedEventListeners.get(AppEvent.CityResourcesGathered)
-    eventHandler?.({ city_id, player_id })
+    eventHandler?.({
+      city_id,
+      player_id 
+    })
 
-    expect(mockWs.send).toHaveBeenCalledWith(
-      JSON.stringify({ type: AppEvent.CityResourcesGathered, city_id })
-    )
+    expect(mockWs.send).toHaveBeenCalledWith(JSON.stringify({
+      type: AppEvent.CityResourcesGathered,
+      city_id 
+    }))
   })
 
   it('does not send when the WebSocket is not open', async () => {
@@ -120,7 +122,10 @@ describe('setupWebSocketServer', () => {
     await connectionHandler(mockWs, makeReq('/?token=valid-token'))
 
     const eventHandler = capturedEventListeners.get(AppEvent.CityResourcesGathered)
-    eventHandler?.({ city_id: 'city-1', player_id })
+    eventHandler?.({
+      city_id: 'city-1',
+      player_id 
+    })
 
     expect(mockWs.send).not.toHaveBeenCalled()
   })
@@ -135,7 +140,10 @@ describe('setupWebSocketServer', () => {
     mockWs._handlers.get('close')?.()
 
     const eventHandler = capturedEventListeners.get(AppEvent.CityResourcesGathered)
-    eventHandler?.({ city_id: 'city-1', player_id })
+    eventHandler?.({
+      city_id: 'city-1',
+      player_id 
+    })
 
     expect(mockWs.send).not.toHaveBeenCalled()
   })
@@ -149,11 +157,15 @@ describe('setupWebSocketServer', () => {
     await connectionHandler(mockWs, makeReq('/?token=valid-token'))
 
     const eventHandler = capturedEventListeners.get(AppEvent.BuildingUpgradeFinished)
-    eventHandler?.({ city_id, player_id })
+    eventHandler?.({
+      city_id,
+      player_id 
+    })
 
-    expect(mockWs.send).toHaveBeenCalledWith(
-      JSON.stringify({ type: AppEvent.BuildingUpgradeFinished, city_id })
-    )
+    expect(mockWs.send).toHaveBeenCalledWith(JSON.stringify({
+      type: AppEvent.BuildingUpgradeFinished,
+      city_id 
+    }))
   })
 
   it('forwards TechnologyResearchFinished event to the connected player WebSocket', async () => {
@@ -166,9 +178,7 @@ describe('setupWebSocketServer', () => {
     const eventHandler = capturedEventListeners.get(AppEvent.TechnologyResearchFinished)
     eventHandler?.({ player_id })
 
-    expect(mockWs.send).toHaveBeenCalledWith(
-      JSON.stringify({ type: AppEvent.TechnologyResearchFinished })
-    )
+    expect(mockWs.send).toHaveBeenCalledWith(JSON.stringify({ type: AppEvent.TechnologyResearchFinished }))
   })
 
   it('forwards TroopMovementFinished event to the connected player WebSocket', async () => {
@@ -181,9 +191,7 @@ describe('setupWebSocketServer', () => {
     const eventHandler = capturedEventListeners.get(AppEvent.TroopMovementFinished)
     eventHandler?.({ player_id })
 
-    expect(mockWs.send).toHaveBeenCalledWith(
-      JSON.stringify({ type: AppEvent.TroopMovementFinished })
-    )
+    expect(mockWs.send).toHaveBeenCalledWith(JSON.stringify({ type: AppEvent.TroopMovementFinished }))
   })
 
   it('forwards OutpostCreated event to the connected player WebSocket', async () => {
@@ -196,9 +204,7 @@ describe('setupWebSocketServer', () => {
     const eventHandler = capturedEventListeners.get(AppEvent.OutpostCreated)
     eventHandler?.({ player_id })
 
-    expect(mockWs.send).toHaveBeenCalledWith(
-      JSON.stringify({ type: AppEvent.OutpostCreated })
-    )
+    expect(mockWs.send).toHaveBeenCalledWith(JSON.stringify({ type: AppEvent.OutpostCreated }))
   })
 
   it('forwards OutpostDeleted event with outpost_id to the connected player WebSocket', async () => {
@@ -210,11 +216,15 @@ describe('setupWebSocketServer', () => {
     await connectionHandler(mockWs, makeReq('/?token=valid-token'))
 
     const eventHandler = capturedEventListeners.get(AppEvent.OutpostDeleted)
-    eventHandler?.({ player_id, outpost_id })
+    eventHandler?.({
+      player_id,
+      outpost_id 
+    })
 
-    expect(mockWs.send).toHaveBeenCalledWith(
-      JSON.stringify({ type: AppEvent.OutpostDeleted, outpost_id })
-    )
+    expect(mockWs.send).toHaveBeenCalledWith(JSON.stringify({
+      type: AppEvent.OutpostDeleted,
+      outpost_id 
+    }))
   })
 
   it('does not forward an event to a different player WebSocket', async () => {
@@ -226,7 +236,10 @@ describe('setupWebSocketServer', () => {
     await connectionHandler(mockWs, makeReq('/?token=valid-token'))
 
     const eventHandler = capturedEventListeners.get(AppEvent.CityResourcesGathered)
-    eventHandler?.({ city_id: 'city-1', player_id: other_player_id })
+    eventHandler?.({
+      city_id: 'city-1',
+      player_id: other_player_id 
+    })
 
     expect(mockWs.send).not.toHaveBeenCalled()
   })

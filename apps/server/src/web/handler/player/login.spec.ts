@@ -1,5 +1,9 @@
-import { vi, type MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  vi, type MockInstance 
+} from 'vitest'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { loginHandler } from './login'
 import { loginAuth } from '#command/auth/login'
 
@@ -37,7 +41,10 @@ describe('loginHandler', () => {
     req.body = {}
     await loginHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'player_name:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'player_name:not-found' 
+    })
   })
 
   it('calls next with error when loginAuth throws', async () => {
@@ -50,6 +57,9 @@ describe('loginHandler', () => {
   it('returns token on success', async () => {
     await loginHandler(req as unknown as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(200)
-    expect(res.send).toHaveBeenCalledWith({ status: 'ok', data: { token: 'tok123' } })
+    expect(res.send).toHaveBeenCalledWith({
+      status: 'ok',
+      data: { token: 'tok123' } 
+    })
   })
 })

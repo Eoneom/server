@@ -12,7 +12,9 @@ import { CityError } from '#core/city/error'
 import { AppEvent } from '#core/events'
 import { now } from '#shared/time'
 import assert from 'assert'
-import { testResourceStock, testCityCell } from '../../test-support/resource-stock'
+import {
+  testResourceStock, testCityCell 
+} from '../../test-support/resource-stock'
 
 describe('cityGather', () => {
   const player_id = 'player_id'
@@ -41,12 +43,8 @@ describe('cityGather', () => {
     mockEmit = vi.fn()
 
     repository = {
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
-      cell: {
-        getCityCell: vi.fn().mockResolvedValue(city_cell)
-      } as unknown as Repository['cell'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      cell: { getCityCell: vi.fn().mockResolvedValue(city_cell) } as unknown as Repository['cell'],
       resource_stock: {
         getByCellId: vi.fn().mockImplementation(() => Promise.resolve(stock)),
         updateOne: stockUpdateOne
@@ -193,7 +191,10 @@ describe('cityGather', () => {
 
     assert.strictEqual(mockEmit.mock.calls.length, 1)
     assert.strictEqual(mockEmit.mock.calls[0][0], AppEvent.CityResourcesGathered)
-    assert.deepStrictEqual(mockEmit.mock.calls[0][1], { city_id: city.id, player_id })
+    assert.deepStrictEqual(mockEmit.mock.calls[0][1], {
+      city_id: city.id,
+      player_id 
+    })
   })
 
   it('should not emit event when stock is not updated (cooldown)', async () => {

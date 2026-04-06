@@ -25,9 +25,7 @@ export class OutpostListQuery extends GenericQuery<OutpostListQueryRequest, Outp
       resource_stocks
     ] = await Promise.all([
       Promise.all(outposts.map(outpost => this.repository.cell.getById(outpost.cell_id))),
-      Promise.all(outposts.map(outpost => this.repository.resource_stock.getByCellId({
-        cell_id: outpost.cell_id
-      })))
+      Promise.all(outposts.map(outpost => this.repository.resource_stock.getByCellId({ cell_id: outpost.cell_id })))
     ])
     return {
       outposts,

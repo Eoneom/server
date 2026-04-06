@@ -260,7 +260,11 @@ export class AppService {
     if (!city.isOwnedBy(player_id)) {
       throw new Error(CityError.NOT_OWNER)
     }
-    AppService.assertResourceStockMatchesCityCell({ city, city_cell, stock })
+    AppService.assertResourceStockMatchesCityCell({
+      city,
+      city_cell,
+      stock 
+    })
   }
 
   private static async loadCityProductionInputs(city_id: string): Promise<{

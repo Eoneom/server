@@ -45,9 +45,7 @@ describe('OutpostGetQuery', () => {
     repository = {
       outpost: { getById: vi.fn().mockResolvedValue(outpost) } as unknown as Repository['outpost'],
       cell: { getById: vi.fn().mockResolvedValue(cell) } as unknown as Repository['cell'],
-      resource_stock: {
-        getByCellId: vi.fn().mockResolvedValue(stock)
-      } as unknown as Repository['resource_stock']
+      resource_stock: { getByCellId: vi.fn().mockResolvedValue(stock) } as unknown as Repository['resource_stock']
     }
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
   })

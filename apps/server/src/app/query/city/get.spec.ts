@@ -24,34 +24,46 @@ describe('CityGetQuery', () => {
     })
     cell = CellEntity.create({
       id: 'cell_id',
-      coordinates: { x: 1, y: 2, sector: 3 },
+      coordinates: {
+        x: 1,
+        y: 2,
+        sector: 3 
+      },
       type: CellType.FOREST,
-      resource_coefficient: { plastic: 1, mushroom: 1 },
+      resource_coefficient: {
+        plastic: 1,
+        mushroom: 1 
+      },
       city_id: city.id
     })
 
     repository = {
-      building: {
-        getTotalLevels: vi.fn().mockResolvedValue(7),
-      } as unknown as Repository['building'],
-      city: {
-        get: vi.fn().mockResolvedValue(city),
-      } as unknown as Repository['city'],
-      cell: {
-        getCityCell: vi.fn().mockResolvedValue(cell),
-      } as unknown as Repository['cell'],
+      building: { getTotalLevels: vi.fn().mockResolvedValue(7) } as unknown as Repository['building'],
+      city: { get: vi.fn().mockResolvedValue(city) } as unknown as Repository['city'],
+      cell: { getCityCell: vi.fn().mockResolvedValue(cell) } as unknown as Repository['cell'],
       resource_stock: {
-        getByCellId: vi.fn().mockResolvedValue(
-          testResourceStock({ cell_id: cell.id, plastic: 0, mushroom: 0 })
-        ),
+        getByCellId: vi.fn().mockResolvedValue(testResourceStock({
+          cell_id: cell.id,
+          plastic: 0,
+          mushroom: 0 
+        })),
       } as unknown as Repository['resource_stock'],
     }
 
     vi.spyOn(Factory, 'getRepository').mockReturnValue(repository as unknown as Repository)
     vi.spyOn(AppService, 'getCityProductionBreakdown').mockResolvedValue({
-      earnings_per_second: { plastic: 1, mushroom: 2 },
-      pre_cell_earnings_per_second: { plastic: 1, mushroom: 2 },
-      cell_resource_coefficient: { plastic: 1, mushroom: 1 }
+      earnings_per_second: {
+        plastic: 1,
+        mushroom: 2 
+      },
+      pre_cell_earnings_per_second: {
+        plastic: 1,
+        mushroom: 2 
+      },
+      cell_resource_coefficient: {
+        plastic: 1,
+        mushroom: 1 
+      }
     })
     vi.spyOn(AppService, 'getCityMaximumBuildingLevels').mockResolvedValue(42)
     vi.spyOn(AppService, 'getCityWarehousesCapacity').mockResolvedValue({
@@ -78,8 +90,14 @@ describe('CityGetQuery', () => {
   it('returns warehouse_full_in_seconds after 50s of accrual', async () => {
     nowSpy.mockReturnValue(50_000)
 
-    const result = await new CityGetQuery().run({ city_id: city.id, player_id })
+    const result = await new CityGetQuery().run({
+      city_id: city.id,
+      player_id 
+    })
 
-    expect(result.warehouse_full_in_seconds).toEqual({ plastic: 50, mushroom: 0 })
+    expect(result.warehouse_full_in_seconds).toEqual({
+      plastic: 50,
+      mushroom: 0 
+    })
   })
 })

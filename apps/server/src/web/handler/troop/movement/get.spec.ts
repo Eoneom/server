@@ -1,5 +1,7 @@
 import type { MockInstance } from 'vitest'
-import { Request, Response, NextFunction } from 'express'
+import {
+  Request, Response, NextFunction 
+} from 'express'
 import { troopGetMovementHandler } from './get'
 import { TroopMovementGetQuery } from '#query/troop/movement/get'
 
@@ -13,11 +15,24 @@ type MockRes = {
 const queryResult = {
   movement: {
     action: 'ATTACK',
-    origin: { sector: 0, x: 0, y: 0 },
-    destination: { sector: 0, x: 3, y: 4 },
+    origin: {
+      sector: 0,
+      x: 0,
+      y: 0 
+    },
+    destination: {
+      sector: 0,
+      x: 3,
+      y: 4 
+    },
     arrive_at: '2026-04-01T12:00:00.000Z'
   },
-  troops: [{ code: 'WARRIOR', count: 8 }]
+  troops: [
+    {
+      code: 'WARRIOR',
+      count: 8 
+    } 
+  ]
 }
 
 describe('troopGetMovementHandler', () => {
@@ -45,7 +60,10 @@ describe('troopGetMovementHandler', () => {
     req.params = {}
     await troopGetMovementHandler(req as Request, res as unknown as Response, next as NextFunction)
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ status: 'nok', error_code: 'movement_id:not-found' })
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'nok',
+      error_code: 'movement_id:not-found' 
+    })
   })
 
   it('calls next with error when query throws', async () => {
@@ -61,10 +79,23 @@ describe('troopGetMovementHandler', () => {
       status: 'ok',
       data: {
         action: 'ATTACK',
-        origin: { sector: 0, x: 0, y: 0 },
-        destination: { sector: 0, x: 3, y: 4 },
+        origin: {
+          sector: 0,
+          x: 0,
+          y: 0 
+        },
+        destination: {
+          sector: 0,
+          x: 3,
+          y: 4 
+        },
         arrive_at: '2026-04-01T12:00:00.000Z',
-        troops: [{ code: 'WARRIOR', count: 8 }]
+        troops: [
+          {
+            code: 'WARRIOR',
+            count: 8 
+          } 
+        ]
       }
     })
   })

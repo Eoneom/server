@@ -9,6 +9,7 @@ import { AppLogger } from '#app/port/logger'
 import { Factory } from '#adapter/factory'
 
 export abstract class MongoGenericRepository<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Model extends AnyParamConstructor<any>,
   Doc,
   Entity extends BaseEntity

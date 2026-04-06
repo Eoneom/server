@@ -32,7 +32,9 @@ export const cityListHandler = async (
   }
 }
 
-const response_mapper = ({ cities, count_limit }: CityListQueryResponse): CityListDataResponse => {
+const response_mapper = ({
+  cities, count_limit 
+}: CityListQueryResponse): CityListDataResponse => {
   const cities_response: CityListDataResponse['cities'] = cities.map(city => {
     return {
       id: city.id,
