@@ -11,7 +11,8 @@ import { Button } from '#ui/button'
 type Props =
   | { cityId: string; outpostId?: never }
   | { cityId?: never; outpostId: string }
-interface BaseProps {
+
+interface CoordinatesInput {
   coordinates: {
     x: number
     y: number
@@ -19,7 +20,7 @@ interface BaseProps {
   }
 }
 
-export const MapDetailsActionBase: React.FC<Props & BaseProps> = ({ cityId, outpostId, coordinates }) => {
+export const MapDetailsActionBase: React.FC<Props & CoordinatesInput> = ({ cityId, outpostId, coordinates }) => {
   const { data: city } = useGetCity(cityId)
   const { data: outpost } = useGetOutpost(outpostId)
   const { data: troops = [] } = useListTroops(cityId ? { cityId } : { outpostId: outpostId as string })

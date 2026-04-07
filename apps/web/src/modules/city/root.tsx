@@ -4,11 +4,11 @@ import { Outlet } from '@tanstack/react-router'
 import { useLocation } from '#location/context'
 import { useGameStateRefresh } from '#game/hooks'
 
-type CityRootProps = {
+interface Props {
   cityId: string
 }
 
-export const CityRoot: React.FC<CityRootProps> = ({ cityId }) => {
+export const CityRoot: React.FC<Props> = ({ cityId }) => {
   const { setCity } = useLocation()
 
   useEffect(() => {

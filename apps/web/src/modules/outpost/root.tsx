@@ -7,11 +7,11 @@ import { useListOutposts, useGetOutpost } from '#outpost/hooks'
 import { useListCities } from '#city/hooks'
 import { useGetCity } from '#city/hooks'
 
-type OutpostRootProps = {
+interface Props {
   outpostId: string
 }
 
-export const OutpostRoot: React.FC<OutpostRootProps> = ({ outpostId }) => {
+export const OutpostRoot: React.FC<Props> = ({ outpostId }) => {
   const { setOutpost, setCity } = useLocation()
   const navigate = useNavigate()
 

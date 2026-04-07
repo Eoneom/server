@@ -6,11 +6,11 @@ import { TroopDetails } from '#troop/details'
 import { useGetTroop } from '#troop/hooks'
 import { Troop } from '#types'
 
-type TroopPageProps = {
+interface Props {
   cityId: string
 }
 
-export const TroopPage: React.FC<TroopPageProps> = ({ cityId }) => {
+export const TroopPage: React.FC<Props> = ({ cityId }) => {
   const [selectedTroopId, setSelectedTroopId] = useState<string | null>(null)
   const { data: troop } = useGetTroop(selectedTroopId)
 

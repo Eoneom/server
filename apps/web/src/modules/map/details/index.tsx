@@ -13,7 +13,7 @@ import { useCreateMovement } from '#troop/hooks'
 type Props =
   | { cityId: string; outpostId?: never }
   | { cityId?: never; outpostId: string }
-interface BaseProps {
+interface DetailsInput {
   coordinates: {
     x: number
     y: number
@@ -21,7 +21,7 @@ interface BaseProps {
   sector: Sector
 }
 
-export const MapDetails: React.FC<Props & BaseProps> = ({ cityId, outpostId, coordinates, sector }) => {
+export const MapDetails: React.FC<Props & DetailsInput> = ({ cityId, outpostId, coordinates, sector }) => {
   const { data: city } = useGetCity(cityId)
   const { data: outpost } = useGetOutpost(outpostId)
   const createMovement = useCreateMovement()

@@ -7,11 +7,11 @@ import { LayoutPage } from '#ui/layout/page'
 import { useGetTechnology } from '#technology/hooks'
 import { Technology } from '#types'
 
-type TechnologyPageProps = {
+interface Props {
   cityId: string
 }
 
-export const TechnologyPage: React.FC<TechnologyPageProps> = ({ cityId }) => {
+export const TechnologyPage: React.FC<Props> = ({ cityId }) => {
   const [selectedCode, setSelectedCode] = useState<TechnologyCode | null>(null)
   const { data: technology } = useGetTechnology(cityId, selectedCode)
 

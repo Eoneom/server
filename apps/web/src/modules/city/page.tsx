@@ -9,7 +9,7 @@ import { useGetCity } from '#city/hooks'
 import { IconMushroom } from '#ui/icon/mushroom'
 import { IconPlastic } from '#ui/icon/plastic'
 
-type CityPageProps = {
+interface Props {
   cityId: string
 }
 
@@ -27,7 +27,7 @@ const warehouseFillPercent = (capacity: number, spaceRemaining: number): number 
   return Math.min(100, Math.max(0, (used / capacity) * 100))
 }
 
-export const CityPage: React.FC<CityPageProps> = ({ cityId }) => {
+export const CityPage: React.FC<Props> = ({ cityId }) => {
   const { data: city } = useGetCity(cityId)
 
   if (!city || city.id !== cityId) {

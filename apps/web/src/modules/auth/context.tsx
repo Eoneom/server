@@ -8,7 +8,11 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface Props {
+  children: React.ReactNode
+}
+
+export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [token, setTokenState] = useState<string | null>(() => {
     return window.localStorage.getItem('token')
   })

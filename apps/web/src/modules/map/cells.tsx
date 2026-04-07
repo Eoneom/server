@@ -13,7 +13,7 @@ export type MapHoverTip = {
   cy: number
 }
 
-interface MapCellsProps {
+interface Props {
   sector: Sector
   gridDim: number
   hoverTooltip: MapHoverTip | null
@@ -25,7 +25,7 @@ interface MapCellsProps {
   ) => void
 }
 
-export const MapCells: React.FC<MapCellsProps> = ({
+export const MapCells: React.FC<Props> = ({
   sector,
   gridDim,
   hoverTooltip,

@@ -61,7 +61,12 @@ const minimalOutpost = (overrides: Partial<Outpost> = {}): Outpost => ({
   ...overrides,
 })
 
-const SetLocation: React.FC<{ cityId?: string; outpostId?: string }> = ({ cityId, outpostId }) => {
+interface Props {
+  cityId?: string
+  outpostId?: string
+}
+
+const SetLocation: React.FC<Props> = ({ cityId, outpostId }) => {
   const { setCity, setOutpost } = useLocation()
   React.useLayoutEffect(() => {
     if (cityId) setCity(cityId)

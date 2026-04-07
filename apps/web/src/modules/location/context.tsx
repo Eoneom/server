@@ -10,7 +10,11 @@ interface LocationContextValue {
 
 const LocationContext = createContext<LocationContextValue | null>(null)
 
-export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface Props {
+  children: React.ReactNode
+}
+
+export const LocationProvider: React.FC<Props> = ({ children }) => {
   const [cityId, setCityId] = useState<string | null>(null)
   const [outpostId, setOutpostId] = useState<string | null>(null)
 

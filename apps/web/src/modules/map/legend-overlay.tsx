@@ -14,11 +14,11 @@ const legendBoxHeight =
   terrainLegend.length * LEGEND_ROW_H +
   (terrainLegend.length - 1) * LEGEND_ROW_GAP
 
-interface MapLegendOverlayProps {
+interface Props {
   stageHeight: number
 }
 
-export const MapLegendOverlay: React.FC<MapLegendOverlayProps> = ({
+export const MapLegendOverlay: React.FC<Props> = ({
   stageHeight,
 }) => {
   const rows = useMemo(

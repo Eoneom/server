@@ -7,11 +7,11 @@ import { OutpostSettle } from '#outpost/settle'
 import { Button } from '#ui/button'
 import { OutpostType } from '@eoneom/api-client'
 
-type OutpostPageProps = {
+interface Props {
   outpostId: string
 }
 
-export const OutpostPage: React.FC<OutpostPageProps> = ({ outpostId }) => {
+export const OutpostPage: React.FC<Props> = ({ outpostId }) => {
   const { data: outpost } = useGetOutpost(outpostId)
   const setPermanent = useSetOutpostPermanent(outpostId)
   const settleCity = useSettleCity()

@@ -3,14 +3,14 @@ import { cellCenter } from '#map/geometry'
 import React, { useMemo } from 'react'
 import { Circle, Group, Text } from 'react-konva'
 
-interface MapMarkersProps {
+interface Props {
   sectorId: number
   gridDim: number
   cityMarker?: { sector: number; x: number; y: number } | null
   outpostMarker?: { sector: number; x: number; y: number } | null
 }
 
-export const MapMarkers: React.FC<MapMarkersProps> = ({
+export const MapMarkers: React.FC<Props> = ({
   sectorId,
   gridDim,
   cityMarker,

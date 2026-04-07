@@ -7,11 +7,11 @@ import { LayoutPage } from '#ui/layout/page'
 import { useGetBuilding } from '#building/hooks'
 import { Building } from '#types'
 
-type BuildingPageProps = {
+interface Props {
   cityId: string
 }
 
-export const BuildingPage: React.FC<BuildingPageProps> = ({ cityId }) => {
+export const BuildingPage: React.FC<Props> = ({ cityId }) => {
   const [selectedCode, setSelectedCode] = useState<BuildingCode | null>(null)
   const { data: building } = useGetBuilding(cityId, selectedCode)
 
